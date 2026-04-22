@@ -4,14 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#E8003D" />
-    <meta name="description" content="Quiz Dignité by Happy Mum's — Le quiz qui change les règles. Apprendre la santé menstruelle sans tabou, sans honte, avec confiance." />
+    <meta name="description" content="Quiz Dignité by Happy Mum's — Le quiz qui change les règles." />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Quiz Dignité" />
-    <meta property="og:title" content="Quiz Dignité by Happy Mum's" />
-    <meta property="og:description" content="Le quiz qui change les règles 🌸" />
-    <meta property="og:type" content="website" />
+    <link rel="apple-touch-icon" href="/icon-512.png" />
     <link rel="manifest" href="/manifest.json" />
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5BDM2ZEKWB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5BDM2ZEKWB', {
+        page_title: 'Quiz Dignité — Happy Mums',
+        send_page_view: true
+      });
+    </script>
+
+    <!-- Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(r => console.log('SW OK'))
+            .catch(e => console.log('SW erreur', e));
+        });
+      }
+    </script>
+
     <title>Quiz Dignité — Happy Mum's</title>
   </head>
   <body>

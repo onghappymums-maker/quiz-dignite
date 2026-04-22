@@ -44,6 +44,16 @@ const SOUNDS = {
     [[392,0],[523,0.12],[659,0.24]].forEach(([f,t]) => tone(f,"sine",0.2,t,0.15,ctx));
   },
 };
+
+// ══════════════ GOOGLE ANALYTICS 4 ══════════════
+function gtrack(event, params = {}) {
+  try {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", event, params);
+    }
+  } catch(e) {}
+}
+
 function play(type, enabled=true) {
   if (!enabled) return;
   const ctx = getCtx(); if (!ctx) return;
@@ -472,10 +482,21 @@ export default function QuizDignite() {
   function answerQ(i) {
     if (selected!==null || showFb) return;
     setSelected(i); setShowFb(true);
-    if (i===questions[qIdx].correct) {
+    const isCorrect = i === questions[qIdx].correct;
+    gtrack("reponse", {
+      profil, categorie: category,
+      question_index: qIdx + 1,
+      correcte: isCorrect,
+      question: questions[qIdx].q.substring(0, 60),
+    });
+    if (isCorrect) {
       setSessionPts(p=>p+10);
       play("correct", soundOn);
     } else {
+      gtrack("question_ratee", {
+        profil, categorie: category,
+        question: questions[qIdx].q.substring(0, 80),
+      });
       play("wrong", soundOn);
     }
   }
@@ -500,6 +521,15 @@ export default function QuizDignite() {
       const conds = condMap[profile]||[];
       const fresh = (profileBadges||[]).filter((_,i)=>conds[i]&&!earned.includes(profile+"_"+(profileBadges[i]||{}).id)).map(b=>({...b,pid:profile}));
       setTimeout(()=>{ play(fresh.length>0?"badge":"complete", soundOn); }, 400);
+      gtrack("session_terminee", {
+        profil,
+        categorie: category,
+        score: sessionPts,
+        total: questions.length * 10,
+        pourcentage: Math.round((sessionPts / (questions.length * 10)) * 100),
+        badges_gagnes: fresh.length,
+        niveau: getLevel(newPts).label,
+      });
       const freshIds = fresh.map(b=>profile+"_"+b.id);
       const allEarned = [...earned, ...freshIds];
       setTotalPts(newPts); setSessions(newSess); setFlags(newFlags); setEarned(allEarned); setNewBadges(fresh);
@@ -511,6 +541,7 @@ export default function QuizDignite() {
 
   function shareWA() {
     const sc = Math.round(sessionPts/10); const tot = questions.length;
+    gtrack("partage", { plateforme: "whatsapp", profil, score: sc, total: tot });
     const txt = encodeURIComponent(`J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n👉 https://quizdignite.vercel.app`);
     window.open(`https://wa.me/?text=${txt}`,"_blank");
     if (!flags.shared) {
@@ -521,6 +552,7 @@ export default function QuizDignite() {
 
   function shareIG() {
     const sc=Math.round(sessionPts/10); const tot=questions.length;
+    gtrack("partage", { plateforme: "instagram", profil, score: sc, total: tot });
     const txt=`J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n#QuizDignite #HappyMums\n👉 https://quizdignite.vercel.app`;
     navigator.clipboard?.writeText(txt).then(()=>alert("✅ Texte copié ! Colle-le dans ta story Instagram 🌸")).catch(()=>alert(txt));
   }
@@ -616,7 +648,7 @@ export default function QuizDignite() {
                 {id:"parent", cls:"pc-parent",  emoji:"👨‍👩‍👧",deco:"❤️📖", name:"Parent / Éducateur",    desc:"Communication, accompagnement et pédagogie"},
               ].map(p=>(
                 <button key={p.id} className={`profile-card ${p.cls}`}
-                  onClick={()=>{play("click",soundOn);setProfile(p.id);setView("categories");setQuizScreen("categories");}}>
+                  onClick={()=>{play("click",soundOn);gtrack("profil_choisi",{profil:p.id});setProfile(p.id);setView("categories");setQuizScreen("categories");}}>
                   <span className="profile-emoji">{p.emoji}</span>
                   <div style={{flex:1}}>
                     <div className="profile-name">{p.name}</div>
@@ -644,7 +676,7 @@ export default function QuizDignite() {
                 {id:"defi",    icon:"🎯", name:"Défis éducatifs",    count:"5 défis — discussion collective"},
                 {id:"urgence", icon:"🚨", name:"Urgence & Aide",     count:"5 questions essentielles",full:true},
               ].map(c=>(
-                <div key={c.id} className={`cat-card${c.full?" full":""}`} onClick={()=>{play("click",soundOn);startQuiz(profile,c.id);}}>
+                <div key={c.id} className={`cat-card${c.full?" full":""}`} onClick={()=>{play("click",soundOn);gtrack("categorie_choisie",{profil:profile,categorie:c.id});startQuiz(profile,c.id);}}>
                   <span className="cat-icon">{c.icon}</span>
                   <div className="cat-name">{c.name}</div>
                   <div className="cat-count">{c.count}</div>
