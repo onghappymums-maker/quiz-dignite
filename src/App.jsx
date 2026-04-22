@@ -192,7 +192,7 @@ body{font-family:'Nunito',sans-serif;overflow-x:hidden;background:#FFF0F5;}
 .floaters{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
 .fl{position:absolute;bottom:-60px;animation:floatUp linear infinite;}
 @keyframes floatUp{0%{opacity:0;transform:translateY(0) rotate(0deg)}8%{opacity:1}92%{opacity:.85}100%{opacity:0;transform:translateY(-115vh) rotate(720deg)}}
-.app{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 16px 88px;}
+.app{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 16px 88px;overflow:hidden;}
 .scr{width:100%;max-width:480px;animation:scrUp .35s ease both;}
 @keyframes scrUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 @keyframes popAnim{0%{transform:scale(.8);opacity:0}65%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
@@ -283,8 +283,6 @@ export default function App() {
   const [showDA,   setShowDA]   = useState(false);
   const [newBadges,setNewBadges]= useState([]);
   const [snd,      setSnd]      = useState(true);
-  const [result,   setResult]   = useState(null); // stores final result object
-
   // persisted state
   const [totPts,   setTotPts]   = useState(0);
   const [earned,   setEarned]   = useState([]);
@@ -321,7 +319,7 @@ export default function App() {
     setQs(shuffle(pool).slice(0, total));
     setQi(0); setSel(null); setShowFb(false);
     setTimer(15); setDispScore(0); setShowDA(false);
-    setResult(null); setNewBadges([]);
+    setNewBadges([]);
     ga("quiz_start", {profil: prof, cat});
     setScreen("quiz");
   }
@@ -377,9 +375,6 @@ export default function App() {
     setEarned(allEarned); setNewBadges(fresh);
     save(newTot, allEarned, newSess);
 
-    // Store result in state so results screen can read it
-    setResult({finalScore, total, pct, qLen: qs.length});
-
     ga("quiz_end", {score: finalScore, pct});
     setTimeout(() => play("win", snd), 300);
 
@@ -389,9 +384,8 @@ export default function App() {
 
   // ── Share ──
   function shareWA() {
-    if (!result) return;
-    const sc  = result.finalScore / 10;
-    const tot = result.qLen;
+    const sc  = dispScore / 10;
+    const tot = qs.length;
     const txt = encodeURIComponent(
       `J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n👉 https://quiz-dignite.vercel.app`
     );
@@ -400,9 +394,8 @@ export default function App() {
   }
 
   function shareIG() {
-    if (!result) return;
-    const sc  = result.finalScore / 10;
-    const tot = result.qLen;
+    const sc  = dispScore / 10;
+    const tot = qs.length;
     const txt = `J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles !\n#QuizDignite #HappyMums\n👉 https://quiz-dignite.vercel.app`;
     navigator.clipboard?.writeText(txt)
       .then(() => alert("✅ Texte copié ! Colle-le dans ta story Instagram 🌸"))
@@ -608,23 +601,22 @@ export default function App() {
         )}
 
         {/* ═══ RESULTS ═══ */}
-        {screen === "results" && result && (
+        {screen === "results" && (
           <div className="scr">
             <div className="result-hero">
-              <span className="result-trophy">
-                {result.pct >= 100 ? "🏆" : result.pct >= 80 ? "⭐" : result.pct >= 60 ? "🌟" : result.pct >= 40 ? "📚" : "🌱"}
-              </span>
-              <div className="result-score">{result.finalScore/10}/{result.qLen}</div>
-              <div className="result-msg">
-                {result.pct >= 100 ? "Parfait ! Tu es une vraie championne !" :
-                 result.pct >= 80  ? "Excellent ! Tu es une experte !" :
-                 result.pct >= 60  ? "Bien joué ! Continue comme ça !" :
-                 result.pct >= 40  ? "Pas mal ! Tu progresses !" :
-                 "C'est un début — rejoue pour progresser !"}
-              </div>
-              <div className="result-pts">
-                +{result.finalScore} pts · Total: {totPts} pts · {lvl.icon} {lvl.label}
-              </div>
+              {(() => {
+                const fs = dispScore;
+                const tot = qs.length * 10;
+                const pct = tot > 0 ? Math.round((fs / tot) * 100) : 0;
+                return (<>
+                  <span className="result-trophy">{pct>=100?"🏆":pct>=80?"⭐":pct>=60?"🌟":pct>=40?"📚":"🌱"}</span>
+                  <div className="result-score">{fs/10}/{qs.length}</div>
+                  <div className="result-msg">
+                    {pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !"}
+                  </div>
+                  <div className="result-pts">+{fs} pts · Total: {totPts} pts · {lvl.icon} {lvl.label}</div>
+                </>);
+              })()}
             </div>
 
             {newBadges.length > 0 && (
