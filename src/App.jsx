@@ -542,7 +542,7 @@ export default function QuizDignite() {
   function shareWA() {
     const sc = Math.round(sessionPts/10); const tot = questions.length;
     gtrack("partage", { plateforme: "whatsapp", profil, score: sc, total: tot });
-    const txt = encodeURIComponent(`J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n👉 https://quizdignite.vercel.app`);
+    const txt = encodeURIComponent(`J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n👉 https://quiz-dignite.vercel.app`);
     window.open(`https://wa.me/?text=${txt}`,"_blank");
     if (!flags.shared) {
       const nf={...flags,shared:true};
@@ -553,7 +553,7 @@ export default function QuizDignite() {
   function shareIG() {
     const sc=Math.round(sessionPts/10); const tot=questions.length;
     gtrack("partage", { plateforme: "instagram", profil, score: sc, total: tot });
-    const txt=`J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n#QuizDignite #HappyMums\n👉 https://quizdignite.vercel.app`;
+    const txt=`J'ai obtenu ${sc}/${tot} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles et découvre ton score !\n#QuizDignite #HappyMums\n👉 https://quiz-dignite.vercel.app`;
     navigator.clipboard?.writeText(txt).then(()=>alert("✅ Texte copié ! Colle-le dans ta story Instagram 🌸")).catch(()=>alert(txt));
   }
 
