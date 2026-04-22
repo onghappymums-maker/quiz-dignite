@@ -429,8 +429,7 @@ const CSS = `
 
 // ══════════════ COMPONENT ══════════════
 export default function QuizDignite() {
-  const [view,        setView]        = useState("splash");
-  const [quizScreen,  setQuizScreen]  = useState("profiles");
+  const [screen,      setScreen]      = useState("splash");
   const [navActive,   setNavActive]   = useState("home");
   const [profile,     setProfile]     = useState(null);
   const [category,    setCategory]    = useState(null);
@@ -476,7 +475,7 @@ export default function QuizDignite() {
     setQuestions(shuffle(pool).slice(0,10));
     setQIdx(0); setSelected(null); setShowFb(false);
     setTimer(15); setSessionPts(0); setShowDefiAns(false);
-    setView("quiz"); setQuizScreen("quiz");
+    setScreen("quiz");
   }
 
   function answerQ(i) {
@@ -534,9 +533,9 @@ export default function QuizDignite() {
       const allEarned = [...earned, ...freshIds];
       setTotalPts(newPts); setSessions(newSess); setFlags(newFlags); setEarned(allEarned); setNewBadges(fresh);
       persist(newPts,allEarned,newSess,newFlags);
-      setQuizScreen("results"); return;
+      setScreen("results"); return;
     }
-    setQIdx(i=>i+1); setSelected(null); setShowFb(false); setTimer(15); setShowDefiAns(false);
+    setQIdx(i=>i+1); setSelected(null); setShowFb(false); setTimer(15); setShowDefiAns(false); setScreen("quiz");
   }
 
   function shareWA() {
@@ -557,10 +556,11 @@ export default function QuizDignite() {
     navigator.clipboard?.writeText(txt).then(()=>alert("✅ Texte copié ! Colle-le dans ta story Instagram 🌸")).catch(()=>alert(txt));
   }
 
-  function goHome() { setView("splash"); setNavActive("home"); setNewBadges([]); }
+  function goHome() { setScreen("splash"); setNavActive("home"); setNewBadges([]); }
   function navTo(n) {
     setNavActive(n);
-    if(n==="home"){setView("splash");} else {setView(n); setQuizScreen("profiles");}
+    if(n==="sound") { setSoundOn(s=>!s); return; }
+    setScreen(n==="home" ? "splash" : n);
   }
 
   const q = questions[qIdx];
@@ -590,7 +590,7 @@ export default function QuizDignite() {
     {e:"🫧",l:95,d:2,   dur:10, s:1.3, anim:"floatUp"},
   ];
 
-  const showNav = view!=="quiz" || quizScreen!=="quiz";
+  const showNav = screen !== "quiz";
   const profileLabel = {fille:"👧 Fille",garcon:"👦 Garçon",parent:"👨‍👩‍👧 Parent/Éducateur"};
   const catLabel = {qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe / Réalité",defi:"Défi éducatif",urgence:"Urgence & Aide"};
 
@@ -614,7 +614,7 @@ export default function QuizDignite() {
 
       <div className="app">
         {/* ───── SPLASH ───── */}
-        {view==="splash" && (
+        {screen==="splash" && (
           <div className="screen">
             <div className="splash-wrap">
               <img src={LOGO} alt="Happy Mum's" className="splash-logo"/>
@@ -625,7 +625,7 @@ export default function QuizDignite() {
               Apprendre les règles <strong>sans tabou, sans honte, avec confiance.</strong><br/>
               Comprends ton corps, réponds à tes questions, brise les mythes.
             </div>
-            <button className="btn btn-main" onClick={()=>{setView("profiles");setQuizScreen("profiles");setNavActive("home");}}>
+            <button className="btn btn-main" onClick={()=>{play("start",soundOn);setScreen("profiles");setNavActive("home");}}>
               Commencer 🌸
             </button>
             <p className="offline-note">📴 Fonctionne sans connexion internet</p>
@@ -634,7 +634,7 @@ export default function QuizDignite() {
         )}
 
         {/* ───── PROFILES ───── */}
-        {view==="profiles" && (
+        {screen==="profiles" && (
           <div className="screen">
             <div style={{textAlign:"center",marginBottom:20,paddingTop:8}}>
               <img src={LOGO} alt="Happy Mum's" style={{width:60,height:60,objectFit:"contain"}}/>
@@ -648,7 +648,7 @@ export default function QuizDignite() {
                 {id:"parent", cls:"pc-parent",  emoji:"👨‍👩‍👧",deco:"❤️📖", name:"Parent / Éducateur",    desc:"Communication, accompagnement et pédagogie"},
               ].map(p=>(
                 <button key={p.id} className={`profile-card ${p.cls}`}
-                  onClick={()=>{play("click",soundOn);gtrack("profil_choisi",{profil:p.id});setProfile(p.id);setView("categories");setQuizScreen("categories");}}>
+                  onClick={()=>{play("click",soundOn);gtrack("profil_choisi",{profil:p.id});setProfile(p.id);setScreen("categories");}}>
                   <span className="profile-emoji">{p.emoji}</span>
                   <div style={{flex:1}}>
                     <div className="profile-name">{p.name}</div>
@@ -663,9 +663,9 @@ export default function QuizDignite() {
         )}
 
         {/* ───── CATEGORIES ───── */}
-        {view==="categories" && (
+        {screen==="categories" && (
           <div className="screen">
-            <button className="back-btn" onClick={()=>{setView("profiles");setQuizScreen("profiles");}}>← Retour</button>
+            <button className="back-btn" onClick={()=>setScreen("profiles")}>← Retour</button>
             <div className="sec-title">{profileLabel[profile]}</div>
             <div style={{fontSize:"0.82rem",color:"#8B4A6B",marginBottom:16,fontWeight:600}}>Choisis un type de questions :</div>
             <div className="cats">
@@ -687,10 +687,10 @@ export default function QuizDignite() {
         )}
 
         {/* ───── QUIZ ───── */}
-        {view==="quiz" && quizScreen==="quiz" && q && (
+        {screen==="quiz" && q && (
           <div className="screen">
             <div className="quiz-top">
-              <button className="back-btn" style={{marginBottom:0}} onClick={()=>{setView("categories");setQuizScreen("categories");}}>← Quitter</button>
+              <button className="back-btn" style={{marginBottom:0}} onClick={()=>setScreen("categories")}>← Quitter</button>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
                 <button onClick={()=>setSoundOn(s=>!s)} style={{background:"rgba(255,255,255,0.8)",border:"none",borderRadius:"50%",width:34,height:34,cursor:"pointer",fontSize:"1rem",display:"flex",alignItems:"center",justifyContent:"center"}}>
                   {soundOn?"🔊":"🔇"}
@@ -762,7 +762,7 @@ export default function QuizDignite() {
         )}
 
         {/* ───── RESULTS ───── */}
-        {view==="quiz" && quizScreen==="results" && (
+        {(screen==="results") && (
           <div className="screen">
             <div className="result-hero">
               <span className="result-trophy">{sessionPts>=80?"🏆":sessionPts>=60?"⭐":sessionPts>=40?"📚":"🌱"}</span>
@@ -791,8 +791,8 @@ export default function QuizDignite() {
             </div>
             <div className="div"/>
             <div style={{display:"flex",gap:10}}>
-              <button className="btn btn-soft" style={{flex:1}} onClick={()=>{setView("categories");setQuizScreen("categories");setNewBadges([]);}}>Rejouer 🔄</button>
-              <button className="btn btn-main" style={{flex:1}} onClick={()=>{setView("profiles");setQuizScreen("profiles");setNewBadges([]);setNavActive("home");}}>Accueil 🏠</button>
+              <button className="btn btn-soft" style={{flex:1}} onClick={()=>{setScreen("categories");setNewBadges([]);}}>Rejouer 🔄</button>
+              <button className="btn btn-main" style={{flex:1}} onClick={()=>{setScreen("profiles");setNewBadges([]);setNavActive("home");}}>Accueil 🏠</button>
             </div>
             <div className="sos-reminder">
               <div style={{fontSize:"0.8rem",color:"#8B4A6B",fontWeight:700}}>📞 Besoin d'aide ?</div>
@@ -803,7 +803,7 @@ export default function QuizDignite() {
         )}
 
         {/* ───── PROGRESS ───── */}
-        {view==="progress" && (
+        {screen==="progress" && (
           <div className="screen">
             <div className="sec-title">🏆 Mes Progrès</div>
             <div className="level-card">
@@ -840,7 +840,7 @@ export default function QuizDignite() {
         )}
 
         {/* ───── ABOUT ───── */}
-        {view==="about" && (
+        {screen==="about" && (
           <div className="screen">
             <div style={{textAlign:"center",marginBottom:20}}>
               <img src={LOGO} alt="Happy Mum's" style={{width:70,height:70,objectFit:"contain"}}/>
@@ -878,7 +878,7 @@ export default function QuizDignite() {
         )}
 
         {/* ───── SOS ───── */}
-        {view==="sos" && (
+        {screen==="sos" && (
           <div className="screen">
             <div className="sec-title" style={{color:"#E8003D"}}>🚨 Urgence & Aide</div>
             <p style={{fontSize:"0.87rem",color:"#8B4A6B",marginBottom:18,lineHeight:1.6,fontWeight:600}}>
@@ -916,10 +916,10 @@ export default function QuizDignite() {
             {id:"progress", icon:"🏆", label:"Progrès"},
             {id:"about",    icon:"🌸", label:"À propos"},
             {id:"sos",      icon:"🚨", label:"SOS"},
-            {id:"sos",      icon:"🚨", label:"SOS"},
+            {id:"sound",    icon:soundOn?"🔊":"🔇", label:soundOn?"Son":"Muet"},
           ].map(n=>(
             <button key={n.id} className={`nav-item${navActive===n.id?" active":""}`}
-              onClick={()=>n.id==="sound"?setSoundOn(s=>!s):navTo(n.id)}>
+              onClick={()=>navTo(n.id)}>
               <span className="nav-icon">{n.icon}</span>{n.label}
             </button>
           ))}
