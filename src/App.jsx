@@ -43,16 +43,16 @@ const MR = (q,ok,ex)          => ({q, answers:["Mythe","Réalité"], correct:ok?
 const DB = {
   fille: {
     qcm: [
-      Q("Combien de jours dure en moyenne un cycle menstruel ?","14 jours","28 jours","7 jours","45 jours",1,"Un cycle dure en moyenne 28 jours, mais peut varier entre 21 et 35 jours selon chaque femme."),
-      Q("Combien de jours durent les règles en général ?","1 jour","3 à 7 jours","15 jours","1 mois",1,"Les règles durent entre 3 et 7 jours. C'est différent pour chaque fille, et c'est normal !"),
-      Q("À quel âge apparaissent généralement les premières règles ?","6-8 ans","10-16 ans","18-20 ans","Toujours à 12 ans",1,"Les premières règles arrivent entre 10 et 16 ans. Un peu avant ou après, c'est tout à fait normal."),
+      Q("Combien de jours dure en moyenne un cycle menstruel ?","28 jours","14 jours","7 jours","45 jours",0,"Un cycle dure en moyenne 28 jours, mais peut varier entre 21 et 35 jours selon chaque femme."),
+      Q("Combien de jours durent les règles en général ?","1 jour","15 jours","3 à 7 jours","1 mois",2,"Les règles durent entre 3 et 7 jours. C'est différent pour chaque fille, et c'est normal !"),
+      Q("À quel âge apparaissent généralement les premières règles ?","6-8 ans","Toujours à 12 ans","18-20 ans","10-16 ans",3,"Les premières règles arrivent entre 10 et 16 ans. Un peu avant ou après, c'est tout à fait normal."),
       Q("Combien de fois par jour faut-il changer sa protection ?","1 fois","Toutes les 4-8 heures","1 fois par semaine","Jamais",1,"Changer toutes les 4 à 8 heures évite les infections et les odeurs. Prends soin de toi !"),
-      Q("Peut-on faire du sport pendant ses règles ?","Non, c'est dangereux","Oui, cela peut soulager les douleurs","Seulement marcher","Non, jamais",1,"Le sport libère des endorphines qui réduisent naturellement les crampes. Bouge !"),
-      Q("Qu'est-ce qu'une cup menstruelle ?","Une boisson","Un médicament","Un récipient réutilisable qui recueille le sang","Un tampon jetable",2,"La cup est en silicone, réutilisable pendant des années. Écologique et économique !"),
-      Q("Quel organe produit les ovules ?","L'utérus","Le vagin","Les ovaires","Le col de l'utérus",2,"Les ovaires produisent les ovules. Chaque mois, un ovule est libéré lors de l'ovulation."),
-      Q("La couleur du sang des règles peut-elle varier ?","Non, toujours rouge vif","Oui, du rouge clair au brun","Elle est toujours noire","Seulement si malade",1,"La couleur varie naturellement selon le flux. Tout à fait normal !"),
-      Q("Qu'est-ce que la précarité menstruelle ?","Des règles douloureuses","Ne pas avoir accès aux protections hygiéniques","Des règles abondantes","L'absence de règles",1,"La précarité menstruelle prive des milliers de filles d'éducation. ONG Happy Mum's agit chaque jour !"),
-      Q("Qu'est-ce que l'endométriose ?","Des règles normales","Une maladie où le tissu utérin pousse hors de l'utérus","Une infection","L'absence de règles",1,"L'endométriose touche 1 femme sur 10. Des douleurs très intenses méritent une consultation médicale."),
+      Q("Peut-on faire du sport pendant ses règles ?","Oui, cela peut soulager les douleurs","Non, c'est dangereux","Seulement marcher","Non, jamais",0,"Le sport libère des endorphines qui réduisent naturellement les crampes. Bouge !"),
+      Q("Qu'est-ce qu'une cup menstruelle ?","Un tampon jetable","Une boisson","Un récipient réutilisable qui recueille le sang","Un médicament",2,"La cup est en silicone, réutilisable pendant des années. Écologique et économique !"),
+      Q("Quel organe produit les ovules ?","Les ovaires","Le vagin","L'utérus","Le col de l'utérus",0,"Les ovaires produisent les ovules. Chaque mois, un ovule est libéré lors de l'ovulation."),
+      Q("La couleur du sang des règles peut-elle varier ?","Non, toujours rouge vif","Elle est toujours noire","Seulement si malade","Oui, du rouge clair au brun",3,"La couleur varie naturellement selon le flux. Tout à fait normal !"),
+      Q("Qu'est-ce que la précarité menstruelle ?","Des règles abondantes","L'absence de règles","Ne pas avoir accès aux protections hygiéniques","Des règles douloureuses",2,"La précarité menstruelle prive des milliers de filles d'éducation. ONG Happy Mum's agit chaque jour !"),
+      Q("Qu'est-ce que l'endométriose ?","Des règles normales","L'absence de règles","Une infection","Une maladie où le tissu utérin pousse hors de l'utérus",3,"L'endométriose touche 1 femme sur 10. Des douleurs très intenses méritent une consultation médicale."),
     ],
     vf: [
       VF("Les règles sont une maladie.", false, "Les règles sont un processus naturel et normal du corps féminin. Pas une maladie !"),
@@ -172,6 +172,46 @@ const DEFIS = [
   {q:"Que dire à une fille qui a honte de ses règles ?", rep:"Tes règles sont normales et naturelles. Elles ne font pas de toi quelqu'un d'impur. Toutes les femmes les ont. Tu peux en parler, tu n'as rien à cacher.", isDefi:true},
   {q:"Comment réagir si une élève demande une protection en urgence ?", rep:"Avoir une trousse de protections disponibles. Répondre avec discrétion et bienveillance. Orienter vers l'infirmerie si nécessaire. Ne jamais humilier ni exposer l'élève.", isDefi:true},
 ];
+
+
+const VIOLENCE = {
+  fille: [
+    Q("La violence, c'est seulement quand il y a des coups ?","Non, elle peut être physique, verbale, psychologique ou sexuelle","Oui, sans coups ce n'est pas de la violence","Seulement si ça laisse des traces visibles","Ça dépend de qui fait quoi",0,"La violence prend de nombreuses formes. Les blessures invisibles sont souvent les plus profondes."),
+    VF("Si tu te sens mal à l'aise avec quelqu'un, tu dois ignorer ce ressenti.",false,"Ton ressenti est un signal d'alarme naturel. Il faut l'écouter, pas l'ignorer. Si quelqu'un te met mal à l'aise, tu peux appeler le 116 — gratuit, 24h/24."),
+    Q("Un adulte te touche sur des parties intimes de ton corps et te dit 'garde ça entre nous'. Tu fais quoi ?","Tu gardes le secret parce qu'il dit que c'est normal","Tu penses que tu as mal compris la situation","Tu en parles immédiatement à un autre adulte de confiance ou tu appelles le 116","Tu attends que ça s'arrête tout seul",2,"Personne n'a le droit de toucher ton corps sans ton accord. Un adulte qui demande le silence fait quelque chose d'illégal. Ce n'est jamais ta faute."),
+    MR("Si quelqu'un te fait du mal, c'est forcément un inconnu.",true,"Dans la majorité des cas, la violence vient d'une personne connue — famille, ami, voisin. Ce n'est pas de ta faute."),
+    VF("Le silence veut dire 'oui'.",false,"Le consentement doit être clair, libre et exprimé. L'absence de 'non' ne veut pas dire 'oui'."),
+    Q("Quelqu'un t'envoie des messages qui te font peur ou te demande des photos. Tu fais quoi ?","Tu réponds pour être polie","Tu effaces tout et tu oublies","Tu en parles à tes amis seulement","Tu ne réponds pas, tu gardes les preuves et tu en parles à un adulte",3,"Ne jamais effacer les preuves. Un adulte de confiance ou le 116 peut t'aider. Si tu reçois des messages qui te font peur, appelle le 116 — gratuit et confidentiel."),
+    MR("C'est ta faute si quelqu'un te fait du mal.",true,"La responsabilité est toujours du côté de l'agresseur. Jamais de la victime. Quoi qu'il se soit passé."),
+    VF("Une blague qui te met mal à l'aise est acceptable si tout le monde rit.",false,"Le respect passe aussi par les mots. Ton malaise est valide même si les autres rient."),
+    Q("Si tu as peur de parler, qu'est-ce qui peut t'aider ?","Écrire ce que tu ressens ou appeler le 116 anonymement","Attendre que la situation se règle toute seule","Garder ça pour toi pour ne pas déranger","En parler uniquement sur les réseaux sociaux",0,"Tu n'as pas à tout dire d'un coup. Le 116 est gratuit, disponible 24h/24. Tu peux parler à ton rythme, sans te forcer."),
+    MR("Certaines victimes parlent des années après — c'est qu'elles mentaient.",true,"Chacun parle à son rythme. La peur, la honte ou le manque de soutien peuvent retarder la parole. Ça ne change rien à la vérité."),
+  ],
+  garcon: [
+    VF("Un garçon ne peut pas être victime de gestes déplacés.",false,"Les violences peuvent toucher tout le monde, peu importe le genre. Ton corps t'appartient."),
+    Q("Quelqu'un te touche et ça te met mal à l'aise. C'est quoi la bonne réaction ?","Tu fais comme si de rien n'était","Tu te dis que c'est normal pour un garçon","Tu supports en silence pour paraître fort","Tu dis clairement que ça ne te plaît pas et tu en parles à quelqu'un",3,"Ton corps t'appartient. Personne n'a le droit de te toucher sans ton accord. Si quelque chose te pèse, tu peux appeler le 116 — gratuit, confidentiel, 24h/24."),
+    MR("Un garçon fort ne parle pas de ce qu'il vit.",true,"Se taire ne protège pas. Parler est un acte de courage, pas une faiblesse."),
+    Q("Un adulte te touche sur des parties intimes et te dit 'c'est notre secret'. Tu fais quoi ?","Tu en parles immédiatement à un adulte de confiance ou tu appelles le 116","Tu gardes le secret pour ne pas créer de problèmes","Tu penses que c'est normal entre un adulte et un enfant","Tu attends de voir si ça recommence",0,"Ton corps t'appartient. Un adulte bienveillant ne fait jamais ça. Ce n'est pas ta faute et tu as le droit de parler."),
+    VF("Si une fille dit non et que tu insistes, c'est juste de la persévérance.",false,"Insister après un refus est une forme de pression et de violence. Non veut dire non. Toujours."),
+    MR("Une fille peut changer d'avis à tout moment, même si elle avait dit oui avant.",false,"Le consentement n'est jamais acquis définitivement. Il peut être retiré à tout moment. Le respect de ce droit est non négociable."),
+    Q("Tu vois un ami dans une situation qui te semble injuste ou dangereuse. Tu fais quoi ?","Tu ignores, ce n'est pas ton problème","Tu te moques pour ne pas paraître faible","Tu l'encourages à en parler à un adulte ou tu l'accompagnes","Tu règles ça entre vous sans impliquer des adultes",2,"Soutenir un ami en difficulté c'est une vraie force. Ne pas agir, c'est laisser la situation continuer."),
+    VF("Parler de ce qu'on vit, c'est être faible.",false,"Demander de l'aide est l'un des actes les plus courageux qui existe. Les vrais forts savent quand parler. Si quelque chose te pèse, tu peux en parler à un adulte de confiance ou appeler le 116."),
+    Q("Tu reçois des messages d'un adulte qui te demande de garder ça secret. Tu fais quoi ?","Tu gardes le secret parce qu'il te fait confiance","Tu en parles immédiatement à un adulte de confiance ou tu appelles le 116","Tu bloques et tu oublies","Tu attends pour voir si ça continue",1,"Ne jamais garder ce type de secret. Un adulte bienveillant ne demande pas ça à un enfant. Appelle le 116 — gratuit et confidentiel."),
+    MR("Les garçons qui parlent de leurs problèmes perdent le respect des autres.",true,"Au contraire, savoir exprimer ce qu'on vit inspire confiance et respect. C'est une marque de maturité."),
+  ],
+  parent: [
+    VF("Un enfant qui ne pleure pas après une violence n'a pas vraiment été blessé.",false,"Les réactions au trauma sont très variées. Le silence ne signifie pas l'absence de souffrance."),
+    Q("Un élève vous confie avoir été touché de façon inappropriée. Quelle est votre première action ?","Écouter sans juger, rassurer et alerter les autorités compétentes","Confronter immédiatement la personne accusée","Attendre d'avoir plus de preuves avant de faire quoi que ce soit","En parler aux collègues pour avoir leur avis",0,"Confronter l'accusé peut mettre l'enfant en danger. L'écoute et l'alerte sont les priorités absolues. Le 116 peut vous orienter sur les démarches à suivre."),
+    MR("Les violences sexuelles sur enfants sont commises principalement par des inconnus.",true,"Dans plus de 70% des cas, l'agresseur est connu de l'enfant : famille, voisinage, entourage proche."),
+    Q("Un parent vous dit que son enfant exagère. Que faites-vous ?","Vous lui donnez raison pour éviter le conflit","Vous convoquez l'enfant devant le parent pour qu'il répète","Vous attendez que l'enfant parle à nouveau","Vous expliquez que minimiser la parole d'un enfant peut aggraver sa situation",3,"L'enfant doit sentir qu'il sera cru. Minimiser sa parole devant lui peut le faire taire définitivement."),
+    VF("Si un enfant revient sur ce qu'il a dit, c'est qu'il mentait.",false,"Se rétracter est très courant chez les victimes, souvent par peur ou pression de l'entourage. Un enfant qui se rétracte a peut-être besoin de plus de sécurité pour parler. Reste disponible sans forcer."),
+    Q("Une élève porte des vêtements longs même en pleine chaleur. Que pensez-vous ?","Elle veut se faire remarquer","Ce n'est pas votre rôle d'y prêter attention","C'est peut-être un signal de blessures cachées à observer avec bienveillance","Elle a froid, c'est son choix",2,"Les changements physiques ou vestimentaires inhabituels méritent une attention bienveillante."),
+    MR("Un enfant bien élevé dans une bonne famille ne peut pas être victime de violence.",true,"Les violences touchent tous les milieux. Le statut social ou le niveau d'éducation ne protège pas."),
+    VF("Parler de violences avec des enfants peut leur donner des idées ou les traumatiser.",false,"Au contraire, éduquer les enfants à reconnaître les violences les protège. L'ignorance est le terrain des agresseurs."),
+    Q("Un enfant agressif en classe depuis quelques semaines. Quelle est la meilleure approche ?","Le sanctionner immédiatement pour rétablir la discipline","Chercher à comprendre ce changement de comportement avec bienveillance","Ignorer, c'est une phase passagère","En informer uniquement les parents sans parler à l'enfant",1,"Un changement soudain de comportement peut signaler une souffrance cachée. En cas de doute, le 116 peut vous orienter gratuitement."),
+    VF("Le rôle de l'éducateur s'arrête à l'enseignement. La protection des enfants, c'est la police.",false,"L'éducateur est souvent le premier adulte de confiance d'un enfant. Son rôle de signalement est reconnu par la loi."),
+  ],
+};
 
 const BADGES = {
   fille:  [{icon:"🌸",name:"Fleur de Dignité"},{icon:"🩸",name:"Experte du Cycle"},{icon:"💬",name:"Briseuse de Tabous"},{icon:"🔦",name:"Lumière du Savoir"},{icon:"💪",name:"Fille Invincible"},{icon:"🌍",name:"Ambassadrice"},{icon:"🤝",name:"Voix des Filles"}],
@@ -313,7 +353,7 @@ export default function App() {
   // ── Start quiz ──
   function startQuiz(prof, cat) {
     scoreRef.current = 0;
-    const pool = cat === "urgence" ? URGENCE : cat === "defi" ? DEFIS : (DB[prof]?.[cat] || []);
+    const pool = cat === "urgence" ? URGENCE : cat === "defi" ? DEFIS : cat === "violence" ? (VIOLENCE[prof] || []) : (DB[prof]?.[cat] || []);
     const total = (cat === "defi" || cat === "urgence") ? 5 : 10;
     setProfile(prof); setCategory(cat);
     setQs(shuffle(pool).slice(0, total));
@@ -417,7 +457,7 @@ export default function App() {
   const tPct = (timer / 15) * 100;
   const tClr = timer > 7 ? "linear-gradient(90deg,#FF9A9E,#FF6B9D)" : "linear-gradient(90deg,#E8003D,#FF5555)";
   const PNAME = {fille:"Je suis une fille", garcon:"Je suis un garçon", parent:"Parent / Éducateur"};
-  const CNAME = {qcm:"QCM", vf:"Vrai / Faux", mr:"Mythe ou Réalité", defi:"Défi", urgence:"Urgence"};
+  const CNAME = {qcm:"QCM", vf:"Vrai / Faux", mr:"Mythe ou Réalité", defi:"Défi", urgence:"Urgence", violence:"Violences & Sécurité"};
 
   const FLOATS = [
     {e:"🌸",l:5,d:0,s:14},{e:"🦋",l:15,d:2,s:11},{e:"🫧",l:26,d:1,s:9},
@@ -499,11 +539,12 @@ export default function App() {
             <div style={{fontSize:".8rem",color:"#8B4A6B",marginBottom:15,fontWeight:600}}>Choisis un type de questions :</div>
             <div className="cats-grid">
               {[
-                {id:"qcm",     icon:"🧠", name:"QCM",             info:"10 questions à choix multiples"},
-                {id:"vf",      icon:"✅", name:"Vrai / Faux",      info:"10 questions Vrai ou Faux"},
-                {id:"mr",      icon:"💡", name:"Mythe ou Réalité", info:"10 questions contre les tabous"},
-                {id:"defi",    icon:"🎯", name:"Défis éducatifs",  info:"5 défis — discussion orale"},
-                {id:"urgence", icon:"🚨", name:"Urgence & Aide",   info:"5 questions essentielles", full:true},
+                {id:"qcm",      icon:"🧠", name:"QCM",                   info:"10 questions à choix multiples"},
+                {id:"vf",       icon:"✅", name:"Vrai / Faux",            info:"10 questions Vrai ou Faux"},
+                {id:"mr",       icon:"💡", name:"Mythe ou Réalité",        info:"10 questions contre les tabous"},
+                {id:"defi",     icon:"🎯", name:"Défis éducatifs",         info:"5 défis — discussion orale"},
+                {id:"violence", icon:"🛡️", name:"Violences & Sécurité",   info:"10 questions — reconnaître et réagir"},
+                {id:"urgence",  icon:"🚨", name:"Urgence & Aide",          info:"5 questions essentielles"},
               ].map(c => (
                 <div key={c.id} className={`cat-item${c.full?" full":""}`}
                   onClick={() => { play("click",snd); startQuiz(profile, c.id); }}>
