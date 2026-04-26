@@ -1,4 +1,4 @@
-const CACHE = "quiz-dignite-v1";
+const CACHE = "quiz-dignite-v10";
 const ASSETS = ["/", "/index.html"];
 
 self.addEventListener("install", e => {
@@ -17,14 +17,11 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(resp => {
-        if (!resp || resp.status !== 200 || resp.type !== "basic") return resp;
-        const clone = resp.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return resp;
-      }).catch(() => caches.match("/index.html"));
-    })
+    fetch(e.request).then(resp => {
+      if (!resp || resp.status !== 200 || resp.type !== "basic") return resp;
+      const clone = resp.clone();
+      caches.open(CACHE).then(c => c.put(e.request, clone));
+      return resp;
+    }).catch(() => caches.match("/index.html"))
   );
 });
