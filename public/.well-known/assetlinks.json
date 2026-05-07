@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "org.quizdignite.twa",
+        "sha256_cert_fingerprints": ["C7:9D:AF:E6:F6:85:15:85:30:7F:C4:EA:42:E1:16:47:B2:B9:29:00:2B:7F:54:04:03:CD:27:EE:8E:1D:33:F4"]
+      }
+    }]
