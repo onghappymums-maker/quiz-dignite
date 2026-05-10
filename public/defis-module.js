@@ -128,7 +128,12 @@ function todayKey(){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 function dayIndex(){
-  var ref=new Date('2025-01-01'), diff=Math.floor((new Date()-ref)/86400000);
+  var launch=new Date('2026-05-10');
+  var now=new Date();
+  // Minuit heure locale
+  var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var launchDay=new Date(launch.getFullYear(),launch.getMonth(),launch.getDate());
+  var diff=Math.floor((today-launchDay)/86400000);
   return ((diff%100)+100)%100;
 }
 
@@ -421,17 +426,29 @@ function injectNav(){
 // INIT
 // ════════════════════════════════════════
 function init(){
-  var tries=0;
-  var navTimer=setInterval(function(){
-    tries++;
-    if(document.querySelector('nav')){ clearInterval(navTimer); injectNav(); }
-    if(tries>60) clearInterval(navTimer);
-  },200);
+  var listenerAdded = false;
 
-  setTimeout(function(){
-    var st=loadSt(), today=todayKey();
-    if(st.lastShown!==today){ showDailyDefi(); }
-  },2200);
+  // MutationObserver : surveille l'apparition de la carte profil FILLE uniquement
+  var observer = new MutationObserver(function(){
+    if(listenerAdded) return;
+    var filleCard = document.querySelector('.pc-fille');
+    if(filleCard){
+      listenerAdded = true;
+      filleCard.addEventListener('click', function(){
+        var st=loadSt(), today=todayKey();
+        if(st.lastShown!==today){
+          setTimeout(showDailyDefi, 800);
+        }
+      });
+    }
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
+
+  // Injection nav : dès qu'elle apparaît
+  var navTimer = setInterval(function(){
+    var nav = document.querySelector('nav');
+    if(nav && !nav.dataset.qdDone){ injectNav(); }
+  }, 400);
 }
 
 if(document.readyState==='loading'){
