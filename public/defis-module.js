@@ -396,19 +396,6 @@ function injectNav(){
     });
   });
 
-  // Bouton Défi du jour
-  var st=loadSt(), done=!!(st.done && st.done[todayKey()]);
-  defiNavBtn=document.createElement('button');
-  css(defiNavBtn,{flex:'1',display:'flex',flexDirection:'column',alignItems:'center',
-    padding:'9px 1px',cursor:'pointer',border:'none',
-    background:'transparent',color:'#C8102E',
-    fontSize:'.52rem',fontWeight:'800',gap:'2px',fontFamily:"'Nunito',sans-serif"});
-  defiNavBtn.innerHTML='<span style="font-size:1.18rem;">'+(done?'✅':'🎯')+'</span><span>Défi du jour</span>';
-  defiNavBtn.addEventListener('click',function(){
-    var s=loadSt(); s.dismissedToday=false; saveSt(s);
-    showDailyDefi();
-  });
-
   // Bouton Confidentialité
   var confBtn=document.createElement('button');
   css(confBtn,{flex:'1',display:'flex',flexDirection:'column',alignItems:'center',
@@ -425,30 +412,58 @@ function injectNav(){
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
-function init(){
-  var listenerAdded = false;
+var QD_PROFILE = null;
 
-  // MutationObserver : surveille l'apparition de la carte profil FILLE uniquement
-  var observer = new MutationObserver(function(){
-    if(listenerAdded) return;
-    var filleCard = document.querySelector('.pc-fille');
-    if(filleCard){
-      listenerAdded = true;
-      filleCard.addEventListener('click', function(){
-        var st=loadSt(), today=todayKey();
-        if(st.lastShown!==today){
-          setTimeout(showDailyDefi, 800);
-        }
-      });
-    }
+function patchDefiItem(){
+  if(QD_PROFILE !== 'fille') return;
+  var items = document.querySelectorAll('.cat-item');
+  items.forEach(function(item){
+    if(item.dataset.qdPatched) return;
+    if(item.textContent.indexOf('Défis éducatifs') === -1) return;
+    item.dataset.qdPatched = '1';
+    item.innerHTML = item.innerHTML
+      .replace('🎯','🌸')
+      .replace('Défis éducatifs','Défi du jour')
+      .replace('5 défis — discussion orale','Ton défi quotidien 🌸');
+    item.style.position = 'relative';
+    var overlay = document.createElement('div');
+    Object.assign(overlay.style,{
+      position:'absolute',inset:'0',zIndex:'999',
+      cursor:'pointer',borderRadius:'18px'
+    });
+    overlay.addEventListener('click', function(e){
+      e.stopPropagation();
+      showDailyDefi();
+    });
+    item.appendChild(overlay);
   });
-  observer.observe(document.body, {childList:true, subtree:true});
+}
 
-  // Injection nav : dès qu'elle apparaît
-  var navTimer = setInterval(function(){
+function init(){
+  var observer = new MutationObserver(function(){
+    // Tracker profil sélectionné
+    var filleCard = document.querySelector('.pc-fille');
+    if(filleCard && !filleCard.dataset.qdL){
+      filleCard.dataset.qdL = '1';
+      filleCard.addEventListener('click', function(){ QD_PROFILE='fille'; });
+    }
+    var garconCard = document.querySelector('.pc-garcon');
+    if(garconCard && !garconCard.dataset.qdL){
+      garconCard.dataset.qdL = '1';
+      garconCard.addEventListener('click', function(){ QD_PROFILE='garcon'; });
+    }
+    var parentCard = document.querySelector('.pc-parent');
+    if(parentCard && !parentCard.dataset.qdL){
+      parentCard.dataset.qdL = '1';
+      parentCard.addEventListener('click', function(){ QD_PROFILE='parent'; });
+    }
+    // Patcher la grille si fille
+    patchDefiItem();
+    // Nav
     var nav = document.querySelector('nav');
     if(nav && !nav.dataset.qdDone){ injectNav(); }
-  }, 400);
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
 }
 
 if(document.readyState==='loading'){
