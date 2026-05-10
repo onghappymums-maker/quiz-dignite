@@ -1,9 +1,6 @@
 (function(){
 'use strict';
 
-// ════════════════════════════════════════
-// DONNÉES — 100 défis (5 cats × 20)
-// ════════════════════════════════════════
 var CATS = {
   menstruation:{icon:'🩸',label:'Menstruation',color:'#C8102E',bg:'#FFE8EC'},
   confiance:   {icon:'💪',label:'Confiance',   color:'#9B5DE5',bg:'#F0E8FF'},
@@ -116,10 +113,8 @@ var ALL_DEFIS = [
 ];
 
 var GRAD = 'linear-gradient(135deg,#C8102E 0%,#E8426A 40%,#FF6B9D 75%,#FF8C69 100%)';
+var QD_PROFILE = null;
 
-// ════════════════════════════════════════
-// STORAGE
-// ════════════════════════════════════════
 function loadSt(){ try{return JSON.parse(localStorage.getItem('qd_daily')||'{}')}catch{return{}} }
 function saveSt(s){ try{localStorage.setItem('qd_daily',JSON.stringify(s))}catch{} }
 
@@ -130,26 +125,20 @@ function todayKey(){
 function dayIndex(){
   var launch=new Date('2026-05-10');
   var now=new Date();
-  // Minuit heure locale
   var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   var launchDay=new Date(launch.getFullYear(),launch.getMonth(),launch.getDate());
   var diff=Math.floor((today-launchDay)/86400000);
   return ((diff%100)+100)%100;
 }
 
-// ════════════════════════════════════════
-// HELPERS DOM
-// ════════════════════════════════════════
-function css(el, styles){ Object.assign(el.style, styles); return el; }
-
-function div(styles, content){
+function css(el,styles){ Object.assign(el.style,styles); return el; }
+function div(styles,content){
   var d=document.createElement('div');
-  css(d, styles||{});
+  css(d,styles||{});
   if(typeof content==='string') d.innerHTML=content;
   return d;
 }
-
-function mkBtn(text, bg, color, onClick){
+function mkBtn(text,bg,color,onClick){
   var b=document.createElement('button');
   b.textContent=text;
   css(b,{background:bg,color:color,border:'none',borderRadius:'50px',
@@ -159,7 +148,6 @@ function mkBtn(text, bg, color, onClick){
   b.addEventListener('click',onClick);
   return b;
 }
-
 function makeOv(id){
   var ov=document.getElementById(id);
   if(ov){ov.innerHTML='';return ov;}
@@ -174,15 +162,11 @@ function makeOv(id){
 function showOv(ov){ov.style.display='block';ov.scrollTop=0;}
 function hideOv(ov){ov.style.display='none';}
 
-// ════════════════════════════════════════
-// DÉFI QUOTIDIEN
-// ════════════════════════════════════════
 var dailyOv;
 
 function showDailyDefi(){
-  dailyOv = makeOv('qd-daily-ov');
-  dailyOv.innerHTML = '';
-
+  dailyOv=makeOv('qd-daily-ov');
+  dailyOv.innerHTML='';
   var st=loadSt(), today=todayKey();
   var idx=dayIndex(), defi=ALL_DEFIS[idx], cat=CATS[defi.cat];
   var done=!!(st.done && st.done[today]);
@@ -190,13 +174,11 @@ function showDailyDefi(){
 
   var wrap=div({minHeight:'100vh',display:'flex',flexDirection:'column',
     alignItems:'center',justifyContent:'center',padding:'24px 18px'});
-
   var card=div({background:'white',borderRadius:'28px',padding:'28px 22px',
     maxWidth:'420px',width:'100%',
     boxShadow:'0 12px 40px rgba(200,16,46,.2)',
     border:'2px solid '+cat.color+'33'});
 
-  // streak badge
   if(streak>0){
     var sb=div({display:'inline-block',background:GRAD,color:'white',
       borderRadius:'50px',padding:'4px 14px',fontSize:'.75rem',
@@ -205,7 +187,6 @@ function showDailyDefi(){
     card.appendChild(sb);
   }
 
-  // catégorie
   var catBox=div({background:cat.bg,borderRadius:'14px',padding:'10px 14px',
     marginBottom:'16px',display:'flex',alignItems:'center',gap:'10px'});
   var catIcon=div({fontSize:'1.6rem'}); catIcon.textContent=cat.icon;
@@ -218,13 +199,11 @@ function showDailyDefi(){
   catBox.appendChild(catIcon); catBox.appendChild(catInfo);
   card.appendChild(catBox);
 
-  // numéro
   var numEl=div({fontSize:'.72rem',color:'#8B5A6A',fontWeight:'700',
     marginBottom:'12px',textAlign:'center'});
   numEl.textContent='Défi n°'+(idx+1)+' / 100';
   card.appendChild(numEl);
 
-  // texte
   var txtEl=div({fontSize:'1rem',lineHeight:'1.6',color:'#2D0A14',
     fontWeight:'600',marginBottom:'22px',textAlign:'center'});
   txtEl.textContent=defi.text;
@@ -243,6 +222,7 @@ function showDailyDefi(){
       var s=loadSt(), t=todayKey();
       if(!s.done) s.done={};
       s.done[t]=true;
+      s.lastShown=t;
       var yd=new Date(new Date()-86400000);
       var yk=yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
       s.streak=(s.lastDone===yk)?(s.streak||0)+1:1;
@@ -262,7 +242,6 @@ function showDailyDefi(){
   var foot=div({textAlign:'center',fontSize:'.65rem',color:'#8B5A6A',marginTop:'12px'});
   foot.textContent='© 2026 ONG Happy Mum\'s · La dignité menstruelle est un droit.';
   card.appendChild(foot);
-
   wrap.appendChild(card);
   dailyOv.appendChild(wrap);
   showOv(dailyOv);
@@ -279,50 +258,66 @@ function showToast(msg){
   setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},600);},2400);
 }
 
-// ════════════════════════════════════════
-// PAGE CONFIDENTIALITÉ (DOM pur, pas de template literals)
-// ════════════════════════════════════════
-var confidOv;
+// ── PATCH : remplace "Défis éducatifs" par "Défi du jour" dans le profil fille ──
+function patchDefiItem(){
+  if(QD_PROFILE !== 'fille') return;
+  var items = document.querySelectorAll('.cat-item');
+  items.forEach(function(item){
+    if(item.dataset.qdPatched) return;
+    var txt = item.textContent || '';
+    // Détecter par plusieurs critères
+    var isDefi = txt.indexOf('ducatif') !== -1
+              || txt.indexOf('discussion orale') !== -1
+              || (txt.indexOf('5') !== -1 && txt.indexOf('discussion') !== -1);
+    if(!isDefi) return;
+    item.dataset.qdPatched = '1';
+    // Remplacer le texte dans les éléments enfants
+    var allEls = item.querySelectorAll('*');
+    allEls.forEach(function(el){
+      if(el.children.length > 0) return;
+      var t = el.textContent;
+      if(t.indexOf('ducatif') !== -1) el.textContent = 'Défi du jour';
+      if(t.indexOf('discussion orale') !== -1) el.textContent = 'Ton défi quotidien 🌸';
+      if(t.trim() === '🎯') el.textContent = '🌸';
+    });
+    // Overlay pour intercepter le clic React
+    item.style.position = 'relative';
+    var overlay = document.createElement('div');
+    Object.assign(overlay.style,{
+      position:'absolute',top:'0',left:'0',right:'0',bottom:'0',
+      zIndex:'999',cursor:'pointer',borderRadius:'18px'
+    });
+    overlay.addEventListener('click',function(e){
+      e.stopPropagation();
+      showDailyDefi();
+    });
+    item.appendChild(overlay);
+  });
+}
 
+// ── CONFIDENTIALITÉ ──
+var confidOv;
 function buildConfidContent(){
   var sections=[
-    ['1. Données collectées',
-     'Lors de votre première utilisation, l\'application vous demande votre prénom et votre pays. Ces informations sont stockées uniquement sur votre appareil et ne quittent jamais votre téléphone.'],
-    ['2. Stockage local',
-     'Toutes vos données (prénom, pays, scores, badges, progression, défis) sont stockées via le stockage local du navigateur (localStorage). Aucun serveur ne reçoit vos données personnelles.'],
-    ['3. Google Analytics 4',
-     'Nous utilisons GA4 pour mesurer l\'audience de manière anonyme : sections utilisées, catégories jouées, scores agrégés. Ces données ne sont jamais revendues.'],
-    ['4. Protection des mineurs',
-     'Aucun compte utilisateur. Aucun paiement. Aucune publicité. Aucune donnée sensible collectée. L\'application est conçue pour les jeunes à partir de 10 ans.'],
-    ['5. Vos droits',
-     'Vous pouvez supprimer vos données en vidant le cache de votre navigateur, ou utiliser le mode navigation privée.'],
-    ['6. Contact',
-     '📧 onghappymums@gmail.com\n📱 +225 07 13 51 26 98\n🌐 quizdignite.org'],
-    ['7. Mentions légales',
-     'Éditeur : ONG Happy Mum\'s\nSiège : Abidjan, Côte d\'Ivoire\nRécépissé : N° 0886/PA/CAB — Préfecture d\'Abidjan']
+    ['1. Données collectées','Lors de votre première utilisation, l\'application vous demande votre prénom et votre pays. Ces informations sont stockées uniquement sur votre appareil.'],
+    ['2. Stockage local','Toutes vos données sont stockées via localStorage. Aucun serveur ne reçoit vos données personnelles.'],
+    ['3. Google Analytics 4','Nous utilisons GA4 pour mesurer l\'audience de manière anonyme. Ces données ne sont jamais revendues.'],
+    ['4. Protection des mineurs','Aucun compte utilisateur. Aucun paiement. Aucune publicité. Application conçue pour les jeunes à partir de 10 ans.'],
+    ['5. Vos droits','Vous pouvez supprimer vos données en vidant le cache de votre navigateur.'],
+    ['6. Contact','📧 onghappymums@gmail.com\n📱 +225 07 13 51 26 98\n🌐 quizdignite.org'],
+    ['7. Mentions légales','Éditeur : ONG Happy Mum\'s\nSiège : Abidjan, Côte d\'Ivoire\nRécépissé : N° 0886/PA/CAB']
   ];
-
   var body=div({padding:'20px 16px 80px',maxWidth:'480px',margin:'0 auto'});
-
   var heroIcon=div({textAlign:'center',fontSize:'3rem',marginBottom:'12px'});
   heroIcon.textContent='🌸';
   body.appendChild(heroIcon);
-
   var h1=document.createElement('h1');
   css(h1,{textAlign:'center',fontSize:'1.4rem',fontWeight:'800',color:'#C8102E',marginBottom:'4px'});
   h1.textContent='Politique de Confidentialité';
   body.appendChild(h1);
-
-  var sub=div({textAlign:'center',fontSize:'.78rem',color:'#8B5A6A',marginBottom:'20px',lineHeight:'1.6'});
+  var sub=div({textAlign:'center',fontSize:'.78rem',color:'#8B5A6A',marginBottom:'20px'});
   sub.textContent='Quiz Dignité by ONG Happy Mum\'s — Mai 2026';
   body.appendChild(sub);
-
-  var intro=div({background:'rgba(200,16,46,.06)',borderLeft:'4px solid #C8102E',
-    borderRadius:'8px',padding:'12px 14px',marginBottom:'18px',
-    fontSize:'.84rem',lineHeight:'1.7',color:'#2D0A14'});
-  intro.textContent='Quiz Dignité est une application éducative gratuite développée par ONG Happy Mum\'s, organisation ivoirienne engagée pour la dignité menstruelle et les droits des filles.';
-  body.appendChild(intro);
-
   sections.forEach(function(sec){
     var card=div({background:'white',borderRadius:'16px',padding:'14px 15px',
       marginBottom:'10px',border:'1.5px solid rgba(200,16,46,.1)',
@@ -335,20 +330,12 @@ function buildConfidContent(){
     card.appendChild(content);
     body.appendChild(card);
   });
-
-  var foot=div({textAlign:'center',fontSize:'.66rem',color:'#8B5A6A',marginTop:'18px',opacity:'.7'});
-  foot.textContent='© 2026 ONG Happy Mum\'s – Tous droits réservés\nLa dignité menstruelle est un droit. 🌸';
-  foot.style.whiteSpace='pre-line';
-  body.appendChild(foot);
-
   return body;
 }
 
 function showConfid(){
-  confidOv = makeOv('qd-confid-ov');
-  confidOv.innerHTML = '';
-
-  // Header
+  confidOv=makeOv('qd-confid-ov');
+  confidOv.innerHTML='';
   var hdr=div({position:'sticky',top:'0',zIndex:'1',background:GRAD,
     padding:'14px 18px',display:'flex',alignItems:'center',gap:'12px',
     boxShadow:'0 4px 14px rgba(200,16,46,.3)'});
@@ -367,28 +354,17 @@ function showConfid(){
   showOv(confidOv);
 }
 
-// ════════════════════════════════════════
-// INJECTION NAV DU BAS
-// ════════════════════════════════════════
-
+// ── NAV : seulement Confidentialité ──
 function injectNav(){
   var nav=document.querySelector('nav');
   if(!nav || nav.dataset.qdDone) return;
   nav.dataset.qdDone='1';
-
-  // Rétrécir les boutons existants
   var existing=Array.from(nav.querySelectorAll('button'));
   existing.forEach(function(b){
     b.style.flex='1';
     b.style.fontSize='.52rem';
     b.style.padding='8px 1px';
-    var spans=b.querySelectorAll('span');
-    spans.forEach(function(s){
-      if(parseFloat(s.style.fontSize||'0')>1) s.style.fontSize='1.15rem';
-    });
   });
-
-  // Bouton Confidentialité
   var confBtn=document.createElement('button');
   css(confBtn,{flex:'1',display:'flex',flexDirection:'column',alignItems:'center',
     padding:'9px 1px',cursor:'pointer',border:'none',
@@ -396,65 +372,36 @@ function injectNav(){
     fontSize:'.52rem',fontWeight:'700',gap:'2px',fontFamily:"'Nunito',sans-serif"});
   confBtn.innerHTML='<span style="font-size:1.18rem;">🔐</span><span>Confidentialité</span>';
   confBtn.addEventListener('click',showConfid);
-
   nav.appendChild(confBtn);
 }
 
-// ════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════
-var QD_PROFILE = null;
-
-function patchDefiItem(){
-  if(QD_PROFILE !== 'fille') return;
-  var items = document.querySelectorAll('.cat-item');
-  items.forEach(function(item){
-    if(item.dataset.qdPatched) return;
-    if(item.textContent.indexOf('Défis éducatifs') === -1) return;
-    item.dataset.qdPatched = '1';
-    item.innerHTML = item.innerHTML
-      .replace('🎯','🌸')
-      .replace('Défis éducatifs','Défi du jour')
-      .replace('5 défis — discussion orale','Ton défi quotidien 🌸');
-    item.style.position = 'relative';
-    var overlay = document.createElement('div');
-    Object.assign(overlay.style,{
-      position:'absolute',inset:'0',zIndex:'999',
-      cursor:'pointer',borderRadius:'18px'
-    });
-    overlay.addEventListener('click', function(e){
-      e.stopPropagation();
-      showDailyDefi();
-    });
-    item.appendChild(overlay);
-  });
-}
-
+// ── INIT ──
 function init(){
-  var observer = new MutationObserver(function(){
-    // Tracker profil sélectionné
-    var filleCard = document.querySelector('.pc-fille');
+  var observer=new MutationObserver(function(){
+    // Tracker profil fille
+    var filleCard=document.querySelector('.pc-fille');
     if(filleCard && !filleCard.dataset.qdL){
-      filleCard.dataset.qdL = '1';
-      filleCard.addEventListener('click', function(){ QD_PROFILE='fille'; });
+      filleCard.dataset.qdL='1';
+      filleCard.addEventListener('click',function(){
+        QD_PROFILE='fille';
+        setTimeout(patchDefiItem,500);
+      });
     }
-    var garconCard = document.querySelector('.pc-garcon');
+    var garconCard=document.querySelector('.pc-garcon');
     if(garconCard && !garconCard.dataset.qdL){
-      garconCard.dataset.qdL = '1';
-      garconCard.addEventListener('click', function(){ QD_PROFILE='garcon'; });
+      garconCard.dataset.qdL='1';
+      garconCard.addEventListener('click',function(){ QD_PROFILE='garcon'; });
     }
-    var parentCard = document.querySelector('.pc-parent');
+    var parentCard=document.querySelector('.pc-parent');
     if(parentCard && !parentCard.dataset.qdL){
-      parentCard.dataset.qdL = '1';
-      parentCard.addEventListener('click', function(){ QD_PROFILE='parent'; });
+      parentCard.dataset.qdL='1';
+      parentCard.addEventListener('click',function(){ QD_PROFILE='parent'; });
     }
-    // Patcher la grille si fille
     patchDefiItem();
-    // Nav
-    var nav = document.querySelector('nav');
+    var nav=document.querySelector('nav');
     if(nav && !nav.dataset.qdDone){ injectNav(); }
   });
-  observer.observe(document.body, {childList:true, subtree:true});
+  observer.observe(document.body,{childList:true,subtree:true});
 }
 
 if(document.readyState==='loading'){
