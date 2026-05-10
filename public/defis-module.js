@@ -376,6 +376,9 @@ function injectNav(){
 }
 
 // ── INIT ──
+// Exposer pour App.jsx
+window.qdShowDailyDefi = showDailyDefi;
+
 function init(){
   var observer=new MutationObserver(function(){
     // Tracker profil fille
