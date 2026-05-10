@@ -250,7 +250,6 @@ function showDailyDefi(){
       saveSt(s);
       hideOv(dailyOv);
       showToast(cat.icon+' Défi accompli ! 🔥 Streak : '+s.streak);
-      refreshDefiNavBtn();
     }));
     var laterBtn=mkBtn('Je le ferai plus tard','transparent','#8B5A6A',function(){
       var s=loadSt(); s.lastShown=todayKey(); s.dismissedToday=true; saveSt(s);
@@ -371,13 +370,6 @@ function showConfid(){
 // ════════════════════════════════════════
 // INJECTION NAV DU BAS
 // ════════════════════════════════════════
-var defiNavBtn = null;
-
-function refreshDefiNavBtn(){
-  if(!defiNavBtn) return;
-  var st=loadSt(), done=!!(st.done && st.done[todayKey()]);
-  defiNavBtn.innerHTML='<span style="font-size:1.18rem;">'+(done?'✅':'🎯')+'</span><span>Défi du jour</span>';
-}
 
 function injectNav(){
   var nav=document.querySelector('nav');
@@ -405,7 +397,6 @@ function injectNav(){
   confBtn.innerHTML='<span style="font-size:1.18rem;">🔐</span><span>Confidentialité</span>';
   confBtn.addEventListener('click',showConfid);
 
-  nav.appendChild(defiNavBtn);
   nav.appendChild(confBtn);
 }
 
