@@ -1314,10 +1314,14 @@ export default function App(){
                 {id:"qcm",icon:"🧠",name:"QCM",info:"10 questions à choix multiples"},
                 {id:"vf",icon:"✅",name:"Vrai / Faux",info:"10 questions Vrai ou Faux"},
                 {id:"mr",icon:"💡",name:"Mythe ou Réalité",info:"10 questions contre les tabous"},
-{id:"defi", icon: profile==='fille' ? "🌸" : "🎯", name: profile==='fille' ? "Défi du jour" : "Défis éducatifs", info: profile==='fille' ? "Ton défi quotidien 🌸" : "5 défis — discussion orale"},                {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
+                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
+                {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
                 {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
               ].map(c=>(
-onClick={() => { if(profile==='fille' && c.id==='defi'){ window.qdShowDailyDefi && window.qdShowDailyDefi(); } else { startQuiz(profile, c.id); } }}                  <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
+                <div key={c.id} onClick={()=>{if(profile==='fille'&&c.id==='defi'){window.qdShowDailyDefi&&window.qdShowDailyDefi();}else{startQuiz(profile,c.id);}}} style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
+                  <span style={{fontSize:"1.9rem",display:"block",marginBottom:7}}>{c.icon}</span>
+                  <div className="T" style={{fontSize:".88rem",fontWeight:700,color:P.red}}>{c.name}</div>
+                  <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
                 </div>
               ))}
             </div>
