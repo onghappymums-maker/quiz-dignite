@@ -245,6 +245,144 @@ const DEFIS_Q = [
   {q:"Comment réagir si une élève demande une protection en urgence ?",rep:"Avoir une trousse de protections disponibles. Répondre avec discrétion et bienveillance. Orienter vers l'infirmerie si nécessaire. Ne jamais humilier ni exposer l'élève.",isDefi:true},
 ];
 
+const CA_DB = {
+  fille:{
+    ca_1:[
+      Q("La puberté est :","Une étape normale de croissance","Une maladie","Une blessure","Un accident",0,"La puberté est une étape naturelle et normale du développement de chaque fille."),
+      Q("Les premières règles apparaissent généralement :","Pendant la puberté","À la naissance","Après 40 ans","Après le mariage",0,"Les premières règles font partie de la puberté, vers 10-16 ans."),
+      Q("Les règles sont :","Un processus naturel","Une maladie","Une infection","Une blessure",0,"Les règles sont un processus biologique entièrement naturel et sain."),
+      Q("L'endomètre est :","La muqueuse de l'utérus","Un muscle du bras","Une hormone","Un organe du cœur",0,"L'endomètre est le tissu intérieur de l'utérus, qui se renouvelle chaque mois."),
+      Q("L'utérus sert à :","Porter une grossesse","Digérer","Respirer","Voir",0,"L'utérus est l'organe féminin qui accueille et nourrit le bébé pendant la grossesse."),
+      Q("Les ovules sont produits par :","Les ovaires","Le foie","Le cœur","Les reins",0,"Les ovaires produisent les ovules. Chaque mois, un ovule est libéré lors de l'ovulation."),
+      Q("L'ovulation correspond à :","La libération d'un ovule","La fin des règles","Une douleur obligatoire","Une infection",0,"L'ovulation est la libération d'un ovule prêt à être fécondé."),
+      Q("Le cycle menstruel dure en moyenne :","28 jours","7 jours","14 jours","60 jours",0,"Le cycle dure en moyenne 28 jours, mais peut varier entre 21 et 35 jours."),
+      Q("Les règles correspondent à :","La perte de l'endomètre","Une infection","Une blessure","De la fièvre",0,"Les règles, c'est le renouvellement de la muqueuse utérine chaque mois."),
+      Q("Le sang des règles vient de :","L'utérus","Le cœur","La peau","Les poumons",0,"Le sang des règles provient de l'utérus — il n'est pas sale ni dangereux."),
+    ],
+    ca_2:[
+      Q("Une protection menstruelle sert à :","Absorber le sang","Jouer","Dormir","Courir",0,"Elle absorbe le sang pendant les règles pour assurer confort et hygiène."),
+      Q("Il faut changer sa protection :","Régulièrement (toutes 4-6h)","Une fois par semaine","Jamais","Seulement la nuit",0,"Changer sa protection régulièrement évite les infections et les odeurs."),
+      Q("Les pertes blanches sont :","Normales","Une maladie","Une infection grave","Une blessure",0,"Les pertes blanches sont normales et font partie du cycle féminin."),
+      Q("Une bonne hygiène permet :","D'éviter les infections","D'arrêter les règles","De changer le corps","De supprimer la puberté",0,"L'hygiène intime réduit les risques d'infection, surtout pendant les règles."),
+      Q("Les douleurs menstruelles :","Peuvent exister et varier","Sont toujours graves","Sont contagieuses","Sont imaginaires",0,"Les douleurs menstruelles existent et varient. Très intenses, elles méritent consultation."),
+      Q("En cas de fortes douleurs :","Consulter un professionnel de santé","Ignorer","Se taire","Ne rien faire",0,"Une douleur intense peut signaler l'endométriose. Ne souffre pas en silence."),
+      Q("Boire de l'eau pendant les règles :","Aide le corps","Arrête les règles","Est inutile","Est dangereux",0,"S'hydrater aide à réduire les crampes et soutient le corps pendant les règles."),
+      Q("La serviette lavable est :","Réutilisable","Jetable uniquement","Dangereuse","Interdite",0,"La serviette lavable est réutilisable, économique et écologique."),
+      Q("Une fille peut faire du sport pendant ses règles :","Oui, ça peut même soulager","Non, c'est interdit","Jamais","C'est dangereux",0,"Le sport libère des endorphines qui réduisent naturellement les crampes !"),
+      Q("Avoir ses règles à l'école :","Est normal, on peut rester","Oblige à rentrer chez soi","Interdit toute activité","Est une maladie",0,"Les règles ne t'empêchent pas d'aller à l'école. Tu as le droit d'y rester."),
+    ],
+    ca_3:[
+      Q("Avoir ses règles signifie :","Le fonctionnement normal du corps","Être malade","Devenir adulte immédiatement","Arrêter de vivre normalement",0,"Avoir ses règles est simplement le signe que le corps fonctionne normalement."),
+      Q("Une fille pendant ses règles peut :","Continuer ses activités normalement","Être isolée","Ne pas marcher","Ne pas manger",0,"Les règles n'interdisent aucune activité. Continue ta vie normalement."),
+      Q("La dignité menstruelle signifie :","Respect et information","Silence","Honte","Secret",0,"La dignité menstruelle, c'est le droit à l'information, aux protections et au respect."),
+      Q("La puberté est différente :","Pour chaque personne","Pour personne","Toujours identique","Toujours tardive",0,"La puberté est unique à chaque fille — il n'y a pas de norme stricte."),
+      Q("Les émotions pendant la puberté :","Peuvent changer","Disparaissent","Sont interdites","Sont dangereuses",0,"Les émotions sont amplifiées à la puberté à cause des hormones. C'est normal."),
+      Q("Parler des règles est :","Normal et important","Interdit","Une honte","Dangereux",0,"Parler des règles brise les tabous et protège les filles."),
+      Q("Les règles durent généralement :","3 à 7 jours","1 mois","1 jour","20 jours",0,"La durée normale des règles est de 3 à 7 jours. Cela peut varier."),
+      Q("L'endométriose est :","Une maladie liée à l'endomètre","Une protection","Un sport","Une vitamine",0,"L'endométriose touche 1 femme sur 10. Des douleurs très intenses méritent une consultation."),
+      Q("Une fille à l'école pendant ses règles :","Peut rester et étudier normalement","Doit partir","Ne peut pas étudier","Est automatiquement malade",0,"Les règles ne sont pas un handicap. Avec les bonnes protections, tout est possible."),
+      Q("Le respect pendant les règles :","Est essentiel et non négociable","Est inutile","Est interdit","Est rare",0,"Toute personne mérite respect et dignité, y compris pendant ses règles."),
+    ],
+  },
+  garcon:{
+    ca_1:[
+      Q("La puberté est :","Une étape de croissance normale","Une maladie","Une blessure","Une punition",0,"La puberté est une étape naturelle et normale du développement."),
+      Q("À la puberté, le corps :","Change progressivement","Disparaît","Devient malade","Ne change pas",0,"Le corps évolue progressivement pendant la puberté — c'est normal."),
+      Q("Un changement fréquent à la puberté :","La voix devient plus grave","Les yeux disparaissent","On perd des dents","La croissance s'arrête",0,"La voix qui mue est l'un des signes les plus courants de la puberté chez le garçon."),
+      Q("La puberté commence :","À des âges différents selon chaque personne","Toujours à 10 ans exactement","Toujours à 20 ans","Jamais",0,"La puberté commence à des moments différents selon chaque individu."),
+      Q("Les testicules produisent :","Des spermatozoïdes","Du sang","Des os","De la peau",0,"Les testicules produisent les spermatozoïdes nécessaires à la reproduction."),
+      Q("La transpiration augmente :","À la puberté","Jamais","Seulement chez les filles","Après le mariage",0,"L'augmentation de la transpiration est normale à la puberté due aux hormones."),
+      Q("Les émotions à la puberté peuvent :","Changer et varier","Disparaître","Être interdites","Être dangereuses",0,"Les émotions sont amplifiées à la puberté. C'est normal et humain."),
+      Q("L'hygiène à la puberté est :","Importante et nécessaire","Inutile","Interdite","Dangereuse",0,"Une bonne hygiène est essentielle à la puberté, surtout avec la transpiration."),
+      Q("Les règles sont :","Un processus naturel féminin","Une maladie","Une blessure","Une infection",0,"Les règles sont un phénomène naturel et normal du corps féminin."),
+      Q("Les règles viennent de :","L'utérus","Le cœur","Les poumons","La peau",0,"Le sang des règles provient de l'utérus — il n'est pas dangereux."),
+    ],
+    ca_2:[
+      Q("Une fille pendant ses règles :","Peut vivre et étudier normalement","Doit rester cachée","Ne peut pas marcher","Est malade",0,"Les règles n'empêchent aucune activité normale."),
+      Q("Les protections menstruelles servent à :","Assurer hygiène et confort","Jouer","Faire du sport","Se nourrir",0,"Elles absorbent le sang pour assurer hygiène et confort pendant les règles."),
+      Q("Une fille peut faire du sport pendant ses règles :","Oui, c'est possible","Non","Jamais","C'est interdit",0,"Les règles n'interdisent pas le sport — avec les bonnes protections, tout est possible."),
+      Q("Se moquer des règles d'une fille :","Est blessant et irrespectueux","Est normal","Est obligatoire","Est éducatif",0,"Se moquer des règles blesse et humilie. Le respect s'impose toujours."),
+      Q("Un garçon respectueux face aux règles :","Comprend et respecte","Se moque","Ignore","Raconte à tout le monde",0,"La compréhension des règles rend un garçon plus respectueux et responsable."),
+      Q("Parler des règles :","Est normal et utile","Est interdit","Est honteux","Est dangereux",0,"Briser ce tabou protège les filles et crée un environnement de respect."),
+      Q("Les filles pendant leurs règles doivent être :","Respectées comme toujours","Moquées","Exclues","Ignorées",0,"Le respect est non négociable, quelle que soit la situation."),
+      Q("La dignité menstruelle signifie :","Respect et information","Silence","Honte","Secret",0,"La dignité menstruelle, c'est le droit au respect et à l'éducation."),
+      Q("Les règles sont :","Naturelles et normales","Une maladie","Une punition","Une infection",0,"Les règles sont un processus biologique normal."),
+      Q("Informer sur la puberté :","Est important pour tous","Est inutile","Est interdit","Est dangereux",0,"L'information protège et rend respectueux. Tout le monde a besoin de savoir."),
+    ],
+    ca_3:[
+      Q("Un bon comportement est :","Le respect envers tous","La moquerie","Les rumeurs","Le silence forcé",0,"Le respect est la base de toute relation saine."),
+      Q("Les filles peuvent aller à l'école pendant leurs règles :","Oui, toujours","Non","Jamais","Rarement",0,"Les règles ne sont pas une raison d'exclure une fille de l'école."),
+      Q("Le respect crée :","De la confiance et de la sécurité","De la peur","De la honte","De l'exclusion",0,"Le respect mutuel crée un environnement de confiance pour tous."),
+      Q("La puberté concerne :","Tous les jeunes","Personne","Seulement les filles","Seulement les garçons",0,"La puberté concerne tous les jeunes, garçons et filles."),
+      Q("Être un allié signifie :","Respecter et soutenir","Se moquer","Ignorer","Exclure",0,"Un allié défend les droits des autres et agit avec respect."),
+      Q("Les émotions à la puberté :","Changent et c'est normal","Disparaissent","Sont interdites","Sont dangereuses",0,"Les changements émotionnels font partie de la puberté."),
+      Q("La puberté est :","Normale et naturelle","Une maladie","Un accident","Une punition",0,"La puberté est une étape normale et naturelle de la vie."),
+      Q("Les protections menstruelles servent à :","L'hygiène et le confort","Le jeu","Le sport","Un danger",0,"Elles permettent aux filles de vivre normalement pendant leurs règles."),
+      Q("Un garçon informé sur les règles :","Est plus respectueux","Est moins masculin","Est bizarre","Est faible",0,"La connaissance crée le respect. Un garçon informé est un meilleur allié."),
+      Q("Soutenir une fille en difficulté :","Est un acte de courage","Est une faiblesse","Est inutile","Est interdit",0,"Soutenir les autres est une vraie force. C'est ce que font les vrais alliés."),
+    ],
+  },
+  parent:{
+    ca_1:[
+      Q("La puberté est :","Un développement normal de l'enfant","Une maladie","Un accident","Une punition",0,"La puberté est une étape naturelle et normale du développement."),
+      Q("Elle commence :","À des âges différents selon chaque enfant","Toujours au même âge","À 18 ans","Après le mariage",0,"La puberté commence à des moments différents selon chaque enfant."),
+      Q("Le rôle de l'adulte face à la puberté est :","Accompagner avec bienveillance","Ignorer","Punir","Se moquer",0,"L'adulte doit être présent, ouvert et bienveillant pour guider l'enfant."),
+      Q("Les règles sont :","Naturelles et normales","Une maladie","Une infection","Une blessure",0,"Les règles sont un processus biologique normal. En parler protège les filles."),
+      Q("Une fille qui a ses premières règles a besoin de :","Soutien et information","Silence","Isolement","Punition",0,"Les premières règles méritent un accueil bienveillant et des explications claires."),
+      Q("Parler des règles en famille :","Est utile et protecteur","Est interdit","Est dangereux","Est honteux",0,"Une famille qui parle des règles protège mieux ses enfants."),
+      Q("L'éducation menstruelle doit être :","Pour tous les enfants","Cachée","Interdite","Sélective",0,"Filles ET garçons ont besoin d'être éduqués sur la santé menstruelle."),
+      Q("Les garçons doivent être informés sur les règles :","Oui, pour mieux respecter","Non","Jamais","Rarement",0,"Un garçon informé devient un allié respectueux. L'éducation concerne toute la famille."),
+      Q("Le silence autour des règles crée :","De la désinformation et de la peur","De la confiance","De la santé","Du respect",0,"Le silence amplifie la honte et laisse les enfants sans informations vitales."),
+      Q("Une fille peut aller à l'école pendant ses règles :","Oui, toujours","Non, c'est interdit","C'est impossible","C'est rare",0,"Les règles ne sont pas une raison d'absence scolaire avec les bonnes protections."),
+    ],
+    ca_2:[
+      Q("La dignité menstruelle est :","Le droit au respect et à l'information","Le silence","L'exclusion","La honte",0,"La dignité menstruelle garantit à chaque fille respect, accès aux protections et information."),
+      Q("Une bonne attitude éducative est :","Le respect et l'écoute","La moquerie","L'exclusion","Le silence forcé",0,"Respect et écoute créent un espace de confiance essentiel pour les enfants."),
+      Q("Les protections menstruelles servent à :","L'hygiène et le confort","Le jeu","La décoration","La cuisine",0,"Elles permettent aux filles de vivre normalement et d'aller à l'école."),
+      Q("Les douleurs menstruelles sont :","Variables selon les filles","Toujours graves","Toujours imaginaires","Contagieuses",0,"Les douleurs varient. Très intenses, elles nécessitent une consultation médicale."),
+      Q("L'adulte doit :","Informer et accompagner","Ignorer","Punir","Se moquer",0,"Informer et accompagner, c'est le rôle fondamental de tout parent ou éducateur."),
+      Q("La puberté est :","Normale et naturelle","Une maladie","Un accident","Une punition",0,"La puberté est une étape normale. En parler avec l'enfant le rassure."),
+      Q("Les émotions à la puberté :","Changent et c'est normal","Disparaissent","Sont interdites","Sont dangereuses",0,"Les changements émotionnels font partie de la puberté. L'enfant a besoin d'être compris."),
+      Q("L'hygiène est :","Importante à enseigner","Inutile","Interdite","Dangereuse",0,"Enseigner l'hygiène dès le jeune âge protège la santé de l'enfant."),
+      Q("Les filles pendant leurs règles :","Ont les mêmes droits et activités","Doivent être exclues","Sont malades","Doivent être isolées",0,"Les règles ne changent pas les droits d'une fille."),
+      Q("Le rôle éducatif consiste à :","Accompagner sans jugement","Ignorer les questions","Punir les questions","Se moquer",0,"Accompagner sans jugement donne à l'enfant la confiance de poser des questions."),
+    ],
+    ca_3:[
+      Q("Les règles sont :","Naturelles et normales","Une maladie","Une infection","Un danger",0,"Les règles sont un processus naturel. En parler normalise et protège."),
+      Q("Le respect envers les filles :","Est essentiel et non négociable","Est inutile","Est rare","Est interdit",0,"Le respect de la dignité de chaque fille est une responsabilité collective."),
+      Q("Les enfants doivent être :","Informés sur leur corps","Cachés","Ignorés","Punis",0,"Un enfant informé est un enfant protégé. L'information est un droit fondamental."),
+      Q("La puberté concerne :","Tous les enfants, filles et garçons","Personne","Seulement les filles","Seulement les garçons",0,"Éduquer tous les enfants sur la puberté crée un environnement de respect mutuel."),
+      Q("Une bonne communication familiale :","Réduit la honte et la peur","Crée de la peur","Crée le silence","Crée l'exclusion",0,"Une famille qui communique protège ses enfants et renforce leur confiance."),
+      Q("Les protections doivent être :","Utilisées correctement et changées régulièrement","Partagées","Cachées","Ignorées",0,"Enseigner l'utilisation correcte des protections protège la santé des filles."),
+      Q("Une fille peut aller à l'école pendant ses règles :","Oui, toujours","Non","Jamais","C'est interdit",0,"Avec les bonnes protections, les règles ne sont jamais une raison d'absence."),
+      Q("Les règles durent :","Quelques jours (3 à 7)","1 mois entier","1 an","1 heure",0,"Les règles durent entre 3 et 7 jours. C'est différent pour chaque personne."),
+      Q("Le soutien familial crée :","De la confiance et de la sécurité","De la honte","De la peur","Du silence",0,"Un enfant soutenu par sa famille grandit avec confiance et estime de soi."),
+      Q("L'objectif de l'éducation menstruelle est :","Respect, connaissance et dignité","Le silence","L'exclusion","La moquerie",0,"Éduquer sur les règles, c'est construire une société plus juste et respectueuse."),
+    ],
+  },
+};
+
+const CA_BADGES = {
+  fille:[
+    {id:"ca_f_l1",icon:"🥉",name:"Exploratrice"},
+    {id:"ca_f_l2",icon:"🥈",name:"Apprenante"},
+    {id:"ca_f_l3",icon:"🥇",name:"Experte"},
+    {id:"ca_f_champ",icon:"🏆",name:"Championne Dignité"},
+  ],
+  garcon:[
+    {id:"ca_g_l1",icon:"🥉",name:"Explorateur"},
+    {id:"ca_g_l2",icon:"🥈",name:"Apprenant"},
+    {id:"ca_g_l3",icon:"🥇",name:"Expert"},
+    {id:"ca_g_champ",icon:"🏆",name:"Champion Respect"},
+  ],
+  parent:[
+    {id:"ca_p_l1",icon:"🥉",name:"Guide Débutant"},
+    {id:"ca_p_l2",icon:"🥈",name:"Guide Confirmé"},
+    {id:"ca_p_l3",icon:"🥇",name:"Guide Expert"},
+    {id:"ca_p_champ",icon:"🏆",name:"Champion Éducation"},
+  ],
+};
+
 const QUIZ_BADGES = {
   fille:  [{id:"f1",icon:"🌸",name:"Fleur de Dignité"},{id:"f2",icon:"🩸",name:"Experte du Cycle"},{id:"f3",icon:"💬",name:"Briseuse de Tabous"},{id:"f4",icon:"🔦",name:"Lumière du Savoir"},{id:"f5",icon:"💪",name:"Fille Invincible"},{id:"f6",icon:"🌍",name:"Ambassadrice"},{id:"f7",icon:"🤝",name:"Voix des Filles"}],
   garcon: [{id:"g1",icon:"🦁",name:"Gardien du Respect"},{id:"g2",icon:"🤝",name:"Allié de la Dignité"},{id:"g3",icon:"👊",name:"Briseur de Préjugés"},{id:"g4",icon:"💡",name:"Éclaireur du Savoir"},{id:"g5",icon:"⚽",name:"Champion Empathie"},{id:"g6",icon:"🌍",name:"Ambassadeur"},{id:"g7",icon:"🛡️",name:"Protecteur Bienveillant"}],
@@ -878,9 +1016,23 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 // ── QUIZ COMPONENTS ────────────────────────────────────────────
 function QuizGame({profile,category,soundOn,onBack,onResult}){
   const scoreRef=useRef(0);
-  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:(QUIZ_DB[profile]?.[category]||[]);
+  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]);
   const total=category==="urgence"||category==="defi"?5:10;
-  const[qs]=useState(()=>shuffle(pool).slice(0,total));
+  const[qs]=useState(()=>{
+    const fy=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
+    let ql=shuffle(pool).slice(0,total);
+    if(category.startsWith("ca_")){
+      const pos=fy([0,1,2,3,0,1,2,3,0,1]); // A:3 B:3 C:2 D:2 — garanti équilibré
+      ql=ql.map((q,qi)=>{
+        const tgt=pos[qi];
+        const wrong=fy(q.answers.filter((_,i)=>i!==q.correct));
+        const na=[];let wi=0;
+        for(let i=0;i<4;i++){if(i===tgt)na.push(q.answers[q.correct]);else na.push(wrong[wi++]);}
+        return{...q,answers:na,correct:tgt};
+      });
+    }
+    return ql;
+  });
   const[qi,setQi]=useState(0);const[sel,setSel]=useState(null);const[showFb,setShowFb]=useState(false);const[timerV,setTimerV]=useState(15);const[dispScore,setDispScore]=useState(0);const[showDA,setShowDA]=useState(false);
   const q=qs[qi];const L=["A","B","C","D"];
   useEffect(()=>{
@@ -898,7 +1050,7 @@ function QuizGame({profile,category,soundOn,onBack,onResult}){
   if(!q)return null;
   const tPct=(timerV/15)*100;
   const tClr=timerV>7?"linear-gradient(90deg,#FF9A9E,#FF6B9D)":"linear-gradient(90deg,#E8003D,#FF5555)";
-  const catLabel={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité"};
+  const catLabel={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3"};
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
@@ -1158,6 +1310,39 @@ function GamesHub({soundOn,toggleSound,unlocked,onGame}){
 }
 
 // ── MAIN APP ───────────────────────────────────────────────────
+function CaLevels({profile,caProgress,getCaUnlocked,onBack,onStart}){
+  const[caMsg,setCaMsg]=useState(false);
+  const unlk=getCaUnlocked(profile);
+  const done=caProgress[profile]||[];
+  const lvls=[{lv:1,icon:"🥉",label:"Niveau 1",sub:"Découvrir",col:P.green},{lv:2,icon:"🥈",label:"Niveau 2",sub:"Approfondir",col:P.amber},{lv:3,icon:"🥇",label:"Niveau 3",sub:"Maîtriser",col:P.red}];
+  return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <div style={{background:HERO,borderRadius:22,padding:"20px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
+        <div style={{fontSize:42,marginBottom:6}}>📖</div>
+        <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:800,margin:"0 0 4px"}}>Comprendre & Apprendre</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".82rem",fontWeight:600}}>3 niveaux · 10 questions chacun · badges à gagner</div>
+      </div>
+      {caMsg&&<div className="up" style={{background:P.amberSoft,border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10}}><span style={{fontSize:13,fontWeight:800,color:P.amber}}>💛 Termine le niveau précédent d'abord !</span></div>}
+      <div style={{display:"flex",flexDirection:"column",gap:11}}>
+        {lvls.map(l=>{
+          const locked=l.lv>unlk;const isDone=done.includes(l.lv);
+          const badge=CA_BADGES[profile]?.[l.lv-1];
+          return(<button key={l.lv} onClick={()=>{if(locked){setCaMsg(true);setTimeout(()=>setCaMsg(false),2000);}else onStart(l.lv);}}
+            style={{background:locked?"#F5F0F8":"white",border:`2px solid ${locked?"#D4C8E8":l.col+"33"}`,borderRadius:18,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,textAlign:"left",width:"100%",boxShadow:locked?"none":`0 4px 14px ${l.col}18`,opacity:locked?.72:1,cursor:locked?"default":"pointer"}}>
+            <div style={{width:48,height:48,borderRadius:15,background:locked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{locked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
+            <div style={{flex:1}}>
+              <div className="F" style={{fontSize:17,fontWeight:600,color:locked?P.muted:P.text}}>{l.label} <span style={{fontSize:13,color:locked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
+              <div style={{fontSize:11,color:locked?"#C8B8D8":isDone?P.green:P.muted,fontWeight:600,marginTop:2}}>{locked?`🔒 Termine le niveau ${l.lv-1} pour débloquer`:isDone?`✅ Complété · Badge ${badge?.name||""} obtenu`:"10 questions · badge à gagner"}</div>
+            </div>
+            <div style={{fontSize:17,color:locked?"#C8B8D8":isDone?P.green:l.col,fontWeight:900}}>{locked?"🔒":isDone?"✅":"›"}</div>
+          </button>);
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function App(){
   const[screen,setScreen]=useState("boot");
   const[user,setUser]=useState({name:"",country:""});
@@ -1209,6 +1394,10 @@ export default function App(){
     ga("onboarding",{name:u.name,country:u.country});SND.play("start");setScreen("hub");
   }
 
+  const [caProgress,setCaProgress]=useState(()=>{try{return JSON.parse(localStorage.getItem("hm_ca_progress")||"{}")}catch{return{}}});
+  const saveCaProgress=(prof,lvl)=>{const np={...caProgress,[prof]:[...new Set([...(caProgress[prof]||[]),lvl])]};setCaProgress(np);localStorage.setItem("hm_ca_progress",JSON.stringify(np));return np;};
+  const getCaUnlocked=(prof)=>{const done=caProgress[prof]||[];const max=done.length>0?Math.max(...done):0;return max+1;};
+
   function startQuiz(prof,cat){
     setProfile(prof);setCategory(cat);setNewBadges([]);
     ga("quiz_start",{profile:prof,category:cat});setScreen("quiz_game");
@@ -1223,6 +1412,17 @@ export default function App(){
       if(i===2)return pct===100&&category==="mr";if(i===3)return pct===100&&category==="vf";
       return false;
     }).map(b=>({...b}));
+    // CA badges
+    if(category.startsWith("ca_")){
+      const lvl=parseInt(category.split("_")[1]);
+      const np=saveCaProgress(profile,lvl);
+      const caBadges=CA_BADGES[profile]||[];
+      const lvlBadge=caBadges[lvl-1];
+      if(lvlBadge&&!badges.includes(lvlBadge.id))fresh.push(lvlBadge);
+      const allDone=(np[profile]||[]).length>=3;
+      const champBadge=caBadges[3];
+      if(allDone&&champBadge&&!badges.includes(champBadge.id))fresh.push(champBadge);
+    }
     const allB=[...badges,...fresh.map(b=>b.id)];
     setTotalPts(newTotal);setSessions(newSess);setBadges(allB);setNewBadges(fresh);
     setQuizScore(score);setQuizQLen(qLen);persist(newTotal,allB,newSess,unlocked);
@@ -1314,11 +1514,12 @@ export default function App(){
                 {id:"qcm",icon:"🧠",name:"QCM",info:"10 questions à choix multiples"},
                 {id:"vf",icon:"✅",name:"Vrai / Faux",info:"10 questions Vrai ou Faux"},
                 {id:"mr",icon:"💡",name:"Mythe ou Réalité",info:"10 questions contre les tabous"},
-                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
+{id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
+                {id:"ca",icon:"📖",name:"Comprendre & Apprendre",info:"3 niveaux · badges à gagner"},
                 {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
                 {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
               ].map(c=>(
-                <div key={c.id} onClick={()=>{if(profile==='fille'&&c.id==='defi'){window.qdShowDailyDefi&&window.qdShowDailyDefi();}else{startQuiz(profile,c.id);}}} style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
+                <div key={c.id} onClick={()=>{if(profile==='fille'&&c.id==='defi'){window.qdShowDailyDefi&&window.qdShowDailyDefi();}else if(c.id==='ca'){setScreen("ca_levels");}else{startQuiz(profile,c.id);}}} style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
                   <span style={{fontSize:"1.9rem",display:"block",marginBottom:7}}>{c.icon}</span>
                   <div className="T" style={{fontSize:".88rem",fontWeight:700,color:P.red}}>{c.name}</div>
                   <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
@@ -1328,7 +1529,9 @@ export default function App(){
           </div>
         )}
 
-        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} soundOn={soundOn} onBack={()=>setScreen("quiz_cats")} onResult={onQuizResult}/>}
+        {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
+
+        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} soundOn={soundOn} onBack={()=>category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} onReplay={()=>startQuiz(profile,category)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onShareIG={shareIG}/>}
 
