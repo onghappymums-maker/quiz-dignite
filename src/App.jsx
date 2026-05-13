@@ -1155,8 +1155,119 @@ function QuizResults({profile,category,finalScore,qLen,totalPts,lvl,newBadges,on
 }
 
 // ── ONBOARDING ─────────────────────────────────────────────────
+function PrivacyPage({onBack}){
+  const sections=[
+    ['📋 Collecte des données','Quiz Dignité collecte uniquement les informations saisies volontairement (prénom, pays). Ces données sont stockées localement sur votre appareil (localStorage) et ne sont jamais transmises à des serveurs externes.'],
+    ['📊 Données de progression','Votre progression (points, badges, streak) est stockée localement sur votre appareil. Ces données vous appartiennent et disparaissent si vous effacez les données de votre navigateur.'],
+    ['🔍 Google Analytics','Nous utilisons Google Analytics 4 pour mesurer l\'audience globale (visites, pays, comportement général). Ces données sont anonymisées. Aucune donnée personnelle identifiable n\'est transmise à Google.'],
+    ['👶 Protection des mineures','Quiz Dignité est conçu pour les jeunes filles à partir de 12 ans. Nous ne collectons pas de données sensibles. Aucun compte utilisateur n\'est créé.'],
+    ['🍪 Cookies','Nous n\'utilisons pas de cookies publicitaires ou de traçage. Le localStorage utilisé ne constitue pas un cookie au sens légal.'],
+    ['🤝 Partage de données','ONG Happy Mum\'s ne vend, ne loue et ne partage aucune donnée personnelle avec des tiers à des fins commerciales.'],
+    ['✏️ Vos droits','Vous pouvez à tout moment effacer vos données en vidant le stockage local de votre navigateur. Contact : onghappymums@gmail.com'],
+    ['📞 Contact','ONG Happy Mum\'s — Abidjan, Côte d\'Ivoire\n📱 +225 07 13 51 26 98\n📧 onghappymums@gmail.com\n🌐 quizdignite.org'],
+  ];
+  return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <div style={{textAlign:"center",marginBottom:22}}>
+        <div style={{fontSize:"2rem",marginBottom:6}}>🔐</div>
+        <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red}}>Politique de confidentialité</div>
+        <div style={{fontSize:".75rem",color:P.muted,marginTop:4}}>ONG Happy Mum's — Quiz Dignité</div>
+      </div>
+      {sections.map(([t,x],i)=>(
+        <div key={i} style={{background:"rgba(255,255,255,.88)",borderRadius:16,padding:16,marginBottom:10,border:"1.5px solid rgba(255,107,157,.12)"}}>
+          <div className="T" style={{fontSize:".9rem",fontWeight:800,color:P.red,marginBottom:7}}>{t}</div>
+          <div style={{fontSize:".82rem",color:"#6B4E6B",lineHeight:1.7,whiteSpace:"pre-line"}}>{x}</div>
+        </div>
+      ))}
+      <p style={{fontSize:".65rem",color:P.muted,textAlign:"center",marginTop:16}}>Dernière mise à jour : mai 2026 · © ONG Happy Mum's</p>
+    </div>
+  );
+}
+
+
+const GLOSSAIRE_DATA=[
+  {cat:"🫀 Anatomie",terms:[
+    {w:"Utérus",d:"Organe en forme de poire situé dans le bassin féminin. C'est là que se développe le bébé pendant la grossesse et d'où viennent les règles."},
+    {w:"Ovaires",d:"Deux petits organes qui produisent les ovules et les hormones féminines (œstrogène et progestérone)."},
+    {w:"Vagin",d:"Canal musculaire reliant l'utérus à l'extérieur du corps. C'est par là que sortent les règles et que naît le bébé."},
+    {w:"Vulve",d:"Ensemble des organes génitaux externes féminins : grandes et petites lèvres, clitoris, entrée du vagin."},
+    {w:"Col de l'utérus",d:"Partie inférieure de l'utérus qui s'ouvre sur le vagin. Il se dilate lors de l'accouchement."},
+    {w:"Trompes de Fallope",d:"Deux canaux qui relient les ovaires à l'utérus. C'est là que se produit la fécondation."},
+    {w:"Endomètre",d:"Muqueuse intérieure de l'utérus qui s'épaissit chaque mois et se renouvelle lors des règles."},
+    {w:"Clitoris",d:"Organe érectile féminin situé à l'avant de la vulve. Son seul rôle est le plaisir — c'est un droit."},
+  ]},
+  {cat:"🔄 Cycle & Reproduction",terms:[
+    {w:"Cycle menstruel",d:"Processus mensuel de préparation du corps à une éventuelle grossesse. Dure en moyenne 28 jours, mais peut varier entre 21 et 35 jours."},
+    {w:"Ovulation",d:"Libération d'un ovule par un ovaire, généralement vers le 14e jour du cycle. C'est la période de fertilité."},
+    {w:"Menstruation",d:"Autre mot pour les règles. Écoulement sanguin mensuel correspondant au renouvellement de l'endomètre."},
+    {w:"Phase folliculaire",d:"Première partie du cycle (jours 1-13) : l'ovule mûrit dans l'ovaire. L'énergie et la vitalité augmentent."},
+    {w:"Phase lutéale",d:"Deuxième partie du cycle (jours 15-28) : le corps se prépare à une éventuelle grossesse. Parfois source de SPM."},
+    {w:"Ovule",d:"Cellule reproductive féminine produite par les ovaires. Un ovule est libéré chaque mois lors de l'ovulation."},
+    {w:"Fécondation",d:"Union d'un ovule et d'un spermatozoïde dans les trompes de Fallope. Point de départ d'une grossesse."},
+    {w:"Hormones",d:"Substances chimiques (œstrogène, progestérone) qui régulent le cycle menstruel, l'humeur et le développement du corps."},
+  ]},
+  {cat:"🧼 Hygiène & Protection",terms:[
+    {w:"Protection hygiénique",d:"Dispositif utilisé pour absorber ou recueillir le sang des règles : serviette, tampon, cup, culotte menstruelle."},
+    {w:"Serviette lavable",d:"Protection réutilisable en tissu, à laver après usage. Écologique, économique et tout aussi efficace."},
+    {w:"Cup menstruelle",d:"Coupe souple en silicone médical que l'on insère dans le vagin pour recueillir le sang. Réutilisable pendant des années."},
+    {w:"Tampon",d:"Protection interne en coton absorbant. À changer toutes les 4 à 8 heures pour éviter les infections."},
+    {w:"Précarité menstruelle",d:"Manque d'accès aux protections hygiéniques, à l'eau et à l'information. Prive des milliers de filles d'école chaque mois."},
+    {w:"Box de Dignité",d:"Dispositif installé par ONG Happy Mum's dans des établissements partenaires à Abidjan et Bouaké, offrant des protections gratuites."},
+  ]},
+  {cat:"💊 Santé",terms:[
+    {w:"Endométriose",d:"Maladie où le tissu de l'endomètre pousse en dehors de l'utérus, causant des douleurs intenses. Touche 1 femme sur 10. Consulte si tu souffres beaucoup."},
+    {w:"Syndrome prémenstruel",d:"Ensemble de symptômes (douleurs, sautes d'humeur, fatigue, ballonnements) apparaissant dans les jours précédant les règles."},
+    {w:"Dysménorrhée",d:"Terme médical désignant les douleurs menstruelles. Normales si légères à modérées. Intenses, elles méritent consultation."},
+    {w:"Aménorrhée",d:"Absence de règles. Normale pendant la grossesse ou l'allaitement. Anormale autrement — parles-en à un médecin."},
+    {w:"Ménopause",d:"Arrêt définitif des règles, généralement entre 45 et 55 ans. Marque la fin de la fertilité féminine."},
+    {w:"Puberté",d:"Période de transformation du corps (vers 10-16 ans chez la fille) marquée par l'apparition des règles et le développement physique."},
+  ]},
+  {cat:"⚖️ Droits & Société",terms:[
+    {w:"Dignité menstruelle",d:"Droit fondamental d'accéder aux protections hygiéniques, à l'éducation sur les règles et au respect pendant les menstruations."},
+    {w:"DSSR",d:"Droits en matière de Santé Sexuelle et Reproductive. Incluent le droit à l'information, aux soins, au consentement et à la contraception."},
+    {w:"Consentement",d:"Accord libre, éclairé et enthousiaste donné pour toute relation intime. Il peut être retiré à tout moment. Non = non."},
+    {w:"Violence basée sur le genre",d:"Tout acte nuisant à une personne en raison de son genre. Inclut les violences physiques, psychologiques et sexuelles."},
+    {w:"Mariage précoce",d:"Mariage avant 18 ans. Interdit par la loi en Côte d'Ivoire. Prive les filles d'éducation et de liberté."},
+  ]},
+];
+
+function Glossaire({onBack}){
+  const[search,setSearch]=useState("");const[open,setOpen]=useState(null);
+  const cats=GLOSSAIRE_DATA.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
+  return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
+        <div style={{fontSize:36,marginBottom:4}}>📚</div>
+        <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>30 mots clés pour comprendre ton corps et tes droits</div>
+      </div>
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 Rechercher un mot..."
+        style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:14,padding:"12px 16px",fontSize:".9rem",outline:"none",marginBottom:14,boxSizing:"border-box",fontFamily:"'Nunito',sans-serif",color:P.text}}/>
+      {cats.map((c,ci)=>(
+        <div key={ci} style={{marginBottom:14}}>
+          <div className="T" style={{fontSize:".78rem",fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>{c.cat}</div>
+          {c.terms.map((t,ti)=>{
+            const k=`${ci}-${ti}`;const isOpen=open===k;
+            return(<div key={k} onClick={()=>setOpen(isOpen?null:k)}
+              style={{background:"rgba(255,255,255,.88)",borderRadius:16,padding:"13px 16px",marginBottom:8,cursor:"pointer",border:`1.5px solid ${isOpen?"rgba(232,0,61,.25)":"rgba(255,107,157,.12)"}`,boxShadow:isOpen?"0 4px 14px rgba(232,0,61,.08)":"none",transition:"all .2s"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div className="T" style={{fontSize:".95rem",fontWeight:700,color:P.text}}>{t.w}</div>
+                <span style={{fontSize:".9rem",color:P.red,fontWeight:800,transition:"transform .2s",display:"inline-block",transform:isOpen?"rotate(180deg)":"rotate(0)"}}>{isOpen?"▲":"▼"}</span>
+              </div>
+              {isOpen&&<div style={{fontSize:".83rem",color:P.muted,lineHeight:1.7,marginTop:10,paddingTop:10,borderTop:"1px solid rgba(232,0,61,.1)"}}>{t.d}</div>}
+            </div>);
+          })}
+        </div>
+      ))}
+      {cats.length===0&&<div style={{textAlign:"center",color:P.muted,fontSize:".88rem",marginTop:20}}>Aucun résultat pour "{search}"</div>}
+    </div>
+  );
+}
+
 function Onboarding({onSubmit}){
-  const[name,setName]=useState("");const[country,setCountry]=useState("");const[step,setStep]=useState(1);
+  const[name,setName]=useState("");const[country,setCountry]=useState("");const[step,setStep]=useState(1);const[err,setErr]=useState("");
   return(
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px"}}>
       <div style={{width:"100%",maxWidth:440}} className="up">
@@ -1173,22 +1284,23 @@ function Onboarding({onSubmit}){
             <div style={{fontSize:".8rem",color:P.muted,marginTop:4}}>{step===1?"Ton prénom pour personnaliser ton expérience":"Ton pays pour mieux te comprendre"}</div>
           </div>
           {step===1?(
-            <input value={name} onChange={e=>setName(e.target.value)} placeholder="Ton prénom..."
-              onKeyDown={e=>e.key==="Enter"&&name.trim()&&setStep(2)}
-              style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${name?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:14,boxSizing:"border-box"}}/>
+            <input value={name} onChange={e=>{setName(e.target.value);setErr("");}} placeholder="Ton prénom..."
+              onKeyDown={e=>e.key==="Enter"&&(name.trim()?setStep(2):setErr("Ton prénom est requis 🌸"))}
+              style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":name?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:6,boxSizing:"border-box"}}/>
           ):(
-            <input value={country} onChange={e=>setCountry(e.target.value)} placeholder="Ton pays (ex: Côte d'Ivoire)..."
-              onKeyDown={e=>e.key==="Enter"&&onSubmit(name,country)}
-              style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${country?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:14,boxSizing:"border-box"}}/>
+            <input value={country} onChange={e=>{setCountry(e.target.value);setErr("");}} placeholder="Ton pays (ex: Côte d'Ivoire)..."
+              onKeyDown={e=>e.key==="Enter"&&(country.trim()?onSubmit(name,country):setErr("Ton pays est requis 🌍"))}
+              style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":country?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:6,boxSizing:"border-box"}}/>
           )}
+          {err&&<div style={{fontSize:".78rem",color:"#E74C3C",fontWeight:700,marginBottom:10,textAlign:"center"}}>{err}</div>}
+          {!err&&<div style={{height:14}}/>}
           <div style={{display:"flex",gap:10}}>
-            {step===2&&<button onClick={()=>setStep(1)} style={{background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>← Retour</button>}
-            <button onClick={()=>step===1?(name.trim()&&setStep(2)):onSubmit(name,country)}
+            {step===2&&<button onClick={()=>{setStep(1);setErr("");}} style={{background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>← Retour</button>}
+            <button onClick={()=>{if(step===1){name.trim()?setStep(2):setErr("Ton prénom est requis 🌸");}else{country.trim()?onSubmit(name,country):setErr("Ton pays est requis 🌍");}}}
               style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)"}}>
               {step===1?"Continuer →":"Commencer 🌸"}
             </button>
           </div>
-          {step===2&&<div style={{textAlign:"center",fontSize:".68rem",color:P.muted,marginTop:10,opacity:.7}}>Tu peux laisser vide si tu préfères</div>}
         </div>
         <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
       </div>
@@ -1389,10 +1501,32 @@ export default function App(){
   function toggleSound(){setSoundOn(v=>{const nv=!v;SND.on=nv;Store.save("qd-data",{pts:totalPts,bdg:badges,sess:sessions,unl:unlocked,snd:nv});return nv;});}
 
   function submitOnboarding(name,country){
-    const u={name:name.trim()||"Ami(e)",country:country.trim()||"Côte d'Ivoire"};
+    const u={name:name.trim(),country:country.trim()};
     setUser(u);Store.save("qd-user",u);persist(0,[],0,{});
-    ga("onboarding",{name:u.name,country:u.country});SND.play("start");setScreen("hub");
+    ga("onboarding",{name:u.name,country:u.country});SND.play("start");
+    scheduleDefiNotif();setScreen("hub");
   }
+
+  function scheduleDefiNotif(){
+    if(!('Notification' in window))return;
+    Notification.requestPermission().then(perm=>{
+      if(perm!=='granted')return;
+      localStorage.setItem('hm_notif_ok','1');
+      const now=new Date();
+      const next=new Date();next.setHours(8,0,0,0);
+      if(now>=next)next.setDate(next.getDate()+1);
+      const ms=next-now;
+      clearTimeout(window._hmNotifTimer);
+      window._hmNotifTimer=setTimeout(()=>{
+        if(localStorage.getItem('hm_defi_last_done')!==`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`){
+          new Notification('Quiz Dignité 🌸',{body:'Ton défi du jour t\'attend ! Ouvre l\'app pour le découvrir.',icon:'/icon-512.png',badge:'/icon-512.png'});
+        }
+        scheduleDefiNotif();
+      },ms);
+    });
+  }
+
+  useEffect(()=>{if(localStorage.getItem('hm_notif_ok')==='1')scheduleDefiNotif();},[]);
 
   const [caProgress,setCaProgress]=useState(()=>{try{return JSON.parse(localStorage.getItem("hm_ca_progress")||"{}")}catch{return{}}});
   const saveCaProgress=(prof,lvl)=>{const np={...caProgress,[prof]:[...new Set([...(caProgress[prof]||[]),lvl])]};setCaProgress(np);localStorage.setItem("hm_ca_progress",JSON.stringify(np));return np;};
@@ -1431,7 +1565,7 @@ export default function App(){
 
   function shareWA(){
     const sc=Math.round(quizScore/10);
-    const txt=encodeURIComponent(`${user.name} a obtenu ${sc}/${quizQLen} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles !\n👉 https://quiz-dignite.vercel.app`);
+    const txt=encodeURIComponent(`${user.name} a obtenu ${sc}/${quizQLen} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles !\n👉 https://quizdignite.org\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`);
     window.open(`https://wa.me/?text=${txt}`,"_blank");ga("share",{platform:"whatsapp"});
   }
 
@@ -1477,6 +1611,10 @@ export default function App(){
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding}/>}
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
+
+        {screen==="privacy"&&<PrivacyPage onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
+
+        {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")}/>}
 
         {screen==="quiz_profiles"&&(
           <div style={{padding:"16px 16px 88px"}}>
@@ -1633,9 +1771,9 @@ export default function App(){
 
       {showNav&&(
         <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(255,255,255,.93)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(255,107,157,.18)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.09)"}}>
-          {[{id:"home",icon:"🏠",label:"Accueil"},{id:"progress",icon:"🏆",label:"Progrès"},{id:"about",icon:"🌸",label:"À propos"},{id:"sos",icon:"🚨",label:"SOS"},{id:"snd",icon:soundOn?"🔊":"🔇",label:soundOn?"Son":"Muet"}].map(n=>(
-            <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".59rem",fontWeight:700,gap:3,transition:"color .2s"}}>
-              <span style={{fontSize:"1.28rem"}}>{n.icon}</span>{n.label}
+          {[{id:"home",icon:"🏠",label:"Accueil"},{id:"progress",icon:"🏆",label:"Progrès"},{id:"glossaire",icon:"📚",label:"Glossaire"},{id:"sos",icon:"🚨",label:"SOS"},{id:"snd",icon:soundOn?"🔊":"🔇",label:soundOn?"Son":"Muet"},{id:"privacy",icon:"🔐",label:"Confidentialité"}].map(n=>(
+            <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".52rem",fontWeight:700,gap:3,transition:"color .2s"}}>
+              <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{n.label}
             </button>
           ))}
         </nav>
