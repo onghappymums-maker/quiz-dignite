@@ -1317,8 +1317,7 @@ export default function App(){
 {id:"defi", icon: profile==='fille' ? "🌸" : "🎯", name: profile==='fille' ? "Défi du jour" : "Défis éducatifs", info: profile==='fille' ? "Ton défi quotidien 🌸" : "5 défis — discussion orale"},                {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
                 {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
               ].map(c=>(
-onClick={() => startQuiz(profile, c.id)}                  <div className="T" style={{fontSize:".88rem",fontWeight:700,color:P.red}}>{c.name}</div>
-                  <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
+onClick={() => { if(profile==='fille' && c.id==='defi'){ window.qdShowDailyDefi && window.qdShowDailyDefi(); } else { startQuiz(profile, c.id); } }}                  <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
                 </div>
               ))}
             </div>
