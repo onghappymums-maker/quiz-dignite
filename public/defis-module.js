@@ -543,71 +543,28 @@
     });
   }
 
-  // Injecte le bouton 🔐 dans la nav du bas
-  let navPatched = false;
-  function injectPrivacyNav() {
-    if (navPatched) return;
-    const nav = document.querySelector('nav[style*="position:fixed"]') || document.querySelector('nav[style*="position: fixed"]');
-    if (!nav) return;
-    if (nav.querySelector('#hm-privacy-btn')) return;
-
-    const btn = document.createElement('button');
-    btn.id = 'hm-privacy-btn';
-    btn.style.cssText = `
-      flex:1;display:flex;flex-direction:column;align-items:center;
-      padding:9px 3px;cursor:pointer;border:none;background:transparent;
-      color:#9B6B8A;font-size:.59rem;font-weight:700;gap:3px;transition:color .2s;
-    `;
-    btn.innerHTML = '<span style="font-size:1.28rem;">🔐</span>Confidentialité';
-    btn.addEventListener('click', showPrivacy);
-    nav.appendChild(btn);
-    navPatched = true;
-  }
-
-  // Auto-show : ouvre le modal automatiquement quand fille arrive sur quiz_cats (une fois par jour)
+  // Auto-show : ouvre le modal automatiquement quand fille arrive sur quiz_cats (une fois par session)
   let autoShownFlag = false;
   function checkAutoShow() {
     if (autoShownFlag) return;
     if (!isFilleProfil()) { autoShownFlag = false; return; }
-    // On est sur quiz_cats si la grille de catégories est visible
     const root = document.getElementById('root');
     if (!root || !root.innerHTML.includes('Choisis un type de questions')) return;
     autoShownFlag = true;
     setTimeout(() => showDefiModal(true), 350);
   }
 
-  // Reset autoShow quand on quitte quiz_cats
   function checkScreenReset() {
     if (!document.getElementById('root')?.innerHTML.includes('Choisis un type de questions')) {
       autoShownFlag = false;
     }
-    // Reset navPatched si la nav disparaît (peut être recréée par React)
-    const nav = document.querySelector('nav[style*="position:fixed"]') || document.querySelector('nav[style*="position: fixed"]');
-    if (nav && !nav.querySelector('#hm-privacy-btn')) {
-      navPatched = false;
-    }
   }
 
   /* ═══════════════════════════════════════════════════
-     INTERCEPTEUR DE CLICS (phase capture)
+     EXPOSE GLOBAL FUNCTIONS
   ═══════════════════════════════════════════════════ */
-  document.addEventListener('click', function (e) {
-    if (!isFilleProfil()) return;
-    let el = e.target;
-    for (let i = 0; i < 7; i++) {
-      if (!el || el === document.body) break;
-      const txt = el.textContent || '';
-      if (txt.includes('Défis éducatifs') || txt.includes('Défi du jour')) {
-        // Vérifie que c'est bien une tuile de catégorie (pas la nav)
-        if (el.style && el.style.textAlign === 'center' && el.style.cursor === 'pointer') {
-          e.stopPropagation();
-          showDefiModal(false);
-          return;
-        }
-      }
-      el = el.parentElement;
-    }
-  }, true);
+  window.qdShowDailyDefi = () => showDefiModal(false);
+  window.qdShowPrivacy = showPrivacy;
 
   /* ═══════════════════════════════════════════════════
      MUTATION OBSERVER — surveillance du DOM React
@@ -618,7 +575,6 @@
     debounceTimer = setTimeout(() => {
       checkScreenReset();
       patchDefiCard();
-      injectPrivacyNav();
       checkAutoShow();
     }, 120);
   }
