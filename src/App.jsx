@@ -698,16 +698,138 @@ const QUIZ_LEVEL_BADGES={
     vf:[{id:"ql_f_vf_1",icon:"🥉",name:"Vrai/Faux N1"},{id:"ql_f_vf_2",icon:"🥈",name:"Vrai/Faux N2"},{id:"ql_f_vf_3",icon:"🥇",name:"Vrai/Faux N3"}],
     mr:[{id:"ql_f_mr_1",icon:"🥉",name:"Mythe/Réalité N1"},{id:"ql_f_mr_2",icon:"🥈",name:"Mythe/Réalité N2"},{id:"ql_f_mr_3",icon:"🥇",name:"Mythe/Réalité N3"}],
     violence:[{id:"ql_f_vi_1",icon:"🥉",name:"Violences N1"},{id:"ql_f_vi_2",icon:"🥈",name:"Violences N2"},{id:"ql_f_vi_3",icon:"🥇",name:"Violences N3"}],
+    qsj:[{id:"ql_f_qsj_1",icon:"🩷",name:"Curieux.se de la Dignité"},{id:"ql_f_qsj_2",icon:"🌸",name:"Voix du Changement"},{id:"ql_f_qsj_3",icon:"👑",name:"Gardien.ne de la Dignité"}],
   },
   garcon:{
     qcm:[{id:"ql_g_qcm_1",icon:"🥉",name:"QCM Niveau 1"},{id:"ql_g_qcm_2",icon:"🥈",name:"QCM Niveau 2"},{id:"ql_g_qcm_3",icon:"🥇",name:"QCM Niveau 3"}],
     vf:[{id:"ql_g_vf_1",icon:"🥉",name:"Vrai/Faux N1"},{id:"ql_g_vf_2",icon:"🥈",name:"Vrai/Faux N2"},{id:"ql_g_vf_3",icon:"🥇",name:"Vrai/Faux N3"}],
     mr:[{id:"ql_g_mr_1",icon:"🥉",name:"Mythe/Réalité N1"},{id:"ql_g_mr_2",icon:"🥈",name:"Mythe/Réalité N2"},{id:"ql_g_mr_3",icon:"🥇",name:"Mythe/Réalité N3"}],
     violence:[{id:"ql_g_vi_1",icon:"🥉",name:"Violences N1"},{id:"ql_g_vi_2",icon:"🥈",name:"Violences N2"},{id:"ql_g_vi_3",icon:"🥇",name:"Violences N3"}],
+    qsj:[{id:"ql_g_qsj_1",icon:"🩷",name:"Curieux de la Dignité"},{id:"ql_g_qsj_2",icon:"🌸",name:"Voix du Changement"},{id:"ql_g_qsj_3",icon:"👑",name:"Gardien de la Dignité"}],
+  },
+  parent:{
+    qsj:[{id:"ql_p_qsj_1",icon:"🩷",name:"Guide Curieux"},{id:"ql_p_qsj_2",icon:"🌸",name:"Voix du Changement"},{id:"ql_p_qsj_3",icon:"👑",name:"Gardien de la Dignité"}],
   },
 };
 
-const LEVEL_CATS=['qcm','vf','mr','violence'];
+const QUIZ_DB_QSJ={
+  n1:{
+    fille:[
+      Q("🧠 Je viens chaque mois chez beaucoup de filles et femmes. Qui suis-je ?","Les règles","La grossesse","La fièvre","La fatigue",0,"Les règles sont un processus naturel et mensuel du corps féminin."),
+      Q("🧠 Je protège les vêtements pendant les règles. Qui suis-je ?","La serviette hygiénique","Le mouchoir","Le pansement","L'éponge",0,"La serviette hygiénique absorbe le sang des règles pour assurer confort et propreté."),
+      Q("🧠 Je suis une partie du corps où peut grandir un bébé plus tard. Qui suis-je ?","L'utérus","L'estomac","Le foie","Le poumon",0,"L'utérus est l'organe féminin qui accueille et nourrit le bébé pendant la grossesse."),
+      Q("🧠 Pendant les règles, certaines filles me ressentent dans le ventre. Qui suis-je ?","Les crampes menstruelles","La toux","Les frissons","Les vertiges",0,"Les crampes sont dues aux contractions de l'utérus. Elles sont normales mais ne doivent pas être intenses."),
+      Q("🧠 Je suis important pendant les règles pour rester propre et en bonne santé. Qui suis-je ?","L'hygiène","Le sport","Le sommeil","Le régime",0,"Une bonne hygiène pendant les règles prévient les infections."),
+      Q("🧠 Je suis rouge et naturel pendant les règles. Qui suis-je ?","Le sang menstruel","La teinture","Le jus de fruit","La peinture",0,"Le sang des règles est naturel — il ne signifie ni maladie ni impureté."),
+      Q("🧠 Je peux écouter, soutenir et respecter une fille qui a ses règles. Qui suis-je ?","Une personne bienveillante","Un professeur sévère","Un inconnu indifférent","Une personne qui juge",0,"Soutenir quelqu'un pendant ses règles est un acte de solidarité et de respect."),
+      Q("🧠 Je ne suis ni une maladie ni une honte. Qui suis-je ?","Un processus naturel du corps","Une infection grave","Une blessure","Une punition",0,"Les règles sont un processus naturel — jamais une maladie ni une honte."),
+      Q("🧠 Je suis l'étape de la vie où une fille reçoit ses premières règles. Qui suis-je ?","La puberté","L'enfance","La vieillesse","La naissance",0,"La puberté est la période de développement où apparaissent les premières règles."),
+      Q("🧠 Je suis ce qu'il faut faire régulièrement pendant les règles pour éviter les infections. Qui suis-je ?","Changer sa protection","Dormir davantage","Boire du café","Éviter l'eau",0,"Changer sa protection toutes 4-6 heures est essentiel pour l'hygiène et la santé."),
+    ],
+    garcon:[
+      Q("🧠 Je bats dans ta poitrine et je pompe le sang dans le corps. Qui suis-je ?","Le cœur","Le poumon","Le foie","Le cerveau",0,"Le cœur est la pompe du corps — il bat environ 70 fois par minute."),
+      Q("🧠 Je suis important quand un ami parle ou se sent triste. Qui suis-je ?","L'écoute","La critique","Le silence froid","Le jugement",0,"Savoir écouter un ami en difficulté est une qualité essentielle."),
+      Q("🧠 Je suis une chose naturelle que vivent beaucoup de filles chaque mois. Qui suis-je ?","Les règles","La grossesse","La maladie","La fatigue",0,"Les règles sont un processus naturel et mensuel du corps féminin."),
+      Q("🧠 Je protège les dents quand on m'utilise chaque jour. Qui suis-je ?","La brosse à dents","Le chewing-gum","L'eau froide","La serviette",0,"Se brosser les dents deux fois par jour prévient les caries et les infections."),
+      Q("🧠 Je suis une mauvaise attitude qui fait mal aux autres à l'école. Qui suis-je ?","Le harcèlement","Le sport","L'étude","L'amitié",0,"Le harcèlement est une violence répétée qui blesse profondément."),
+      Q("🧠 Je suis l'activité qui aide ton corps à rester en bonne santé. Qui suis-je ?","Le sport","La télévision","Les jeux vidéo","Le repos permanent",0,"Le sport renforce le corps et améliore le bien-être mental."),
+      Q("🧠 Je peux soutenir ma sœur, ma mère ou mon amie pendant ses règles. Qui suis-je ?","Un garçon bienveillant","Un médecin","Un professeur","Un inconnu",0,"Tout garçon peut choisir d'être un allié respectueux."),
+      Q("🧠 Je suis nécessaire pour rester propre chaque jour. Qui suis-je ?","L'hygiène","Le sport intense","Le maquillage","Les médicaments",0,"L'hygiène quotidienne prévient les maladies et favorise le bien-être."),
+      Q("🧠 Je suis une émotion qu'on peut ressentir avant un examen. Qui suis-je ?","Le stress","La joie permanente","La colère","L'ennui",0,"Le stress avant un examen est normal — il peut même aider à se concentrer."),
+      Q("🧠 Je suis important pour bien grandir et apprendre. Qui suis-je ?","Le sommeil","Les jeux vidéo","La télévision","Les bonbons",0,"Un bon sommeil est essentiel pour la mémoire, la croissance et la santé."),
+    ],
+    parent:[
+      Q("🧠 Je suis important quand un enfant veut parler sans peur. Qui suis-je ?","L'écoute","Le jugement","La punition","L'indifférence",0,"L'écoute bienveillante crée un espace de confiance essentiel pour les enfants."),
+      Q("🧠 Je suis une chose naturelle que vivent beaucoup de filles et femmes chaque mois. Qui suis-je ?","Les règles","La grossesse","La maladie","La ménopause",0,"Les règles sont un processus naturel — en parler normalement est essentiel."),
+      Q("🧠 Je suis une attitude qui peut empêcher un enfant de poser des questions. Qui suis-je ?","Le jugement","La patience","L'écoute","Le soutien",0,"Juger un enfant qui pose des questions l'empêche de s'informer sainement."),
+      Q("🧠 Je suis utilisé pendant les règles pour éviter les fuites. Qui suis-je ?","La protection hygiénique","Le pansement","La serviette de bain","Le mouchoir",0,"La protection hygiénique est essentielle pour l'hygiène et le confort."),
+      Q("🧠 Je suis une étape où le corps et les émotions changent rapidement. Qui suis-je ?","L'adolescence","L'enfance","La retraite","La naissance",0,"L'adolescence est une période de grandes transformations à accompagner."),
+      Q("🧠 Je suis essentiel pour qu'un enfant se sente en sécurité à la maison ou à l'école. Qui suis-je ?","Le respect","La sévérité","La compétition","La pression",0,"Le respect crée un environnement sécurisé où les enfants s'épanouissent."),
+      Q("🧠 Je suis une mauvaise réaction lorsqu'un jeune parle de son corps ou de ses émotions. Qui suis-je ?","Se moquer","Écouter attentivement","Répondre calmement","Soutenir",0,"Se moquer d'un jeune qui parle de lui-même brise sa confiance."),
+      Q("🧠 Je suis important pour garder une bonne santé et éviter les infections. Qui suis-je ?","L'hygiène","Le sport extrême","Les médicaments","Le régime strict",0,"L'hygiène quotidienne est la base de la bonne santé."),
+      Q("🧠 Je suis une émotion que beaucoup de jeunes ressentent en parlant des règles pour la première fois. Qui suis-je ?","La gêne","La fierté immédiate","L'enthousiasme","L'indifférence",0,"La gêne est normale — c'est pourquoi l'éducation précoce est si importante."),
+      Q("🧠 Je suis ce qu'un parent ou éducateur peut offrir pour aider un jeune à grandir sereinement. Qui suis-je ?","Le soutien","La pression","La sévérité excessive","Le silence",0,"Le soutien parental est l'un des facteurs les plus importants pour le bien-être d'un jeune."),
+    ],
+  },
+  n2:{
+    fille:[
+      Q("🧠 Je suis le nom donné au premier jour des règles d'une fille. Qui suis-je ?","La ménarche","L'ovulation","La ménopause","La puberté",0,"La ménarche désigne les toutes premières règles d'une fille."),
+      Q("🧠 Je libère un ovule environ une fois par mois. Qui suis-je ?","L'ovaire","Le rein","Le foie","L'estomac",0,"Les ovaires produisent et libèrent les ovules lors de l'ovulation."),
+      Q("🧠 Je suis la période du cycle où un ovule est libéré. Qui suis-je ?","L'ovulation","La menstruation","La ménarche","La ménopause",0,"L'ovulation se produit généralement vers le 14e jour du cycle menstruel."),
+      Q("🧠 Je dure généralement entre 21 et 35 jours chez beaucoup de personnes. Qui suis-je ?","Le cycle menstruel","La grossesse","La puberté","La ménopause",0,"Le cycle menstruel varie entre 21 et 35 jours selon les personnes."),
+      Q("🧠 Je peux être jetable ou réutilisable pour gérer les règles. Qui suis-je ?","La protection hygiénique","Le médicament","Le pansement","La compresse",0,"Il existe des serviettes jetables et des serviettes lavables réutilisables."),
+      Q("🧠 Je peux arriver avant les règles avec fatigue, humeur sensible ou boutons. Qui suis-je ?","Le syndrome prémenstruel","La grippe","L'allergie","La fatigue chronique",0,"Le SPM touche beaucoup de personnes dans les jours précédant les règles."),
+      Q("🧠 Même si je ne saigne pas, je dois respecter les personnes qui ont leurs règles. Qui suis-je ?","Un allié respectueux","Un médecin","Un inconnu","Un parent lointain",0,"Tout le monde peut être un allié — respecter sans nécessairement vivre la même chose."),
+      Q("🧠 Je suis une fausse idée qui peut créer la honte autour des règles. Qui suis-je ?","Un tabou","Une vérité","Une loi","Une tradition positive",0,"Les tabous autour des règles créent de la honte et empêchent l'éducation."),
+      Q("🧠 Je suis important pour éviter les infections pendant les règles. Qui suis-je ?","Changer régulièrement sa protection","Boire du lait","Éviter l'eau","Se reposer uniquement",0,"Changer sa protection régulièrement est la règle d'hygiène la plus importante."),
+      Q("🧠 Je suis une douleur très forte pendant les règles qui peut nécessiter une consultation médicale. Qui suis-je ?","Les règles douloureuses sévères","Les crampes légères","La fièvre normale","La fatigue passagère",0,"Une douleur intense peut signaler l'endométriose — consulter est important."),
+    ],
+    garcon:[
+      Q("🧠 Je suis une période où le corps change pendant qu'on grandit. Qui suis-je ?","La puberté","L'enfance","La vieillesse","La naissance",0,"La puberté est une étape naturelle où le corps et les émotions se transforment."),
+      Q("🧠 Je suis une qualité qui aide à comprendre les émotions des autres. Qui suis-je ?","L'empathie","L'indifférence","La colère","La compétition",0,"L'empathie permet de se mettre à la place des autres."),
+      Q("🧠 Je suis une fausse idée qui crée des tabous autour des règles. Qui suis-je ?","Un préjugé","Une vérité scientifique","Un fait médical","Une loi",0,"Les préjugés sur les règles créent de la honte inutile."),
+      Q("🧠 Je suis important pour éviter les maladies et rester en bonne santé. Qui suis-je ?","Se laver les mains","Manger des bonbons","Regarder la télé","Dormir tard",0,"Se laver les mains est l'un des gestes les plus simples pour prévenir les maladies."),
+      Q("🧠 Je suis une réaction irrespectueuse face aux différences des autres. Qui suis-je ?","Les moqueries","Le soutien","L'encouragement","Le respect",0,"Se moquer des différences des autres est irrespectueux et blessant."),
+      Q("🧠 Je suis l'organe qui aide à réfléchir, apprendre et mémoriser. Qui suis-je ?","Le cerveau","Le cœur","L'estomac","Les poumons",0,"Le cerveau est le centre de contrôle du corps et de la pensée."),
+      Q("🧠 Je suis une difficulté que certaines filles vivent pendant leurs règles à cause du manque de protections. Qui suis-je ?","La précarité menstruelle","La timidité","La paresse","La solitude",0,"La précarité menstruelle empêche des milliers de filles d'aller à l'école."),
+      Q("🧠 Je suis important pour construire de bonnes relations avec les autres. Qui suis-je ?","Le respect","La moquerie","L'indifférence","La compétition",0,"Le respect est la base de toute relation saine."),
+      Q("🧠 Je suis une émotion qu'on peut ressentir quand on manque de confiance en soi. Qui suis-je ?","La peur / la gêne","La fierté","La joie","L'enthousiasme",0,"Manquer de confiance peut générer de la peur — c'est une émotion normale."),
+      Q("🧠 Je suis ce qu'il faut faire quand un ami est victime de harcèlement. Qui suis-je ?","Aider / parler à un adulte / soutenir","Ignorer la situation","Filmer la scène","Se moquer aussi",0,"Face au harcèlement, soutenir la victime et alerter un adulte est la bonne attitude."),
+    ],
+    parent:[
+      Q("🧠 Je suis une période où un jeune commence à vivre des changements physiques et émotionnels. Qui suis-je ?","La puberté","L'enfance","La vieillesse","La ménopause",0,"La puberté est une étape normale qu'il faut accompagner avec bienveillance."),
+      Q("🧠 Je suis une qualité importante pour comprendre ce que ressent un enfant. Qui suis-je ?","L'empathie","La sévérité","L'indifférence","La compétition",0,"L'empathie permet de comprendre et de soutenir les émotions d'un enfant."),
+      Q("🧠 Je suis un sujet encore tabou dans certaines familles malgré son importance. Qui suis-je ?","Les menstruations","Le sport","L'alimentation","Le sommeil",0,"Briser le tabou autour des menstruations protège la santé et la confiance des jeunes."),
+      Q("🧠 Je suis une difficulté vécue par certaines jeunes filles qui n'ont pas accès à des protections. Qui suis-je ?","La précarité menstruelle","La timidité","Le manque de sommeil","La fatigue scolaire",0,"La précarité menstruelle prive des filles d'école — un enjeu éducatif majeur."),
+      Q("🧠 Je suis une réaction positive lorsqu'un enfant pose une question sensible. Qui suis-je ?","Répondre calmement","Punir l'enfant","Ignorer la question","Se moquer",0,"Répondre calmement encourage l'enfant à continuer à poser des questions."),
+      Q("🧠 Je suis essentiel pour créer un environnement sain à l'école ou à la maison. Qui suis-je ?","La communication","La punition","Le silence","La compétition",0,"La communication ouverte crée un environnement de confiance et de sécurité."),
+      Q("🧠 Je suis une mauvaise pratique éducative qui humilie ou rabaisse un enfant. Qui suis-je ?","La violence verbale","L'encouragement","La patience","Le soutien",0,"La violence verbale laisse des traces durables sur la confiance en soi d'un enfant."),
+      Q("🧠 Je suis un espace où des protections hygiéniques peuvent être mises à disposition gratuitement. Qui suis-je ?","Une Box de Dignité","Une salle de sport","Un réfectoire","Une bibliothèque",0,"Les Box de Dignité d'ONG Happy Mum's fournissent des protections gratuites dans les écoles."),
+      Q("🧠 Je suis important pour le bien-être mental des adolescents. Qui suis-je ?","Le dialogue","Le silence forcé","La pression scolaire","La compétition",0,"Un dialogue ouvert et bienveillant est essentiel pour la santé mentale des adolescents."),
+      Q("🧠 Je suis ce qu'un éducateur doit éviter lorsqu'un jeune fait une erreur. Qui suis-je ?","Humilier / ridiculiser","Écouter et corriger","Soutenir","Encourager",0,"Humilier un jeune détruit sa confiance — mieux vaut corriger avec bienveillance."),
+    ],
+  },
+  n3:{
+    fille:[
+      Q("🧠 Je suis l'ensemble des changements hormonaux qui préparent le corps chaque mois. Qui suis-je ?","Le cycle menstruel","La grossesse","La ménopause","La puberté",0,"Le cycle menstruel est un processus hormonal complexe qui prépare le corps chaque mois."),
+      Q("🧠 Je peux empêcher certaines filles d'aller à l'école lorsqu'elles n'ont pas de protection. Qui suis-je ?","La précarité menstruelle","La timidité","Le mauvais temps","La distance",0,"La précarité menstruelle prive des milliers de filles d'éducation chaque mois."),
+      Q("🧠 Je suis une maladie pouvant provoquer de fortes douleurs menstruelles. Qui suis-je ?","L'endométriose","La varicelle","L'appendicite","La migraine",0,"L'endométriose touche 1 femme sur 10 et cause des douleurs intenses."),
+      Q("🧠 Je suis une action qui consiste à informer et éduquer sur les règles sans honte. Qui suis-je ?","La sensibilisation menstruelle","La punition","Le silence","Le tabou",0,"La sensibilisation permet de briser les tabous et protéger la santé des filles."),
+      Q("🧠 Je suis un espace où des protections hygiéniques peuvent être mises gratuitement à disposition. Qui suis-je ?","Une Box de Dignité","Une salle de classe","Une bibliothèque","Un terrain de sport",0,"Les Box de Dignité d'ONG Happy Mum's fournissent des protections gratuites aux filles."),
+      Q("🧠 Je suis un comportement toxique qui consiste à se moquer d'une fille qui a ses règles. Qui suis-je ?","La stigmatisation menstruelle","La solidarité","Le soutien","La bienveillance",0,"Se moquer des règles de quelqu'un est une forme de violence psychologique."),
+      Q("🧠 Je suis essentiel pour rendre les écoles plus inclusives pendant les règles. Qui suis-je ?","L'accès aux protections hygiéniques","Les vacances scolaires","Les examens","Les notes",0,"L'accès aux protections à l'école permet aux filles de rester et d'apprendre sereinement."),
+      Q("🧠 Je suis un professionnel que l'on peut consulter en cas de cycle irrégulier ou de douleurs inhabituelles. Qui suis-je ?","Le gynécologue / personnel de santé","Le dentiste","L'opticien","Le kinésithérapeute",0,"Le gynécologue est le spécialiste de la santé féminine — consulter sans honte."),
+      Q("🧠 Je suis une émotion que beaucoup de jeunes ressentent lorsqu'on parle des règles pour la première fois. Qui suis-je ?","La gêne / la peur","La joie immédiate","L'indifférence totale","La fierté",0,"La gêne est normale — c'est pourquoi l'éducation menstruelle est si importante."),
+      Q("🧠 Je suis ce que les règles devraient être : un sujet normal, naturel et sans honte. Qui suis-je ?","Une réalité naturelle du corps humain","Un secret honteux","Une maladie rare","Un sujet interdit",0,"Les règles sont normales, naturelles et méritent d'être parlées librement."),
+    ],
+    garcon:[
+      Q("🧠 Je suis une capacité importante pour résoudre les conflits sans violence. Qui suis-je ?","Le dialogue","La bagarre","La fuite","Le silence total",0,"Le dialogue permet de résoudre les conflits pacifiquement."),
+      Q("🧠 Je suis une maladie qui peut provoquer de fortes douleurs menstruelles. Qui suis-je ?","L'endométriose","Le diabète","La varicelle","L'asthme",0,"L'endométriose touche 1 femme sur 10 — important à connaître pour mieux soutenir."),
+      Q("🧠 Je suis un comportement toxique qui rabaisse quelqu'un à cause de son sexe ou apparence. Qui suis-je ?","La discrimination","L'encouragement","La bienveillance","Le soutien",0,"La discrimination blesse et crée des inégalités injustes."),
+      Q("🧠 Je suis une qualité essentielle chez un leader positif. Qui suis-je ?","La responsabilité","L'arrogance","L'indifférence","La domination",0,"Un vrai leader est responsable de ses actes et de l'impact sur les autres."),
+      Q("🧠 Je suis un problème qui touche des élèves quand ils n'ont pas accès à l'hygiène ou l'éducation. Qui suis-je ?","Les inégalités","La chance","Le talent","La paresse",0,"Les inégalités d'accès à l'éducation et l'hygiène affectent des milliers de jeunes."),
+      Q("🧠 Je suis une action qui consiste à informer les jeunes sans honte ni tabou. Qui suis-je ?","La sensibilisation","La punition","Le silence","L'interdiction",0,"La sensibilisation permet de briser les tabous et d'éduquer sans honte."),
+      Q("🧠 Je suis un comportement qui consiste à respecter les limites et les émotions des autres. Qui suis-je ?","Le consentement / le respect","L'indifférence","La domination","La pression",0,"Respecter les limites des autres est non négociable dans toute relation."),
+      Q("🧠 Je suis important pour garder une bonne santé mentale. Qui suis-je ?","Parler de ses émotions","Tout garder pour soi","Faire semblant d'aller bien","Éviter les autres",0,"Exprimer ses émotions est essentiel pour la santé mentale."),
+      Q("🧠 Je suis ce qu'un garçon peut devenir lorsqu'il protège, respecte et soutient les autres. Qui suis-je ?","Un allié positif","Un chef autoritaire","Un spectateur passif","Un inconnu",0,"Être un allié positif, c'est agir avec respect et protection envers les autres."),
+      Q("🧠 Je suis un monde où chacun est traité avec respect et dignité. Qui suis-je ?","L'égalité","La compétition","La hiérarchie","La domination",0,"L'égalité est un droit fondamental — chaque personne mérite respect et dignité."),
+    ],
+    parent:[
+      Q("🧠 Je suis une approche éducative qui aide les jeunes à parler librement sans honte. Qui suis-je ?","L'éducation bienveillante","L'éducation punitive","Le silence éducatif","L'autoritarisme",0,"L'éducation bienveillante crée un espace de liberté et de confiance."),
+      Q("🧠 Je suis une maladie pouvant provoquer de fortes douleurs menstruelles chez certaines femmes. Qui suis-je ?","L'endométriose","Le diabète","La migraine chronique","L'arthrite",0,"L'endométriose touche 1 femme sur 10 — important de la reconnaître et consulter."),
+      Q("🧠 Je suis un comportement qui consiste à respecter les émotions et limites d'un jeune. Qui suis-je ?","L'écoute active","L'indifférence","La domination","La pression",0,"L'écoute active montre à l'enfant que ses émotions sont importantes."),
+      Q("🧠 Je suis un problème qui peut pousser des filles à manquer l'école pendant leurs règles. Qui suis-je ?","La précarité menstruelle","La peur des examens","La fatigue","Le manque de sommeil",0,"Sans protections hygiéniques, certaines filles préfèrent rester chez elles."),
+      Q("🧠 Je suis une qualité essentielle chez un parent ou éducateur de confiance. Qui suis-je ?","La patience","La sévérité excessive","L'indifférence","La compétition",0,"La patience permet d'accompagner un enfant sans le brusquer."),
+      Q("🧠 Je suis une action qui aide à réduire les tabous autour des règles et de l'adolescence. Qui suis-je ?","La sensibilisation","Le silence","La punition","L'interdiction",0,"La sensibilisation éducative réduit la honte et protège les jeunes."),
+      Q("🧠 Je suis un besoin fondamental pour qu'un jeune se développe sainement. Qui suis-je ?","La sécurité émotionnelle","La pression scolaire","La compétition","La sévérité",0,"Un enfant qui se sent émotionnellement sécurisé s'épanouit mieux."),
+      Q("🧠 Je suis une attitude toxique qui peut briser la confiance d'un enfant. Qui suis-je ?","Le mépris","L'encouragement","La patience","L'écoute",0,"Le mépris détruit l'estime de soi et la confiance en l'adulte."),
+      Q("🧠 Je suis ce qu'un parent ou éducateur transmet lorsqu'il accompagne sans juger. Qui suis-je ?","La confiance","La peur","La honte","La compétition",0,"Accompagner sans juger construit une confiance durable entre l'adulte et l'enfant."),
+      Q("🧠 Je suis un environnement où chaque jeune peut grandir avec dignité, écoute et respect. Qui suis-je ?","Une communauté bienveillante","Une compétition permanente","Un environnement sévère","Un espace de jugement",0,"Une communauté bienveillante est la meilleure école pour grandir en dignité."),
+    ],
+  },
+};
+
+const LEVEL_CATS=['qcm','vf','mr','violence','qsj'];
 
 function QuizLevelSelect({profile,category,quizLevels,getCatLabel,onBack,onStart}){
   const[msg,setMsg]=useState('');
@@ -718,7 +840,7 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,onBack,onStart
     {lv:2,icon:"🥈",label:"Niveau 2",sub:"Situations réelles",col:P.amber,unlocked:n1!==null&&n1>=8,score:n2},
     {lv:3,icon:"🥇",label:"Niveau 3",sub:"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
   ];
-  const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️"};
+  const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
   return(
     <div style={{padding:"16px 16px 88px"}}>
       <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
@@ -1285,6 +1407,7 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 function QuizGame({profile,category,level=1,soundOn,onBack,onResult}){
   const scoreRef=useRef(0);
   const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
+    category==="qsj"?(level===2?(QUIZ_DB_QSJ.n2[profile]||[]):level===3?(QUIZ_DB_QSJ.n3[profile]||[]):(QUIZ_DB_QSJ.n1[profile]||[])):
     (LEVEL_CATS.includes(category)&&profile!=='parent')
       ?(level===2?(QUIZ_DB_N2[profile]?.[category]||[]):level===3?(QUIZ_DB_N3[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]))
       :(QUIZ_DB[profile]?.[category]||[]);
@@ -1292,7 +1415,7 @@ function QuizGame({profile,category,level=1,soundOn,onBack,onResult}){
   const[qs]=useState(()=>{
     const fy=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
     let ql=shuffle(pool).slice(0,total);
-    const needs4Shuffle=category.startsWith("ca_")||(LEVEL_CATS.includes(category)&&['qcm','violence'].includes(category));
+    const needs4Shuffle=category.startsWith("ca_")||category==="qsj"||(LEVEL_CATS.includes(category)&&['qcm','violence'].includes(category));
     if(needs4Shuffle&&ql.length>0&&ql[0].answers?.length===4){
       const posPool=ql.length===10?[0,1,2,3,0,1,2,3,0,1]:ql.length===30?[...Array(8).fill([0,1,2,3]).flat(),...[0,1,2,3,0,1]].slice(0,30):[0,1,2,3].slice(0,ql.length);
       const pos=fy([...posPool]);
@@ -1324,7 +1447,7 @@ function QuizGame({profile,category,level=1,soundOn,onBack,onResult}){
   if(!q)return null;
   const tPct=(timerV/15)*100;
   const tClr=timerV>7?"linear-gradient(90deg,#FF9A9E,#FF6B9D)":"linear-gradient(90deg,#E8003D,#FF5555)";
-  const catLabel={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3"};
+  const catLabel={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
@@ -2035,7 +2158,7 @@ export default function App(){
     }).map(b=>({...b}));
     const allB=[...badges,...fresh.map(b=>b.id)];
     // Quiz level badges (fille/garcon N1/N2/N3)
-    if(quizLevelNum>0&&LEVEL_CATS.includes(category)&&profile!=='parent'){
+    if(quizLevelNum>0&&LEVEL_CATS.includes(category)&&(profile!=='parent'||category==='qsj')){
       const bestScore=saveQuizLevel(profile,category,quizLevelNum,Math.round(score/10));
       const lvBadge=QUIZ_LEVEL_BADGES[profile]?.[category]?.[quizLevelNum-1];
       if(lvBadge&&bestScore>=8&&!allB.includes(lvBadge.id)){fresh.push(lvBadge);allB.push(lvBadge.id);}
@@ -2083,7 +2206,7 @@ export default function App(){
     return best;
   }
 
-  function getCatLabelFn(cat){const m={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",violence:"Violences & Sécurité",ca_1:"C&A N1",ca_2:"C&A N2",ca_3:"C&A N3"};return m[cat]||cat;}
+  function getCatLabelFn(cat){const m={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",violence:"Violences & Sécurité",qsj:"Qui suis-je ?",ca_1:"C&A N1",ca_2:"C&A N2",ca_3:"C&A N3"};return m[cat]||cat;}
 
 
   function startGame(id){
@@ -2168,12 +2291,14 @@ export default function App(){
                 {id:"mr",icon:"💡",name:"Mythe ou Réalité",info:"10 questions contre les tabous"},
 {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
                 {id:"ca",icon:"📖",name:"Comprendre & Apprendre",info:"3 niveaux · badges à gagner"},
+                {id:"qsj",icon:"🔍",name:"Qui suis-je ?",info:"3 niveaux · devinettes éducatives"},
                 {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
                 {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
               ].map(c=>(
                 <div key={c.id} onClick={()=>{
                   if(profile==='fille'&&c.id==='defi'){setShowDefiModal(true);}
                   else if(c.id==='ca'){setScreen("ca_levels");}
+                  else if(c.id==='qsj'){setQuizLevelCat('qsj');setScreen("quiz_level_select");}
                   else if(['qcm','vf','mr','violence'].includes(c.id)&&profile!=='parent'){setQuizLevelCat(c.id);setScreen("quiz_level_select");}
                   else{startQuiz(profile,c.id);}
                 }}style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
