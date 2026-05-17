@@ -1509,11 +1509,36 @@ function QuizGame({profile,category,level=1,soundOn,onBack,onResult}){
   );
 }
 
-function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,onReplay,onHome,onShareWA,onShareIG,onNextLevel}){
+function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,storyDataUrl,userName,onReplay,onHome,onShareWA,onNextLevel}){
   const pct=Math.round((finalScore/(qLen*10))*100);
   const isLeveled=LEVEL_CATS.includes(category)&&profile!=='parent';
   const passed=pct>=80&&isLeveled;
   const hasNextLevel=passed&&levelNum<3;
+  const sc=Math.round(finalScore/10);
+  const lvlName=sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)";
+  const shareText=`${userName||'Quelqu\'un'} a obtenu ${sc}/10 au Quiz Dignité 🌸 Teste tes connaissances à ton tour sur les règles !\n\n👉 quizdignite.org\n\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`;
+  const fbUrl=`https://www.facebook.com/sharer/sharer.php?u=https://quizdignite.org`;
+
+  async function shareCard(platform){
+    if(!storyDataUrl)return;
+    try{
+      const blob=await fetch(storyDataUrl).then(r=>r.blob());
+      const file=new File([blob],"quiz-dignite.png",{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],text:shareText,title:"Quiz Dignité"});
+        return;
+      }
+    }catch(e){}
+    // Fallback : télécharge la carte + ouvre la plateforme
+    const link=document.createElement("a");link.href=storyDataUrl;link.download="quiz-dignite.png";link.click();
+    setTimeout(()=>{
+      if(platform==="ig")window.open("https://www.instagram.com/","_blank");
+      else if(platform==="fb")window.open(fbUrl,"_blank");
+      else window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`,"_blank");
+    },800);
+  }
+
+  const waShareText=encodeURIComponent(shareText);
   useEffect(()=>{SND.play("win");},[]);
   return(
     <div style={{padding:"18px 20px 48px"}}>
@@ -1536,11 +1561,30 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
       )}
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
       <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>Partager ton score 🌍</div>
-      <div style={{display:"flex",gap:10}}>
-        <button onClick={onShareWA} style={{flex:1,background:"#25D366",color:"#fff",border:"none",borderRadius:50,padding:"13px 14px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>📱 WhatsApp</button>
-        <a href="https://quizdignite.org/Quiz%20Dignit%C3%A9.apk" target="_blank" rel="noreferrer" style={{flex:1,background:"#E8003D",color:"#fff",border:"none",borderRadius:50,padding:"13px 14px",fontWeight:700,fontSize:".82rem",cursor:"pointer",textDecoration:"none",textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>📲 App Android</a>
-        <button onClick={onShareIG} style={{flex:1,background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)",color:"#fff",border:"none",borderRadius:50,padding:"13px 14px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>📸 Instagram</button>
-      </div>
+      {storyDataUrl?(
+        <div>
+          <div style={{fontSize:".74rem",color:P.muted,textAlign:"center",marginBottom:8,fontWeight:600}}>📸 Carte à partager</div>
+          <img src={storyDataUrl} alt="Carte" style={{width:"52%",display:"block",margin:"0 auto 12px",borderRadius:12,boxShadow:"0 4px 16px rgba(232,0,61,.15)"}}/>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}}>
+            <button onClick={()=>shareCard("ig")} style={{background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)",color:"white",border:"none",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:20}}>📸</span>Instagram
+            </button>
+            <button onClick={()=>shareCard("fb")} style={{background:"#1877F2",color:"white",border:"none",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:20}}>📘</span>Facebook
+            </button>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <button onClick={onShareWA} style={{background:"#25D366",color:"white",border:"none",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:20}}>📱</span>WhatsApp
+            </button>
+            <a href="https://quizdignite.org/Quiz%20Dignit%C3%A9.apk" target="_blank" rel="noreferrer" style={{background:"#E8003D",color:"white",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",textDecoration:"none",textAlign:"center",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:20}}>📲</span>App Android
+            </a>
+          </div>
+        </div>
+      ):(
+        <div style={{textAlign:"center",padding:"10px 0",color:P.muted,fontSize:".8rem"}}>⏳ Génération de la carte...</div>
+      )}
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
       {hasNextLevel&&onNextLevel&&(
         <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"15px 22px",fontWeight:800,fontSize:"1rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)",marginBottom:10}}>
@@ -1556,11 +1600,12 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
         <div className="T" style={{color:P.red,marginTop:4,fontWeight:800}}>110 · 1308 (écoute gratuite)</div>
       </div>
       <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+      <div style={{textAlign:"center",marginTop:6}}>
+        <a href="https://quizdignite.org/Quiz%20Dignit%C3%A9.apk" target="_blank" rel="noreferrer" style={{fontSize:".7rem",color:P.red,textDecoration:"none",fontWeight:600,opacity:.8}}>📲 Télécharger l'app Android</a>
+      </div>
     </div>
   );
 }
-
-// ── DÉFI DU JOUR ────────────────────────────────────────────────
 const DEFIS_REACT=[
   {cat:"🩸",text:"Les règles durent en moyenne combien de jours ? Note la date de début de tes prochaines règles. Connais ton cycle."},
   {cat:"🩸",text:"Si tu as déjà eu très mal pendant tes règles, dis-toi : \"Je mérite des règles sans souffrance.\""},
@@ -2181,100 +2226,90 @@ export default function App(){
 
   function shareWA(){
     const sc=Math.round(quizScore/10);
-    const txt=encodeURIComponent(`${user.name} a obtenu ${sc}/${quizQLen} au Quiz Dignité 🌸\nTeste tes connaissances sur les règles !\n👉 https://quizdignite.org\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`);
+    const txt=encodeURIComponent(`${user?.name||'Quelqu\'un'} a obtenu ${sc}/10 au Quiz Dignité 🌸 Teste tes connaissances à ton tour sur les règles !\n\n👉 quizdignite.org\n\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`);
     window.open(`https://wa.me/?text=${txt}`,"_blank");ga("share",{platform:"whatsapp"});
   }
 
-  const[showStoryModal,setShowStoryModal]=useState(false);
   const[storyDataUrl,setStoryDataUrl]=useState(null);
 
-  function shareIG(){
-    const sc=Math.round(quizScore/10);
-    const lvlName=sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)";
+  function generateStoryCard(score,qLen,userName,badgeIcon,badgeName,levelNum,catLabel){
+    const sc=Math.round(score/10);
     const canvas=document.createElement("canvas");
     canvas.width=1080;canvas.height=1920;
     const c=canvas.getContext("2d");
-    // Background gradient
+    const bar=c.createLinearGradient(0,0,1080,0);
+    bar.addColorStop(0,"#E8003D");bar.addColorStop(1,"#FF6B9D");
+    // Background
     const bg=c.createLinearGradient(0,0,1080,1920);
     bg.addColorStop(0,"#FFE8EF");bg.addColorStop(.5,"#FFF0F5");bg.addColorStop(1,"#FFD6E8");
     c.fillStyle=bg;c.fillRect(0,0,1080,1920);
     // Top accent bar
-    const bar=c.createLinearGradient(0,0,1080,0);
-    bar.addColorStop(0,"#E8003D");bar.addColorStop(1,"#FF6B9D");
-    c.fillStyle=bar;c.fillRect(0,0,1080,12);
+    c.fillStyle=bar;c.fillRect(0,0,1080,14);
     // Decorative circles
-    c.fillStyle="rgba(232,0,61,.07)";
-    c.beginPath();c.arc(900,200,320,0,Math.PI*2);c.fill();
-    c.beginPath();c.arc(150,1700,260,0,Math.PI*2);c.fill();
-    c.fillStyle="rgba(255,107,157,.07)";
-    c.beginPath();c.arc(100,400,180,0,Math.PI*2);c.fill();
+    c.fillStyle="rgba(232,0,61,.06)";
+    c.beginPath();c.arc(950,180,280,0,Math.PI*2);c.fill();
+    c.beginPath();c.arc(130,1750,220,0,Math.PI*2);c.fill();
     // Logo circle
-    c.fillStyle="white";
-    c.shadowColor="rgba(232,0,61,.18)";c.shadowBlur=40;
-    c.beginPath();c.arc(540,320,160,0,Math.PI*2);c.fill();
-    c.shadowBlur=0;
-    // Try to draw logo
+    c.fillStyle="white";c.shadowColor="rgba(232,0,61,.2)";c.shadowBlur=50;
+    c.beginPath();c.arc(540,270,140,0,Math.PI*2);c.fill();c.shadowBlur=0;
     try{
       const img=new Image();img.crossOrigin="anonymous";
       img.onload=()=>{
-        c.save();c.beginPath();c.arc(540,320,150,0,Math.PI*2);c.clip();
-        c.drawImage(img,390,170,300,300);c.restore();
-        finishCard();
+        c.save();c.beginPath();c.arc(540,270,130,0,Math.PI*2);c.clip();
+        c.drawImage(img,410,140,260,260);c.restore();finishCard();
       };
-      img.onerror=finishCard;
-      img.src=HM_LOGO;
+      img.onerror=finishCard;img.src=HM_LOGO;
     }catch(e){finishCard();}
 
     function finishCard(){
-      // Happy Mum's text
-      c.fillStyle="#E8003D";c.font="bold 42px Arial";c.textAlign="center";
-      c.fillText("Happy Mum's",540,530);
+      // Happy Mum's
+      c.fillStyle="#E8003D";c.font="bold 38px Arial";c.textAlign="center";
+      c.fillText("Happy Mum's",540,460);
+      c.fillStyle="#C8002D";c.font="bold 76px Arial";
+      c.fillText("Quiz Dignité",540,560);
       // Divider
-      c.strokeStyle="rgba(232,0,61,.2)";c.lineWidth=2;
-      c.beginPath();c.moveTo(240,570);c.lineTo(840,570);c.stroke();
-      // Quiz Dignité title
-      c.fillStyle="#C8002D";c.font="bold 88px Arial";c.textAlign="center";
-      c.fillText("Quiz Dignité",540,680);
-      // Subtitle
-      c.fillStyle="#9B6B8A";c.font="36px Arial";
-      c.fillText("LE QUIZ QUI CHANGE LES RÈGLES",540,740);
+      c.strokeStyle="rgba(232,0,61,.25)";c.lineWidth=3;
+      c.beginPath();c.moveTo(200,595);c.lineTo(880,595);c.stroke();
+      // Félicitations
+      c.fillStyle="#E8003D";c.font="bold 56px Arial";
+      c.fillText("🎉 Félicitations !",540,685);
+      // Nom
+      c.fillStyle="#2A0A1F";c.font="bold 72px Arial";
+      c.fillText(userName||"Joueur.se",540,780);
       // Score box
-      const box=c.createLinearGradient(200,800,880,1000);
+      const box=c.createLinearGradient(160,830,920,1050);
       box.addColorStop(0,"#E8003D");box.addColorStop(1,"#FF6B9D");
       c.fillStyle=box;
-      roundRect(c,200,790,680,260,40);c.fill();
-      // Score number
-      c.fillStyle="white";c.font="bold 160px Arial";c.textAlign="center";
-      c.fillText(`${sc}/10`,540,960);
-      // Level badge
-      c.fillStyle="rgba(255,255,255,.2)";
-      roundRect(c,320,1080,400,80,40);c.fill();
-      c.fillStyle="white";c.font="bold 40px Arial";
-      c.fillText(`🩸 Niveau : ${lvlName}`,540,1132);
-      // Quote
-      c.fillStyle="#4A2040";c.font="italic 46px Arial";c.textAlign="center";
-      const quote=`"Tu fais partie de ceux qui`;
-      const quote2=`apprennent sans tabou"`;
-      c.fillText(quote,540,1260);
-      c.fillText(quote2,540,1320);
+      roundRect(c,160,830,760,240,44);c.fill();
+      c.fillStyle="white";c.font="bold 140px Arial";c.textAlign="center";
+      c.fillText(`${sc}/10`,540,990);
+      c.fillStyle="rgba(255,255,255,.8)";c.font="38px Arial";
+      c.fillText("🏆  Score",540,845);
+      // Badge box
+      c.fillStyle="white";c.shadowColor="rgba(232,0,61,.15)";c.shadowBlur=30;
+      roundRect(c,160,1100,760,140,30);c.fill();c.shadowBlur=0;
+      c.fillStyle="#E8003D";c.font="bold 46px Arial";
+      c.fillText(`${badgeIcon||'🌸'}  ${badgeName||'Participante'}`,540,1150);
+      c.fillStyle="#9B6B8A";c.font="36px Arial";
+      c.fillText(catLabel?(levelNum?`${catLabel} — Niveau ${levelNum}`:`${catLabel}`):"",540,1210);
       // Divider
       c.strokeStyle="rgba(232,0,61,.2)";c.lineWidth=2;
-      c.beginPath();c.moveTo(240,1380);c.lineTo(840,1380);c.stroke();
+      c.beginPath();c.moveTo(200,1280);c.lineTo(880,1280);c.stroke();
+      // Quote
+      c.fillStyle="#5A1535";c.font="italic 40px Arial";
+      c.fillText('"Tu fais partie de ceux qui',540,1360);
+      c.fillText('apprennent sans tabou"',540,1415);
       // URL
-      c.fillStyle="#E8003D";c.font="bold 52px Arial";
-      c.fillText("quizdignite.org",540,1460);
+      c.fillStyle="#E8003D";c.font="bold 50px Arial";
+      c.fillText("quizdignite.org",540,1510);
       // Hashtags
-      c.fillStyle="#9B6B8A";c.font="34px Arial";
-      c.fillText("#QuizDignité  #SantéMenstruelle",540,1540);
-      c.fillText("#BrisonsLesTabous  #onghappymums",540,1590);
+      c.fillStyle="#9B6B8A";c.font="32px Arial";
+      c.fillText("#QuizDignité  #SantéMenstruelle",540,1580);
+      c.fillText("#BrisonsLesTabous  #onghappymums",540,1625);
       // Bottom decoration
-      c.fillStyle="rgba(232,0,61,.15)";
-      for(let i=0;i<7;i++){c.font="48px Arial";c.fillText("🌸",180+i*120,1720);}
-      // Bottom bar
+      for(let i=0;i<7;i++){c.font="44px Arial";c.fillText("🌸",180+i*120,1720);}
       c.fillStyle=bar;c.fillRect(0,1908,1080,12);
-      // Done
-      const url=canvas.toDataURL("image/png");
-      setStoryDataUrl(url);setShowStoryModal(true);
+      setStoryDataUrl(canvas.toDataURL("image/png"));
     }
 
     function roundRect(ctx,x,y,w,h,r){
@@ -2284,13 +2319,21 @@ export default function App(){
       ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
       ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
     }
-    ga("share",{platform:"instagram"});
   }
 
   const[showDefiModal,setShowDefiModal]=useState(false);
   const[quizLevels,setQuizLevels]=useState(()=>{try{return JSON.parse(localStorage.getItem("hm_quiz_levels")||"{}")}catch{return{}}});
   const[quizLevelNum,setQuizLevelNum]=useState(1);
   const[quizLevelCat,setQuizLevelCat]=useState(null);
+
+  useEffect(()=>{
+    if(screen==="quiz_results"){
+      setStoryDataUrl(null);
+      const badge=newBadges[0]||null;
+      const catLbl=getCatLabelFn(category);
+      generateStoryCard(quizScore,quizQLen,user?.name||'',badge?.icon||'🌸',badge?.name||'Participante',quizLevelNum||0,catLbl);
+    }
+  },[screen]);
 
   function saveQuizLevel(prof,cat,lv,score){
     const key=`n${lv}`;
@@ -2341,28 +2384,6 @@ export default function App(){
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
 
-
-        {showStoryModal&&storyDataUrl&&(
-          <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(0,0,0,.85)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}} onClick={e=>{if(e.target===e.currentTarget)setShowStoryModal(false);}}>
-            <div style={{background:"white",borderRadius:22,padding:20,width:"100%",maxWidth:400,maxHeight:"90vh",overflowY:"auto"}}>
-              <div style={{textAlign:"center",marginBottom:14}}>
-                <div style={{fontSize:"1.1rem",fontWeight:800,color:"#E8003D",marginBottom:4}}>📸 Ta Story Instagram</div>
-                <div style={{fontSize:".78rem",color:"#9B6B8A"}}>Télécharge l'image et poste-la en story 🌸</div>
-              </div>
-              <img src={storyDataUrl} alt="Story" style={{width:"100%",borderRadius:14,marginBottom:14,boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}/>
-              <a href={storyDataUrl} download="quiz-dignite-story.png"
-                style={{display:"block",width:"100%",background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:".95rem",cursor:"pointer",textDecoration:"none",textAlign:"center",marginBottom:10,boxSizing:"border-box"}}>
-                ⬇️ Télécharger ma story
-              </a>
-              <div style={{background:"#FFF0F5",borderRadius:14,padding:"10px 14px",fontSize:".75rem",color:"#9B6B8A",textAlign:"center",lineHeight:1.6,marginBottom:10}}>
-                1. Télécharge l'image<br/>
-                2. Ouvre Instagram → Story → Galerie<br/>
-                3. Sélectionne l'image et poste ! 🌸
-              </div>
-              <button onClick={()=>setShowStoryModal(false)} style={{width:"100%",background:"rgba(232,0,61,.1)",color:"#E8003D",border:"none",borderRadius:50,padding:"12px",fontWeight:700,cursor:"pointer"}}>Fermer</button>
-            </div>
-          </div>
-        )}
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)}/>}
 
@@ -2434,7 +2455,7 @@ export default function App(){
 
         {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
-        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onShareIG={shareIG} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
+        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} onGame={startGame}/>}
 
