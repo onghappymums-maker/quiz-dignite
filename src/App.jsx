@@ -2185,10 +2185,105 @@ export default function App(){
     window.open(`https://wa.me/?text=${txt}`,"_blank");ga("share",{platform:"whatsapp"});
   }
 
+  const[showStoryModal,setShowStoryModal]=useState(false);
+  const[storyDataUrl,setStoryDataUrl]=useState(null);
+
   function shareIG(){
     const sc=Math.round(quizScore/10);
-    const txt=`${user.name} a obtenu ${sc}/${quizQLen} au Quiz Dignité 🌸\n#QuizDignite #HappyMums\n👉 https://quiz-dignite.vercel.app`;
-    navigator.clipboard?.writeText(txt).then(()=>alert("✅ Texte copié ! Colle-le dans ta story Instagram 🌸")).catch(()=>alert(txt));
+    const lvlName=sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)";
+    const canvas=document.createElement("canvas");
+    canvas.width=1080;canvas.height=1920;
+    const c=canvas.getContext("2d");
+    // Background gradient
+    const bg=c.createLinearGradient(0,0,1080,1920);
+    bg.addColorStop(0,"#FFE8EF");bg.addColorStop(.5,"#FFF0F5");bg.addColorStop(1,"#FFD6E8");
+    c.fillStyle=bg;c.fillRect(0,0,1080,1920);
+    // Top accent bar
+    const bar=c.createLinearGradient(0,0,1080,0);
+    bar.addColorStop(0,"#E8003D");bar.addColorStop(1,"#FF6B9D");
+    c.fillStyle=bar;c.fillRect(0,0,1080,12);
+    // Decorative circles
+    c.fillStyle="rgba(232,0,61,.07)";
+    c.beginPath();c.arc(900,200,320,0,Math.PI*2);c.fill();
+    c.beginPath();c.arc(150,1700,260,0,Math.PI*2);c.fill();
+    c.fillStyle="rgba(255,107,157,.07)";
+    c.beginPath();c.arc(100,400,180,0,Math.PI*2);c.fill();
+    // Logo circle
+    c.fillStyle="white";
+    c.shadowColor="rgba(232,0,61,.18)";c.shadowBlur=40;
+    c.beginPath();c.arc(540,320,160,0,Math.PI*2);c.fill();
+    c.shadowBlur=0;
+    // Try to draw logo
+    try{
+      const img=new Image();img.crossOrigin="anonymous";
+      img.onload=()=>{
+        c.save();c.beginPath();c.arc(540,320,150,0,Math.PI*2);c.clip();
+        c.drawImage(img,390,170,300,300);c.restore();
+        finishCard();
+      };
+      img.onerror=finishCard;
+      img.src=HM_LOGO;
+    }catch(e){finishCard();}
+
+    function finishCard(){
+      // Happy Mum's text
+      c.fillStyle="#E8003D";c.font="bold 42px Arial";c.textAlign="center";
+      c.fillText("Happy Mum's",540,530);
+      // Divider
+      c.strokeStyle="rgba(232,0,61,.2)";c.lineWidth=2;
+      c.beginPath();c.moveTo(240,570);c.lineTo(840,570);c.stroke();
+      // Quiz Dignité title
+      c.fillStyle="#C8002D";c.font="bold 88px Arial";c.textAlign="center";
+      c.fillText("Quiz Dignité",540,680);
+      // Subtitle
+      c.fillStyle="#9B6B8A";c.font="36px Arial";
+      c.fillText("LE QUIZ QUI CHANGE LES RÈGLES",540,740);
+      // Score box
+      const box=c.createLinearGradient(200,800,880,1000);
+      box.addColorStop(0,"#E8003D");box.addColorStop(1,"#FF6B9D");
+      c.fillStyle=box;
+      roundRect(c,200,790,680,260,40);c.fill();
+      // Score number
+      c.fillStyle="white";c.font="bold 160px Arial";c.textAlign="center";
+      c.fillText(`${sc}/10`,540,960);
+      // Level badge
+      c.fillStyle="rgba(255,255,255,.2)";
+      roundRect(c,320,1080,400,80,40);c.fill();
+      c.fillStyle="white";c.font="bold 40px Arial";
+      c.fillText(`🩸 Niveau : ${lvlName}`,540,1132);
+      // Quote
+      c.fillStyle="#4A2040";c.font="italic 46px Arial";c.textAlign="center";
+      const quote=`"Tu fais partie de ceux qui`;
+      const quote2=`apprennent sans tabou"`;
+      c.fillText(quote,540,1260);
+      c.fillText(quote2,540,1320);
+      // Divider
+      c.strokeStyle="rgba(232,0,61,.2)";c.lineWidth=2;
+      c.beginPath();c.moveTo(240,1380);c.lineTo(840,1380);c.stroke();
+      // URL
+      c.fillStyle="#E8003D";c.font="bold 52px Arial";
+      c.fillText("quizdignite.org",540,1460);
+      // Hashtags
+      c.fillStyle="#9B6B8A";c.font="34px Arial";
+      c.fillText("#QuizDignité  #SantéMenstruelle",540,1540);
+      c.fillText("#BrisonsLesTabous  #onghappymums",540,1590);
+      // Bottom decoration
+      c.fillStyle="rgba(232,0,61,.15)";
+      for(let i=0;i<7;i++){c.font="48px Arial";c.fillText("🌸",180+i*120,1720);}
+      // Bottom bar
+      c.fillStyle=bar;c.fillRect(0,1908,1080,12);
+      // Done
+      const url=canvas.toDataURL("image/png");
+      setStoryDataUrl(url);setShowStoryModal(true);
+    }
+
+    function roundRect(ctx,x,y,w,h,r){
+      ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+      ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+      ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+      ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+    }
     ga("share",{platform:"instagram"});
   }
 
@@ -2246,6 +2341,28 @@ export default function App(){
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
 
+
+        {showStoryModal&&storyDataUrl&&(
+          <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(0,0,0,.85)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}} onClick={e=>{if(e.target===e.currentTarget)setShowStoryModal(false);}}>
+            <div style={{background:"white",borderRadius:22,padding:20,width:"100%",maxWidth:400,maxHeight:"90vh",overflowY:"auto"}}>
+              <div style={{textAlign:"center",marginBottom:14}}>
+                <div style={{fontSize:"1.1rem",fontWeight:800,color:"#E8003D",marginBottom:4}}>📸 Ta Story Instagram</div>
+                <div style={{fontSize:".78rem",color:"#9B6B8A"}}>Télécharge l'image et poste-la en story 🌸</div>
+              </div>
+              <img src={storyDataUrl} alt="Story" style={{width:"100%",borderRadius:14,marginBottom:14,boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}/>
+              <a href={storyDataUrl} download="quiz-dignite-story.png"
+                style={{display:"block",width:"100%",background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:".95rem",cursor:"pointer",textDecoration:"none",textAlign:"center",marginBottom:10,boxSizing:"border-box"}}>
+                ⬇️ Télécharger ma story
+              </a>
+              <div style={{background:"#FFF0F5",borderRadius:14,padding:"10px 14px",fontSize:".75rem",color:"#9B6B8A",textAlign:"center",lineHeight:1.6,marginBottom:10}}>
+                1. Télécharge l'image<br/>
+                2. Ouvre Instagram → Story → Galerie<br/>
+                3. Sélectionne l'image et poste ! 🌸
+              </div>
+              <button onClick={()=>setShowStoryModal(false)} style={{width:"100%",background:"rgba(232,0,61,.1)",color:"#E8003D",border:"none",borderRadius:50,padding:"12px",fontWeight:700,cursor:"pointer"}}>Fermer</button>
+            </div>
+          </div>
+        )}
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)}/>}
 
