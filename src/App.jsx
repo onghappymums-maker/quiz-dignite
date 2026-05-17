@@ -104,15 +104,15 @@ const QUIZ_DB = {
     ],
     mr:[
       MR("Les femmes en règles ne peuvent pas cuisiner, les plats vont tourner.",true,"Aucune base scientifique ! Les règles n'affectent absolument pas les aliments."),
-      MR("Le sang des règles attire les animaux sauvages.",true,"Aucune preuve scientifique. C'est un mythe infondé."),
-      MR("Se laver les cheveux pendant les règles rend malade.",true,"Au contraire ! Une bonne hygiène est essentielle pendant les règles."),
       MR("Une fille en règles est impure.",true,"Les règles sont un processus naturel. Aucune femme n'est impure à cause de son cycle !"),
-      MR("Les douleurs menstruelles intenses sont normales et il faut les endurer.",true,"Une douleur intense peut signaler l'endométriose. Ne souffre pas en silence !"),
       MR("Les premières règles signifient qu'une fille est prête pour le mariage.",true,"Les premières règles sont un signe de puberté, PAS de maturité maritale !"),
-      MR("Certains endroits en Côte d'Ivoire offrent des protections gratuites.",false,"Vrai ! ONG Happy Mum's installe des Box de Dignité à Abidjan et Bouaké."),
       MR("Les règles rendent les femmes moins intelligentes.",true,"FAUX ! Les règles n'affectent absolument pas les capacités intellectuelles."),
-      MR("Avoir ses premières règles à 10 ans est anormal.",true,"La puberté peut commencer entre 8 et 16 ans. 10 ans est dans la norme."),
+      MR("C'est normal et il faut endurer des douleurs très intenses chaque mois.",true,"Une douleur intense peut signaler l'endométriose. Ne souffre pas en silence !"),
+      MR("Une bonne hygiène est recommandée pendant les règles.",false,"Vrai ! Se laver régulièrement est essentiel pendant les règles."),
+      MR("Certains endroits en Côte d'Ivoire offrent des protections gratuites.",false,"Vrai ! ONG Happy Mum's installe des Box de Dignité à Abidjan et Bouaké."),
       MR("Après les premières règles, une grossesse est possible.",false,"Oui, c'est la réalité ! Important à savoir pour se protéger."),
+      MR("Une fille peut faire du sport pendant ses règles.",false,"Oui ! Le sport est possible et peut même soulager les crampes."),
+      MR("Les règles durent en moyenne entre 3 et 7 jours.",false,"C'est exact ! La durée normale des règles est de 3 à 7 jours."),
     ],
     violence:[
       Q("La violence, c'est seulement quand il y a des coups ?","Non — elle peut être physique, verbale, psychologique ou sexuelle","Oui, sans coups ce n'est pas de la violence","Seulement si ça laisse des traces","Ça dépend",0,"La violence prend de nombreuses formes. Les blessures invisibles sont souvent les plus profondes."),
@@ -484,6 +484,274 @@ const GAME_DEF=[
   {id:"ws",e:"🔍",t:"Mots Mêlés",d:"Trouve tous les mots cachés",col:P.teal,main:false,timer:false},
   {id:"lab",e:"🌿",t:"Labyrinthe",d:"Trouve la sortie",col:P.green,main:false,timer:false},
 ];
+
+// ── SERPENTS & ÉCHELLES ────────────────────────────────────────
+const QUIZ_DB_N2={
+  fille:{
+    qcm:[
+      Q("Si une amie se sent mal en classe, la meilleure chose à faire est :","L'accompagner à l'infirmière","L'ignorer","Rire d'elle","Partir sans rien dire",0,"Soutenir une camarade qui souffre est un acte de solidarité essentiel."),
+      Q("Quand ton humeur change brusquement, c'est utile de :","Se battre contre tout le monde","Garder tout pour soi","En parler à quelqu'un de confiance","Penser que ça ne passera jamais",2,"Exprimer ses émotions aide à mieux les gérer et à se sentir soutenue."),
+      Q("Pour gérer les douleurs légères au ventre, tu peux :","Ne pas aller à l'école","Boire de l'eau chaude et te reposer","Prendre n'importe quel médicament","Arrêter de manger",1,"Eau chaude, repos et alimentation légère aident vraiment."),
+      Q("Avoir une protection de rechange à l'école dans son sac, c'est :","Gênant","Interdit","Inutile","Être prévoyante et responsable",3,"Être préparée te permet de vivre sereinement à l'école."),
+      Q("Quand on te dit 'les filles ne peuvent pas faire de sport pendant leurs règles', tu :","Arrêtes tout sport","Crois que c'est vrai","N'en parles à personne","Sais que c'est faux et continues",3,"C'est un mythe — le sport est possible et peut même soulager les douleurs."),
+      Q("Si tu as des douleurs très fortes chaque mois, tu dois :","Faire semblant que tout va bien","En parler à un adulte ou un médecin","Prendre des médicaments au hasard","Arrêter le sport",1,"Des douleurs intenses peuvent signaler quelque chose — parles-en."),
+      Q("Se sentir émotionnelle certains jours du mois, c'est :","Un signe de folie","Une honte","Un problème grave","Normal et lié aux changements hormonaux",3,"Les variations d'humeur liées aux hormones sont naturelles."),
+      Q("Si une camarade te demande une protection hygiénique en secret, tu :","Annonces à toute la classe","Refuses","L'aides discrètement","Te moques d'elle",2,"La solidarité discrète est la vraie force entre filles."),
+      Q("Rater l'école à cause de douleurs très intenses, c'est :","Toujours exagéré","Ta faute","Un signe qu'il faut consulter un médecin","Interdit",2,"Des douleurs qui font rater l'école méritent une consultation médicale."),
+      Q("Parler de ses émotions à une amie de confiance :","Est gênant","Est une faiblesse","Est interdit","Aide à se sentir moins seule",3,"Partager ce qu'on ressent renforce les liens et aide à aller mieux."),
+    ],
+    vf:[
+      VF("Faire du sport léger peut aider à réduire les crampes.",true,"Le sport libère des endorphines qui réduisent naturellement la douleur."),
+      VF("On doit rester à la maison pendant ses règles.",false,"Les règles ne t'empêchent pas de vivre normalement."),
+      VF("Il est normal de se sentir plus fatiguée certains jours du mois.",true,"Les variations hormonales affectent l'énergie — c'est naturel."),
+      VF("Il faut cacher qu'on a ses règles à l'école.",false,"Les règles sont naturelles. Tu n'as pas à les cacher."),
+      VF("Boire de l'eau aide le corps pendant les règles.",true,"Une bonne hydratation réduit les crampes et les maux de tête."),
+      VF("Les règles durent toute la vie.",false,"Les règles s'arrêtent à la ménopause, vers 45-55 ans."),
+      VF("Une fille peut participer à tous les cours même pendant ses règles.",true,"Avec les bonnes protections, rien ne t'en empêche."),
+      VF("Les sautes d'humeur sont toujours un signe de maladie.",false,"Les changements d'humeur liés aux hormones sont normaux."),
+      VF("Il est utile de noter la date de ses règles pour connaître son cycle.",true,"Connaître son cycle aide à mieux se préparer."),
+      VF("Manger équilibré aide à mieux vivre ses règles.",true,"Une bonne alimentation réduit les symptômes du cycle menstruel."),
+    ],
+    mr:[
+      MR("Le sport est dangereux pendant les règles.",true,"Le sport est non seulement possible mais peut soulager les crampes."),
+      MR("Des protections existent pour permettre de vivre normalement pendant les règles.",false,"Il existe de nombreuses protections efficaces pour toutes les situations."),
+      MR("Les règles rendent impure.",true,"Les règles sont un processus biologique naturel — aucune impureté là-dedans."),
+      MR("Certaines filles souffrent plus que d'autres — c'est réel.",false,"Oui, les douleurs varient selon les personnes. Ce n'est pas un mythe."),
+      MR("Il faut se cacher pour changer sa protection.",true,"Tu peux aller aux toilettes naturellement comme pour n'importe quel besoin."),
+      MR("Les émotions changent au cours du mois à cause des hormones.",false,"Les variations hormonales du cycle influencent bien l'humeur."),
+      MR("Avoir ses règles signifie qu'on ne peut plus faire de projets.",true,"Les règles ne changent rien à tes projets ni à tes rêves."),
+      MR("Une bonne alimentation peut aider à mieux vivre ses règles.",false,"C'est une réalité prouvée — alimentation et cycle sont liés."),
+      MR("Les règles sont une punition.",true,"Les règles sont le signe d'un corps féminin qui fonctionne normalement."),
+      MR("Parler de ses douleurs peut aider à trouver des solutions.",false,"En parler permet d'obtenir aide et soins appropriés."),
+    ],
+    violence:[
+      Q("Si quelqu'un se moque de toi en classe, la meilleure réaction est :","Te battre immédiatement","En parler à un adulte de confiance","L'ignorer pour toujours","Te venger seule",1,"Parler à un adulte est toujours la meilleure première étape."),
+      Q("Si un groupe de camarades t'exclut, c'est :","Ta faute","Normal","Drôle","Du harcèlement à signaler",3,"L'exclusion répétée est une forme de harcèlement."),
+      Q("Quelqu'un qui te touche sans ta permission, tu dois :","Garder ça pour toi","Lui dire clairement non et en parler à un adulte","Rire pour pas faire d'histoire","T'excuser",1,"Ton corps t'appartient. Tout contact non consenti doit être signalé."),
+      Q("Une amie subit des moqueries en classe. Tu peux :","Rire avec les autres","L'ignorer","Te moquer aussi","La soutenir et alerter un adulte",3,"Soutenir quelqu'un en difficulté, c'est du courage."),
+      Q("Se sentir mal après avoir été humiliée, c'est :","Exagéré","Ta faute","Normal — la violence psychologique fait mal","Une faiblesse",2,"Les blessures émotionnelles sont réelles et méritent attention."),
+      Q("Une personne qui te fait sentir inférieure régulièrement est :","Un bon ami","Normal dans une amitié","À imiter","Quelqu'un dont il faut s'éloigner et en parler",3,"Les relations qui te rabaissent ne sont pas saines."),
+      Q("Une rumeur blessante sur une fille de ta classe, c'est :","Drôle","Un jeu","Normal","Une forme de violence psychologique",3,"Les rumeurs blessent profondément et peuvent briser une vie scolaire."),
+      Q("Quelqu'un qui te dit 'c'est ta faute si on se moque de toi' :","A raison","Essaie de t'aider","Dit la vérité","A tort — la violence n'est jamais la faute de la victime",3,"La responsabilité de la violence appartient toujours à celui qui la commet."),
+      Q("Face à quelqu'un qui t'intimide, tu peux :","Accepter","Te battre","Tout garder pour toi","Dire non et en parler à un adulte de confiance",3,"Tu as le droit de te défendre en demandant de l'aide."),
+      Q("Si tu vois quelqu'un humilier une camarade en ligne :","Tu likes","Tu partages","Tu ne participes pas et tu le signales","Tu ignores complètement",2,"Ne pas participer à la violence en ligne et la signaler fait la différence."),
+    ],
+  },
+  garcon:{
+    qcm:[
+      Q("Si tu entends un camarade se moquer des règles d'une fille, tu :","L'encourages","Ris avec lui","Participes aussi","Lui expliques que ce n'est pas respectueux",3,"Un vrai allié corrige les comportements blessants autour de lui."),
+      Q("Quand une camarade se sent mal en classe, la bonne attitude est :","En faire une blague","L'ignorer","Appeler tout le monde","Lui demander discrètement si elle a besoin d'aide",3,"Une aide discrète et respectueuse est toujours bienvenue."),
+      Q("Comprendre les changements du corps des filles te rend :","Bizarre","Moins masculin","Faible","Plus respectueux et meilleur allié",3,"La connaissance crée le respect. Un garçon informé est un meilleur allié."),
+      Q("Si un ami se moque d'une fille tachée, tu peux :","Rire avec lui","Filmer la scène","Partager sur les réseaux","Lui dire que ce n'est pas drôle et défendre la fille",3,"Défendre quelqu'un qui est humilié, c'est un acte de courage."),
+      Q("Les émotions des filles pendant certaines périodes méritent :","Qu'on s'en moque","D'être ignorées","D'être ridiculisées","Compréhension et respect",3,"Les changements émotionnels liés au cycle sont réels et méritent empathie."),
+      Q("Parler des règles avec un adulte de confiance, pour un garçon c'est :","Honteux","Interdit aux garçons","Inutile","Normal et utile pour mieux comprendre",3,"S'informer est toujours une bonne chose, quel que soit ton genre."),
+      Q("Respecter les filles pendant leurs règles, c'est :","Une faiblesse","Inutile","Bizarre","Un signe de maturité",3,"Le respect est toujours un signe d'intelligence et de maturité."),
+      Q("Si une fille pleure sans que tu comprennes pourquoi, tu :","Te moques","L'ignores","En parles à tout le monde","Lui demandes gentiment si elle a besoin de quelque chose",3,"La gentillesse simple peut changer la journée de quelqu'un."),
+      Q("Un garçon informé sur la santé des filles peut :","Perdre sa popularité","Être moins masculin","Paraître bizarre","Mieux les soutenir et les respecter",3,"La connaissance rend meilleur, pas moins masculin."),
+      Q("Face à une fille qui souffre et ne peut pas participer :","La moquer","La renvoyer","L'ignorer","Lui montrer aide et compréhension",3,"L'empathie est une vraie force."),
+    ],
+    vf:[
+      VF("Les règles sont une maladie.",false,"Les règles sont un processus naturel et normal du corps féminin."),
+      VF("Une bonne hygiène aide à rester en bonne santé.",true,"Une bonne hygiène est essentielle, surtout pendant les règles."),
+      VF("Les garçons n'ont pas le droit de pleurer.",false,"Tout le monde a le droit d'exprimer ses émotions."),
+      VF("Une serviette hygiénique sert à absorber le sang des règles.",true,"C'est exactement son rôle — absorber pour assurer confort et hygiène."),
+      VF("Faire des blagues humiliantes peut blesser quelqu'un.",true,"Les mots blessent autant que les gestes."),
+      VF("Les règles sont naturelles.",true,"Les règles sont un processus biologique naturel."),
+      VF("Une fille choisit quand avoir ses règles.",false,"Le cycle menstruel est naturel et non contrôlable."),
+      VF("Respecter les autres est une preuve de maturité.",true,"Le respect est une valeur fondamentale."),
+      VF("Dormir suffisamment est important pour la santé.",true,"Le sommeil est essentiel pour la santé physique et mentale."),
+      VF("L'éducation menstruelle concerne seulement les filles.",false,"Elle concerne tout le monde, garçons inclus."),
+    ],
+    mr:[
+      MR("Les règles sont une excuse pour ne pas travailler.",true,"Les règles n'affectent pas les capacités intellectuelles des filles."),
+      MR("Une fille qui souffre de douleurs mérite aide et respect.",false,"Les douleurs menstruelles sont réelles et méritent considération."),
+      MR("Les garçons n'ont pas à connaître les règles.",true,"S'informer aide à respecter et soutenir les filles autour de soi."),
+      MR("Le sport est possible pour les filles pendant leurs règles.",false,"Oui, c'est une réalité — le sport peut même aider."),
+      MR("Se moquer des règles d'une fille est anodin.",true,"Ce n'est jamais anodin — cela blesse et humilie."),
+      MR("Comprendre le corps féminin rend un garçon plus respectueux.",false,"La connaissance crée le respect — c'est prouvé."),
+      MR("Les émotions des filles sont toujours fausses ou exagérées.",true,"Les émotions liées au cycle sont réelles et méritent d'être respectées."),
+      MR("Soutenir une amie qui se sent mal est utile.",false,"Un soutien sincère peut vraiment changer la journée de quelqu'un."),
+      MR("Les règles rendent les filles moins capables.",true,"Les règles n'affectent en rien les capacités des filles."),
+      MR("Un garçon peut apprendre à être un allié respectueux.",false,"Tout le monde peut choisir d'être un allié — c'est une question de volonté."),
+    ],
+    violence:[
+      Q("Si tu vois quelqu'un se moquer d'une fille en classe, tu :","Ris avec eux","Filmes la scène","Partages sur les réseaux","Interviens ou alertes un adulte",3,"Agir contre le harcèlement, c'est faire le bon choix."),
+      Q("Forcer quelqu'un à montrer quelque chose d'intime, c'est :","Un jeu","Sa faute","Normal","Une violence à signaler immédiatement",3,"Toute contrainte sur le corps ou l'intimité est une violence."),
+      Q("Si un ami envoie des messages harcelants à une fille, tu :","L'encourages","Partages les messages","L'ignores","Lui dis d'arrêter et alertes si nécessaire",3,"Ne pas réagir, c'est aussi participer."),
+      Q("Exclure une fille du groupe à cause de ses règles, c'est :","Normal","Drôle","Sa faute","Du harcèlement inacceptable",3,"L'exclusion basée sur le corps est une forme de violence."),
+      Q("Si quelqu'un te pousse à te moquer d'une fille, tu peux :","Obéir pour être populaire","Participer pour rigoler","Filmer","Refuser et t'éloigner",3,"Résister à la pression du groupe, c'est une vraie force."),
+      Q("Répandre des rumeurs sur une fille, c'est :","Un jeu","Normal entre ados","Drôle","Une violence psychologique",3,"Les rumeurs peuvent briser une réputation et causer des souffrances réelles."),
+      Q("Une fille qui te dit 'laisse-moi tranquille' veut dire :","Qu'elle veut que tu insistes","Qu'elle blague","Qu'elle joue","Que tu dois respecter son espace",3,"Respecter un refus est non négociable."),
+      Q("Si tu vois une fille pleurant après avoir été humiliée :","Tu l'ignores","Tu ris","Tu prends une photo","Tu vas la voir et lui demandes si elle va bien",3,"Un geste simple peut faire une grande différence."),
+      Q("Le harcèlement peut être :","Seulement physique","Jamais grave","Normal entre ados","Physique, verbal ou en ligne — toujours sérieux",3,"Toutes les formes de harcèlement sont sérieuses et méritent d'être signalées."),
+      Q("Se battre pour régler un problème :","Règle toujours tout","Est la meilleure solution","Est recommandé","Aggrave souvent — mieux vaut parler à un adulte",3,"La violence génère plus de violence. Parler est plus efficace."),
+    ],
+  },
+};
+
+const QUIZ_DB_N3={
+  fille:{
+    qcm:[
+      Q("En Côte d'Ivoire, une fille a le droit :","D'être renvoyée pendant ses règles","De ne pas étudier pendant ses règles","D'arrêter l'école à 12 ans","D'aller à l'école tous les jours de l'année",3,"L'éducation est un droit fondamental garanti pour toutes les filles."),
+      Q("La précarité menstruelle touche des filles qui :","Ont trop de protections","Ne veulent pas aller à l'école","Sont malades","N'ont pas accès aux protections hygiéniques",3,"Des millions de filles manquent l'école faute de protections adéquates."),
+      Q("Pour aider une camarade sans protection, on peut :","L'ignorer","En parler à toute l'école","Se moquer d'elle","Lui en donner ou l'orienter vers une ressource",3,"La solidarité concrète change des vies."),
+      Q("Parler de santé menstruelle à l'école devrait être :","Réservé aux adultes","Honteux","Interdit","Enseigné à toutes les classes, filles et garçons",3,"L'éducation menstruelle protège toute la communauté scolaire."),
+      Q("Une fille qui manque l'école chaque mois risque :","D'être félicitée","D'être plus intelligente","Rien du tout","De prendre du retard scolaire",3,"L'absentéisme menstruel est un problème éducatif majeur."),
+      Q("Les associations comme Happy Mum's aident les filles à :","Arrêter l'école","Se marier plus tôt","Oublier leurs droits","Accéder aux protections et à l'éducation menstruelle",3,"Happy Mum's ONG lutte pour la dignité menstruelle en Côte d'Ivoire."),
+      Q("Militer pour la dignité menstruelle, c'est :","Se plaindre","Exagérer","Inutile","Défendre le droit à une vie normale pendant les règles",3,"La dignité menstruelle est reconnue comme un enjeu mondial."),
+      Q("Une fille qui connaît ses droits peut :","Les garder pour elle","Les oublier","En avoir honte","Les exercer et aider les autres à les connaître",3,"La connaissance de ses droits est une source de pouvoir."),
+      Q("L'absence de toilettes propres à l'école affecte les filles car :","C'est une question de mode","Les garçons n'en ont pas besoin","Elles aiment les toilettes propres","Elles ne peuvent pas changer leurs protections en sécurité",3,"L'accès aux sanitaires est une condition de dignité scolaire."),
+      Q("La dignité menstruelle est :","Un luxe","Inutile","Rare","Un droit fondamental de chaque fille",3,"Chaque fille mérite de vivre ses règles avec respect et accès aux ressources."),
+    ],
+    vf:[
+      VF("En Côte d'Ivoire, les filles ont le droit d'aller à l'école pendant leurs règles.",true,"L'éducation est un droit fondamental garanti par la loi."),
+      VF("La précarité menstruelle ne touche qu'un petit nombre de filles.",false,"Des millions de filles dans le monde sont touchées par la précarité menstruelle."),
+      VF("Parler de règles à l'école devrait être normal et enseigné.",true,"L'éducation menstruelle protège les filles et réduit l'absentéisme."),
+      VF("Les garçons n'ont pas besoin d'être informés sur les règles.",false,"Les garçons informés deviennent des alliés respectueux — ça concerne tout le monde."),
+      VF("Des millions de filles dans le monde manquent l'école à cause de leurs règles.",true,"C'est une réalité documentée — c'est pourquoi la dignité menstruelle est importante."),
+      VF("Il est légal de renvoyer une fille chez elle à cause de ses règles.",false,"C'est illégal — les règles ne sont pas une raison d'exclusion scolaire."),
+      VF("La dignité menstruelle est un droit fondamental reconnu mondialement.",true,"Des organisations internationales défendent ce droit pour toutes les filles."),
+      VF("Seules les filles riches méritent des protections hygiéniques.",false,"Chaque fille, quelle que soit sa situation, mérite accès aux protections."),
+      VF("Informer les garçons sur les règles améliore le respect à l'école.",true,"L'éducation partagée crée un environnement scolaire plus respectueux."),
+      VF("Une association peut aider une fille à accéder à des protections hygiéniques.",true,"Des ONG comme Happy Mum's distribuent des protections et éduquent les communautés."),
+    ],
+    mr:[
+      MR("Les associations ne peuvent rien pour les filles précaires.",true,"Les ONG comme Happy Mum's font un travail concret et essentiel sur le terrain."),
+      MR("Des milliers de filles manquent l'école à cause de leurs règles.",false,"C'est une réalité documentée et alarmante dans de nombreux pays."),
+      MR("La loi protège les filles contre l'exclusion scolaire pendant leurs règles.",false,"Oui, l'exclusion scolaire pour cause de règles est illégale."),
+      MR("Parler de règles en classe est inapproprié.",true,"L'éducation menstruelle en classe est utile et nécessaire pour toutes et tous."),
+      MR("La dignité menstruelle est reconnue comme un enjeu mondial.",false,"C'est une réalité — la Journée du 28 mai en est la preuve."),
+      MR("Les garçons informés sont moins enclins à se moquer.",false,"L'information et l'éducation réduisent les comportements irrespectueux."),
+      MR("La précarité menstruelle n'existe pas en Afrique.",true,"La précarité menstruelle est une réalité documentée en Afrique et partout dans le monde."),
+      MR("Une serviette lavable peut remplacer une serviette jetable.",false,"Oui, les serviettes lavables sont efficaces, écologiques et économiques."),
+      MR("Les règles disparaissent si on ne mange pas.",true,"L'aménorrhée liée à la malnutrition est dangereuse, pas un avantage."),
+      MR("Militer pour la dignité menstruelle, c'est politique.",true,"C'est avant tout humanitaire — défendre le droit à l'éducation et à la santé."),
+    ],
+    violence:[
+      Q("Publier une photo embarrassante de quelqu'un sans permission, c'est :","Un jeu entre amis","Drôle","Pas grave","Une violence numérique punie par la loi",3,"La cyberviolence est réelle et punie par la loi en Côte d'Ivoire."),
+      Q("Si tu es harcelée en ligne, tu peux :","Répondre agressivement","Supprimer ton téléphone","Garder ça pour toi","Bloquer, signaler et en parler à un adulte",3,"Ne reste jamais seule face au cyberharcèlement."),
+      Q("Menacer quelqu'un de diffuser ses photos, c'est :","Une blague","Normal entre ados","Acceptable","Un chantage et une violation grave des droits",3,"C'est un crime puni par la loi."),
+      Q("Une fille victime de violence a le droit :","De se taire","D'accepter la situation","De le mériter","De porter plainte et d'être protégée",3,"Chaque victime a des droits et mérite protection."),
+      Q("Le harcèlement scolaire :","Est normal","Est la faute de la victime","Ne peut pas être puni","Est pris au sérieux par la loi",3,"Le harcèlement scolaire est reconnu et sanctionné."),
+      Q("Si une amie te dit qu'elle est maltraitée, tu dois :","Garder le secret","Lui dire que c'est normal","L'ignorer","L'écouter et l'aider à parler à un adulte de confiance",3,"Garder le secret peut aggraver la situation."),
+      Q("La violence psychologique inclut :","Seulement les coups","Rien de grave","Les blagues","Les moqueries répétées, l'exclusion et les rumeurs",3,"La violence psychologique est aussi grave que la violence physique."),
+      Q("Face à une situation de violence grave, la première action est :","Te venger seule","Ignorer","Accepter","En parler à un adulte de confiance ou appeler le 116",3,"Le 116 est le numéro national de protection de l'enfant."),
+      Q("Les droits de l'enfant protègent :","Seulement les riches","Seulement les adultes","Personne","Toutes les filles et garçons jusqu'à 18 ans",3,"Les droits de l'enfant sont universels."),
+      Q("Une personne qui te force à faire quelque chose contre ton gré :","Essaie de t'aider","A raison si c'est un adulte","Fait partie de la vie","Viole ton droit à la liberté et au respect",3,"Personne n'a le droit de te forcer à quoi que ce soit contre ta volonté."),
+    ],
+  },
+  garcon:{
+    qcm:[
+      Q("Le harcèlement d'une fille à cause de ses règles, c'est :","Un jeu normal","Drôle","Acceptable","Une violence punie par la loi",3,"Toute forme de harcèlement lié au corps est une violence."),
+      Q("En Côte d'Ivoire, les filles ont le droit :","D'être renvoyées pendant leurs règles","De ne pas étudier","D'arrêter l'école à 12 ans","D'aller à l'école tous les jours",3,"L'égalité d'accès à l'éducation est un droit fondamental."),
+      Q("Si tu vois une fille exclue par le groupe à cause de ses règles, tu peux :","Participer à l'exclusion","Ignorer","Rire","Te mettre de son côté et dénoncer l'exclusion",3,"Prendre position contre l'injustice est un acte de courage."),
+      Q("Diffuser une photo embarrassante d'une fille, c'est :","Un jeu","Drôle","Normal entre ados","Une violence numérique grave et punie par la loi",3,"La cyberviolence est un crime."),
+      Q("Les associations qui défendent les droits des filles :","Sont inutiles","Exagèrent","S'occupent de choses sans importance","Font un travail important pour l'égalité",3,"Des ONG comme Happy Mum's changent concrètement des vies."),
+      Q("Un garçon allié pour les droits des filles :","Se tait","Ignore le sujet","Se moque","Défend, respecte et informe autour de lui",3,"Être allié c'est agir, pas rester spectateur."),
+      Q("La précarité menstruelle touche des filles qui :","Sont paresseuses","Font exprès","N'existent pas","N'ont pas accès aux protections — elles ont besoin de soutien",3,"La précarité menstruelle est une réalité que les alliés peuvent contribuer à combattre."),
+      Q("Face à un adulte qui maltraite une fille, tu dois :","Ignorer","Attendre","Accepter","Alerter un autre adulte de confiance ou appeler le 116",3,"Le 116 est le numéro national de protection de l'enfant."),
+      Q("Être un bon allié pour les filles signifie :","Tout accepter","Ignorer leurs problèmes","Faire semblant","Écouter, respecter et agir contre les injustices",3,"Un allié actif fait une vraie différence."),
+      Q("L'égalité entre filles et garçons à l'école :","Nuit aux garçons","Est inutile","N'existe pas","Bénéficie à tout le monde",3,"L'égalité crée un meilleur environnement pour tout le monde."),
+    ],
+    vf:[
+      VF("Se moquer d'une fille à cause de ses règles peut affecter sa confiance en elle.",true,"Les moqueries ont un impact réel sur l'estime de soi."),
+      VF("Le stress peut influencer les émotions et le comportement.",true,"Le stress affecte bien le corps et l'esprit."),
+      VF("Respecter le consentement est important dans toute relation.",true,"Le consentement est non négociable dans toute relation."),
+      VF("Toutes les filles vivent leurs règles de la même manière.",false,"Chaque fille vit ses règles différemment."),
+      VF("Les garçons peuvent aider à lutter contre les tabous menstruels.",true,"Les garçons informés deviennent des alliés précieux."),
+      VF("Poser des questions sur la santé est une faiblesse.",false,"S'informer est une force, pas une faiblesse."),
+      VF("Les mots qu'on utilise peuvent avoir un impact sur les autres.",true,"Les mots blessent ou encouragent — ils ont un pouvoir réel."),
+      VF("Une fille doit arrêter toute activité sportive pendant ses règles.",false,"Le sport est possible et même bénéfique pendant les règles."),
+      VF("Encourager et protéger ses amis est une bonne attitude.",true,"C'est la définition d'un bon ami et allié."),
+      VF("Un garçon doit aimer certaines choses précises pour être 'un vrai homme'.",false,"La masculinité ne se définit pas par des stéréotypes."),
+    ],
+    mr:[
+      MR("Défendre les droits des filles est réservé aux femmes.",true,"Tout le monde peut et devrait s'engager pour les droits des filles."),
+      MR("Le harcèlement scolaire est puni par la loi.",false,"Oui, le harcèlement scolaire est reconnu et sanctionné légalement."),
+      MR("Diffuser des photos de quelqu'un sans permission est un jeu.",true,"C'est un crime numérique grave, pas un jeu."),
+      MR("La précarité menstruelle affecte les résultats scolaires des filles.",false,"C'est une réalité documentée — l'absentéisme menstruel impacte les études."),
+      MR("Les garçons alliés n'existent pas.",true,"Il existe des milliers de garçons et d'hommes qui s'engagent pour l'égalité."),
+      MR("L'égalité à l'école bénéficie à tout le monde.",false,"L'égalité crée un meilleur environnement scolaire pour toutes et tous."),
+      MR("Les violences psychologiques ne sont pas de vraies violences.",true,"Les violences psychologiques sont aussi graves que les violences physiques."),
+      MR("Le 116 est un numéro d'urgence pour les enfants en danger.",false,"Oui, le 116 est le numéro national de protection de l'enfant en Côte d'Ivoire."),
+      MR("Informer les garçons sur les règles les rend moins masculins.",true,"S'informer rend quelqu'un plus respectueux, pas moins masculin."),
+      MR("Un garçon respectueux est un modèle positif pour son entourage.",false,"Absolument — le respect inspire le respect autour de soi."),
+    ],
+    violence:[
+      Q("Filmer une fille sans sa permission et partager la vidéo, c'est :","Un jeu entre amis","Normal","Drôle","Un crime puni par la loi",3,"La cyberviolence est réelle et punie légalement."),
+      Q("En cas de violence grave, le numéro à appeler est :","Le 555","Le 999","Le 000","Le 116 — protection de l'enfant",3,"Le 116 est le numéro national de protection de l'enfant en Côte d'Ivoire."),
+      Q("Si un ami te montre des photos volées d'une fille :","Tu les partages","Tu les gardes","Tu likes","Tu refuses et lui dis d'arrêter",3,"Ne pas participer à une violence, c'est déjà agir."),
+      Q("Menacer quelqu'un avec des photos, c'est :","Une blague","Un jeu","Normal","Du chantage et un crime",3,"Le chantage est un crime grave."),
+      Q("Le droit à la vie privée signifie que :","Tout le monde peut te filmer","Les photos appartiennent à ceux qui les prennent","Les réseaux peuvent tout publier","Personne ne peut utiliser tes images sans ta permission",3,"La vie privée est un droit fondamental protégé par la loi."),
+      Q("Face au cyberharcèlement, la première action est :","Répondre violemment","Supprimer ton compte","Ignorer indéfiniment","Bloquer, signaler et en parler à un adulte",3,"Signaler et parler est toujours la meilleure première étape."),
+      Q("Les droits de l'enfant protègent :","Seulement les filles","Seulement les adultes","Personne","Tous les jeunes jusqu'à 18 ans contre toute violence",3,"Les droits de l'enfant sont universels et inconditionnels."),
+      Q("Être 'spectateur' d'une violence sans réagir :","Est la bonne attitude","Ne change rien","Est obligatoire","Peut encourager le harceleur — mieux vaut agir",3,"L'inaction face à la violence en est une forme de validation."),
+      Q("Un garçon qui défend une fille harcelée :","Perd sa popularité","Fait une erreur","Est bizarre","Fait le bon choix et montre du courage",3,"Le courage de défendre les autres est une vraie force."),
+      Q("Signaler une violence à un adulte, c'est :","De la trahison","Inutile","Interdit","Un acte de courage qui peut sauver quelqu'un",3,"Signaler une violence peut littéralement changer ou sauver une vie."),
+    ],
+  },
+};
+
+const QUIZ_LEVEL_BADGES={
+  fille:{
+    qcm:[{id:"ql_f_qcm_1",icon:"🥉",name:"QCM Niveau 1"},{id:"ql_f_qcm_2",icon:"🥈",name:"QCM Niveau 2"},{id:"ql_f_qcm_3",icon:"🥇",name:"QCM Niveau 3"}],
+    vf:[{id:"ql_f_vf_1",icon:"🥉",name:"Vrai/Faux N1"},{id:"ql_f_vf_2",icon:"🥈",name:"Vrai/Faux N2"},{id:"ql_f_vf_3",icon:"🥇",name:"Vrai/Faux N3"}],
+    mr:[{id:"ql_f_mr_1",icon:"🥉",name:"Mythe/Réalité N1"},{id:"ql_f_mr_2",icon:"🥈",name:"Mythe/Réalité N2"},{id:"ql_f_mr_3",icon:"🥇",name:"Mythe/Réalité N3"}],
+    violence:[{id:"ql_f_vi_1",icon:"🥉",name:"Violences N1"},{id:"ql_f_vi_2",icon:"🥈",name:"Violences N2"},{id:"ql_f_vi_3",icon:"🥇",name:"Violences N3"}],
+  },
+  garcon:{
+    qcm:[{id:"ql_g_qcm_1",icon:"🥉",name:"QCM Niveau 1"},{id:"ql_g_qcm_2",icon:"🥈",name:"QCM Niveau 2"},{id:"ql_g_qcm_3",icon:"🥇",name:"QCM Niveau 3"}],
+    vf:[{id:"ql_g_vf_1",icon:"🥉",name:"Vrai/Faux N1"},{id:"ql_g_vf_2",icon:"🥈",name:"Vrai/Faux N2"},{id:"ql_g_vf_3",icon:"🥇",name:"Vrai/Faux N3"}],
+    mr:[{id:"ql_g_mr_1",icon:"🥉",name:"Mythe/Réalité N1"},{id:"ql_g_mr_2",icon:"🥈",name:"Mythe/Réalité N2"},{id:"ql_g_mr_3",icon:"🥇",name:"Mythe/Réalité N3"}],
+    violence:[{id:"ql_g_vi_1",icon:"🥉",name:"Violences N1"},{id:"ql_g_vi_2",icon:"🥈",name:"Violences N2"},{id:"ql_g_vi_3",icon:"🥇",name:"Violences N3"}],
+  },
+};
+
+const LEVEL_CATS=['qcm','vf','mr','violence'];
+
+function QuizLevelSelect({profile,category,quizLevels,getCatLabel,onBack,onStart}){
+  const[msg,setMsg]=useState('');
+  const prog=quizLevels?.[profile]?.[category]||{};
+  const n1=prog.n1??null;const n2=prog.n2??null;const n3=prog.n3??null;
+  const lvls=[
+    {lv:1,icon:"🥉",label:"Niveau 1",sub:"Les bases",col:P.green,unlocked:true,score:n1},
+    {lv:2,icon:"🥈",label:"Niveau 2",sub:"Situations réelles",col:P.amber,unlocked:n1!==null&&n1>=8,score:n2},
+    {lv:3,icon:"🥇",label:"Niveau 3",sub:"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
+  ];
+  const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️"};
+  return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
+        <div style={{fontSize:36,marginBottom:4}}>{catIcons[category]||"📚"}</div>
+        <div className="T" style={{color:"white",fontSize:"1.1rem",fontWeight:800,margin:"0 0 3px"}}>{getCatLabel(category)}</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>3 niveaux · 10 questions · score min 8/10 pour avancer</div>
+      </div>
+      {msg&&<div style={{background:"#FFF4D6",border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10,fontSize:13,fontWeight:800,color:P.amber}}>{msg}</div>}
+      <div style={{display:"flex",flexDirection:"column",gap:11}}>
+        {lvls.map(l=>{
+          const badge=QUIZ_LEVEL_BADGES[profile]?.[category]?.[l.lv-1];
+          const isDone=l.score!==null&&l.score>=8;
+          const tried=l.score!==null&&l.score<8;
+          return(
+            <button key={l.lv} onClick={()=>{if(!l.unlocked){setMsg(`🔒 Score 8/10 au niveau ${l.lv-1} pour débloquer !`);setTimeout(()=>setMsg(''),2000);}else onStart(l.lv);}}
+              style={{background:!l.unlocked?"#F5F0F8":"white",border:`2px solid ${!l.unlocked?"#D4C8E8":l.col+"33"}`,borderRadius:18,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,textAlign:"left",width:"100%",boxShadow:!l.unlocked?"none":`0 4px 14px ${l.col}18`,opacity:l.unlocked?1:0.72,cursor:!l.unlocked?"default":"pointer"}}>
+              <div style={{width:48,height:48,borderRadius:15,background:!l.unlocked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{!l.unlocked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
+              <div style={{flex:1}}>
+                <div className="F" style={{fontSize:17,fontWeight:600,color:!l.unlocked?P.muted:P.text}}>{l.label} <span style={{fontSize:13,color:!l.unlocked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
+                <div style={{fontSize:11,fontWeight:600,marginTop:2,color:!l.unlocked?"#C8B8D8":isDone?P.green:tried?"#E8003D":P.muted}}>
+                  {!l.unlocked?`🔒 Score 8/10 au niveau ${l.lv-1} requis`:isDone?`✅ ${l.score}/10 · Badge obtenu`:tried?`❌ ${l.score}/10 — Réessaie pour débloquer le suivant`:`10 questions · badge 8/10`}
+                </div>
+              </div>
+              <div style={{fontSize:17,fontWeight:900,color:!l.unlocked?"#C8B8D8":isDone?P.green:l.col}}>{!l.unlocked?"🔒":isDone?"✅":"›"}</div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 
 // ── SHARED COMPONENTS ──────────────────────────────────────────
 function FloatingBg(){
@@ -1014,17 +1282,23 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 }
 
 // ── QUIZ COMPONENTS ────────────────────────────────────────────
-function QuizGame({profile,category,soundOn,onBack,onResult}){
+function QuizGame({profile,category,level=1,soundOn,onBack,onResult}){
   const scoreRef=useRef(0);
-  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]);
+  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
+    (LEVEL_CATS.includes(category)&&profile!=='parent')
+      ?(level===2?(QUIZ_DB_N2[profile]?.[category]||[]):level===3?(QUIZ_DB_N3[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]))
+      :(QUIZ_DB[profile]?.[category]||[]);
   const total=category==="urgence"||category==="defi"?5:10;
   const[qs]=useState(()=>{
     const fy=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
     let ql=shuffle(pool).slice(0,total);
-    if(category.startsWith("ca_")){
-      const pos=fy([0,1,2,3,0,1,2,3,0,1]); // A:3 B:3 C:2 D:2 — garanti équilibré
+    const needs4Shuffle=category.startsWith("ca_")||(LEVEL_CATS.includes(category)&&['qcm','violence'].includes(category));
+    if(needs4Shuffle&&ql.length>0&&ql[0].answers?.length===4){
+      const posPool=ql.length===10?[0,1,2,3,0,1,2,3,0,1]:ql.length===30?[...Array(8).fill([0,1,2,3]).flat(),...[0,1,2,3,0,1]].slice(0,30):[0,1,2,3].slice(0,ql.length);
+      const pos=fy([...posPool]);
       ql=ql.map((q,qi)=>{
-        const tgt=pos[qi];
+        if(!q.answers||q.answers.length!==4)return q;
+        const tgt=pos[qi]??Math.floor(Math.random()*4);
         const wrong=fy(q.answers.filter((_,i)=>i!==q.correct));
         const na=[];let wi=0;
         for(let i=0;i<4;i++){if(i===tgt)na.push(q.answers[q.correct]);else na.push(wrong[wi++]);}
@@ -1112,8 +1386,11 @@ function QuizGame({profile,category,soundOn,onBack,onResult}){
   );
 }
 
-function QuizResults({profile,category,finalScore,qLen,totalPts,lvl,newBadges,onReplay,onHome,onShareWA,onShareIG}){
+function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,onReplay,onHome,onShareWA,onShareIG,onNextLevel}){
   const pct=Math.round((finalScore/(qLen*10))*100);
+  const isLeveled=LEVEL_CATS.includes(category)&&profile!=='parent';
+  const passed=pct>=80&&isLeveled;
+  const hasNextLevel=passed&&levelNum<3;
   useEffect(()=>{SND.play("win");},[]);
   return(
     <div style={{padding:"18px 20px 48px"}}>
@@ -1138,9 +1415,15 @@ function QuizResults({profile,category,finalScore,qLen,totalPts,lvl,newBadges,on
       <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>Partager ton score 🌍</div>
       <div style={{display:"flex",gap:10}}>
         <button onClick={onShareWA} style={{flex:1,background:"#25D366",color:"#fff",border:"none",borderRadius:50,padding:"13px 14px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>📱 WhatsApp</button>
+        <a href="https://quizdignite.org/Quiz%20Dignit%C3%A9.apk" target="_blank" rel="noreferrer" style={{flex:1,background:"#E8003D",color:"#fff",border:"none",borderRadius:50,padding:"13px 14px",fontWeight:700,fontSize:".82rem",cursor:"pointer",textDecoration:"none",textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>📲 App Android</a>
         <button onClick={onShareIG} style={{flex:1,background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)",color:"#fff",border:"none",borderRadius:50,padding:"13px 14px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>📸 Instagram</button>
       </div>
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
+      {hasNextLevel&&onNextLevel&&(
+        <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"15px 22px",fontWeight:800,fontSize:"1rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)",marginBottom:10}}>
+          Niveau {levelNum+1} →  🥈
+        </button>
+      )}
       <div style={{display:"flex",gap:10}}>
         <button onClick={onReplay} style={{flex:1,background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>Rejouer 🔄</button>
         <button onClick={onHome} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>Accueil 🏠</button>
@@ -1154,7 +1437,211 @@ function QuizResults({profile,category,finalScore,qLen,totalPts,lvl,newBadges,on
   );
 }
 
-// ── ONBOARDING ─────────────────────────────────────────────────
+// ── DÉFI DU JOUR ────────────────────────────────────────────────
+const DEFIS_REACT=[
+  {cat:"🩸",text:"Les règles durent en moyenne combien de jours ? Note la date de début de tes prochaines règles. Connais ton cycle."},
+  {cat:"🩸",text:"Si tu as déjà eu très mal pendant tes règles, dis-toi : \"Je mérite des règles sans souffrance.\""},
+  {cat:"🩸",text:"Le sang des règles n'est pas sale. C'est ton corps qui se renouvelle. Rappelle-toi cette vérité aujourd'hui. 💪"},
+  {cat:"🩸",text:"Bouge doucement aujourd'hui : une marche, quelques étirements. Observe comment ton corps se sent."},
+  {cat:"🩸",text:"Pose une alarme discrète pour te rappeler de changer ta protection toutes 4 à 6 heures."},
+  {cat:"🩸",text:"Essaie de noter la date de début de tes prochaines règles. Ton cycle est unique — apprends à le connaître."},
+  {cat:"🩸",text:"Parle de ce que sont vraiment les règles à une amie aujourd'hui — juste pour normaliser la conversation."},
+  {cat:"🩸",text:"Fais 3 respirations profondes maintenant. Ton corps et ton cycle sont connectés à ton état émotionnel."},
+  {cat:"🩸",text:"Tu te souviens de tes premières règles ? Comment tu t'es sentie ? C'est OK d'en parler."},
+  {cat:"🩸",text:"Pose une question sur la santé à quelqu'un de confiance ou cherche une info fiable aujourd'hui."},
+  {cat:"🩸",text:"Tu n'as jamais essayé les serviettes lavables ? Renseigne-toi — ça pourrait changer beaucoup de choses."},
+  {cat:"🩸",text:"La prochaine fois que tes règles approchent, essaie de boire plus d'eau. Observe la différence."},
+  {cat:"🩸",text:"Parle de la précarité menstruelle à quelqu'un qui ne sait pas ce que c'est. Une phrase suffit."},
+  {cat:"🩸",text:"Prends soin de toi avec tendresse aujourd'hui. Une douche, c'est OK — c'est même recommandé."},
+  {cat:"🩸",text:"Connais-tu à peu près quand tu ovules ? Ton cycle a ses propres signaux — apprends à les lire."},
+  {cat:"🩸",text:"Tu connais ton flux habituel ? Commence à l'observer — c'est une info précieuse sur ta santé."},
+  {cat:"🩸",text:"Pose une bouillotte sur ton ventre si tu as mal. Ça aide vraiment."},
+  {cat:"🩸",text:"Dis le mot \"règles\" à voix haute aujourd'hui, sans baisser la voix. 🌸"},
+  {cat:"🩸",text:"La prochaine fois que tu te sens \"à fleur de peau\" sans raison, vérifie où tu en es dans ton cycle."},
+  {cat:"🩸",text:"Si tu souffres vraiment à chaque cycle, note-le et consulte. Ta douleur n'est pas dans ta tête."},
+  {cat:"💪",text:"Calcule la date approximative de tes prochaines règles. Note-la quelque part. Connaître son corps, c'est du pouvoir."},
+  {cat:"💪",text:"Regarde-toi dans un miroir pendant 30 secondes. Dis une seule chose que tu aimes chez toi."},
+  {cat:"💪",text:"Prépare une petite trousse de secours dans ton sac : une protection, un médicament si tu as souvent mal."},
+  {cat:"💪",text:"Aujourd'hui, refuse une remarque blessante sur ton corps — même en silence. Tu n'as pas à l'accepter."},
+  {cat:"💪",text:"Parle de tes règles à une amie sans baisser la voix. Juste naturellement. Parce que c'est normal."},
+  {cat:"💪",text:"Écris 3 mots qui te décrivent telle que tu es — pas telle que les autres voudraient que tu sois."},
+  {cat:"💪",text:"Aujourd'hui, dis non à quelque chose qui ne te convient pas. Même pour un petit truc."},
+  {cat:"💪",text:"Bois 8 verres d'eau aujourd'hui. Surtout pendant tes règles, ton corps en a besoin."},
+  {cat:"💪",text:"Envoie un message de fierté à une amie. Dis-lui une chose que tu admires en elle."},
+  {cat:"💪",text:"Aujourd'hui, occupe l'espace. Parle en classe, lève la main, donne ton avis. Même si ta voix tremble."},
+  {cat:"💪",text:"Parle à ta maman, grande sœur ou tante de tes règles. Demande-lui comment ça se passait pour elle."},
+  {cat:"💪",text:"Fais une liste de 5 choses que tu sais faire. Pas des qualités — des compétences. Tout compte."},
+  {cat:"💪",text:"Aujourd'hui, ne t'excuse pas d'exister. Observe combien de fois tu dis \"désolée\" inutilement."},
+  {cat:"💪",text:"Explique à quelqu'un ce que sont les règles en une phrase simple. Sans gêne."},
+  {cat:"💪",text:"Écris une peur que tu gardes pour toi. Tu n'as pas à la montrer. Juste la nommer."},
+  {cat:"💪",text:"Aujourd'hui, compare-toi seulement à toi d'hier. Pas aux autres. Juste : est-ce que j'avance ?"},
+  {cat:"💪",text:"Aujourd'hui, ne t'excuse pas d'exister. Si tu as tendance à trop t'excuser — observe et décide autrement."},
+  {cat:"💪",text:"Fais quelque chose qui te fait plaisir aujourd'hui, rien que pour toi. Même 10 minutes."},
+  {cat:"💪",text:"Dis à voix haute : \"Je mérite le respect.\" Une fois. Devant ton miroir."},
+  {cat:"💪",text:"Pense à une femme qui t'inspire. Qu'est-ce que tu admires en elle ? Et toi, tu as ça aussi."},
+  {cat:"🗣️",text:"Aujourd'hui, apprends le nom scientifique d'une partie de ton corps que tu n'as jamais osé prononcer."},
+  {cat:"🗣️",text:"Pose une vraie question sur ton corps à un adulte de confiance — une que tu n'as jamais osé poser."},
+  {cat:"🗣️",text:"Si quelqu'un fait une blague sur les règles, ne ris pas pour faire plaisir. Dis juste : \"C'est pas drôle.\""},
+  {cat:"🗣️",text:"Écris sur un papier un mythe sur les règles que tu as déjà cru. Barre-le. Il n'a plus de pouvoir."},
+  {cat:"🗣️",text:"Aujourd'hui, nomme une douleur que tu gardes pour toi d'habitude. À toi-même, ou juste sur papier."},
+  {cat:"🗣️",text:"Dis à quelqu'un \"j'ai mes règles\" sans chercher un mot de remplacement. Les règles."},
+  {cat:"🗣️",text:"Trouve une adulte et demande-lui comment elle vivait ses règles à ton âge. Écoute vraiment sa réponse."},
+  {cat:"🗣️",text:"Aujourd'hui, corrige une fausse info sur le corps féminin si tu en entends une. Doucement, mais clairement."},
+  {cat:"🗣️",text:"Parle de la précarité menstruelle à quelqu'un qui ne sait pas ce que c'est. Une phrase. Tu peux changer une vision."},
+  {cat:"🗣️",text:"Si tu as déjà eu honte de tes règles, écris pourquoi. Pour comprendre et laisser la honte partir."},
+  {cat:"🗣️",text:"Explique l'ovulation à quelqu'un en une phrase simple. Si tu ne sais pas — cherche, puis explique."},
+  {cat:"🗣️",text:"Dis à voix haute : \"Mon corps ne me fait pas honte.\" Devant ton miroir. Même si tu n'y crois pas encore."},
+  {cat:"🗣️",text:"Si tu connais une fille plus jeune, dis-lui une vérité sur les règles que tu aurais aimé savoir."},
+  {cat:"🗣️",text:"Écris une question que tu n'as jamais osé poser sur ton corps. Cherche la réponse avant la fin de la semaine."},
+  {cat:"🗣️",text:"Parle de tes règles sans t'excuser de les mentionner. Pas de \"désolée c'est gênant mais…\"."},
+  {cat:"🗣️",text:"Dis à un garçon de ton entourage une vraie info sur le cycle menstruel. Sans gêne."},
+  {cat:"🗣️",text:"Pense à un tabou dans ta famille lié au corps féminin. Écris-le. Tu n'as pas à l'accepter."},
+  {cat:"🗣️",text:"Aujourd'hui, parle de toi à la première personne. \"Je pense\", \"Je veux\", \"Je ressens\". Ta voix compte."},
+  {cat:"🗣️",text:"Partage une info sur la santé menstruelle avec une amie aujourd'hui. Une seule chose vraie."},
+  {cat:"🤝",text:"Passe une serviette hygiénique à une amie sans qu'elle ait à demander deux fois."},
+  {cat:"🤝",text:"Aujourd'hui, défends une fille qu'on critique pour son corps. Une phrase suffit."},
+  {cat:"🤝",text:"Envoie un message à une amie pour lui dire une chose vraie et belle sur elle. Pas un emoji — des mots."},
+  {cat:"🤝",text:"Si une amie a ses règles et se sent mal, propose quelque chose de concret — t'asseoir avec elle, lui apporter de l'eau."},
+  {cat:"🤝",text:"Aujourd'hui, ne participe pas aux ragots sur la vie intime d'une autre fille. Sors de la conversation si tu dois."},
+  {cat:"🤝",text:"Pense à une fille que tu admires dans ton entourage. Dis-le lui directement aujourd'hui."},
+  {cat:"🤝",text:"Si tu vois une fille mal à l'aise, approche-toi. Demande juste : \"Ça va ?\""},
+  {cat:"🤝",text:"Partage une info utile sur la santé menstruelle dans un groupe WhatsApp. Juste une chose simple et vraie."},
+  {cat:"🤝",text:"Aujourd'hui, célèbre la réussite d'une amie sans jalousie. Sa victoire ne diminue pas la tienne."},
+  {cat:"🤝",text:"Pense à une fille que tu as jugée sans la connaître. Décide aujourd'hui de la voir différemment."},
+  {cat:"🤝",text:"Si une amie te parle de douleurs menstruelles, ne lui dis pas \"supporte\". Écoute-la vraiment."},
+  {cat:"🤝",text:"Invite une amie à faire le Quiz Dignité avec toi. Comparez vos résultats. Riez, apprenez ensemble."},
+  {cat:"🤝",text:"Aujourd'hui, prête quelque chose sans attendre qu'on te le rende — un stylo, une protection, un sourire."},
+  {cat:"🤝",text:"Rappelle à une amie qu'elle a le droit de dire non — à une sortie, une pression, une situation."},
+  {cat:"🤝",text:"Aujourd'hui, écoute une amie sans chercher à donner des conseils. Juste écouter. C'est déjà énorme."},
+  {cat:"🤝",text:"Pense à une fille qui manque de protections menstruelles près de toi. Qu'est-ce que tu pourrais faire ?"},
+  {cat:"🤝",text:"Dis à une amie : \"Tu n'as pas à souffrir en silence.\" Ces mots peuvent changer sa journée."},
+  {cat:"🤝",text:"Crée ou rejoins un espace de parole entre filles — même informel, même 3 personnes."},
+  {cat:"🤝",text:"Aujourd'hui, sois la grande sœur que tu aurais voulu avoir. Pour une fille autour de toi."},
+  {cat:"🤝",text:"Envoie de l'amour à une amie qui traverse une période difficile. Sans attendre qu'elle demande."},
+  {cat:"🧘",text:"Dors 8 heures cette nuit. Pas de négociation. Ton corps reconstruit tout pendant que tu dors."},
+  {cat:"🧘",text:"Bois 1,5 litre d'eau aujourd'hui. Pose une bouteille devant toi dès le matin."},
+  {cat:"🧘",text:"Fais 10 minutes d'étirements ce soir avant de dormir. Pas du sport — juste laisser ton corps se déposer."},
+  {cat:"🧘",text:"Mange un fruit ou un légume aujourd'hui que tu n'as pas l'habitude de manger."},
+  {cat:"🧘",text:"Pose une main sur ton ventre. Respire profondément 5 fois. Sens ton corps vivant. C'est suffisant."},
+  {cat:"🧘",text:"Repose-toi sans culpabilité aujourd'hui. Se reposer n'est pas de la paresse. C'est du soin."},
+  {cat:"🧘",text:"Note comment tu te sens physiquement aujourd'hui. Énergie, ventre, tête. Juste observer."},
+  {cat:"🧘",text:"Danse seule dans ta chambre pendant une chanson. Ton corps mérite de bouger pour le plaisir."},
+  {cat:"🧘",text:"Mange lentement à un repas aujourd'hui. Écoute quand ton corps dit \"c'est assez\"."},
+  {cat:"🧘",text:"Identifie une tension dans ton corps — épaules, mâchoire, ventre. Respire dessus. Laisse-la partir."},
+  {cat:"🧘",text:"Limite les réseaux sociaux à 30 minutes aujourd'hui. Observe comment tu te sens quand tu décroches."},
+  {cat:"🧘",text:"Marche 20 minutes dehors. Pas pour maigrir. Pour te sentir vivante et présente dans ton corps."},
+  {cat:"🧘",text:"Prends une douche en prenant le temps — pas en vitesse. Ton corps mérite attention."},
+  {cat:"🧘",text:"Ce soir, écris 3 sensations positives que ton corps t'a offertes aujourd'hui."},
+  {cat:"🧘",text:"Aujourd'hui, ne saute aucun repas. Ton corps a besoin de carburant régulier."},
+  {cat:"🧘",text:"Ris aujourd'hui — vraiment. Cherche quelque chose qui te fait rire. Le rire est une médecine."},
+  {cat:"🧘",text:"Touche ton corps avec bienveillance — pas pour le juger. Juste te dire : ce corps est à moi."},
+  {cat:"🧘",text:"Dors tôt ce soir — avant 22h si tu peux. Observe demain matin comment tu te réveilles."},
+  {cat:"🧘",text:"Écris une lettre d'une phrase à ton corps : \"Ce que je veux pour toi cette année, c'est…\""},
+  {cat:"🧘",text:"Fais quelque chose de doux pour toi ce soir. Un thé chaud, une musique calme, rien que pour toi."},
+];
+
+const SPECIAL_DEFIS_REACT={
+  '5-28':{icon:"🌸",title:"Journée Mondiale de l'Hygiène Menstruelle",text:"Parle des règles à 3 personnes aujourd'hui. Pas en chuchotant. Naturellement. Parce que c'est normal."},
+  '3-8':{icon:"💪",title:"Journée Internationale des Femmes",text:"Écris le nom d'une femme qui t'inspire. Dis-lui ou écris pourquoi elle compte. Aujourd'hui, les femmes se célèbrent."},
+  '10-11':{icon:"🌍",title:"Journée Internationale de la Fille",text:"Partage Quiz Dignité avec une fille que tu connais. Une seule. Tu viens peut-être de changer quelque chose pour elle."},
+  '11-25':{icon:"🚫",title:"Journée contre les Violences faites aux Femmes",text:"Dis à une fille autour de toi : \"Si jamais tu as besoin, je suis là.\" Ces mots peuvent tout changer."},
+  '7-31':{icon:"👩🏾‍🤝‍👩🏾",title:"Journée de la Femme Africaine",text:"Pense à une femme africaine qui t'a montré ce que la force veut dire. Écris son nom. Garde-le précieusement."},
+  '11-20':{icon:"🧒🏾",title:"Journée Mondiale des Droits de l'Enfant",text:"Écris un droit que tu veux exercer pleinement cette année. Pas pour quelqu'un d'autre — pour toi."},
+};
+
+function DefiModal({onClose}){
+  const[done,setDone]=useState(()=>localStorage.getItem('hm_defi_last_done')===getTodayKeyR());
+  const[streak]=useState(()=>parseInt(localStorage.getItem('hm_defi_streak')||'0',10));
+
+  function getTodayKeyR(){const n=new Date();return `${n.getFullYear()}-${n.getMonth()+1}-${n.getDate()}`;}
+  function getDayOfYearR(){const n=new Date();const s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/86400000);}
+
+  const specialKey=`${new Date().getMonth()+1}-${new Date().getDate()}`;
+  const special=SPECIAL_DEFIS_REACT[specialKey];
+  const defi=special||DEFIS_REACT[(getDayOfYearR()-1)%DEFIS_REACT.length];
+
+  function handleDone(){
+    if(done)return;
+    const today=getTodayKeyR();
+    const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;};
+    const last=localStorage.getItem('hm_defi_last_done');
+    let s=streak;
+    if(last===yesterday())s++;else s=1;
+    localStorage.setItem('hm_defi_last_done',today);
+    localStorage.setItem('hm_defi_streak',String(s));
+    setDone(true);
+    setTimeout(onClose,1800);
+  }
+
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(45,10,31,.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div style={{width:"100%",maxWidth:480,background:"#FFF4F7",borderRadius:"28px 28px 0 0",padding:"28px 22px 42px",maxHeight:"92vh",overflowY:"auto"}}>
+        <div style={{width:40,height:4,background:"#E8003D33",borderRadius:99,margin:"0 auto 20px"}}/>
+        {special&&<div style={{textAlign:"center",marginBottom:14}}>
+          <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>🎉 Jour Spécial</div>
+          <div style={{fontSize:"1rem",fontWeight:800,color:P.text}}>{special.title}</div>
+        </div>}
+        {!special&&<div style={{textAlign:"center",marginBottom:14}}>
+          <div style={{fontSize:30,marginBottom:4}}>{defi.cat}</div>
+          <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5}}>Défi du jour 🌸</div>
+        </div>}
+        <div style={{background:"linear-gradient(135deg,#FFF0F5,#FFE8EF)",borderRadius:18,padding:"20px 18px",marginBottom:16,border:"1.5px solid rgba(232,0,61,.12)"}}>
+          <div style={{fontSize:".95rem",color:P.text,lineHeight:1.75,fontWeight:600}}>{defi.text}</div>
+        </div>
+        {streak>0&&<div style={{background:"linear-gradient(135deg,#FFE8EF,#FFD6E8)",borderRadius:14,padding:"12px 16px",display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+          <span style={{fontSize:"1.5rem"}}>🔥</span>
+          <div>
+            <div style={{fontSize:".78rem",fontWeight:700,color:P.red}}>{streak} jour{streak>1?"s":""} de suite {streak>=7?"🔥🔥":streak>=3?"🔥":""}</div>
+            <div style={{fontSize:".7rem",color:"#7A3D5A",marginTop:2}}>{streak>=7?"Tu reviens. C'est ça la vraie force.":streak>=3?"Tu prends l'habitude. Continue.":"C'est parti. Ta flamme vient de s'allumer."}</div>
+          </div>
+        </div>}
+        <div style={{display:"flex",gap:10}}>
+          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:"white",color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>Plus tard</button>
+          <button onClick={handleDone} disabled={done} style={{flex:2,padding:14,borderRadius:14,border:"none",background:done?"linear-gradient(135deg,#7FB069,#52A35D)":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",fontSize:".92rem",fontWeight:800,cursor:done?"default":"pointer",boxShadow:"0 5px 18px rgba(232,0,61,.32)"}}>
+            {done?"✅ Défi fait aujourd'hui":"Défi accompli 🌸"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── WELCOME SCREEN ─────────────────────────────────────────────
+function WelcomeScreen({onStart}){
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",padding:"48px 28px 36px",position:"relative",overflow:"hidden"}}>
+      {/* Floating bubbles */}
+      {["🌸","🦋","✨","💕","🌸","✨"].map((e,i)=>(
+        <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.35,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`,animation:`float ${8+i}s ease-in-out infinite`,animationDelay:`${-i*2}s`}}>{e}</span>
+      ))}
+      <div style={{textAlign:"center",width:"100%"}}>
+        {/* Logo */}
+        <div style={{marginBottom:24}}>
+          <img src={HM_LOGO} alt="Happy Mum's" style={{width:100,height:100,objectFit:"contain",filter:"drop-shadow(0 8px 20px rgba(232,0,61,.25))"}}/>
+        </div>
+        {/* Title */}
+        <div className="T" style={{fontSize:"3.2rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:12}}>Quiz Dignité</div>
+        <div style={{fontSize:".72rem",fontWeight:800,letterSpacing:"3px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:40}}>Le quiz qui change les règles ✨</div>
+        {/* Card */}
+        <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"24px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:36}}>
+          <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:0}}>
+            Apprends les règles <strong>sans tabou, sans honte, avec confiance.</strong>
+          </p>
+          <p style={{fontSize:".92rem",color:"#7A4A6A",lineHeight:1.7,margin:"12px 0 0"}}>
+            Comprends ton corps, réponds à tes questions, brise les mythes.
+          </p>
+        </div>
+        {/* CTA */}
+        <button onClick={onStart} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"18px 22px",fontWeight:900,fontSize:"1.2rem",cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.35)",letterSpacing:".5px"}}>
+          Commencer 🌸
+        </button>
+      </div>
+      <p style={{fontSize:".65rem",color:"#B09AB0",textAlign:"center",marginTop:20}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+    </div>
+  );
+}
+
+
 function PrivacyPage({onBack}){
   const sections=[
     ['📋 Collecte des données','Quiz Dignité collecte uniquement les informations saisies volontairement (prénom, pays). Ces données sont stockées localement sur votre appareil (localStorage) et ne sont jamais transmises à des serveurs externes.'],
@@ -1483,7 +1970,7 @@ export default function App(){
       if(d.unl)setUnlocked(d.unl);
       if(typeof d.snd==="boolean"){setSoundOn(d.snd);SND.on=d.snd;}
       setScreen("hub");
-    }else setScreen("onboarding");
+    }else setScreen("welcome");
   },[]);
 
   SND.on=soundOn;
@@ -1532,9 +2019,9 @@ export default function App(){
   const saveCaProgress=(prof,lvl)=>{const np={...caProgress,[prof]:[...new Set([...(caProgress[prof]||[]),lvl])]};setCaProgress(np);localStorage.setItem("hm_ca_progress",JSON.stringify(np));return np;};
   const getCaUnlocked=(prof)=>{const done=caProgress[prof]||[];const max=done.length>0?Math.max(...done):0;return max+1;};
 
-  function startQuiz(prof,cat){
-    setProfile(prof);setCategory(cat);setNewBadges([]);
-    ga("quiz_start",{profile:prof,category:cat});setScreen("quiz_game");
+  function startQuiz(prof,cat,lv=1){
+    setProfile(prof);setCategory(cat);setNewBadges([]);setQuizLevelNum(lv);
+    ga("quiz_start",{profile:prof,category:cat,level:lv});setScreen("quiz_game");
   }
 
   function onQuizResult(score,qLen){
@@ -1546,18 +2033,24 @@ export default function App(){
       if(i===2)return pct===100&&category==="mr";if(i===3)return pct===100&&category==="vf";
       return false;
     }).map(b=>({...b}));
+    const allB=[...badges,...fresh.map(b=>b.id)];
+    // Quiz level badges (fille/garcon N1/N2/N3)
+    if(quizLevelNum>0&&LEVEL_CATS.includes(category)&&profile!=='parent'){
+      const bestScore=saveQuizLevel(profile,category,quizLevelNum,Math.round(score/10));
+      const lvBadge=QUIZ_LEVEL_BADGES[profile]?.[category]?.[quizLevelNum-1];
+      if(lvBadge&&bestScore>=8&&!allB.includes(lvBadge.id)){fresh.push(lvBadge);allB.push(lvBadge.id);}
+    }
     // CA badges
     if(category.startsWith("ca_")){
       const lvl=parseInt(category.split("_")[1]);
       const np=saveCaProgress(profile,lvl);
       const caBadges=CA_BADGES[profile]||[];
       const lvlBadge=caBadges[lvl-1];
-      if(lvlBadge&&!badges.includes(lvlBadge.id))fresh.push(lvlBadge);
+      if(lvlBadge&&!allB.includes(lvlBadge.id)){fresh.push(lvlBadge);allB.push(lvlBadge.id);}
       const allDone=(np[profile]||[]).length>=3;
       const champBadge=caBadges[3];
-      if(allDone&&champBadge&&!badges.includes(champBadge.id))fresh.push(champBadge);
+      if(allDone&&champBadge&&!allB.includes(champBadge.id)){fresh.push(champBadge);allB.push(champBadge.id);}
     }
-    const allB=[...badges,...fresh.map(b=>b.id)];
     setTotalPts(newTotal);setSessions(newSess);setBadges(allB);setNewBadges(fresh);
     setQuizScore(score);setQuizQLen(qLen);persist(newTotal,allB,newSess,unlocked);
     ga("quiz_end",{profile,category,score,pct});setScreen("quiz_results");
@@ -1575,6 +2068,23 @@ export default function App(){
     navigator.clipboard?.writeText(txt).then(()=>alert("✅ Texte copié ! Colle-le dans ta story Instagram 🌸")).catch(()=>alert(txt));
     ga("share",{platform:"instagram"});
   }
+
+  const[showDefiModal,setShowDefiModal]=useState(false);
+  const[quizLevels,setQuizLevels]=useState(()=>{try{return JSON.parse(localStorage.getItem("hm_quiz_levels")||"{}")}catch{return{}}});
+  const[quizLevelNum,setQuizLevelNum]=useState(1);
+  const[quizLevelCat,setQuizLevelCat]=useState(null);
+
+  function saveQuizLevel(prof,cat,lv,score){
+    const key=`n${lv}`;
+    const prev=quizLevels?.[prof]?.[cat]?.[key]??null;
+    const best=prev===null?score:Math.max(prev,score);
+    const nql={...quizLevels,[prof]:{...quizLevels[prof],[cat]:{...(quizLevels[prof]?.[cat]||{}),[key]:best}}};
+    setQuizLevels(nql);localStorage.setItem("hm_quiz_levels",JSON.stringify(nql));
+    return best;
+  }
+
+  function getCatLabelFn(cat){const m={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",violence:"Violences & Sécurité",ca_1:"C&A N1",ca_2:"C&A N2",ca_3:"C&A N3"};return m[cat]||cat;}
+
 
   function startGame(id){
     const gDef=GAME_DEF.find(g=>g.id===id);setGameId(id);setNewBadges([]);
@@ -1608,9 +2118,13 @@ export default function App(){
 
         {screen==="boot"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}><div style={{fontSize:64}} className="pulse">🌸</div></div>}
 
+        {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding}/>}
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
+
+
+        {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)}/>}
 
         {screen==="privacy"&&<PrivacyPage onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
 
@@ -1657,7 +2171,12 @@ export default function App(){
                 {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
                 {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
               ].map(c=>(
-                <div key={c.id} onClick={()=>{if(profile==='fille'&&c.id==='defi'){window.qdShowDailyDefi&&window.qdShowDailyDefi();}else if(c.id==='ca'){setScreen("ca_levels");}else{startQuiz(profile,c.id);}}} style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
+                <div key={c.id} onClick={()=>{
+                  if(profile==='fille'&&c.id==='defi'){setShowDefiModal(true);}
+                  else if(c.id==='ca'){setScreen("ca_levels");}
+                  else if(['qcm','vf','mr','violence'].includes(c.id)&&profile!=='parent'){setQuizLevelCat(c.id);setScreen("quiz_level_select");}
+                  else{startQuiz(profile,c.id);}
+                }}style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
                   <span style={{fontSize:"1.9rem",display:"block",marginBottom:7}}>{c.icon}</span>
                   <div className="T" style={{fontSize:".88rem",fontWeight:700,color:P.red}}>{c.name}</div>
                   <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
@@ -1667,11 +2186,13 @@ export default function App(){
           </div>
         )}
 
+        {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} onBack={()=>setScreen("quiz_cats")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
+
         {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
 
-        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} soundOn={soundOn} onBack={()=>category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
+        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
-        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} onReplay={()=>startQuiz(profile,category)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onShareIG={shareIG}/>}
+        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onShareIG={shareIG} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} onGame={startGame}/>}
 
