@@ -2106,7 +2106,7 @@ export default function App(){
   }
 
   const lvl=getLevel(totalPts);
-  const showNav=!["quiz_game","game_play"].includes(screen);
+  const showNav=!["quiz_game","game_play","welcome","onboarding"].includes(screen);
   const gDef=GAME_DEF.find(g=>g.id===gameId);
 
   return(
