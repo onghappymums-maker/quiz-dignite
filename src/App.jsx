@@ -712,6 +712,160 @@ const QUIZ_LEVEL_BADGES={
   },
 };
 
+// ── ENGLISH QUESTION DATABASES ──────────────────────────────────
+const QUIZ_DB_EN={
+  fille:{
+    qcm:[
+      Q("What is the average length of the menstrual cycle?","28 days","7 days exactly","14 days always","60 days",0,"The cycle lasts on average 28 days, but can vary between 21 and 35 days."),
+      Q("What is a sanitary towel used for?","Absorbing menstrual blood","Cleaning wounds","Removing make-up","Covering a burn",0,"A sanitary towel absorbs menstrual blood to keep you comfortable and dry."),
+      Q("Where does menstrual blood come from?","The uterus","The stomach","The kidneys","The bladder",0,"Menstrual blood comes from the uterine lining that sheds each month."),
+      Q("How often should you change a sanitary pad?","Every 4 to 6 hours","Once a day","Once a week","Only when wet",0,"Changing your pad every 4-6 hours prevents infections and keeps you comfortable."),
+      Q("What is the first period called?","Menarche","Ovulation","Menopause","Puberty",0,"Menarche is the medical term for a girl's very first menstrual period."),
+      Q("Which organ produces eggs in the female body?","The ovaries","The uterus","The kidneys","The liver",0,"The ovaries produce eggs and female hormones such as oestrogen."),
+      Q("At what age do most girls get their first period?","Between 10 and 16 years","Between 5 and 8 years","After 20 years","At exactly 13 years",0,"Most girls get their first period between the ages of 10 and 16."),
+      Q("How long do periods usually last?","3 to 7 days","24 hours","2 weeks","1 month",0,"Periods typically last between 3 and 7 days."),
+      Q("What should you do if you have severe period pain?","See a doctor","Ignore it completely","Eat more sugar","Exercise intensely",0,"Severe period pain can be a sign of endometriosis - always consult a doctor."),
+      Q("What does menstrual hygiene mean?","Keeping clean during your period","Bathing once a week","Avoiding water during periods","Wearing extra clothing",0,"Menstrual hygiene means staying clean and comfortable throughout your period."),
+    ],
+    vf:[
+      VF("Periods are a natural part of the female body.",true,"Periods are a completely natural biological process."),
+      VF("You cannot swim during your period.",false,"Swimming is perfectly safe during your period."),
+      VF("Period blood can have a slight odour.",true,"A mild odour is normal, but a strong smell may indicate infection."),
+      VF("Girls should miss school when they have their period.",false,"There is no medical reason to miss school during a period."),
+      VF("You can get pregnant during your first period.",true,"While rare, pregnancy is possible from the first menstrual cycle."),
+      VF("Periods make girls impure.",false,"Periods are a natural process - no one is impure because of their cycle."),
+      VF("Exercise can help relieve period cramps.",true,"Gentle exercise releases endorphins which can reduce period pain."),
+      VF("All girls experience periods in exactly the same way.",false,"Every girl's experience is unique - flow, duration and pain vary greatly."),
+      VF("Talking about periods is shameful.",false,"Talking openly about periods is important for health and wellbeing."),
+      VF("A healthy diet can help during your period.",true,"Iron-rich foods help replace iron lost during menstruation."),
+    ],
+    mr:[
+      MR("You should not wash your hair during your period.",true,"This is a myth. Good hygiene, including washing hair, is recommended during periods."),
+      MR("Periods are a sign that the female body is healthy.",false,"True. Regular periods are a sign of good reproductive health."),
+      MR("Period blood is dirty or contaminated.",true,"Period blood is not dirty - it is simply the uterine lining being shed naturally."),
+      MR("Girls with periods can participate in sports.",false,"Absolutely true. Sport is not only possible but beneficial during periods."),
+      MR("Having your first period means you are ready for marriage.",true,"This is a dangerous myth. Puberty is biological, not readiness for marriage."),
+      MR("Period cramps can be relieved with a hot water bottle.",false,"True - heat relaxes uterine muscles and can significantly reduce cramping."),
+      MR("The uterus exists in all female bodies from birth.",false,"True - the uterus is present from birth and develops during puberty."),
+      MR("Eating certain foods can make periods stop.",true,"No food can stop a period. However, nutrition does affect menstrual health."),
+      MR("A girl can do sport during her period.",false,"Yes! Sport is possible and can even relieve cramps."),
+      MR("Periods typically last between 3 and 7 days.",false,"Correct! The normal duration of periods is 3 to 7 days."),
+    ],
+    violence:[
+      Q("What should you do if someone makes fun of your period?","Tell a trusted adult","Laugh along","Stay silent","Run away",0,"Making fun of someone's period is bullying. Always report this to a trusted adult."),
+      Q("Which of the following is a sign of sexual harassment?","Unwanted touching or comments about your body","A friendly handshake","Being asked your name","Sharing a meal",0,"Unwanted physical contact or sexual comments are forms of sexual harassment."),
+      Q("What is a safe space?","A place where you feel protected and respected","A locked room","A secret hideout","A place with no windows",0,"A safe space is any environment where you feel secure and free from harm."),
+      Q("What should you do if a friend tells you they are being abused?","Listen and help them find a trusted adult","Tell everyone at school","Ignore it","Pretend you did not hear",0,"Listen carefully and help your friend report the abuse to a trusted adult."),
+      Q("Which behaviour is acceptable from an adult?","Explaining boundaries clearly and respectfully","Touching you without permission","Asking you to keep secrets","Threatening you",0,"Adults should always respect your boundaries and communicate respectfully."),
+      Q("What is the purpose of the SOS section in this app?","To provide emergency contacts and help","To play games","To check the weather","To take photos",0,"The SOS section provides emergency numbers and guidance for dangerous situations."),
+      Q("What is a trusted adult?","Someone safe you can talk to about problems","Any adult you meet","Only teachers","Only parents",0,"A trusted adult is someone you feel safe with and can turn to for help."),
+      Q("What should you do if you feel unsafe at school?","Tell a teacher or school counsellor","Leave school immediately","Hide","Do nothing",0,"Always tell a teacher or counsellor if you feel unsafe at school."),
+      Q("Which of these is a form of online harassment?","Receiving threatening messages","Receiving a birthday greeting","Being tagged with permission","Sharing a funny video",0,"Threatening or unwanted messages online are a form of cyberbullying."),
+      Q("What emergency numbers can you call in Cote d'Ivoire?","110 or 1308","999","112","100",0,"In Cote d'Ivoire, 110 and 1308 are emergency numbers for help and support."),
+    ],
+  },
+  garcon:{
+    qcm:[
+      Q("What happens during the menstrual cycle?","The uterine lining sheds","The body grows taller","The voice changes","Muscles develop",0,"The uterine lining builds up and sheds each month - this is the menstrual cycle."),
+      Q("How long is the average menstrual cycle?","About 28 days","7 days","14 days","60 days",0,"The average cycle is 28 days, but 21 to 35 days is normal."),
+      Q("What is a sanitary towel used for?","Managing menstrual flow","Cleaning wounds","Treating burns","Bandaging injuries",0,"Sanitary towels absorb menstrual blood to keep girls comfortable and clean."),
+      Q("What age do girls usually start their periods?","Between 10 and 16","Between 5 and 8","After 20","Exactly at 13",0,"Most girls get their first period between the ages of 10 and 16."),
+      Q("What is the uterus?","An organ where a baby can grow","A type of muscle","A bone in the pelvis","Part of the digestive system",0,"The uterus is the organ in which a foetus develops during pregnancy."),
+      Q("Which organ produces eggs in women?","The ovaries","The kidneys","The uterus","The liver",0,"The ovaries produce eggs and female hormones."),
+      Q("What causes period cramps?","Contractions of the uterus","Poor diet","Lack of exercise","Dehydration",0,"Period cramps are caused by the uterus contracting to shed its lining."),
+      Q("What is puberty?","A stage of physical and emotional development","A type of illness","A dietary change","A social event",0,"Puberty is the natural stage where the body develops into adulthood."),
+      Q("What is menarche?","A girl's first period","A type of hormone","Part of the ovary","A medical procedure",0,"Menarche is the medical term for the first menstrual period."),
+      Q("How can boys show respect during a girl's period?","Be supportive and understanding","Make jokes about it","Ignore it completely","Ask intrusive questions",0,"Showing empathy and support is the right approach."),
+    ],
+    vf:[
+      VF("Periods are a natural biological process.",true,"Periods are completely natural and healthy."),
+      VF("Boys do not need to know about periods.",false,"Understanding periods helps boys be respectful and supportive allies."),
+      VF("Period pain can be very severe for some girls.",true,"Conditions like endometriosis can cause intense pain during periods."),
+      VF("Girls should stop all activity when they have their period.",false,"Girls can continue most activities, including sport, during their period."),
+      VF("Menstrual hygiene is important for health.",true,"Good hygiene during periods prevents infections and promotes wellbeing."),
+      VF("Making jokes about periods is harmless.",false,"Jokes about periods can cause shame and emotional harm."),
+      VF("Boys can be allies in breaking menstrual taboos.",true,"Educated boys can help reduce stigma and support girls."),
+      VF("Periods only last one day.",false,"Periods typically last between 3 and 7 days."),
+      VF("Respecting others is a sign of maturity.",true,"Respect is a fundamental value in any relationship."),
+      VF("Menstrual education is only for girls.",false,"Menstrual education is important for everyone."),
+    ],
+    mr:[
+      MR("Boys should not learn about periods.",true,"This is a myth. Understanding menstruation helps boys be better allies and friends."),
+      MR("Girls can exercise during their periods.",false,"True. Exercise can even help reduce cramps."),
+      MR("Periods make girls less capable.",true,"This is a myth. Periods do not affect a girl's ability to study, work or play sport."),
+      MR("Good hygiene is important for everyone.",false,"True. Good hygiene is essential for health."),
+      MR("A boy who defends a girl being mocked shows weakness.",true,"This is a myth. Standing up for others shows courage and respect."),
+      MR("Crying is a sign of weakness for boys.",true,"This is a myth. Everyone has the right to express emotions."),
+      MR("Consent is important in all relationships.",false,"True. Consent must always be respected."),
+      MR("Menstrual poverty exists in many schools.",false,"True. Many girls miss school due to lack of sanitary products."),
+      MR("Boys cannot experience emotions.",true,"This is a myth. Boys have the same range of emotions as everyone else."),
+      MR("Healthy sleep is important for everyone.",false,"True. Sleep is essential for physical and mental health."),
+    ],
+    violence:[
+      Q("What should a boy do if he witnesses bullying?","Tell a trusted adult and support the victim","Join in","Ignore it","Film it",0,"Taking action and seeking adult help is the right response to bullying."),
+      Q("What does consent mean?","Freely and clearly agreeing to something","Being told what to do","Following orders","Staying silent",0,"Consent must be freely given, clear and can be withdrawn at any time."),
+      Q("How can a boy be a positive ally to girls?","By showing respect and support","By ignoring their problems","By making jokes","By excluding them",0,"Being respectful and supportive makes boys positive allies."),
+      Q("What is online harassment?","Sending threatening or unwanted messages online","Sending birthday greetings","Sharing funny videos","Playing online games",0,"Online harassment includes threatening or abusive digital messages."),
+      Q("What is a trusted adult?","Someone safe to talk to about problems","Any adult you know","Only family members","Only school staff",0,"A trusted adult is someone you feel safe with and can ask for help."),
+      Q("What is sexual harassment?","Unwanted sexual comments or contact","A compliment","A handshake","A hug from a friend",0,"Sexual harassment involves any unwanted sexual behaviour."),
+      Q("What does it mean to respect someone's boundaries?","To stop when they say no","To continue until they agree","To ignore their feelings","To ask them again later",0,"Respecting boundaries means stopping immediately when someone says no."),
+      Q("What should you do if a friend seems distressed?","Ask them if they are okay and offer support","Ignore them","Tell others","Make jokes to cheer them up",0,"Showing care and support is the right response."),
+      Q("What is the danger of sharing private photos without consent?","It is harmful and illegal","It is funny","It is harmless","It is a compliment",0,"Sharing private images without consent is abuse and is illegal."),
+      Q("What is the best way to handle a conflict?","Talk calmly and listen to both sides","Fight","Ignore it","Shout",0,"Calm dialogue is always the best approach to resolving conflict."),
+    ],
+  },
+  parent:{
+    qcm:[
+      Q("At what age do most girls get their first period?","Between 10 and 16 years","Between 5 and 8 years","After 20 years","At exactly 13",0,"Most girls get their first period between the ages of 10 and 16."),
+      Q("What is menarche?","A girl's first period","The end of periods","A hormone treatment","A type of infection",0,"Menarche refers to the first menstrual period a girl experiences."),
+      Q("How can a parent best support a child going through puberty?","With open, non-judgemental communication","By avoiding the topic","By waiting for the child to ask","By sending them to a specialist only",0,"Open and supportive communication is the most effective approach."),
+      Q("What is the average duration of a menstrual period?","3 to 7 days","1 day","2 weeks","1 month",0,"Periods typically last between 3 and 7 days."),
+      Q("What is menstrual poverty?","Lack of access to sanitary products","A medical condition","A social event","A dietary issue",0,"Menstrual poverty means being unable to afford or access sanitary products."),
+      Q("What is the uterus?","The organ where a baby develops","A type of gland","Part of the digestive system","A type of muscle",0,"The uterus is the organ in which a foetus develops during pregnancy."),
+      Q("What is a healthy menstrual cycle length?","21 to 35 days","7 days","60 days","14 days",0,"A normal cycle varies from 21 to 35 days."),
+      Q("What should a parent do if their child has very painful periods?","Consult a doctor","Tell them to rest","Give them sweets","Ignore the pain",0,"Severe period pain may indicate endometriosis and should be investigated."),
+      Q("What is the role of oestrogen in the female body?","Regulating the menstrual cycle and development","Controlling digestion","Building muscle","Regulating sleep",0,"Oestrogen plays a key role in reproductive development and the menstrual cycle."),
+      Q("Why is menstrual education important for children?","It reduces shame and promotes health","It is not necessary","It should only be taught at school","It is only for girls",0,"Comprehensive menstrual education promotes health and reduces harmful taboos."),
+    ],
+    vf:[
+      VF("Parents should talk openly with children about periods.",true,"Open discussions help children feel supported and informed."),
+      VF("Boys do not need to learn about menstruation.",false,"Boys who understand menstruation are better allies and friends."),
+      VF("Period pain that is very severe may need medical attention.",true,"Conditions like endometriosis can cause intense pain and require treatment."),
+      VF("Girls should avoid all exercise during their period.",false,"Gentle exercise can actually help relieve period discomfort."),
+      VF("Good menstrual hygiene prevents infections.",true,"Changing sanitary products regularly is essential for health."),
+      VF("Talking about periods is inappropriate for children.",false,"Age-appropriate conversations about periods are important and healthy."),
+      VF("Menstrual poverty affects school attendance.",true,"Without sanitary products, many girls miss school during their period."),
+      VF("Puberty only affects the body physically.",false,"Puberty also involves significant emotional and psychological changes."),
+      VF("A parent's reaction shapes a child's attitude about puberty.",true,"Calm, supportive responses encourage healthy attitudes about the body."),
+      VF("Menstruation should only be discussed with mothers.",false,"All caregivers and educators can play a role in menstrual education."),
+    ],
+    mr:[
+      MR("Talking about periods is shameful.",true,"This is a myth. Open discussion protects children's health and wellbeing."),
+      MR("Parents are important in shaping attitudes about menstruation.",false,"True. Parents play a vital role in normalising healthy discussions."),
+      MR("Period pain should always be ignored.",true,"This is a myth. Severe pain may indicate a medical condition."),
+      MR("Menstrual education should start before puberty.",false,"True. Early education helps children feel prepared and informed."),
+      MR("Only girls need to learn about periods.",true,"This is a myth. Boys who understand menstruation are better allies."),
+      MR("A child who asks about their body is being inappropriate.",true,"This is a myth. Curiosity about the body is natural and healthy."),
+      MR("A Box de Dignite provides free sanitary products.",false,"True. Boxes de Dignite help girls who cannot afford sanitary products."),
+      MR("Endometriosis is rare and not worth knowing about.",true,"This is a myth. Endometriosis affects 1 in 10 women and awareness is important."),
+      MR("Puberty education helps reduce anxiety in children.",false,"True. Understanding changes reduces fear and confusion."),
+      MR("Supporting children emotionally during puberty is unnecessary.",true,"This is a myth. Emotional support during puberty is extremely important."),
+    ],
+    violence:[
+      Q("What should a parent do if a child reports abuse?","Believe them and seek professional help immediately","Ask them to be quiet","Wait and see","Tell them to handle it themselves",0,"Believing and supporting the child while seeking professional help is essential."),
+      Q("What is verbal violence?","Using words to hurt, humiliate or control someone","Speaking loudly","Giving instructions","Asking questions",0,"Verbal violence includes insults, threats and humiliation."),
+      Q("What is an important sign of possible abuse in a child?","Sudden changes in behaviour or mood","Getting better grades","Making new friends","Being more talkative",0,"Sudden behavioural changes can signal that a child is in distress."),
+      Q("What does a supportive environment for a child look like?","Safe, heard and respected","Strict rules only","No questions allowed","Focused only on academics",0,"A supportive environment includes emotional safety and open communication."),
+      Q("What is the most important thing a parent can give a child?","Trust and unconditional support","Material gifts","Academic pressure","Social media access",0,"Trust and unconditional support are the foundations of healthy parent-child relationships."),
+      Q("What should a parent do if their child is being bullied?","Take it seriously and involve the school","Tell the child to toughen up","Ignore it","Blame the child",0,"Bullying must be taken seriously and addressed with the support of the school."),
+      Q("What is the purpose of a safe space for children?","A place to express themselves freely","A place for punishment","A room with no distractions","A space only for studying",0,"A safe space allows children to speak openly without fear of judgement."),
+      Q("Why is it important to respect a child's bodily autonomy?","It teaches boundaries and builds self-confidence","It is not important","It makes them disobedient","It is only for older children",0,"Teaching children about bodily autonomy helps protect them from harm."),
+      Q("What is emotional support?","Listening, validating and being present for a child","Telling them to stop being emotional","Giving them sweets","Keeping them busy",0,"Emotional support involves actively listening and making the child feel valued."),
+      Q("Who can a child turn to in a difficult situation?","A trusted adult - parent, teacher or counsellor","No one","Only their best friend","Only a doctor",0,"Children should know they can turn to any trusted adult for help."),
+    ],
+  },
+};
+
 const QUIZ_DB_QSJ={
   n1:{
     fille:[
@@ -1404,13 +1558,13 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 }
 
 // ── QUIZ COMPONENTS ────────────────────────────────────────────
-function QuizGame({profile,category,level=1,soundOn,onBack,onResult}){
+function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   const scoreRef=useRef(0);
-  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
+  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(lang==="en"?(CA_DB_EN[profile]?.[category]||[]):(CA_DB[profile]?.[category]||[])):
     category==="qsj"?(level===2?(QUIZ_DB_QSJ.n2[profile]||[]):level===3?(QUIZ_DB_QSJ.n3[profile]||[]):(QUIZ_DB_QSJ.n1[profile]||[])):
     (LEVEL_CATS.includes(category)&&profile!=='parent')
-      ?(level===2?(QUIZ_DB_N2[profile]?.[category]||[]):level===3?(QUIZ_DB_N3[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]))
-      :(QUIZ_DB[profile]?.[category]||[]);
+      ?(lang==="en"?(level===2?(QUIZ_DB_N2_EN[profile]?.[category]||[]):level===3?(QUIZ_DB_N3_EN[profile]?.[category]||[]):(QUIZ_DB_EN[profile]?.[category]||[])):(level===2?(QUIZ_DB_N2[profile]?.[category]||[]):level===3?(QUIZ_DB_N3[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[])))
+      :(lang==="en"?(QUIZ_DB_EN[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]));
   const total=category==="urgence"||category==="defi"?5:10;
   const[qs]=useState(()=>{
     const fy=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
@@ -1717,7 +1871,7 @@ const SPECIAL_DEFIS_REACT={
   '11-20':{icon:"🧒🏾",title:"Journée Mondiale des Droits de l'Enfant",text:"Écris un droit que tu veux exercer pleinement cette année. Pas pour quelqu'un d'autre — pour toi."},
 };
 
-function DefiModal({onClose}){
+function DefiModal({onClose,lang}){
   const[done,setDone]=useState(()=>localStorage.getItem('hm_defi_last_done')===getTodayKeyR());
   const[streak]=useState(()=>parseInt(localStorage.getItem('hm_defi_streak')||'0',10));
 
@@ -1726,7 +1880,8 @@ function DefiModal({onClose}){
 
   const specialKey=`${new Date().getMonth()+1}-${new Date().getDate()}`;
   const special=SPECIAL_DEFIS_REACT[specialKey];
-  const defi=special||DEFIS_REACT[(getDayOfYearR()-1)%DEFIS_REACT.length];
+  const defisPool=lang==="en"?DEFIS_REACT_EN:DEFIS_REACT;
+  const defi=special||defisPool[(getDayOfYearR()-1)%defisPool.length];
 
   function handleDone(){
     if(done)return;
@@ -1746,12 +1901,12 @@ function DefiModal({onClose}){
       <div style={{width:"100%",maxWidth:480,background:"#FFF4F7",borderRadius:"28px 28px 0 0",padding:"28px 22px 42px",maxHeight:"92vh",overflowY:"auto"}}>
         <div style={{width:40,height:4,background:"#E8003D33",borderRadius:99,margin:"0 auto 20px"}}/>
         {special&&<div style={{textAlign:"center",marginBottom:14}}>
-          <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>🎉 Jour Spécial</div>
+          <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>{lang==="en"?"🎉 Special Day":"🎉 Jour Spécial"}</div>
           <div style={{fontSize:"1rem",fontWeight:800,color:P.text}}>{special.title}</div>
         </div>}
         {!special&&<div style={{textAlign:"center",marginBottom:14}}>
           <div style={{fontSize:30,marginBottom:4}}>{defi.cat}</div>
-          <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5}}>Défi du jour 🌸</div>
+          <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Daily Challenge 🌸":"Défi du jour 🌸"}</div>
         </div>}
         <div style={{background:"linear-gradient(135deg,#FFF0F5,#FFE8EF)",borderRadius:18,padding:"20px 18px",marginBottom:16,border:"1.5px solid rgba(232,0,61,.12)"}}>
           <div style={{fontSize:".95rem",color:P.text,lineHeight:1.75,fontWeight:600}}>{defi.text}</div>
@@ -1759,14 +1914,14 @@ function DefiModal({onClose}){
         {streak>0&&<div style={{background:"linear-gradient(135deg,#FFE8EF,#FFD6E8)",borderRadius:14,padding:"12px 16px",display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
           <span style={{fontSize:"1.5rem"}}>🔥</span>
           <div>
-            <div style={{fontSize:".78rem",fontWeight:700,color:P.red}}>{streak} jour{streak>1?"s":""} de suite {streak>=7?"🔥🔥":streak>=3?"🔥":""}</div>
-            <div style={{fontSize:".7rem",color:"#7A3D5A",marginTop:2}}>{streak>=7?"Tu reviens. C'est ça la vraie force.":streak>=3?"Tu prends l'habitude. Continue.":"C'est parti. Ta flamme vient de s'allumer."}</div>
+            <div style={{fontSize:".78rem",fontWeight:700,color:P.red}}>{streak} {lang==="en"?`day${streak>1?"s":""} in a row`:`jour${streak>1?"s":""} de suite`} {streak>=7?"🔥🔥":streak>=3?"🔥":""}</div>
+            <div style={{fontSize:".7rem",color:"#7A3D5A",marginTop:2}}>{streak>=7?(lang==="en"?"You keep coming back. That is real strength.":"Tu reviens. C'est ça la vraie force."):streak>=3?(lang==="en"?"You are building a habit. Keep going.":"Tu prends l'habitude. Continue."):(lang==="en"?"Here we go. Your flame has just been lit.":"C'est parti. Ta flamme vient de s'allumer.")}</div>
           </div>
         </div>}
         <div style={{display:"flex",gap:10}}>
-          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:"white",color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>Plus tard</button>
+          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:"white",color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>{lang==="en"?"Later":"Plus tard"}</button>
           <button onClick={handleDone} disabled={done} style={{flex:2,padding:14,borderRadius:14,border:"none",background:done?"linear-gradient(135deg,#7FB069,#52A35D)":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",fontSize:".92rem",fontWeight:800,cursor:done?"default":"pointer",boxShadow:"0 5px 18px rgba(232,0,61,.32)"}}>
-            {done?"✅ Défi fait aujourd'hui":"Défi accompli 🌸"}
+            {done?(lang==="en"?"✅ Challenge done today":"✅ Défi fait aujourd'hui"):(lang==="en"?"Challenge done 🌸":"Défi accompli 🌸")}
           </button>
         </div>
       </div>
@@ -1775,36 +1930,36 @@ function DefiModal({onClose}){
 }
 
 // ── WELCOME SCREEN ─────────────────────────────────────────────
-function WelcomeScreen({onStart}){
+function WelcomeScreen({onStart,lang,setLang}){
   return(
     <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",padding:"48px 28px 36px",position:"relative",overflow:"hidden"}}>
-      {/* Floating bubbles */}
       {["🌸","🦋","✨","💕","🌸","✨"].map((e,i)=>(
-        <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.35,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`,animation:`float ${8+i}s ease-in-out infinite`,animationDelay:`${-i*2}s`}}>{e}</span>
+        <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.35,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`}}>{e}</span>
       ))}
+      {/* Language selector */}
+      <div style={{position:"absolute",top:16,right:16,display:"flex",gap:8,zIndex:10}}>
+        <button onClick={()=>{setLang("fr");localStorage.setItem("hm_lang","fr");}} style={{background:lang==="fr"?"#E8003D":"rgba(232,0,61,.15)",color:lang==="fr"?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:700,fontSize:".78rem",cursor:"pointer"}}>🇫🇷 FR</button>
+        <button onClick={()=>{setLang("en");localStorage.setItem("hm_lang","en");}} style={{background:lang==="en"?"#E8003D":"rgba(232,0,61,.15)",color:lang==="en"?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:700,fontSize:".78rem",cursor:"pointer"}}>🇬🇧 EN</button>
+      </div>
       <div style={{textAlign:"center",width:"100%"}}>
-        {/* Logo */}
         <div style={{marginBottom:24}}>
           <img src={HM_LOGO} alt="Happy Mum's" style={{width:100,height:100,objectFit:"contain",filter:"drop-shadow(0 8px 20px rgba(232,0,61,.25))"}}/>
         </div>
-        {/* Title */}
         <div className="T" style={{fontSize:"3.2rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:12}}>Quiz Dignité</div>
-        <div style={{fontSize:".72rem",fontWeight:800,letterSpacing:"3px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:40}}>Le quiz qui change les règles ✨</div>
-        {/* Card */}
+        <div style={{fontSize:".72rem",fontWeight:800,letterSpacing:"3px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:40}}>{lang==="en"?"THE QUIZ THAT CHANGES THE RULES ✨":"Le quiz qui change les règles ✨"}</div>
         <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"24px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:36}}>
           <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:0}}>
-            Apprends les règles <strong>sans tabou, sans honte, avec confiance.</strong>
+            {lang==="en"?<><b>Learn about periods without taboo, without shame, with confidence.</b></>:<>Apprends les règles <strong>sans tabou, sans honte, avec confiance.</strong></>}
           </p>
           <p style={{fontSize:".92rem",color:"#7A4A6A",lineHeight:1.7,margin:"12px 0 0"}}>
-            Comprends ton corps, réponds à tes questions, brise les mythes.
+            {lang==="en"?"Understand your body, answer your questions, break the myths.":"Comprends ton corps, réponds à tes questions, brise les mythes."}
           </p>
         </div>
-        {/* CTA */}
         <button onClick={onStart} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"18px 22px",fontWeight:900,fontSize:"1.2rem",cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.35)",letterSpacing:".5px"}}>
-          Commencer 🌸
+          {lang==="en"?"Start 🌸":"Commencer 🌸"}
         </button>
       </div>
-      <p style={{fontSize:".65rem",color:"#B09AB0",textAlign:"center",marginTop:20}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+      <p style={{fontSize:".65rem",color:"#B09AB0",textAlign:"center",marginTop:20}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
     </div>
   );
 }
@@ -1840,6 +1995,157 @@ function PrivacyPage({onBack}){
   );
 }
 
+
+
+// ── ENGLISH GLOSSAIRE ────────────────────────────────────────────
+const GLOSSAIRE_DATA_EN=[
+  {cat:"🫀 Anatomy",terms:[
+    {w:"Uterus",d:"A pear-shaped organ in the female pelvis. This is where a baby develops during pregnancy and where menstrual blood comes from."},
+    {w:"Ovaries",d:"Two small organs that produce eggs and female hormones (oestrogen and progesterone)."},
+    {w:"Vagina",d:"A muscular canal connecting the uterus to the outside of the body. Menstrual blood and babies exit through here."},
+    {w:"Vulva",d:"The collective term for the external female genitalia: labia majora, labia minora, clitoris and vaginal opening."},
+    {w:"Cervix",d:"The lower part of the uterus that opens into the vagina. It dilates during childbirth."},
+    {w:"Fallopian tubes",d:"Two tubes connecting the ovaries to the uterus. This is where fertilisation takes place."},
+    {w:"Endometrium",d:"The inner lining of the uterus that thickens each month and is shed during menstruation."},
+    {w:"Clitoris",d:"A female erectile organ located at the front of the vulva. Its only role is pleasure — and that is a right."},
+  ]},
+  {cat:"🔄 Cycle & Reproduction",terms:[
+    {w:"Menstrual cycle",d:"A monthly process in which the body prepares for a possible pregnancy. It lasts on average 28 days, but can vary between 21 and 35 days."},
+    {w:"Ovulation",d:"The release of an egg from an ovary, usually around day 14 of the cycle. This is the fertile window."},
+    {w:"Menstruation",d:"Another word for periods. The monthly shedding of the uterine lining as a bloody discharge."},
+    {w:"Follicular phase",d:"The first part of the cycle (days 1-13): an egg matures in the ovary. Energy and vitality tend to increase."},
+    {w:"Luteal phase",d:"The second part of the cycle (days 15-28): the body prepares for a possible pregnancy. PMS symptoms may appear."},
+    {w:"Egg (ovum)",d:"The female reproductive cell produced by the ovaries. One egg is released each month during ovulation."},
+    {w:"Fertilisation",d:"The union of an egg and a sperm cell in the fallopian tube. The starting point of a pregnancy."},
+    {w:"Hormones",d:"Chemical substances (oestrogen, progesterone) that regulate the menstrual cycle, mood and body development."},
+  ]},
+  {cat:"🧼 Hygiene & Protection",terms:[
+    {w:"Sanitary product",d:"A product used to absorb or collect menstrual blood: sanitary towels, tampons, menstrual cups or period pants."},
+    {w:"Washable pad",d:"A reusable cloth pad that is washed after use. Eco-friendly, economical and just as effective."},
+    {w:"Menstrual cup",d:"A flexible cup made of medical-grade silicone inserted into the vagina to collect blood. Reusable for years."},
+    {w:"Tampon",d:"An internal absorbent product. Change every 4-8 hours to prevent infection."},
+    {w:"Menstrual poverty",d:"Lack of access to sanitary products, water and information. It causes thousands of girls to miss school every month."},
+    {w:"Box de Dignite",d:"A distribution point set up by ONG Happy Mum's in partner schools in Abidjan and Bouake, providing free sanitary products."},
+  ]},
+  {cat:"💊 Health",terms:[
+    {w:"Endometriosis",d:"A condition where endometrial tissue grows outside the uterus, causing intense pain. It affects 1 in 10 women. See a doctor if you suffer severely."},
+    {w:"Premenstrual syndrome (PMS)",d:"A set of symptoms (pain, mood swings, fatigue, bloating) that appear in the days before a period."},
+    {w:"Dysmenorrhoea",d:"The medical term for period pain. Mild to moderate pain is normal. Severe pain deserves medical attention."},
+    {w:"Amenorrhoea",d:"Absence of periods. Normal during pregnancy or breastfeeding. Otherwise abnormal — speak to a doctor."},
+    {w:"Menopause",d:"The permanent end of periods, usually between 45 and 55 years of age. It marks the end of female fertility."},
+    {w:"Puberty",d:"A period of bodily transformation (around ages 10-16 in girls) marked by the arrival of periods and physical development."},
+  ]},
+  {cat:"⚖️ Rights & Society",terms:[
+    {w:"Menstrual dignity",d:"The fundamental right to access sanitary products, education about periods and respect during menstruation."},
+    {w:"Sexual and reproductive health rights",d:"Rights related to sexual and reproductive health, including the right to information, care, consent and contraception."},
+    {w:"Consent",d:"A free, informed and enthusiastic agreement to any intimate relationship. It can be withdrawn at any time. No means no."},
+    {w:"Gender-based violence",d:"Any act that harms a person because of their gender. Includes physical, psychological and sexual violence."},
+    {w:"Child marriage",d:"Marriage before the age of 18. Illegal in Cote d'Ivoire. It deprives girls of education and freedom."},
+  ]},
+];
+
+// ── ENGLISH DAILY CHALLENGES ─────────────────────────────────────
+const DEFIS_REACT_EN=[
+  {cat:"🩸",text:"Do you know how long your cycle lasts? Write down the start date of your next period. Knowing your body is power."},
+  {cat:"🩸",text:"If you have ever had very painful periods, tell yourself: 'I deserve a pain-free period.' You do not have to suffer in silence."},
+  {cat:"🩸",text:"Menstrual blood is not dirty. It is your body renewing itself. Remind yourself of this truth today. 💪"},
+  {cat:"🩸",text:"Move gently today: a walk, a few stretches. Notice how your body feels."},
+  {cat:"🩸",text:"Set a quiet alarm to remind yourself to change your pad every 4 to 6 hours."},
+  {cat:"🩸",text:"Try to note the start date of your next period somewhere. Your cycle is unique — learn to know it."},
+  {cat:"🩸",text:"Talk about what periods really are with a friend today — just to normalise the conversation."},
+  {cat:"🩸",text:"Take 3 deep breaths right now. Your body and your cycle are connected to how you feel emotionally."},
+  {cat:"🩸",text:"Do you remember your first period? How did you feel? It is okay to talk about it."},
+  {cat:"🩸",text:"Ask someone you trust a real health question, or look for reliable information today."},
+  {cat:"🩸",text:"Have you ever tried washable pads? Do some research — it could change a lot of things."},
+  {cat:"🩸",text:"As your next period approaches, try drinking more water. Notice the difference."},
+  {cat:"🩸",text:"Tell someone who does not know what menstrual poverty is. Just one sentence."},
+  {cat:"🩸",text:"Take care of yourself with kindness today. A shower is fine — it is actually recommended."},
+  {cat:"🩸",text:"Do you have a rough idea of when you ovulate? Your cycle has its own signals — learn to read them."},
+  {cat:"🩸",text:"Do you know your usual flow? Start observing it — it is valuable information about your health."},
+  {cat:"🩸",text:"Put a hot water bottle on your stomach if you are in pain. It really helps."},
+  {cat:"🩸",text:"Say the word 'periods' out loud today, without lowering your voice. 🌸"},
+  {cat:"🩸",text:"The next time you feel unusually emotional without reason, check where you are in your cycle."},
+  {cat:"🩸",text:"If you truly suffer every cycle, note it down and see a doctor. Your pain is not in your head."},
+  {cat:"💪",text:"Calculate the approximate start date of your next period. Write it down. Knowing your body is power."},
+  {cat:"💪",text:"Look at yourself in a mirror for 30 seconds. Say one thing you like about yourself."},
+  {cat:"💪",text:"Prepare a small emergency kit in your bag: one pad and pain relief if you often experience cramps."},
+  {cat:"💪",text:"Today, refuse a hurtful comment about your body — even silently. You do not have to accept it."},
+  {cat:"💪",text:"Talk about your periods with a friend without lowering your voice. Just naturally. Because it is normal."},
+  {cat:"💪",text:"Write 3 words that describe you as you are — not as others would like you to be."},
+  {cat:"💪",text:"Today, say no to something that does not suit you. Even something small."},
+  {cat:"💪",text:"Drink 8 glasses of water today. Especially during your period — your body needs it."},
+  {cat:"💪",text:"Send a message of encouragement to a friend. Tell them one thing you admire about them."},
+  {cat:"💪",text:"Today, take up space. Speak in class, raise your hand, share your opinion. Even if your voice trembles."},
+  {cat:"💪",text:"Talk to your mum, older sister or aunt about periods. Ask her how it was for her at your age."},
+  {cat:"💪",text:"Make a list of 5 things you know how to do. Not qualities — skills. Everything counts."},
+  {cat:"💪",text:"Today, do not apologise for existing. Notice how many times you say 'sorry' unnecessarily."},
+  {cat:"💪",text:"Explain to someone what periods are in one simple sentence. Without embarrassment."},
+  {cat:"💪",text:"Write down a fear you keep to yourself. You do not have to show it. Just name it."},
+  {cat:"💪",text:"Today, compare yourself only to who you were yesterday. Not to others. Just: am I moving forward?"},
+  {cat:"💪",text:"If you tend to over-apologise — notice it and choose differently today."},
+  {cat:"💪",text:"Do something that makes you happy today, just for yourself. Even 10 minutes."},
+  {cat:"💪",text:"Say out loud: 'I deserve respect.' Once. In front of your mirror."},
+  {cat:"💪",text:"Think of a woman who inspires you. What do you admire about her? You have that too."},
+  {cat:"🗣️",text:"Today, learn the scientific name of a part of your body you have never dared to say out loud."},
+  {cat:"🗣️",text:"Ask a trusted adult a real question about your body — one you have never dared to ask."},
+  {cat:"🗣️",text:"If someone makes a joke about periods, do not laugh along. Just say: 'That is not funny.'"},
+  {cat:"🗣️",text:"Write on a piece of paper a myth about periods you once believed. Cross it out. It has no power over you."},
+  {cat:"🗣️",text:"Today, name a pain you usually keep to yourself. To yourself, or just on paper."},
+  {cat:"🗣️",text:"Say 'I have my period' to someone without looking for a replacement word. Periods."},
+  {cat:"🗣️",text:"Find an adult and ask her how she experienced periods at your age. Really listen to her answer."},
+  {cat:"🗣️",text:"Today, gently but clearly correct a false piece of information about the female body if you hear one."},
+  {cat:"🗣️",text:"Tell someone who does not know about menstrual poverty. One sentence. You can change a mindset."},
+  {cat:"🗣️",text:"If you have ever felt ashamed of your periods, write down why. To understand and let the shame go."},
+  {cat:"🗣️",text:"Explain ovulation to someone in one simple sentence. If you do not know — research it, then explain it."},
+  {cat:"🗣️",text:"Say out loud: 'My body does not shame me.' In front of your mirror. Even if you do not believe it yet."},
+  {cat:"🗣️",text:"If you know a younger girl, tell her one truth about periods you wish you had known."},
+  {cat:"🗣️",text:"Write a question you have never dared to ask about your body. Find the answer before the week is over."},
+  {cat:"🗣️",text:"Talk about your periods without apologising for mentioning them. No 'sorry, this is awkward but...'"},
+  {cat:"🗣️",text:"Tell a boy in your life one real fact about the menstrual cycle. Without embarrassment."},
+  {cat:"🗣️",text:"Think of a taboo in your family related to the female body. Write it down. You do not have to accept it."},
+  {cat:"🗣️",text:"Today, talk about yourself in the first person. 'I think', 'I want', 'I feel'. Your voice matters."},
+  {cat:"🗣️",text:"Share one piece of information about menstrual health with a friend today. Just one true thing."},
+  {cat:"🤝",text:"Pass a sanitary pad to a friend without her having to ask twice."},
+  {cat:"🤝",text:"Today, defend a girl being criticised for her body. One sentence is enough."},
+  {cat:"🤝",text:"Send a message to a friend telling her one true and beautiful thing about her. Not an emoji — words."},
+  {cat:"🤝",text:"If a friend has her period and feels unwell, offer something concrete — sit with her, bring her water."},
+  {cat:"🤝",text:"Today, do not take part in gossip about another girl's private life. Leave the conversation if you must."},
+  {cat:"🤝",text:"Think of a girl you admire in your circle. Tell her directly today."},
+  {cat:"🤝",text:"If you see a girl who is uncomfortable, approach her. Just ask: 'Are you okay?'"},
+  {cat:"🤝",text:"Share a useful piece of information about menstrual health in a WhatsApp group. Just one simple true thing."},
+  {cat:"🤝",text:"Today, celebrate a friend's success without jealousy. Her victory does not diminish yours."},
+  {cat:"🤝",text:"Think of a girl you judged without knowing her. Decide today to see her differently."},
+  {cat:"🤝",text:"If a friend tells you about period pain, do not tell her to 'just cope'. Really listen to her."},
+  {cat:"🤝",text:"Invite a friend to do the Dignity Quiz with you. Compare your results. Laugh and learn together."},
+  {cat:"🤝",text:"Today, lend something without expecting it back — a pen, a pad, a smile."},
+  {cat:"🤝",text:"Remind a friend that she has the right to say no — to going out, to pressure, to any situation."},
+  {cat:"🤝",text:"Today, listen to a friend without looking to give advice. Just listen. That is already huge."},
+  {cat:"🤝",text:"Think of a girl near you who lacks sanitary products. What could you do?"},
+  {cat:"🤝",text:"Tell a friend: 'You do not have to suffer in silence.' These words can change her day."},
+  {cat:"🤝",text:"Create or join a space for girls to talk — even informally, even just 3 people."},
+  {cat:"🤝",text:"Today, be the older sister you wish you had had. For a girl around you."},
+  {cat:"🤝",text:"Send love to a friend going through a difficult time. Without waiting for her to ask."},
+  {cat:"🧘",text:"Sleep 8 hours tonight. No negotiation. Your body rebuilds everything while you sleep."},
+  {cat:"🧘",text:"Drink 1.5 litres of water today. Put a bottle in front of you first thing in the morning."},
+  {cat:"🧘",text:"Do 10 minutes of stretches this evening before bed. Not exercise — just let your body settle."},
+  {cat:"🧘",text:"Try eating a fruit or vegetable today that you do not usually have."},
+  {cat:"🧘",text:"Place one hand on your stomach. Breathe deeply 5 times. Feel your body alive. That is enough."},
+  {cat:"🧘",text:"Rest without guilt today. Resting is not laziness. It is care."},
+  {cat:"🧘",text:"Note how you feel physically today. Energy, stomach, head. Just observe."},
+  {cat:"🧘",text:"Dance alone in your room to one song. Your body deserves to move for pleasure."},
+  {cat:"🧘",text:"Eat slowly at one meal today. Listen to when your body says 'that is enough'."},
+  {cat:"🧘",text:"Identify a tension in your body — shoulders, jaw, stomach. Breathe into it. Let it go."},
+  {cat:"🧘",text:"Limit social media to 30 minutes today. Notice how you feel when you disconnect."},
+  {cat:"🧘",text:"Walk for 20 minutes outside. Not to lose weight. To feel alive and present in your body."},
+  {cat:"🧘",text:"Have a shower slowly — not in a rush. Your body deserves attention."},
+  {cat:"🧘",text:"This evening, write 3 positive sensations your body gave you today."},
+  {cat:"🧘",text:"Today, skip no meals. Your body needs regular fuel."},
+  {cat:"🧘",text:"Laugh today — genuinely. Find something that makes you really laugh. Laughter is medicine."},
+  {cat:"🧘",text:"Touch your body with kindness — not to judge it. Just to say: this body is mine."},
+  {cat:"🧘",text:"Go to bed early tonight — before 10pm if you can. Notice how you wake up tomorrow morning."},
+  {cat:"🧘",text:"Write a one-sentence letter to your body: 'What I want for you this year is...'"},
+  {cat:"🧘",text:"Do something gentle for yourself this evening. A warm tea, calm music — just for you."},
+];
 
 const GLOSSAIRE_DATA=[
   {cat:"🫀 Anatomie",terms:[
@@ -1887,9 +2193,10 @@ const GLOSSAIRE_DATA=[
   ]},
 ];
 
-function Glossaire({onBack}){
+function Glossaire({onBack,lang}){
   const[search,setSearch]=useState("");const[open,setOpen]=useState(null);
-  const cats=GLOSSAIRE_DATA.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
+  const data=lang==="en"?GLOSSAIRE_DATA_EN:GLOSSAIRE_DATA;
+  const cats=data.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
   return(
     <div style={{padding:"16px 16px 88px"}}>
       <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
@@ -1921,8 +2228,9 @@ function Glossaire({onBack}){
   );
 }
 
-function Onboarding({onSubmit}){
+function Onboarding({onSubmit,lang}){
   const[name,setName]=useState("");const[country,setCountry]=useState("");const[step,setStep]=useState(1);const[err,setErr]=useState("");
+  const t=(fr,en)=>lang==="en"?en:fr;
   return(
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px"}}>
       <div style={{width:"100%",maxWidth:440}} className="up">
@@ -1930,34 +2238,34 @@ function Onboarding({onSubmit}){
           <img src={HM_LOGO} alt="Happy Mum's" style={{width:90,height:90,objectFit:"contain",filter:"drop-shadow(0 8px 18px rgba(232,0,61,.22))"}} className="pop"/>
           <div className="T" style={{fontSize:"2rem",fontWeight:800,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginTop:10,lineHeight:1.1}}>Quiz Dignité</div>
           <div style={{fontSize:".75rem",color:P.muted,letterSpacing:"2px",textTransform:"uppercase",marginTop:5}}>by Happy Mum's</div>
-          <div style={{fontSize:".82rem",color:P.rose,marginTop:6,fontWeight:700}}>✨ Le quiz qui change les règles</div>
+          <div style={{fontSize:".82rem",color:P.rose,marginTop:6,fontWeight:700}}>{t("✨ Le quiz qui change les règles","✨ The quiz that changes the rules")}</div>
         </div>
         <div style={{background:"rgba(255,255,255,.88)",backdropFilter:"blur(14px)",borderRadius:26,padding:24,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
           <div style={{textAlign:"center",marginBottom:18}}>
             <div style={{fontSize:"1.5rem",marginBottom:6}}>{step===1?"👋":"🌍"}</div>
-            <div className="T" style={{fontSize:"1.1rem",fontWeight:700,color:P.text}}>{step===1?"Comment t'appelles-tu ?":"D'où viens-tu ?"}</div>
-            <div style={{fontSize:".8rem",color:P.muted,marginTop:4}}>{step===1?"Ton prénom pour personnaliser ton expérience":"Ton pays pour mieux te comprendre"}</div>
+            <div className="T" style={{fontSize:"1.1rem",fontWeight:700,color:P.text}}>{step===1?t("Comment t'appelles-tu ?","What is your name?"):t("D'où viens-tu ?","Where are you from?")}</div>
+            <div style={{fontSize:".8rem",color:P.muted,marginTop:4}}>{step===1?t("Ton prénom pour personnaliser ton expérience","Your name to personalise your experience"):t("Ton pays pour mieux te comprendre","Your country to personalise your experience")}</div>
           </div>
           {step===1?(
-            <input value={name} onChange={e=>{setName(e.target.value);setErr("");}} placeholder="Ton prénom..."
-              onKeyDown={e=>e.key==="Enter"&&(name.trim()?setStep(2):setErr("Ton prénom est requis 🌸"))}
+            <input value={name} onChange={e=>{setName(e.target.value);setErr("");}} placeholder={t("Ton prénom...","Your first name...")}
+              onKeyDown={e=>e.key==="Enter"&&(name.trim()?setStep(2):setErr(t("Ton prénom est requis 🌸","Your name is required 🌸")))}
               style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":name?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:6,boxSizing:"border-box"}}/>
           ):(
-            <input value={country} onChange={e=>{setCountry(e.target.value);setErr("");}} placeholder="Ton pays (ex: Côte d'Ivoire)..."
-              onKeyDown={e=>e.key==="Enter"&&(country.trim()?onSubmit(name,country):setErr("Ton pays est requis 🌍"))}
+            <input value={country} onChange={e=>{setCountry(e.target.value);setErr("");}} placeholder={t("Ton pays (ex: Côte d'Ivoire)...","Your country (e.g. United Kingdom)...")}
+              onKeyDown={e=>e.key==="Enter"&&(country.trim()?onSubmit(name,country):setErr(t("Ton pays est requis 🌍","Your country is required 🌍")))}
               style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":country?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:6,boxSizing:"border-box"}}/>
           )}
           {err&&<div style={{fontSize:".78rem",color:"#E74C3C",fontWeight:700,marginBottom:10,textAlign:"center"}}>{err}</div>}
           {!err&&<div style={{height:14}}/>}
           <div style={{display:"flex",gap:10}}>
-            {step===2&&<button onClick={()=>{setStep(1);setErr("");}} style={{background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>← Retour</button>}
-            <button onClick={()=>{if(step===1){name.trim()?setStep(2):setErr("Ton prénom est requis 🌸");}else{country.trim()?onSubmit(name,country):setErr("Ton pays est requis 🌍");}}}
+            {step===2&&<button onClick={()=>{setStep(1);setErr("");}} style={{background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{t("← Retour","← Back")}</button>}
+            <button onClick={()=>{if(step===1){name.trim()?setStep(2):setErr(t("Ton prénom est requis 🌸","Your name is required 🌸"));}else{country.trim()?onSubmit(name,country):setErr(t("Ton pays est requis 🌍","Your country is required 🌍"));}}}
               style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)"}}>
-              {step===1?"Continuer →":"Commencer 🌸"}
+              {step===1?t("Continuer →","Continue →"):t("Commencer 🌸","Start 🌸")}
             </button>
           </div>
         </div>
-        <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+        <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – {t("Tous droits réservés","All rights reserved")}</p>
       </div>
     </div>
   );
@@ -2322,6 +2630,7 @@ export default function App(){
   }
 
   const[showDefiModal,setShowDefiModal]=useState(false);
+  const[lang,setLang]=useState(()=>localStorage.getItem("hm_lang")||"fr");
   const[quizLevels,setQuizLevels]=useState(()=>{try{return JSON.parse(localStorage.getItem("hm_quiz_levels")||"{}")}catch{return{}}});
   const[quizLevelNum,setQuizLevelNum]=useState(1);
   const[quizLevelCat,setQuizLevelCat]=useState(null);
@@ -2379,17 +2688,17 @@ export default function App(){
 
         {screen==="boot"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}><div style={{fontSize:64}} className="pulse">🌸</div></div>}
 
-        {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")}/>}
-        {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding}/>}
+        {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
+        {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
 
 
-        {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)}/>}
+        {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
 
         {screen==="privacy"&&<PrivacyPage onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
 
-        {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")}/>}
+        {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")} lang={lang}/>}
 
         {screen==="quiz_profiles"&&(
           <div style={{padding:"16px 16px 88px"}}>
@@ -2453,7 +2762,7 @@ export default function App(){
 
         {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
 
-        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
+        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} lang={lang} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
@@ -2555,7 +2864,7 @@ export default function App(){
 
       {showNav&&(
         <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(255,255,255,.93)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(255,107,157,.18)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.09)"}}>
-          {[{id:"home",icon:"🏠",label:"Accueil"},{id:"progress",icon:"🏆",label:"Progrès"},{id:"glossaire",icon:"📚",label:"Glossaire"},{id:"sos",icon:"🚨",label:"SOS"},{id:"snd",icon:soundOn?"🔊":"🔇",label:soundOn?"Son":"Muet"},{id:"privacy",icon:"🔐",label:"Confidentialité"}].map(n=>(
+          {[{id:"home",icon:"🏠",label:lang==="en"?"Home":"Accueil"},{id:"progress",icon:"🏆",label:lang==="en"?"Progress":"Progrès"},{id:"glossaire",icon:"📚",label:lang==="en"?"Glossary":"Glossaire"},{id:"sos",icon:"🚨",label:"SOS"},{id:"snd",icon:soundOn?"🔊":"🔇",label:lang==="en"?(soundOn?"Sound":"Mute"):(soundOn?"Son":"Muet")},{id:"privacy",icon:"🔐",label:lang==="en"?"Privacy":"Confidentialité"}].map(n=>(
             <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".52rem",fontWeight:700,gap:3,transition:"color .2s"}}>
               <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{n.label}
             </button>
