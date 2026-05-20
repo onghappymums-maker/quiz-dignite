@@ -985,14 +985,14 @@ const QUIZ_DB_QSJ={
 
 const LEVEL_CATS=['qcm','vf','mr','violence','qsj'];
 
-function QuizLevelSelect({profile,category,quizLevels,getCatLabel,onBack,onStart}){
+function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,onStart}){
   const[msg,setMsg]=useState('');
   const prog=quizLevels?.[profile]?.[category]||{};
   const n1=prog.n1??null;const n2=prog.n2??null;const n3=prog.n3??null;
   const lvls=[
-    {lv:1,icon:"🥉",label:"Niveau 1",sub:"Les bases",col:P.green,unlocked:true,score:n1},
-    {lv:2,icon:"🥈",label:"Niveau 2",sub:"Situations réelles",col:P.amber,unlocked:n1!==null&&n1>=8,score:n2},
-    {lv:3,icon:"🥇",label:"Niveau 3",sub:"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
+    {lv:1,icon:"🥉",label:lang==="en"?"Level 1":"Niveau 1",sub:lang==="en"?"The basics":"Les bases",col:P.green,unlocked:true,score:n1},
+    {lv:2,icon:"🥈",label:lang==="en"?"Level 2":"Niveau 2",sub:lang==="en"?"Real situations":"Situations réelles",col:P.amber,unlocked:n1!==null&&n1>=8,score:n2},
+    {lv:3,icon:"🥇",label:lang==="en"?"Level 3":"Niveau 3",sub:lang==="en"?"Rights & Commitment":"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
   ];
   const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
   return(
@@ -1001,7 +1001,7 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,onBack,onStart
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>{catIcons[category]||"📚"}</div>
         <div className="T" style={{color:"white",fontSize:"1.1rem",fontWeight:800,margin:"0 0 3px"}}>{getCatLabel(category)}</div>
-        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>3 niveaux · 10 questions · score min 8/10 pour avancer</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"3 levels · 10 questions · min score 8/10 to advance":"3 niveaux · 10 questions · score min 8/10 pour avancer"}</div>
       </div>
       {msg&&<div style={{background:"#FFF4D6",border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10,fontSize:13,fontWeight:800,color:P.amber}}>{msg}</div>}
       <div style={{display:"flex",flexDirection:"column",gap:11}}>
@@ -1010,13 +1010,13 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,onBack,onStart
           const isDone=l.score!==null&&l.score>=8;
           const tried=l.score!==null&&l.score<8;
           return(
-            <button key={l.lv} onClick={()=>{if(!l.unlocked){setMsg(`🔒 Score 8/10 au niveau ${l.lv-1} pour débloquer !`);setTimeout(()=>setMsg(''),2000);}else onStart(l.lv);}}
+            <button key={l.lv} onClick={()=>{if(!l.unlocked){setMsg(lang==="en"?`🔒 Score 8/10 on level ${l.lv-1} to unlock!`:`🔒 Score 8/10 au niveau ${l.lv-1} pour débloquer !`);setTimeout(()=>setMsg(''),2000);}else onStart(l.lv);}}
               style={{background:!l.unlocked?"#F5F0F8":"white",border:`2px solid ${!l.unlocked?"#D4C8E8":l.col+"33"}`,borderRadius:18,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,textAlign:"left",width:"100%",boxShadow:!l.unlocked?"none":`0 4px 14px ${l.col}18`,opacity:l.unlocked?1:0.72,cursor:!l.unlocked?"default":"pointer"}}>
               <div style={{width:48,height:48,borderRadius:15,background:!l.unlocked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{!l.unlocked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
               <div style={{flex:1}}>
                 <div className="F" style={{fontSize:17,fontWeight:600,color:!l.unlocked?P.muted:P.text}}>{l.label} <span style={{fontSize:13,color:!l.unlocked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
                 <div style={{fontSize:11,fontWeight:600,marginTop:2,color:!l.unlocked?"#C8B8D8":isDone?P.green:tried?"#E8003D":P.muted}}>
-                  {!l.unlocked?`🔒 Score 8/10 au niveau ${l.lv-1} requis`:isDone?`✅ ${l.score}/10 · Badge obtenu`:tried?`❌ ${l.score}/10 — Réessaie pour débloquer le suivant`:`10 questions · badge 8/10`}
+                  {!l.unlocked?(lang==="en"?`🔒 Score 8/10 on level ${l.lv-1} required`:`🔒 Score 8/10 au niveau ${l.lv-1} requis`):isDone?(lang==="en"?`✅ ${l.score}/10 · Badge earned`:`✅ ${l.score}/10 · Badge obtenu`):tried?(lang==="en"?`❌ ${l.score}/10 — Try again to unlock next`:`❌ ${l.score}/10 — Réessaie pour débloquer le suivant`):(lang==="en"?"10 questions · badge 8/10":"10 questions · badge 8/10")}
                 </div>
               </div>
               <div style={{fontSize:17,fontWeight:900,color:!l.unlocked?"#C8B8D8":isDone?P.green:l.col}}>{!l.unlocked?"🔒":isDone?"✅":"›"}</div>
@@ -1097,7 +1097,7 @@ function TRing({secs,onExpire,tkey}){
 
 function LvlSelect({gDef,onSelect,onBack,unlocked}){
   const[msg,setMsg]=useState(false);
-  const lvls=[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
+  const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Beginner",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Intermediate",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Expert",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
   return(
     <div style={{padding:"14px 18px 40px"}}>
       <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Menu</button>
@@ -1106,7 +1106,7 @@ function LvlSelect({gDef,onSelect,onBack,unlocked}){
         <h2 className="T" style={{color:"white",fontSize:22,fontWeight:700,margin:"0 0 4px"}}>{gDef.t}</h2>
         <p style={{color:"rgba(255,255,255,.85)",fontSize:13,fontWeight:600,margin:0}}>{gDef.d}</p>
       </div>
-      {msg&&<div className="up" style={{background:P.amberSoft,border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10}}><span style={{fontSize:13,fontWeight:800,color:P.amber}}>💛 Termine le niveau précédent d'abord !</span></div>}
+      {msg&&<div className="up" style={{background:P.amberSoft,border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10}}><span style={{fontSize:13,fontWeight:800,color:P.amber}}>💛 {lang==="en"?"Complete the previous level first!":"Termine le niveau précédent d'abord !"}</span></div>}
       <div style={{display:"flex",flexDirection:"column",gap:11}}>
         {lvls.map(l=>{const locked=l.lv>unlocked;return(
           <button key={l.lv} onClick={()=>locked?(setMsg(true),setTimeout(()=>setMsg(false),2000)):onSelect(l.lv)}
@@ -1114,7 +1114,7 @@ function LvlSelect({gDef,onSelect,onBack,unlocked}){
             <div style={{width:48,height:48,borderRadius:15,background:locked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{locked?"🔒":l.e}</div>
             <div style={{flex:1}}>
               <div className="F" style={{fontSize:17,fontWeight:600,color:locked?P.muted:P.text}}>{l.t} <span style={{fontSize:13,color:locked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
-              {locked&&<div style={{fontSize:11,color:"#C8B8D8",fontWeight:600,marginTop:2}}>🔒 Termine le niveau {l.lv-1} pour débloquer</div>}
+              {locked&&<div style={{fontSize:11,color:"#C8B8D8",fontWeight:600,marginTop:2}}>🔒 {lang==="en"?`Complete level ${l.lv-1} to unlock`:`Termine le niveau ${l.lv-1} pour débloquer`}</div>}
             </div>
             <div style={{fontSize:17,color:locked?"#C8B8D8":l.col,fontWeight:900}}>{locked?"🔒":"›"}</div>
           </button>
@@ -1601,7 +1601,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   if(!q)return null;
   const tPct=(timerV/15)*100;
   const tClr=timerV>7?"linear-gradient(90deg,#FF9A9E,#FF6B9D)":"linear-gradient(90deg,#E8003D,#FF5555)";
-  const catLabel={qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
+  const catLabel=lang==="en"?{qcm:"MCQ",vf:"True / False",mr:"Myth or Reality",defi:"Challenge",urgence:"Emergency",violence:"Violence & Safety",ca_1:"Learn & Understand — L1",ca_2:"Learn & Understand — L2",ca_3:"Learn & Understand — L3",qsj:"Who am I?"}:{qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
@@ -1620,7 +1620,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
             {!showDA?<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"12px 24px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={()=>setShowDA(true)}>Voir la réponse 👀</button>
             :<div style={{background:"white",borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
           </div>
-          {showDA&&<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={next}>{qi+1>=qs.length?"Voir les résultats 🏆":"Défi suivant →"}</button>}
+          {showDA&&<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next challenge →":"Défi suivant →")}</button>}
         </div>
       ):(
         <div>
@@ -1653,8 +1653,8 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
           </div>
           {showFb&&category==="violence"&&[1,5,8].includes(qi)&&(
             <div className="up" style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.18)",borderRadius:15,padding:13,textAlign:"center",marginTop:12}}>
-              <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>💬 Besoin d'aide ?</div>
-              <div className="T" style={{color:P.red,marginTop:4,fontWeight:800}}>116 · 1308 (écoute gratuite)</div>
+              <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>💬 {lang==="en"?"Need help?":"Besoin d'aide ?"}</div>
+              <div className="T" style={{color:P.red,marginTop:4,fontWeight:800}}>116 · 1308</div>
             </div>
           )}
         </div>
@@ -1699,12 +1699,12 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
       <div style={{textAlign:"center",padding:"20px 0 14px"}}>
         <span style={{fontSize:"4.2rem",display:"block",marginBottom:10}} className="pop">{pct>=100?"🏆":pct>=80?"⭐":pct>=60?"🌟":pct>=40?"📚":"🌱"}</span>
         <div className="T" style={{fontSize:"2.8rem",fontWeight:800,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{finalScore/10}/{qLen}</div>
-        <div style={{fontSize:".88rem",color:P.muted,marginTop:6,lineHeight:1.5}}>{pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !"}</div>
+        <div style={{fontSize:".88rem",color:P.muted,marginTop:6,lineHeight:1.5}}>{lang==="en"?(pct>=100?"Perfect! You are a true champion!":pct>=80?"Excellent! You are an expert!":pct>=60?"Well done! Keep it up!":pct>=40?"Not bad! You are making progress!":"It's a start — play again to improve!"):(pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !")}</div>
         <div className="T" style={{fontSize:".85rem",fontWeight:700,color:P.rose,marginTop:8}}>+{finalScore} pts · Total: {totalPts} pts · {lvl.icon} {lvl.label}</div>
       </div>
       {newBadges.length>0&&(
         <div style={{marginBottom:4}}>
-          <div className="T" style={{color:P.red,marginBottom:8,fontWeight:800}}>🎉 Badge débloqué !</div>
+          <div className="T" style={{color:P.red,marginBottom:8,fontWeight:800}}>{lang==="en"?"🎉 Badge unlocked!":"🎉 Badge débloqué !"}</div>
           {newBadges.map((b,i)=>(
             <div key={i} style={{background:"linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,107,157,.18))",border:"2px solid gold",borderRadius:17,padding:"13px 16px",margin:"9px 0",display:"flex",alignItems:"center",gap:13}} className="up">
               <span style={{fontSize:"2rem"}}>{b.icon}</span>
@@ -1750,8 +1750,8 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
         <button onClick={onHome} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Home 🏠":"Accueil 🏠"}</button>
       </div>
       <div style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.18)",borderRadius:15,padding:13,textAlign:"center",marginTop:12}}>
-        <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>📞 Besoin d'aide ?</div>
-        <div className="T" style={{color:P.red,marginTop:4,fontWeight:800}}>110 · 1308 (écoute gratuite)</div>
+        <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>📞 {lang==="en"?"Need help?":"Besoin d'aide ?"}</div>
+        <div className="T" style={{color:P.red,marginTop:4,fontWeight:800}}>110 · 1308</div>
       </div>
       <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
       <div style={{textAlign:"center",marginTop:6}}>
@@ -2282,7 +2282,7 @@ function Onboarding({onSubmit,lang}){
 }
 
 // ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,onQuiz,onGames,onNav}){
+function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onNav}){
   return(
     <div style={{paddingBottom:88}}>
       <div style={{background:HERO,padding:"26px 20px 24px",borderRadius:"0 0 34px 34px",boxShadow:"0 10px 34px rgba(232,0,61,.22)",marginBottom:16}}>
@@ -2310,7 +2310,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,onQuiz,onGames,onNav}
           <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,rgba(232,0,61,.15),rgba(255,107,157,.25))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:"1.15rem",fontWeight:800,color:P.red}}>Quiz Dignité</div>
-            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>3 profils · 6 catégories de questions</div>
+            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"3 profiles · 6 question categories":"3 profils · 6 catégories de questions"}</div>
             <div style={{display:"flex",gap:5,marginTop:7}}>
               {["👧","👦","👨‍👩‍👧"].map((e,i)=><span key={i} style={{background:"rgba(232,0,61,.08)",borderRadius:8,padding:"2px 8px",fontSize:".7rem",fontWeight:700,color:P.red}}>{e}</span>)}
             </div>
@@ -2320,8 +2320,8 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,onQuiz,onGames,onNav}
         <button onClick={onGames} style={{width:"100%",background:"white",border:`2px solid rgba(79,179,246,.2)`,borderRadius:24,padding:"20px 18px",textAlign:"left",marginBottom:16,boxShadow:"0 6px 24px rgba(79,179,246,.1)",display:"flex",alignItems:"center",gap:16,cursor:"pointer"}}>
           <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,rgba(79,179,246,.15),rgba(20,184,166,.25))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🕹️</div>
           <div style={{flex:1}}>
-            <div className="F" style={{fontSize:"1.15rem",fontWeight:800,color:P.blue}}>Jeux Éducatifs</div>
-            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>10 mini-jeux · 3 niveaux chacun</div>
+            <div className="F" style={{fontSize:"1.15rem",fontWeight:800,color:P.blue}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</div>
+            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"10 mini-games · 3 levels each":"10 mini-jeux · 3 niveaux chacun"}</div>
             <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>
               {["🎯","🧩","🃏","🍽️","📅","🆘","💡","🖼️","🔍","🌿"].map((e,i)=><span key={i} style={{fontSize:"1rem"}}>{e}</span>)}
             </div>
@@ -2331,12 +2331,12 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,onQuiz,onGames,onNav}
         <div style={{background:"rgba(232,0,61,.06)",border:"1.5px solid rgba(232,0,61,.15)",borderRadius:18,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}} onClick={()=>onNav("sos")}>
           <span style={{fontSize:"1.6rem"}}>🚨</span>
           <div>
-            <div className="T" style={{fontSize:".88rem",fontWeight:800,color:P.red}}>Urgence & Aide</div>
-            <div style={{fontSize:".75rem",color:P.muted,fontWeight:600}}>116 · 1308 · 110 — Gratuits 24h/24</div>
+            <div className="T" style={{fontSize:".88rem",fontWeight:800,color:P.red}}>{lang==="en"?"Emergency & Help":"Urgence & Aide"}</div>
+            <div style={{fontSize:".75rem",color:P.muted,fontWeight:600}}>116 · 1308 · 110 — {lang==="en"?"Free 24/7":"Gratuits 24h/24"}</div>
           </div>
           <span style={{marginLeft:"auto",fontSize:18,color:P.red,fontWeight:900}}>›</span>
         </div>
-        <p style={{textAlign:"center",fontSize:".66rem",color:P.muted,marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+        <p style={{textAlign:"center",fontSize:".66rem",color:P.muted,marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
       </div>
     </div>
   );
@@ -2395,7 +2395,7 @@ function GamesHub({soundOn,toggleSound,unlocked,onGame}){
 }
 
 // ── MAIN APP ───────────────────────────────────────────────────
-function CaLevels({profile,caProgress,getCaUnlocked,onBack,onStart}){
+function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
   const[caMsg,setCaMsg]=useState(false);
   const unlk=getCaUnlocked(profile);
   const done=caProgress[profile]||[];
@@ -2701,7 +2701,7 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} lang={lang} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
@@ -2783,9 +2783,9 @@ export default function App(){
           </div>
         )}
 
-        {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} onBack={()=>setScreen("quiz_cats")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
+        {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} lang={lang} onBack={()=>setScreen("quiz_cats")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
 
-        {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
+        {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} lang={lang} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
 
         {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} lang={lang} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
@@ -2868,7 +2868,7 @@ export default function App(){
           <div style={{padding:"16px 16px 88px"}}>
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:14}}>🚨 Urgence & Aide</div>
             <p style={{fontSize:".84rem",color:P.muted,marginBottom:16,lineHeight:1.6,fontWeight:600}}>Numéros <strong>gratuits</strong> disponibles <strong>24h/24</strong> :</p>
-            {[{n:"1308",l:"SOS Violences & Aide aux femmes",i:"🆘"},{n:"116",l:"Allô Enfant en Danger",i:"👶"},{n:"110",l:"Police Secours",i:"👮"}].map(n=>(
+            {(lang==="en"?[{n:"1308",l:"SOS Violence & Support",i:"🆘"},{n:"116",l:"Child in Danger",i:"👶"},{n:"110",l:"Police Emergency",i:"👮"}]:[{n:"1308",l:"SOS Violences & Aide aux femmes",i:"🆘"},{n:"116",l:"Allô Enfant en Danger",i:"👶"},{n:"110",l:"Police Secours",i:"👮"}]).map(n=>(
               <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:17,padding:"15px 18px",marginBottom:11,display:"flex",alignItems:"center",gap:13,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left",boxShadow:"0 5px 18px rgba(232,0,61,.26)"}}>
                 <span style={{fontSize:"1.7rem"}}>{n.i}</span>
                 <div><div className="T" style={{fontSize:"1.9rem",fontWeight:800}}>{n.n}</div><div style={{fontSize:".78rem",opacity:.9}}>{n.l}</div></div>
