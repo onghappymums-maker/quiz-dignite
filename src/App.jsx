@@ -1560,7 +1560,7 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 // ── QUIZ COMPONENTS ────────────────────────────────────────────
 function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   const scoreRef=useRef(0);
-  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(lang==="en"?(CA_DB_EN[profile]?.[category]||[]):(CA_DB[profile]?.[category]||[])):
+  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
     category==="qsj"?(level===2?(QUIZ_DB_QSJ.n2[profile]||[]):level===3?(QUIZ_DB_QSJ.n3[profile]||[]):(QUIZ_DB_QSJ.n1[profile]||[])):
     (LEVEL_CATS.includes(category)&&profile!=='parent')
       ?(lang==="en"?(level===2?(QUIZ_DB_N2_EN[profile]?.[category]||[]):level===3?(QUIZ_DB_N3_EN[profile]?.[category]||[]):(QUIZ_DB_EN[profile]?.[category]||[])):(level===2?(QUIZ_DB_N2[profile]?.[category]||[]):level===3?(QUIZ_DB_N3[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[])))
@@ -1645,9 +1645,9 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
             </div>
             {showFb&&(
               <div style={{marginTop:15,padding:"15px 17px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
-                <div className="T" style={{fontSize:".97rem",fontWeight:800,marginBottom:5,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?"⏰ Temps écoulé !":sel===q.correct?"✅ Bonne réponse !":"❌ Pas tout à fait..."}</div>
+                <div className="T" style={{fontSize:".97rem",fontWeight:800,marginBottom:5,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
                 <div style={{fontSize:".83rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
-                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:13}} onClick={next}>{qi+1>=qs.length?"Voir les résultats 🏆":"Question suivante →"}</button>
+                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:13}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
               </div>
             )}
           </div>
@@ -1663,7 +1663,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   );
 }
 
-function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,storyDataUrl,userName,onReplay,onHome,onShareWA,onNextLevel}){
+function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,storyDataUrl,userName,lang,onReplay,onHome,onShareWA,onNextLevel}){
   const pct=Math.round((finalScore/(qLen*10))*100);
   const isLeveled=LEVEL_CATS.includes(category)&&profile!=='parent';
   const passed=pct>=80&&isLeveled;
@@ -1714,7 +1714,7 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
         </div>
       )}
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
-      <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>Partager ton score 🌍</div>
+      <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>{lang==="en"?"Share your score 🌍":"Partager ton score 🌍"}</div>
       {storyDataUrl?(
         <div>
           <div style={{fontSize:".74rem",color:P.muted,textAlign:"center",marginBottom:8,fontWeight:600}}>📸 Carte à partager</div>
@@ -1742,12 +1742,12 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
       {hasNextLevel&&onNextLevel&&(
         <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"15px 22px",fontWeight:800,fontSize:"1rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)",marginBottom:10}}>
-          Niveau {levelNum+1} →  🥈
+          {lang==="en"?`Level ${levelNum+1} → 🥈`:`Niveau ${levelNum+1} →  🥈`}
         </button>
       )}
       <div style={{display:"flex",gap:10}}>
-        <button onClick={onReplay} style={{flex:1,background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>Rejouer 🔄</button>
-        <button onClick={onHome} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>Accueil 🏠</button>
+        <button onClick={onReplay} style={{flex:1,background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Play again 🔄":"Rejouer 🔄"}</button>
+        <button onClick={onHome} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Home 🏠":"Accueil 🏠"}</button>
       </div>
       <div style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.18)",borderRadius:15,padding:13,textAlign:"center",marginTop:12}}>
         <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>📞 Besoin d'aide ?</div>
@@ -1965,8 +1965,18 @@ function WelcomeScreen({onStart,lang,setLang}){
 }
 
 
-function PrivacyPage({onBack}){
-  const sections=[
+function PrivacyPage({onBack,lang}){
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const sections=lang==="en"?[
+    ['📋 Data Collection','Quiz Dignité only collects information you enter voluntarily (first name, country). This data is stored locally on your device (localStorage) and is never transmitted to external servers.'],
+    ['📊 Progress Data','Your progress (points, badges, streak) is stored locally on your device. This data belongs to you and will be deleted if you clear your browser data.'],
+    ['🔍 Google Analytics','We use Google Analytics 4 to measure overall audience (visits, countries, general behaviour). This data is anonymised. No personally identifiable data is shared with Google.'],
+    ['👶 Protection of Minors','Quiz Dignité is designed for young people from the age of 12. We do not collect sensitive data. No user account is created.'],
+    ['🍪 Cookies','We do not use advertising or tracking cookies. The localStorage used does not constitute a cookie in the legal sense.'],
+    ['🤝 Data Sharing','ONG Happy Mum\'s does not sell, rent or share any personal data with third parties for commercial purposes.'],
+    ['✏️ Your Rights','You can delete your data at any time by clearing the local storage of your browser. Contact: onghappymums@gmail.com'],
+    ['📞 Contact','ONG Happy Mum\'s — Abidjan, Côte d\'Ivoire\n📱 +225 07 13 51 26 98\n📧 onghappymums@gmail.com\n🌐 quizdignite.org'],
+  ]:[
     ['📋 Collecte des données','Quiz Dignité collecte uniquement les informations saisies volontairement (prénom, pays). Ces données sont stockées localement sur votre appareil (localStorage) et ne sont jamais transmises à des serveurs externes.'],
     ['📊 Données de progression','Votre progression (points, badges, streak) est stockée localement sur votre appareil. Ces données vous appartiennent et disparaissent si vous effacez les données de votre navigateur.'],
     ['🔍 Google Analytics','Nous utilisons Google Analytics 4 pour mesurer l\'audience globale (visites, pays, comportement général). Ces données sont anonymisées. Aucune donnée personnelle identifiable n\'est transmise à Google.'],
@@ -1978,19 +1988,19 @@ function PrivacyPage({onBack}){
   ];
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{t("← Retour","← Back")}</button>
       <div style={{textAlign:"center",marginBottom:22}}>
         <div style={{fontSize:"2rem",marginBottom:6}}>🔐</div>
-        <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red}}>Politique de confidentialité</div>
+        <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red}}>{t("Politique de confidentialité","Privacy Policy")}</div>
         <div style={{fontSize:".75rem",color:P.muted,marginTop:4}}>ONG Happy Mum's — Quiz Dignité</div>
       </div>
-      {sections.map(([t,x],i)=>(
+      {sections.map(([title,x],i)=>(
         <div key={i} style={{background:"rgba(255,255,255,.88)",borderRadius:16,padding:16,marginBottom:10,border:"1.5px solid rgba(255,107,157,.12)"}}>
-          <div className="T" style={{fontSize:".9rem",fontWeight:800,color:P.red,marginBottom:7}}>{t}</div>
+          <div className="T" style={{fontSize:".9rem",fontWeight:800,color:P.red,marginBottom:7}}>{title}</div>
           <div style={{fontSize:".82rem",color:"#6B4E6B",lineHeight:1.7,whiteSpace:"pre-line"}}>{x}</div>
         </div>
       ))}
-      <p style={{fontSize:".65rem",color:P.muted,textAlign:"center",marginTop:16}}>Dernière mise à jour : mai 2026 · © ONG Happy Mum's</p>
+      <p style={{fontSize:".65rem",color:P.muted,textAlign:"center",marginTop:16}}>{t("Dernière mise à jour : mai 2026 · © ONG Happy Mum's","Last updated: May 2026 · © ONG Happy Mum's")}</p>
     </div>
   );
 }
@@ -2696,7 +2706,7 @@ export default function App(){
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
 
-        {screen==="privacy"&&<PrivacyPage onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
+        {screen==="privacy"&&<PrivacyPage onBack={()=>{setScreen("hub");setNavActive("home");}} lang={lang}/>}
 
         {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")} lang={lang}/>}
 
@@ -2705,13 +2715,17 @@ export default function App(){
             <div style={{textAlign:"center",marginBottom:16,paddingTop:6}}>
               <img src={HM_LOGO} alt="" style={{width:60,height:60,objectFit:"contain"}}/>
               <div className="T" style={{fontSize:"1.5rem",fontWeight:800,color:P.red,marginTop:6}}>Quiz Dignité</div>
-              <div style={{fontSize:".82rem",color:P.muted,marginTop:4,fontWeight:700}}>Qui utilise l'application ?</div>
+              <div style={{fontSize:".82rem",color:P.muted,marginTop:4,fontWeight:700}}>{lang==="en"?"Who is using the app?":"Qui utilise l'application ?"}</div>
             </div>
-            {[
+            {(lang==="en"?[
+              {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"I am a girl",d:"Understand my body, break the taboos",dec:"🌸💕"},
+              {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"I am a boy",d:"Education, respect and empathy",dec:"🦁🛡️"},
+              {id:"parent",cls:"linear-gradient(135deg,#FFECD2,#FCB69F)",e:"👨‍👩‍👧",n:"Parent / Educator",d:"Communication and support",dec:"❤️📖"},
+            ]:[
               {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"Je suis une fille",d:"Comprendre mon corps, briser les tabous",dec:"🌸💕"},
               {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"Je suis un garçon",d:"Éducation, respect et empathie",dec:"🦁🛡️"},
               {id:"parent",cls:"linear-gradient(135deg,#FFECD2,#FCB69F)",e:"👨‍👩‍👧",n:"Parent / Éducateur",d:"Communication et accompagnement",dec:"❤️📖"},
-            ].map(p=>(
+            ]).map(p=>(
               <button key={p.id} onClick={()=>{SND.play("ok");ga("profil",{p:p.id});setProfile(p.id);setScreen("quiz_cats");}}
                 style={{borderRadius:22,padding:"18px 20px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,border:"2.5px solid transparent",marginBottom:12,width:"100%",background:p.cls}}>
                 <span style={{fontSize:"2.6rem",filter:"drop-shadow(0 3px 6px rgba(0,0,0,.12))"}}>{p.e}</span>
@@ -2722,26 +2736,37 @@ export default function App(){
                 <span style={{fontSize:"1.3rem",opacity:.4}}>{p.dec}</span>
               </button>
             ))}
-            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
           </div>
         )}
 
         {screen==="quiz_cats"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>setScreen("quiz_profiles")} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
-            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:4}}>{profile==="fille"?"👧 Je suis une fille":profile==="garcon"?"👦 Je suis un garçon":"👨‍👩‍👧 Parent / Éducateur"}</div>
-            <div style={{fontSize:".8rem",color:P.muted,marginBottom:15,fontWeight:600}}>Choisis un type de questions :</div>
+            <button onClick={()=>setScreen("quiz_profiles")} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:4}}>
+              {profile==="fille"?(lang==="en"?"👧 I am a girl":"👧 Je suis une fille"):profile==="garcon"?(lang==="en"?"👦 I am a boy":"👦 Je suis un garçon"):(lang==="en"?"👨‍👩‍👧 Parent / Educator":"👨‍👩‍👧 Parent / Éducateur")}
+            </div>
+            <div style={{fontSize:".8rem",color:P.muted,marginBottom:15,fontWeight:600}}>{lang==="en"?"Choose a question type:":"Choisis un type de questions :"}</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
-              {[
+              {(lang==="en"?[
+                {id:"qcm",icon:"🧠",name:"Multiple Choice",info:"10 multiple choice questions"},
+                {id:"vf",icon:"✅",name:"True / False",info:"10 true or false questions"},
+                {id:"mr",icon:"💡",name:"Myth or Reality",info:"10 questions against taboos"},
+                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Daily Challenge":"Educational Challenges",info:profile==='fille'?"Your daily challenge 🌸":"5 challenges — oral discussion"},
+                {id:"ca",icon:"📖",name:"Learn & Understand",info:"3 levels · badges to earn"},
+                {id:"qsj",icon:"🔍",name:"Who am I?",info:"3 levels · educational riddles"},
+                {id:"violence",icon:"🛡️",name:"Violence & Safety",info:"10 questions — recognise and react"},
+                {id:"urgence",icon:"🚨",name:"Emergency & Help",info:"5 essential questions"},
+              ]:[
                 {id:"qcm",icon:"🧠",name:"QCM",info:"10 questions à choix multiples"},
                 {id:"vf",icon:"✅",name:"Vrai / Faux",info:"10 questions Vrai ou Faux"},
                 {id:"mr",icon:"💡",name:"Mythe ou Réalité",info:"10 questions contre les tabous"},
-{id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
+                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
                 {id:"ca",icon:"📖",name:"Comprendre & Apprendre",info:"3 niveaux · badges à gagner"},
                 {id:"qsj",icon:"🔍",name:"Qui suis-je ?",info:"3 niveaux · devinettes éducatives"},
                 {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
                 {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
-              ].map(c=>(
+              ]).map(c=>(
                 <div key={c.id} onClick={()=>{
                   if(profile==='fille'&&c.id==='defi'){setShowDefiModal(true);}
                   else if(c.id==='ca'){setScreen("ca_levels");}
@@ -2764,7 +2789,7 @@ export default function App(){
 
         {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} lang={lang} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
-        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
+        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} onGame={startGame}/>}
 
