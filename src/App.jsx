@@ -1581,7 +1581,7 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,on
   const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>{catIcons[category]||"📚"}</div>
         <div className="T" style={{color:"white",fontSize:"1.1rem",fontWeight:800,margin:"0 0 3px"}}>{getCatLabel(category)}</div>
@@ -2189,7 +2189,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-        <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>← Retour</button>
+        <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
           <button onClick={()=>{SND.on=!SND.on;}} style={{background:"rgba(255,255,255,.8)",border:"none",borderRadius:"50%",width:32,height:32,cursor:"pointer",fontSize:".95rem"}}>🔊</button>
           <div style={{background:G,color:"white",borderRadius:12,padding:"5px 14px",fontSize:13,fontWeight:800}}>⭐ {dispScore}</div>
@@ -2705,7 +2705,7 @@ function Glossaire({onBack,lang}){
   const cats=data.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>📚</div>
         <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
@@ -2848,7 +2848,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
           <div>
             <div style={{fontSize:40,lineHeight:1}}>🕹️</div>
             <h1 className="T" style={{margin:"5px 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
-            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>10 jeux · 3 niveaux chacun ✨</p>
+            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"10 games · 3 levels each ✨":"10 jeux · 3 niveaux chacun ✨"}</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
         </div>
@@ -2894,18 +2894,25 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
 // ── MAIN APP ───────────────────────────────────────────────────
 function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
   const[caMsg,setCaMsg]=useState(false);
-  const unlk=getCaUnlocked(profile);
-  const done=caProgress[profile]||[];
-  const lvls=[{lv:1,icon:"🥉",label:"Niveau 1",sub:"Découvrir",col:P.green},{lv:2,icon:"🥈",label:"Niveau 2",sub:"Approfondir",col:P.amber},{lv:3,icon:"🥇",label:"Niveau 3",sub:"Maîtriser",col:P.red}];
+  const unlk=getCaUnlocked(profile);const done=caProgress[profile]||[];
+  const lvls=lang==="en"?[
+    {lv:1,icon:"🥉",label:"Level 1",sub:"Foundations",col:P.green},
+    {lv:2,icon:"🥈",label:"Level 2",sub:"Deepening",col:P.amber},
+    {lv:3,icon:"🥇",label:"Level 3",sub:"Mastery",col:P.red},
+  ]:[
+    {lv:1,icon:"🥉",label:"Niveau 1",sub:"Découvrir",col:P.green},
+    {lv:2,icon:"🥈",label:"Niveau 2",sub:"Approfondir",col:P.amber},
+    {lv:3,icon:"🥇",label:"Niveau 3",sub:"Maîtriser",col:P.red},
+  ];
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Retour</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"20px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:42,marginBottom:6}}>📖</div>
-        <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:800,margin:"0 0 4px"}}>Comprendre & Apprendre</div>
-        <div style={{color:"rgba(255,255,255,.85)",fontSize:".82rem",fontWeight:600}}>3 niveaux · 10 questions chacun · badges à gagner</div>
+        <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:800,margin:"0 0 4px"}}>{lang==="en"?"Learn & Understand":"Comprendre & Apprendre"}</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".82rem",fontWeight:600}}>{lang==="en"?"3 levels · 10 questions each · earn a badge at every stage":"3 niveaux · 10 questions chacun · badges à gagner"}</div>
       </div>
-      {caMsg&&<div className="up" style={{background:P.amberSoft,border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10}}><span style={{fontSize:13,fontWeight:800,color:P.amber}}>💛 Termine le niveau précédent d'abord !</span></div>}
+      {caMsg&&<div className="up" style={{background:P.amberSoft,border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10}}><span style={{fontSize:13,fontWeight:800,color:P.amber}}>💛 {lang==="en"?"Complete the previous level first!":"Termine le niveau précédent d'abord !"}</span></div>}
       <div style={{display:"flex",flexDirection:"column",gap:11}}>
         {lvls.map(l=>{
           const locked=l.lv>unlk;const isDone=done.includes(l.lv);
@@ -2915,7 +2922,7 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
             <div style={{width:48,height:48,borderRadius:15,background:locked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{locked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
             <div style={{flex:1}}>
               <div className="F" style={{fontSize:17,fontWeight:600,color:locked?P.muted:P.text}}>{l.label} <span style={{fontSize:13,color:locked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
-              <div style={{fontSize:11,color:locked?"#C8B8D8":isDone?P.green:P.muted,fontWeight:600,marginTop:2}}>{locked?`🔒 Termine le niveau ${l.lv-1} pour débloquer`:isDone?`✅ Complété · Badge ${badge?.name||""} obtenu`:"10 questions · badge à gagner"}</div>
+              <div style={{fontSize:11,color:locked?"#C8B8D8":isDone?P.green:P.muted,fontWeight:600,marginTop:2}}>{locked?(lang==="en"?`🔒 Complete Level ${l.lv-1} to unlock`:`🔒 Termine le niveau ${l.lv-1} pour débloquer`):isDone?(lang==="en"?`✅ Done · ${badge?.name||""}`:`✅ Complété · Badge ${badge?.name||""} obtenu`):(lang==="en"?"10 questions · earn a badge (8/10)":"10 questions · badge à gagner")}</div>
             </div>
             <div style={{fontSize:17,color:locked?"#C8B8D8":isDone?P.green:l.col,fontWeight:900}}>{locked?"🔒":isDone?"✅":"›"}</div>
           </button>);
