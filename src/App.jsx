@@ -379,6 +379,124 @@ const CA_DB = {
   },
 };
 
+const CA_DB_EN={
+  fille:{
+    ca_1:[
+      Q("What is the menstrual cycle?","A monthly process involving hormonal changes and menstruation","A type of diet","An exercise programme","A medical treatment",0,"The menstrual cycle is a natural, monthly hormonal process of the female body."),
+      Q("What is the uterus?","The organ where a baby develops during pregnancy","A type of muscle","A bone in the pelvis","Part of the digestive system",0,"The uterus carries and nourishes a baby during pregnancy."),
+      Q("How long do periods usually last?","3 to 7 days","1 day","2 weeks","1 month",0,"Most periods last between 3 and 7 days."),
+      Q("What should you do if you have very severe period pain?","See a doctor","Ignore it completely","Exercise intensely","Eat more sugar",0,"Severe period pain may signal endometriosis — always consult a doctor."),
+      Q("What is a sanitary towel used for?","Absorbing menstrual blood","Treating wounds","Cleaning skin","Covering bruises",0,"Sanitary towels keep you comfortable and clean during your period."),
+      Q("What does good menstrual hygiene involve?","Changing your pad every 4-6 hours and washing regularly","Bathing once a week","Avoiding water completely","Wearing very tight clothing",0,"Good hygiene prevents infections and promotes wellbeing."),
+      Q("What is the role of oestrogen?","Regulating the cycle and supporting reproductive development","Controlling digestion","Building muscle","Helping you sleep",0,"Oestrogen is key to reproductive health and the menstrual cycle."),
+      Q("What is menarche?","A girl's first period","The end of menstruation","A type of hormone","A medical procedure",0,"Menarche refers to the very first menstrual period a girl experiences."),
+      Q("What can cause period cramps?","Contractions of the uterus","Poor posture","Eating too much","Drinking too much water",0,"Cramps are caused by the uterus contracting to shed its lining."),
+      Q("What is puberty?","A stage of physical and emotional development","A type of illness","A dietary phase","A social event",0,"Puberty is when the body transitions from childhood to adulthood."),
+    ],
+    ca_2:[
+      Q("What is premenstrual syndrome (PMS)?","Symptoms before a period, such as mood changes and fatigue","A type of infection","A hormonal treatment","A medical emergency",0,"PMS affects many people — mood changes, bloating and fatigue are common signs."),
+      Q("What is endometriosis?","A condition causing very painful periods","A dietary disorder","A hormonal supplement","A type of allergy",0,"Endometriosis affects 1 in 10 women and can cause intense pain."),
+      Q("What is ovulation?","The release of an egg from the ovary","The start of menstruation","The production of hormones","The end of the cycle",0,"Ovulation occurs approximately mid-cycle, around day 14."),
+      Q("What is a reusable sanitary product?","A washable pad or menstrual cup","A disposable pad","A type of medication","A dietary supplement",0,"Reusable products are eco-friendly and just as effective."),
+      Q("What is the function of progesterone?","Preparing the uterus for a possible pregnancy","Regulating blood pressure","Controlling digestion","Producing red blood cells",0,"Progesterone prepares the uterine lining for a potential embryo."),
+      Q("Why is iron important during menstruation?","To replace iron lost through blood","To boost energy only","To prevent infections","To regulate hormones",0,"Iron is lost during menstruation and needs to be replaced through diet."),
+      Q("What is a gynaecologist?","A doctor who specialises in female reproductive health","A bone specialist","A heart specialist","An eye specialist",0,"A gynaecologist is the right person to consult about menstrual health."),
+      Q("What is hormonal imbalance?","When hormone levels are not in their normal range","When you exercise too much","When you sleep too little","When you eat too much sugar",0,"Hormonal imbalance can affect the menstrual cycle and overall health."),
+      Q("How can you track your menstrual cycle?","By recording your start and end dates each month","By watching TV","By eating less","By sleeping more",0,"Tracking your cycle helps you understand your body and plan ahead."),
+      Q("What is menstrual poverty?","Lack of access to sanitary products","A medical condition","A dietary issue","A social event",0,"Menstrual poverty prevents girls from attending school and managing their health."),
+    ],
+    ca_3:[
+      Q("What is the endometrium?","The uterine lining that sheds during periods","A hormone","An ovarian cyst","Part of the fallopian tube",0,"The endometrium builds up and is shed each month during menstruation."),
+      Q("What is menstrual stigma?","Negative social attitudes toward menstruation","A medical condition","A cultural celebration","A dietary habit",0,"Menstrual stigma causes shame and prevents girls from accessing support."),
+      Q("What rights should every girl have regarding menstrual health?","Access to products, education and dignity without shame","No specific rights","Only educational rights","Rights only at school",0,"Menstrual health rights include access to products, education and dignity."),
+      Q("What is the impact of menstrual poverty on education?","Girls miss school due to lack of sanitary products","No impact","Improved concentration","Only affects older students",0,"Menstrual poverty causes millions of girls to miss school every year."),
+      Q("What is the role of a Dignity Box?","Providing free sanitary products in schools","Selling products","Distributing medicines","Providing school meals",0,"Dignity Boxes by ONG Happy Mum's ensure girls can stay in school during their period."),
+      Q("What is the connection between nutrition and menstrual health?","Good nutrition supports hormonal balance and reduces symptoms","No connection","More sugar helps","Only fasting helps",0,"Eating well, especially iron-rich foods, supports menstrual health."),
+      Q("What is a menstrual health advocate?","Someone who promotes education and dignity around periods","Only a doctor","A product seller","A government official",0,"Advocates work to end taboos and ensure access to menstrual health resources."),
+      Q("What is the importance of breaking menstrual taboos?","It protects health, dignity and access to education","It is not important","It only matters in some countries","It is only for adults",0,"Breaking taboos helps millions of girls access the health and education they deserve."),
+      Q("What is the role of schools in menstrual health?","To provide a safe space and access to products and information","To ignore the issue","To involve only health teachers","To leave it to parents only",0,"Schools play a vital role in normalising menstrual health and providing support."),
+      Q("What is the message of the Dignity Quiz?","Everyone deserves to be treated with dignity and respect","Only girls need dignity","Dignity is a luxury","Only adults deserve dignity",0,"The Dignity Quiz promotes dignity, education and respect for all."),
+    ],
+  },
+  garcon:{
+    ca_1:[
+      Q("What is the menstrual cycle?","A monthly process in the female body involving hormonal changes","A type of sport","A dietary programme","A medical procedure",0,"The menstrual cycle is a natural, monthly hormonal process."),
+      Q("What is puberty?","A stage of physical and emotional development","A medical condition","A dietary change","A social event",0,"Puberty is when the body transitions from childhood to adulthood."),
+      Q("What is the uterus?","The organ where a baby develops","A type of muscle","A bone","Part of the digestive system",0,"The uterus carries and nourishes a baby during pregnancy."),
+      Q("How can a boy show respect for a girl during her period?","By being kind and understanding","By making jokes","By ignoring her","By asking intrusive questions",0,"Empathy and support are always the right response."),
+      Q("What is menstrual poverty?","Lack of access to sanitary products","A medical condition","A type of allergy","A social event",0,"Menstrual poverty prevents girls from attending school."),
+      Q("What does consent mean?","Freely and clearly agreeing to something","Being told what to do","Following orders","Staying silent",0,"Consent must be freely given and can always be withdrawn."),
+      Q("What is empathy?","Understanding and sharing the feelings of another person","Being very clever","Having great physical strength","Being popular",0,"Empathy is key to respectful and caring relationships."),
+      Q("What is the role of the ovaries?","Producing eggs and female hormones","Filtering blood","Controlling breathing","Producing bile",0,"The ovaries produce eggs and hormones like oestrogen."),
+      Q("What makes someone a positive male ally?","Showing respect, empathy and speaking out against injustice","Being the strongest","Having the most friends","Ignoring problems",0,"A positive ally uses their voice and actions to support others."),
+      Q("Why is it important to break menstrual taboos?","To protect health and dignity for all","It is not important","It only matters for girls","It is only for adults",0,"Breaking taboos protects the health and dignity of millions."),
+    ],
+    ca_2:[
+      Q("What is testosterone?","The main male sex hormone","A female hormone","A type of vitamin","A dietary supplement",0,"Testosterone drives male puberty changes."),
+      Q("What is endometriosis?","A condition causing severe period pain in women","A male hormone imbalance","An allergy","A bone condition",0,"Endometriosis affects 1 in 10 women — boys should know this to be supportive."),
+      Q("What is online harassment?","Sending threatening or humiliating messages online","Playing video games","Sending birthday wishes","Sharing funny content",0,"Online harassment causes real harm and is illegal in many places."),
+      Q("What is a healthy relationship?","One based on respect, trust and equality","One based on control","One where one person decides everything","One with no disagreements",0,"Healthy relationships are built on mutual respect, trust and equality."),
+      Q("What is gender equality?","Equal rights and opportunities for all genders","Only women's rights","Men and women being identical","A political party",0,"Gender equality means the same rights and opportunities regardless of gender."),
+      Q("What is emotional intelligence?","Understanding and managing your own and others' emotions","Being very clever","Having great strength","Being popular",0,"Emotional intelligence helps build healthy relationships."),
+      Q("What is the role of a Dignity Box?","Providing free sanitary products in schools","A type of classroom","A medical kit","A donation box",0,"Dignity Boxes ensure girls can manage their periods at school with dignity."),
+      Q("What is bullying?","Repeated aggressive behaviour intended to hurt or intimidate","A type of sport","A friendly competition","A misunderstanding",0,"Bullying causes serious psychological harm."),
+      Q("What is positive bystander behaviour?","Speaking up and reporting what you witness","Staying out of it","Remaining silent","Encouraging the conflict",0,"Active bystanders help prevent and stop harm."),
+      Q("What is menstrual stigma?","Negative attitudes that cause shame around periods","A medical condition","A celebration","A dietary habit",0,"Menstrual stigma prevents open health discussions and causes harm."),
+    ],
+    ca_3:[
+      Q("What is gender-based violence?","Violence targeting someone because of their gender","A sports competition","A type of argument","A family matter",0,"Gender-based violence includes physical, sexual and emotional harm."),
+      Q("What is the importance of consent education?","It prevents abuse and builds respectful relationships","It is not important","It is only for adults","It is only for romantic relationships",0,"Consent education is fundamental to preventing abuse."),
+      Q("What is a positive male role model?","Someone who shows respect, empathy and responsibility","Someone who is the strongest","Someone who is the most popular","Someone who never shows emotion",0,"Positive male role models show that strength comes from empathy and integrity."),
+      Q("Why do girls miss school due to menstruation?","Often due to lack of sanitary products or pain","Because they choose to","Because they are ill","Because of school rules",0,"Menstrual poverty and severe pain are the main reasons girls miss school."),
+      Q("What is the impact of breaking menstrual taboos?","It protects health, education and dignity","No real impact","Only affects some communities","Only matters for older people",0,"Breaking taboos allows millions of girls to access the health and education they deserve."),
+      Q("What is the role of young people in gender equality?","To educate themselves, speak up and be positive allies","To stay silent","To wait for adults to act","To only lead by example at home",0,"Young people are powerful agents of change in the fight for equality."),
+      Q("What is the message of the Dignity Quiz?","Everyone deserves dignity, respect and education","Only girls need these","Dignity is a luxury","Only adults deserve dignity",0,"The Dignity Quiz promotes dignity and respect for all."),
+      Q("What can every boy do for gender equality?","Educate himself, respect others and speak out against injustice","Do nothing","Only support girls at school","Only help when asked",0,"Every boy can make a difference by being informed, respectful and courageous."),
+      Q("What is the link between menstrual education and school attendance?","Educated communities help girls stay in school","No link exists","It only affects secondary school","Only doctors can help",0,"When everyone understands menstruation, girls face less stigma and stay in school."),
+      Q("What does it mean to be a dignified community?","One where every person is treated with respect and care","One with strict rules only","One focused only on discipline","One with no open discussion",0,"A dignified community is the best environment for everyone to thrive."),
+    ],
+  },
+  parent:{
+    ca_1:[
+      Q("What is puberty?","A stage of physical and emotional development","A medical condition","A dietary change","A social phase",0,"Puberty is when a child's body and mind develop into adulthood."),
+      Q("What is the best way to talk to a child about periods?","Calmly, honestly and at an age-appropriate level","By avoiding the topic","By using complex medical terms","By waiting until problems arise",0,"Age-appropriate, honest conversations help children feel informed and supported."),
+      Q("What is a Dignity Box?","A free sanitary product distribution point","A type of school","A medical clinic","A community centre",0,"Dignity Boxes by ONG Happy Mum's provide free products in schools."),
+      Q("What is the role of oestrogen?","Regulating the menstrual cycle and reproductive development","Controlling digestion","Building muscle","Regulating sleep",0,"Oestrogen is essential for reproductive health and the menstrual cycle."),
+      Q("What should a parent do if their child has severe period pain?","Consult a doctor","Tell them to rest","Ignore the pain","Give them sweets",0,"Severe pain may indicate endometriosis — medical advice is essential."),
+      Q("How can parents reduce menstrual stigma?","By speaking openly and positively about periods","By avoiding the topic","By laughing it off","By only discussing it with girls",0,"Open, positive conversations at home help normalise periods for all children."),
+      Q("What is active listening?","Giving full attention, validating feelings and asking questions","Just hearing words","Giving advice immediately","Waiting to speak",0,"Active listening builds trust and helps children feel genuinely heard."),
+      Q("What is menarche?","A girl's first period","The end of periods","A hormone treatment","A type of infection",0,"Menarche refers to the first menstrual period a girl experiences."),
+      Q("What is menstrual poverty?","Inability to access or afford sanitary products","A medical condition","A dietary issue","A cultural practice",0,"Menstrual poverty is a barrier to education and health for many girls."),
+      Q("What is the role of a parent in puberty education?","To provide accurate, compassionate information at home","To leave it entirely to the school","To avoid the topic","To wait for the child to ask",0,"Parents play a vital role in preparing children for puberty."),
+    ],
+    ca_2:[
+      Q("What is endometriosis?","A condition causing severe period pain in women","A vitamin deficiency","A skin condition","A digestive disorder",0,"Endometriosis affects 1 in 10 women and can greatly impact quality of life."),
+      Q("Why should parents include boys in menstrual education?","Informed boys become respectful and supportive allies","It is not necessary","It embarrasses boys","It is only for older boys",0,"Inclusive education creates more empathetic and respectful communities."),
+      Q("What is the psychological impact of menstrual stigma?","Shame, isolation and low self-esteem","No impact","Only affects adults","Only affects rural communities",0,"Menstrual stigma causes serious and lasting psychological harm."),
+      Q("What is emotional abuse?","Using words or actions to control, humiliate or frighten someone","Speaking loudly","Giving instructions","Offering advice",0,"Emotional abuse causes long-lasting psychological harm."),
+      Q("What does a supportive home environment look like?","Safe, open and respectful of the child's emotions","Strict rules only","No questions allowed","Focused only on academics",0,"A supportive home includes emotional safety and open communication."),
+      Q("What is a healthy parent-child relationship built on?","Trust, respect and unconditional love","Authority only","Material gifts","Academic performance",0,"Trust, respect and unconditional love are the foundations of healthy relationships."),
+      Q("What is the role of ONG Happy Mum's?","Providing sanitary products and menstrual education","Running medical clinics only","Providing school meals","Building schools only",0,"ONG Happy Mum's promotes menstrual dignity through products and education."),
+      Q("What are warning signs that a child may be in difficulty?","Sudden behavioural changes, withdrawal or anxiety","Getting better grades","Making new friends","Being more talkative",0,"Behavioural changes often signal that a child is distressed."),
+      Q("What is child protection?","Safeguarding children from harm and ensuring their rights","A school programme only","A government policy only","Something only for social workers",0,"Child protection is everyone's responsibility."),
+      Q("What does unconditional love from a parent mean?","Loving a child regardless of their behaviour or difficulties","Only when they behave","Only when they succeed","Sometimes",0,"Unconditional love provides a secure foundation for a child's development."),
+    ],
+    ca_3:[
+      Q("What is menstrual activism?","Advocating for access to products, education and dignity","Selling products","A medical speciality","A government policy",0,"Menstrual activism works to end stigma and ensure menstrual health is a right."),
+      Q("What is the connection between menstrual health and school attendance?","Girls without products often miss school","No connection","Only affects very young girls","Not a concern",0,"Menstrual poverty is a major barrier to girls' education worldwide."),
+      Q("What is the importance of inclusive menstrual education?","It benefits everyone by reducing stigma and promoting health","It is only for girls","It is only for teenagers","It is the school's job only",0,"Inclusive education creates more empathetic and healthier communities."),
+      Q("What is a benevolent educational approach?","Guiding children with kindness, patience and respect","Strict punishment","Ignoring behaviour","Competing with other parents",0,"Benevolent education guides children through love and understanding."),
+      Q("What is the impact of open family discussions about puberty?","Reduced anxiety and increased confidence in children","No impact","It confuses children","Only matters for teenagers",0,"Open discussions reduce anxiety and build children's confidence."),
+      Q("What is the role of a trusted adult?","To listen, support and protect a child","To be strict","To give orders","To compete with peers",0,"A trusted adult provides safety and unconditional support."),
+      Q("What is the message of the Dignity Quiz?","Everyone deserves dignity, respect and education","Only girls need this","Dignity is a luxury","Only adults deserve it",0,"The Dignity Quiz promotes dignity and respect for all people."),
+      Q("What is a menstrual health policy?","Guidelines supporting menstrual health in a community","A school schedule","A medical treatment","A dietary plan",0,"Policies that support menstrual health protect girls' dignity and education."),
+      Q("What is the most powerful tool in preventing gender-based violence?","Education and awareness","Punishment only","Silence","Physical strength",0,"Education and awareness are the most effective tools in preventing violence."),
+      Q("What is a dignified community?","One where every person can grow with respect, care and dignity","One focused only on discipline","One with strict rules","One with no open conversation",0,"A dignified community is the best environment for every child's development."),
+    ],
+  },
+};
+
+
 const CA_BADGES = {
   fille:[
     {id:"ca_f_l1",icon:"🥉",name:"Exploratrice"},
@@ -888,7 +1006,7 @@ const QUIZ_DB_EN={
       MR("Menstrual education should start before puberty.",false,"True. Early education helps children feel prepared and informed."),
       MR("Only girls need to learn about periods.",true,"This is a myth. Boys who understand menstruation are better allies."),
       MR("A child who asks about their body is being inappropriate.",true,"This is a myth. Curiosity about the body is natural and healthy."),
-      MR("A Box de Dignite provides free sanitary products.",false,"True. Boxes de Dignite help girls who cannot afford sanitary products."),
+      MR("A Dignity Box provides free sanitary products.",false,"True. Dignity Boxes help girls who cannot afford sanitary products."),
       MR("Endometriosis is rare and not worth knowing about.",true,"This is a myth. Endometriosis affects 1 in 10 women and awareness is important."),
       MR("Puberty education helps reduce anxiety in children.",false,"True. Understanding changes reduces fear and confusion."),
       MR("Supporting children emotionally during puberty is unnecessary.",true,"This is a myth. Emotional support during puberty is extremely important."),
@@ -1130,7 +1248,7 @@ const QUIZ_DB_N2_EN={
       Q("What is puberty?","A stage of physical and emotional development","A medical condition","A dietary change","A social phase",0,"Puberty is when a child's body and mind develop into adulthood."),
       Q("What is the best way to talk to a child about periods?","Calmly and honestly at an appropriate age","By avoiding the topic","By using complex medical terms","By waiting until problems arise",0,"Age-appropriate, honest conversations help children feel informed."),
       Q("What is menstrual poverty?","Inability to access or afford sanitary products","A medical condition","A dietary issue","A cultural practice",0,"Menstrual poverty is a barrier to education and health."),
-      Q("What is a Box de Dignite?","A free sanitary product distribution point","A type of school","A medical clinic","A community centre",0,"Boxes de Dignite by ONG Happy Mum's provide free products in schools."),
+      Q("What is a Dignity Box?","A free sanitary product distribution point","A type of school","A medical clinic","A community centre",0,"Dignity Boxes by ONG Happy Mum's provide free products in schools."),
       Q("What is the role of oestrogen?","Regulating the menstrual cycle and reproductive development","Controlling digestion","Building muscle","Regulating sleep",0,"Oestrogen is essential for reproductive health."),
       Q("What should a parent do if their child has very painful periods?","Consult a doctor","Tell them to rest","Give them sweets","Ignore the pain",0,"Severe pain may indicate endometriosis and must be investigated."),
       Q("How can parents reduce menstrual stigma?","By speaking openly and positively about periods","By avoiding the topic","By laughing it off","By only discussing it with girls",0,"Open conversations at home help normalise periods."),
@@ -1186,7 +1304,7 @@ const QUIZ_DB_N3_EN={
       Q("What is menstrual stigma?","Negative social attitudes toward menstruation","A medical condition","A dietary habit","A positive celebration",0,"Menstrual stigma leads to shame and prevents girls from getting support."),
       Q("What rights should every girl have regarding menstrual health?","Access to products and information without shame","No specific rights","Only educational rights","Rights only at school",0,"Menstrual health rights include access to products, education and dignity."),
       Q("What is the impact of menstrual poverty on education?","Girls miss school due to lack of sanitary products","No impact","Improved concentration","Only affects older students",0,"Menstrual poverty causes millions of girls to miss school every year."),
-      Q("What is the role of a Box de Dignite?","Providing free sanitary products in schools","Selling products","Distributing medicines","Providing school meals",0,"Boxes de Dignite by ONG Happy Mum's ensure girls can stay in school."),
+      Q("What is the role of a Dignity Box?","Providing free sanitary products in schools","Selling products","Distributing medicines","Providing school meals",0,"Dignity Boxes by ONG Happy Mum's ensure girls can stay in school."),
       Q("What is the connection between nutrition and menstrual health?","Good nutrition supports hormonal balance","No connection","More sugar helps","Only fasting helps",0,"Eating well, especially iron-rich foods, supports menstrual health."),
       Q("What is a menstrual health advocate?","Someone who promotes education and dignity around periods","A doctor only","A product seller","A government official",0,"Advocates work to end taboos and ensure access to menstrual health resources."),
       Q("What is the message of the Dignity Quiz?","Everyone deserves to be treated with dignity and respect","Only girls need dignity","Dignity is a luxury","Only adults deserve dignity",0,"The Dignity Quiz promotes dignity, education and respect for all."),
@@ -1236,7 +1354,7 @@ const QUIZ_DB_N3_EN={
       Q("Why do girls miss school due to menstruation?","Often because of pain or lack of sanitary products","Because they want to","Because they are ill","Because of school rules",0,"Menstrual poverty and severe pain are the main reasons."),
       Q("What is consent?","Freely and clearly agreeing to something","Saying nothing","Being pressured","Following the crowd",0,"Consent must be freely given and can be withdrawn at any time."),
       Q("What is menstrual stigma?","Negative social attitudes toward periods","A medical condition","A celebration","A dietary practice",0,"Menstrual stigma causes shame and prevents open health discussions."),
-      Q("What is a Box de Dignite?","A free sanitary product distribution point in schools","A type of classroom","A medical kit","A donation box",0,"Boxes de Dignite ensure girls can manage their periods with dignity."),
+      Q("What is a Dignity Box?","A free sanitary product distribution point in schools","A type of classroom","A medical kit","A donation box",0,"Dignity Boxes ensure girls can manage their periods with dignity."),
       Q("What is gender equality?","Equal rights and opportunities for all genders","Men and women being identical","Only women's rights","A political party",0,"Gender equality means the same rights and opportunities regardless of gender."),
       Q("Why is menstrual education important for boys?","It builds empathy and helps boys be respectful allies","It is not important","It is only for medical students","It is not relevant",0,"Understanding menstruation helps boys treat girls with empathy."),
       Q("What does breaking a taboo mean?","Openly discussing a topic that was previously considered shameful","Creating a new rule","Starting an argument","Disrespecting tradition",0,"Breaking taboos around periods promotes health, dignity and understanding."),
@@ -1330,7 +1448,124 @@ const QUIZ_DB_N3_EN={
   },
 };
 
-const QUIZ_DB_QSJ_EN=QUIZ_DB_QSJ;
+
+const QUIZ_DB_QSJ_EN={
+  n1:{
+    fille:[
+      Q("🧠 I arrive every month for many girls and women. What am I?","Periods","Pregnancy","A fever","Fatigue",0,"Periods are a natural and monthly process of the female body."),
+      Q("🧠 I protect clothing during periods. What am I?","A sanitary towel","A handkerchief","A plaster","A sponge",0,"A sanitary towel absorbs menstrual blood to keep you comfortable and clean."),
+      Q("🧠 I am the part of the body where a baby can grow. What am I?","The uterus","The stomach","The liver","The lungs",0,"The uterus is the organ that carries and nourishes a baby during pregnancy."),
+      Q("🧠 Some girls feel me in their stomach during periods. What am I?","Period cramps","A cough","Shivers","Dizziness",0,"Cramps are caused by the uterus contracting. They are normal but should not be severe."),
+      Q("🧠 I am important during periods to stay clean and healthy. What am I?","Good hygiene","Sport","Sleep","Dieting",0,"Good hygiene during periods prevents infections."),
+      Q("🧠 I am red and natural during periods. What am I?","Menstrual blood","Dye","Fruit juice","Paint",0,"Menstrual blood is natural — it does not mean illness or impurity."),
+      Q("🧠 I can listen to, support and respect a girl who has her period. What am I?","A caring and supportive person","A strict teacher","An indifferent stranger","A judgemental person",0,"Supporting someone during their period is an act of solidarity and respect."),
+      Q("🧠 I am a natural process of the body — not an illness and not a shame. What am I?","A natural body process","A serious infection","An injury","A punishment",0,"Periods are natural — never an illness and never a shame."),
+      Q("🧠 I am the stage of life when a girl gets her first period. What am I?","Puberty","Childhood","Old age","Birth",0,"Puberty is the developmental stage when the first period arrives."),
+      Q("🧠 I am what you should do regularly during periods to avoid infections. What am I?","Changing your sanitary product","Sleeping more","Drinking coffee","Avoiding water",0,"Changing your pad every 4-6 hours is essential for hygiene and health."),
+    ],
+    garcon:[
+      Q("🧠 I beat in your chest and pump blood around the body. What am I?","The heart","The lung","The liver","The brain",0,"The heart pumps blood around the body approximately 70 times per minute."),
+      Q("🧠 I am important when a friend is talking or feeling sad. What am I?","Listening carefully","Criticising","Cold silence","Judging",0,"Knowing how to listen to a friend in difficulty is an essential quality."),
+      Q("🧠 I am something natural that many girls experience every month. What am I?","Periods","Pregnancy","Illness","Fatigue",0,"Periods are a natural and monthly process of the female body."),
+      Q("🧠 I protect teeth when used every day. What am I?","A toothbrush","Chewing gum","Cold water","A towel",0,"Brushing teeth twice daily prevents decay and infections."),
+      Q("🧠 I am a harmful attitude that hurts others at school. What am I?","Bullying","Sport","Studying","Friendship",0,"Bullying is repeated harmful behaviour that causes serious harm."),
+      Q("🧠 I am the activity that helps your body stay healthy. What am I?","Sport","Television","Video games","Permanent rest",0,"Sport strengthens the body and improves mental wellbeing."),
+      Q("🧠 I can support my sister, mother or friend during her period. What am I?","A caring and supportive boy","A doctor","A teacher","A stranger",0,"Any boy can choose to be a respectful and supportive ally."),
+      Q("🧠 I am necessary to stay clean every day. What am I?","Good hygiene","Intense sport","Make-up","Medication",0,"Daily hygiene prevents illness and promotes wellbeing."),
+      Q("🧠 I am an emotion you might feel before an exam. What am I?","Stress","Constant joy","Anger","Boredom",0,"Stress before an exam is normal and can even help you focus."),
+      Q("🧠 I am important for growing up well and learning. What am I?","Sleep","Video games","Television","Sweets",0,"Good sleep is essential for memory, growth and health."),
+    ],
+    parent:[
+      Q("🧠 I am important when a child wants to talk without fear. What am I?","Listening with care","Judging","Punishing","Indifference",0,"Kind listening creates a safe space that children need to speak freely."),
+      Q("🧠 I am something natural that many girls and women experience every month. What am I?","Periods","Pregnancy","Illness","Menopause",0,"Periods are a natural process — speaking about them openly is essential."),
+      Q("🧠 I am an attitude that can stop a child from asking questions. What am I?","Judgement","Patience","Listening","Support",0,"Judging a child who asks questions prevents them from getting informed."),
+      Q("🧠 I am used during periods to prevent leaks. What am I?","A sanitary product","A plaster","A bath towel","A tissue",0,"Sanitary products are essential for comfort and hygiene during periods."),
+      Q("🧠 I am a stage where the body and emotions change rapidly. What am I?","Adolescence","Childhood","Retirement","Birth",0,"Adolescence involves great physical and emotional transformations that need support."),
+      Q("🧠 I am essential for a child to feel safe at home or at school. What am I?","Respect","Strictness","Competition","Pressure",0,"Respect creates a secure environment where children can thrive."),
+      Q("🧠 I am a harmful reaction when a young person talks about their body or emotions. What am I?","Mockery","Careful listening","A calm response","Support",0,"Mocking a young person who opens up destroys their trust."),
+      Q("🧠 I am important for good health and to avoid infections. What am I?","Good hygiene","Extreme sport","Medication","Strict dieting",0,"Daily hygiene is the foundation of good health."),
+      Q("🧠 I am an emotion many young people feel when talking about periods for the first time. What am I?","Embarrassment","Immediate pride","Enthusiasm","Indifference",0,"Embarrassment is normal — that is why early education is so important."),
+      Q("🧠 I am what a parent or educator can give to help a young person grow up with confidence. What am I?","Unconditional support","Pressure","Excessive strictness","Silence",0,"Parental support is one of the most important factors in a young person's wellbeing."),
+    ],
+  },
+  n2:{
+    fille:[
+      Q("🧠 I am the name for a girl's very first period. What am I?","Menarche","Ovulation","Menopause","Puberty",0,"Menarche is the medical term for a girl's very first period."),
+      Q("🧠 I release an egg approximately once a month. What am I?","The ovary","The kidney","The liver","The stomach",0,"The ovaries produce and release eggs during ovulation."),
+      Q("🧠 I am the stage of the cycle when an egg is released. What am I?","Ovulation","Menstruation","Menarche","Menopause",0,"Ovulation occurs approximately on day 14 of the menstrual cycle."),
+      Q("🧠 I generally last between 21 and 35 days. What am I?","The menstrual cycle","Pregnancy","Puberty","Menopause",0,"The menstrual cycle varies between 21 and 35 days depending on the person."),
+      Q("🧠 I can be disposable or reusable for managing periods. What am I?","A sanitary product","A medication","A plaster","A compress",0,"There are disposable pads and reusable washable pads."),
+      Q("🧠 I can appear before periods with fatigue, mood changes or spots. What am I?","Premenstrual syndrome","The flu","An allergy","Chronic fatigue",0,"PMS affects many people in the days before their period."),
+      Q("🧠 Even though I do not bleed, I must respect people who have their period. What am I?","A respectful ally","A doctor","A stranger","A distant relative",0,"Anyone can be an ally — respect does not require experiencing the same thing."),
+      Q("🧠 I am a false belief that can create shame around periods. What am I?","A taboo","A truth","A law","A positive tradition",0,"Taboos around periods create shame and prevent education."),
+      Q("🧠 I am what is important to do regularly to avoid infections during periods. What am I?","Changing your sanitary product regularly","Drinking milk","Avoiding water","Only resting",0,"Changing your product regularly is the most important hygiene rule during periods."),
+      Q("🧠 I am a very strong pain during periods that may need medical attention. What am I?","Severe period pain","Mild cramps","A normal fever","Passing fatigue",0,"Intense pain can indicate endometriosis — seeking medical advice is important."),
+    ],
+    garcon:[
+      Q("🧠 I am a stage when the body changes as you grow. What am I?","Puberty","Childhood","Old age","Birth",0,"Puberty is a natural stage where the body and emotions transform."),
+      Q("🧠 I am a quality that helps you understand the emotions of others. What am I?","Empathy","Indifference","Anger","Competition",0,"Empathy allows you to put yourself in someone else's shoes."),
+      Q("🧠 I am a false belief that creates taboos around periods. What am I?","A prejudice","A scientific fact","A medical fact","A law",0,"Prejudices about periods create unnecessary shame."),
+      Q("🧠 I am important to prevent illness and stay healthy. What am I?","Washing your hands","Eating sweets","Watching TV","Staying up late",0,"Washing hands is one of the simplest ways to prevent illness."),
+      Q("🧠 I am a disrespectful reaction to someone's differences. What am I?","Mockery","Support","Encouragement","Respect",0,"Mocking someone's differences is disrespectful and harmful."),
+      Q("🧠 I am the organ that helps you think, learn and remember. What am I?","The brain","The heart","The stomach","The lungs",0,"The brain is the control centre of the body and all thought."),
+      Q("🧠 I am a difficulty some girls face during periods due to a lack of sanitary products. What am I?","Menstrual poverty","Shyness","Laziness","Loneliness",0,"Menstrual poverty prevents thousands of girls from attending school."),
+      Q("🧠 I am important to build good relationships with others. What am I?","Respect","Mockery","Indifference","Competition",0,"Respect is the foundation of any healthy relationship."),
+      Q("🧠 I am an emotion that can arise when you lack confidence. What am I?","Fear or embarrassment","Pride","Joy","Enthusiasm",0,"Lacking confidence can create fear — it is a completely normal emotion."),
+      Q("🧠 I am what you should do when a friend is being bullied. What am I?","Help them and tell a trusted adult","Ignore the situation","Film it","Mock them too",0,"Supporting the victim and alerting a trusted adult is the right response."),
+    ],
+    parent:[
+      Q("🧠 I am a stage when a young person begins to experience physical and emotional changes. What am I?","Puberty","Childhood","Old age","Menopause",0,"Puberty is a natural stage that needs gentle, caring support."),
+      Q("🧠 I am an important quality for understanding what a child feels. What am I?","Empathy","Strictness","Indifference","Competition",0,"Empathy allows you to understand and support a child's emotions."),
+      Q("🧠 I am a subject that is still taboo in some families despite my importance. What am I?","Menstruation","Sport","Food","Sleep",0,"Breaking the taboo around menstruation protects health and builds confidence."),
+      Q("🧠 I am a difficulty experienced by girls who do not have access to sanitary products. What am I?","Menstrual poverty","Shyness","Lack of sleep","School fatigue",0,"Menstrual poverty prevents girls from attending school — a major educational concern."),
+      Q("🧠 I am a positive reaction when a child asks a sensitive question. What am I?","Responding calmly and kindly","Punishing the child","Ignoring the question","Mocking them",0,"Calm responses encourage children to keep asking questions."),
+      Q("🧠 I am essential for a healthy environment at home or at school. What am I?","Open communication","Punishment","Silence","Competition",0,"Open communication creates an environment of trust and safety."),
+      Q("🧠 I am a harmful educational practice that humiliates or belittles a child. What am I?","Verbal violence","Encouragement","Patience","Support",0,"Verbal violence leaves lasting marks on a child's self-confidence."),
+      Q("🧠 I am a space where sanitary products can be made available free of charge. What am I?","A Dignity Box","A sports room","A canteen","A library",0,"Dignity Boxes by ONG Happy Mum's provide free products in schools."),
+      Q("🧠 I am important for the mental wellbeing of teenagers. What am I?","Open dialogue","Forced silence","Academic pressure","Competition",0,"Open and caring dialogue is essential for teenagers' mental health."),
+      Q("🧠 I am what an educator must avoid when a young person makes a mistake. What am I?","Humiliating them","Listening and correcting","Supporting them","Encouraging them",0,"Humiliating a young person destroys their confidence — correction must be done with kindness."),
+    ],
+  },
+  n3:{
+    fille:[
+      Q("🧠 I am the complete set of hormonal changes that prepare the body each month. What am I?","The menstrual cycle","Pregnancy","Menopause","Puberty",0,"The menstrual cycle is a complex hormonal process that prepares the body each month."),
+      Q("🧠 I can prevent girls from going to school when they lack sanitary products. What am I?","Menstrual poverty","Shyness","Bad weather","Distance",0,"Menstrual poverty prevents thousands of girls from accessing education every month."),
+      Q("🧠 I am a condition that can cause very severe period pain. What am I?","Endometriosis","Chickenpox","Appendicitis","Migraine",0,"Endometriosis affects 1 in 10 women and causes intense pain."),
+      Q("🧠 I am an action that involves educating about periods without shame. What am I?","Menstrual awareness-raising","Punishment","Silence","Taboo",0,"Awareness-raising breaks taboos and protects girls' health."),
+      Q("🧠 I am a space where sanitary products can be provided free of charge. What am I?","A Dignity Box","A classroom","A library","A sports ground",0,"Dignity Boxes by ONG Happy Mum's provide free products for girls."),
+      Q("🧠 I am a harmful behaviour — mocking a girl because of her period. What am I?","Menstrual stigmatisation","Solidarity","Support","Kindness",0,"Mocking someone's period is a form of psychological violence."),
+      Q("🧠 I am essential for making schools more welcoming for girls during periods. What am I?","Access to sanitary products","School holidays","Exams","Grades",0,"Access to products at school allows girls to learn without disruption."),
+      Q("🧠 I am a professional you can consult if your cycle is irregular or your pain is unusual. What am I?","A gynaecologist or health professional","A dentist","An optician","A physiotherapist",0,"The gynaecologist is the specialist for female health — consult them without shame."),
+      Q("🧠 I am an emotion many young people feel when talking about periods for the first time. What am I?","Embarrassment and shyness","Immediate joy","Total indifference","Pride",0,"Embarrassment is normal — that is why menstrual education matters so much."),
+      Q("🧠 I am what periods should be — a normal, natural subject without shame. What am I?","A natural reality of the human body","A shameful secret","A rare illness","A forbidden subject",0,"Periods are normal, natural and deserve to be discussed freely."),
+    ],
+    garcon:[
+      Q("🧠 I am an important skill for resolving conflicts without violence. What am I?","Dialogue","Fighting","Fleeing","Total silence",0,"Dialogue is the most peaceful and effective way to resolve conflict."),
+      Q("🧠 I am a condition that can cause severe period pain. What am I?","Endometriosis","Diabetes","Chickenpox","Asthma",0,"Endometriosis affects 1 in 10 women — important to know to be supportive."),
+      Q("🧠 I am harmful behaviour that puts someone down because of their gender or appearance. What am I?","Discrimination","Encouragement","Kindness","Support",0,"Discrimination causes harm and creates unjust inequalities."),
+      Q("🧠 I am an essential quality in a positive leader. What am I?","Responsibility","Arrogance","Indifference","Domination",0,"A true leader takes responsibility for their actions and their impact on others."),
+      Q("🧠 I am a problem that affects students who lack access to hygiene or education. What am I?","Inequality","Luck","Talent","Laziness",0,"Inequalities in access to education and hygiene affect thousands of young people."),
+      Q("🧠 I am an action that involves informing young people without shame or taboo. What am I?","Awareness-raising","Punishment","Silence","Prohibition",0,"Awareness-raising breaks taboos and educates without shame."),
+      Q("🧠 I am a behaviour that involves respecting others' limits and emotions. What am I?","Consent and respect","Indifference","Domination","Pressure",0,"Respecting limits is non-negotiable in any relationship."),
+      Q("🧠 I am important for maintaining good mental health. What am I?","Talking about your emotions","Keeping everything inside","Pretending to be fine","Avoiding others",0,"Expressing emotions is essential for mental health."),
+      Q("🧠 I am what a boy can become when he protects, respects and supports others. What am I?","A positive ally","An authoritarian leader","A passive spectator","A stranger",0,"Being a positive ally means acting with respect and care for others."),
+      Q("🧠 I am a world where everyone is treated with respect and dignity. What am I?","Equality","Competition","Hierarchy","Domination",0,"Equality is a fundamental right — every person deserves respect and dignity."),
+    ],
+    parent:[
+      Q("🧠 I am an educational approach that helps young people speak freely without shame. What am I?","Benevolent education","Punitive education","Silence","Authoritarianism",0,"Benevolent education creates a space of freedom and trust."),
+      Q("🧠 I am a condition that can cause severe period pain in some women. What am I?","Endometriosis","Diabetes","Chronic migraine","Arthritis",0,"Endometriosis affects 1 in 10 women — recognising it is vital."),
+      Q("🧠 I am a behaviour that involves respecting a young person's emotions and limits. What am I?","Active listening","Indifference","Domination","Pressure",0,"Active listening shows a child that their emotions truly matter."),
+      Q("🧠 I am a problem that can cause girls to miss school during their period. What am I?","Menstrual poverty","Fear of exams","Fatigue","Lack of sleep",0,"Without sanitary products, some girls stay at home rather than go to school."),
+      Q("🧠 I am an essential quality in a trusted parent or educator. What am I?","Patience","Excessive strictness","Indifference","Competition",0,"Patience allows you to support a child without rushing or pressuring them."),
+      Q("🧠 I am an action that helps reduce taboos around periods and adolescence. What am I?","Awareness-raising","Silence","Punishment","Prohibition",0,"Educational awareness-raising reduces shame and protects young people."),
+      Q("🧠 I am a fundamental need for a young person to develop healthily. What am I?","Emotional security","Academic pressure","Competition","Strictness",0,"A child who feels emotionally safe develops more fully and confidently."),
+      Q("🧠 I am a harmful attitude that can destroy a child's trust. What am I?","Contempt and dismissiveness","Encouragement","Patience","Listening",0,"Contempt destroys self-esteem and damages the relationship between adult and child."),
+      Q("🧠 I am what a parent or educator transmits when they support without judging. What am I?","Trust and confidence","Fear","Shame","Competition",0,"Supporting without judging builds lasting trust between adult and child."),
+      Q("🧠 I am an environment where every young person can grow with dignity, care and respect. What am I?","A caring and inclusive community","A permanent competition","A strict environment","A space of judgement",0,"A caring community is the best school for growing up with dignity."),
+    ],
+  },
+};
+
 
 const LEVEL_CATS=['qcm','vf','mr','violence','qsj'];
 
@@ -1339,9 +1574,9 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,on
   const prog=quizLevels?.[profile]?.[category]||{};
   const n1=prog.n1??null;const n2=prog.n2??null;const n3=prog.n3??null;
   const lvls=[
-    {lv:1,icon:"🥉",label:lang==="en"?"Level 1":"Niveau 1",sub:lang==="en"?"The basics":"Les bases",col:P.green,unlocked:true,score:n1},
-    {lv:2,icon:"🥈",label:lang==="en"?"Level 2":"Niveau 2",sub:lang==="en"?"Real situations":"Situations réelles",col:P.amber,unlocked:n1!==null&&n1>=8,score:n2},
-    {lv:3,icon:"🥇",label:lang==="en"?"Level 3":"Niveau 3",sub:lang==="en"?"Rights & Commitment":"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
+    {lv:1,icon:"🥉",label:lang==="en"?"Level 1":"Niveau 1",sub:lang==="en"?"Foundations":"Les bases",col:P.green,unlocked:true,score:n1},
+    {lv:2,icon:"🥈",label:lang==="en"?"Level 2":"Niveau 2",sub:lang==="en"?"Real-Life Scenarios":"Situations réelles",col:P.amber,unlocked:n1!==null&&n1>=8,score:n2},
+    {lv:3,icon:"🥇",label:lang==="en"?"Level 3":"Niveau 3",sub:lang==="en"?"Rights & Advocacy":"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
   ];
   const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
   return(
@@ -1350,7 +1585,7 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,on
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>{catIcons[category]||"📚"}</div>
         <div className="T" style={{color:"white",fontSize:"1.1rem",fontWeight:800,margin:"0 0 3px"}}>{getCatLabel(category)}</div>
-        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"3 levels · 10 questions · min score 8/10 to advance":"3 niveaux · 10 questions · score min 8/10 pour avancer"}</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"3 levels · 10 questions each · score 8/10 to progress":"3 niveaux · 10 questions · score min 8/10 pour avancer"}</div>
       </div>
       {msg&&<div style={{background:"#FFF4D6",border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10,fontSize:13,fontWeight:800,color:P.amber}}>{msg}</div>}
       <div style={{display:"flex",flexDirection:"column",gap:11}}>
@@ -1446,7 +1681,7 @@ function TRing({secs,onExpire,tkey}){
 
 function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
   const[msg,setMsg]=useState(false);
-  const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Beginner",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Intermediate",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Expert",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
+  const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Foundation",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Deepening",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Mastery",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
   return(
     <div style={{padding:"14px 18px 40px"}}>
       <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Menu</button>
@@ -1909,7 +2144,7 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 // ── QUIZ COMPONENTS ────────────────────────────────────────────
 function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   const scoreRef=useRef(0);
-  const pool=category==="urgence"?(lang==="en"?URGENCE_Q_EN:URGENCE_Q):category==="defi"?(lang==="en"?DEFIS_Q_EN:DEFIS_Q):category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
+  const pool=category==="urgence"?(lang==="en"?URGENCE_Q_EN:URGENCE_Q):category==="defi"?(lang==="en"?DEFIS_Q_EN:DEFIS_Q):category.startsWith("ca_")?(lang==="en"?(CA_DB_EN[profile]?.[category]||[]):(CA_DB[profile]?.[category]||[])):
     category==="qsj"?(level===2?((lang==="en"?QUIZ_DB_QSJ_EN:QUIZ_DB_QSJ).n2[profile]||[]):level===3?((lang==="en"?QUIZ_DB_QSJ_EN:QUIZ_DB_QSJ).n3[profile]||[]):((lang==="en"?QUIZ_DB_QSJ_EN:QUIZ_DB_QSJ).n1[profile]||[])):
     (LEVEL_CATS.includes(category)&&profile!=='parent')
       ?(level===2?(lang==="en"?(QUIZ_DB_N2_EN[profile]?.[category]||[]):(QUIZ_DB_N2[profile]?.[category]||[])):level===3?(lang==="en"?(QUIZ_DB_N3_EN[profile]?.[category]||[]):(QUIZ_DB_N3[profile]?.[category]||[])):(lang==="en"?(QUIZ_DB_EN[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[])))
@@ -1950,7 +2185,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   if(!q)return null;
   const tPct=(timerV/15)*100;
   const tClr=timerV>7?"linear-gradient(90deg,#FF9A9E,#FF6B9D)":"linear-gradient(90deg,#E8003D,#FF5555)";
-  const catLabel=lang==="en"?{qcm:"MCQ",vf:"True / False",mr:"Myth or Reality",defi:"Challenge",urgence:"Emergency",violence:"Violence & Safety",ca_1:"Learn & Understand — L1",ca_2:"Learn & Understand — L2",ca_3:"Learn & Understand — L3",qsj:"Who am I?"}:{qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
+  const catLabel=lang==="en"?{qcm:"Multiple Choice",vf:"True or False",mr:"Myth or Reality",defi:"Daily Challenge",urgence:"Emergency",violence:"Violence & Safety",ca_1:"Learn & Understand — L1",ca_2:"Learn & Understand — L2",ca_3:"Learn & Understand — L3",qsj:"Who Am I?"}:{qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
@@ -2019,7 +2254,7 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
   const passed=pct>=80&&isLeveled;
   const hasNextLevel=passed&&levelNum<3&&levelNum>0;
   const sc=Math.round(finalScore/10);
-  const lvlName=lang==="en"?(sc>=9?"Expert":sc>=6?"Curious":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
+  const lvlName=lang==="en"?(sc>=9?"Expert":sc>=6?"Learner":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
   const shareText=`${userName||'Quelqu\'un'} a obtenu ${sc}/10 au Quiz Dignité 🌸 Teste tes connaissances à ton tour sur les règles !\n\n👉 quizdignite.org\n\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`;
   const fbUrl=`https://www.facebook.com/sharer/sharer.php?u=https://quizdignite.org`;
 
@@ -2049,7 +2284,7 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
       <div style={{textAlign:"center",padding:"20px 0 14px"}}>
         <span style={{fontSize:"4.2rem",display:"block",marginBottom:10}} className="pop">{pct>=100?"🏆":pct>=80?"⭐":pct>=60?"🌟":pct>=40?"📚":"🌱"}</span>
         <div className="T" style={{fontSize:"2.8rem",fontWeight:800,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{finalScore/10}/{qLen}</div>
-        <div style={{fontSize:".88rem",color:P.muted,marginTop:6,lineHeight:1.5}}>{lang==="en"?(pct>=100?"Perfect! You are a true champion!":pct>=80?"Excellent! You are an expert!":pct>=60?"Well done! Keep it up!":pct>=40?"Not bad! You are making progress!":"It's a start — play again to improve!"):(pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !")}</div>
+        <div style={{fontSize:".88rem",color:P.muted,marginTop:6,lineHeight:1.5}}>{lang==="en"?(pct>=100?"Outstanding! A perfect score — you're a true champion!":pct>=80?"Excellent! You've earned expert status!":pct>=60?"Well done! Keep going — you're getting stronger!":pct>=40?"Good effort! Every attempt brings you closer!":"A great start — play again to raise your score!"):(pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !")}</div>
         <div className="T" style={{fontSize:".85rem",fontWeight:700,color:P.rose,marginTop:8}}>+{finalScore} pts · Total: {totalPts} pts · {lvl.icon} {lvl.label}</div>
       </div>
       {newBadges.length>0&&(
@@ -2066,7 +2301,7 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
       {hasNextLevel&&onNextLevel&&(
         <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"16px 22px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",marginBottom:12}}>
-          {lang==="en"?`➜ Level ${levelNum+1} — Unlock now!`:`➜ Niveau ${levelNum+1} — Débloquer maintenant !`}
+          {lang==="en"?`➜ Unlock Level ${levelNum+1} — You've earned it!`:`➜ Niveau ${levelNum+1} — Débloquer maintenant !`}
         </button>
       )}
       <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>{lang==="en"?"Share your score 🌍":"Partager ton score 🌍"}</div>
@@ -2265,7 +2500,7 @@ function DefiModal({onClose,lang}){
           <span style={{fontSize:"1.5rem"}}>🔥</span>
           <div>
             <div style={{fontSize:".78rem",fontWeight:700,color:P.red}}>{streak} {lang==="en"?`day${streak>1?"s":""} in a row`:`jour${streak>1?"s":""} de suite`} {streak>=7?"🔥🔥":streak>=3?"🔥":""}</div>
-            <div style={{fontSize:".7rem",color:"#7A3D5A",marginTop:2}}>{streak>=7?(lang==="en"?"You keep coming back. That is real strength.":"Tu reviens. C'est ça la vraie force."):streak>=3?(lang==="en"?"You are building a habit. Keep going.":"Tu prends l'habitude. Continue."):(lang==="en"?"Here we go. Your flame has just been lit.":"C'est parti. Ta flamme vient de s'allumer.")}</div>
+            <div style={{fontSize:".7rem",color:"#7A3D5A",marginTop:2}}>{streak>=7?(lang==="en"?"You keep coming back — that's real dedication.":"Tu reviens. C'est ça la vraie force."):streak>=3?(lang==="en"?"You're building a great habit — keep it up!":"Tu prends l'habitude. Continue."):(lang==="en"?"Here we go — your journey begins today!":"C'est parti. Ta flamme vient de s'allumer.")}</div>
           </div>
         </div>}
         <div style={{display:"flex",gap:10}}>
@@ -2314,10 +2549,10 @@ function WelcomeScreen({onStart,lang,setLang}){
         <div style={{fontSize:".72rem",fontWeight:800,letterSpacing:"3px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:40}}>{lang==="en"?"THE QUIZ THAT CHANGES THE RULES ✨":"Le quiz qui change les règles ✨"}</div>
         <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"24px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:36}}>
           <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:0}}>
-            {lang==="en"?<><b>Learn about periods without taboo, without shame, with confidence.</b></>:<>Apprends les règles <strong>sans tabou, sans honte, avec confiance.</strong></>}
+            {lang==="en"?<><b>Learn about periods — no taboo, no shame, just confidence.</b></>:<>Apprends les règles <strong>sans tabou, sans honte, avec confiance.</strong></>}
           </p>
           <p style={{fontSize:".92rem",color:"#7A4A6A",lineHeight:1.7,margin:"12px 0 0"}}>
-            {lang==="en"?"Understand your body, answer your questions, break the myths.":"Comprends ton corps, réponds à tes questions, brise les mythes."}
+            {lang==="en"?"Understand your body, find the answers you need and challenge the myths.":"Comprends ton corps, réponds à tes questions, brise les mythes."}
           </p>
         </div>
         <button onClick={onStart} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"18px 22px",fontWeight:900,fontSize:"1.2rem",cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.35)",letterSpacing:".5px"}}>
@@ -2333,13 +2568,13 @@ function WelcomeScreen({onStart,lang,setLang}){
 function PrivacyPage({onBack,lang}){
   const t=(fr,en)=>lang==="en"?en:fr;
   const sections=lang==="en"?[
-    ['📋 Data Collection','Quiz Dignité only collects information you enter voluntarily (first name, country). This data is stored locally on your device (localStorage) and is never transmitted to external servers.'],
-    ['📊 Progress Data','Your progress (points, badges, streak) is stored locally on your device. This data belongs to you and will be deleted if you clear your browser data.'],
-    ['🔍 Google Analytics','We use Google Analytics 4 to measure overall audience (visits, countries, general behaviour). This data is anonymised. No personally identifiable data is shared with Google.'],
-    ['👶 Protection of Minors','Quiz Dignité is designed for young people from the age of 12. We do not collect sensitive data. No user account is created.'],
+    ['📋 Data Collection','Quiz Dignité only collects information you enter voluntarily (first name and country). This data is stored locally on your device (localStorage) and is never transmitted to external servers.'],
+    ['📊 Progress & Scores','Your progress (points, badges and streak) is stored locally on your device. This data belongs entirely to you and will be deleted if you clear your browser data.'],
+    ['🔍 Google Analytics','We use Google Analytics 4 to measure overall audience activity (visits, countries, general behaviour). All data is anonymised. No personally identifiable information is shared with Google.'],
+    ['👶 Protection of Young People','Quiz Dignité is designed for young people aged 12 and above. We do not collect sensitive personal data. No user account is created.'],
     ['🍪 Cookies','We do not use advertising or tracking cookies. The localStorage used does not constitute a cookie in the legal sense.'],
     ['🤝 Data Sharing','ONG Happy Mum\'s does not sell, rent or share any personal data with third parties for commercial purposes.'],
-    ['✏️ Your Rights','You can delete your data at any time by clearing the local storage of your browser. Contact: onghappymums@gmail.com'],
+    ['✏️ Your Rights','You may delete your data at any time by clearing your browser\'s local storage. Contact: onghappymums@gmail.com'],
     ['📞 Contact','ONG Happy Mum\'s — Abidjan, Côte d\'Ivoire\n📱 +225 07 13 51 26 98\n📧 onghappymums@gmail.com\n🌐 quizdignite.org'],
   ]:[
     ['📋 Collecte des données','Quiz Dignité collecte uniquement les informations saisies volontairement (prénom, pays). Ces données sont stockées localement sur votre appareil (localStorage) et ne sont jamais transmises à des serveurs externes.'],
@@ -2375,153 +2610,49 @@ function PrivacyPage({onBack,lang}){
 // ── ENGLISH GLOSSAIRE ────────────────────────────────────────────
 const GLOSSAIRE_DATA_EN=[
   {cat:"🫀 Anatomy",terms:[
-    {w:"Uterus",d:"A pear-shaped organ in the female pelvis. This is where a baby develops during pregnancy and where menstrual blood comes from."},
-    {w:"Ovaries",d:"Two small organs that produce eggs and female hormones (oestrogen and progesterone)."},
-    {w:"Vagina",d:"A muscular canal connecting the uterus to the outside of the body. Menstrual blood and babies exit through here."},
-    {w:"Vulva",d:"The collective term for the external female genitalia: labia majora, labia minora, clitoris and vaginal opening."},
-    {w:"Cervix",d:"The lower part of the uterus that opens into the vagina. It dilates during childbirth."},
-    {w:"Fallopian tubes",d:"Two tubes connecting the ovaries to the uterus. This is where fertilisation takes place."},
-    {w:"Endometrium",d:"The inner lining of the uterus that thickens each month and is shed during menstruation."},
-    {w:"Clitoris",d:"A female erectile organ located at the front of the vulva. Its only role is pleasure — and that is a right."},
+    {w:"Uterus",d:"A pear-shaped organ in the female pelvis. This is where a baby develops during pregnancy and where menstrual blood originates."},
+    {w:"Ovaries",d:"Two small organs that produce eggs (ova) and female hormones, including oestrogen and progesterone."},
+    {w:"Vagina",d:"A muscular canal connecting the uterus to the outside of the body. Menstrual blood passes through here, as do babies during birth."},
+    {w:"Vulva",d:"The collective term for the external female genitalia, including the labia majora, labia minora, clitoris and vaginal opening."},
+    {w:"Cervix",d:"The lower, narrow part of the uterus that connects to the vagina. It dilates during childbirth."},
+    {w:"Fallopian tubes",d:"Two tubes connecting the ovaries to the uterus. Fertilisation typically takes place here."},
+    {w:"Endometrium",d:"The inner lining of the uterus. It thickens each month in preparation for a possible pregnancy and sheds during menstruation."},
+    {w:"Clitoris",d:"A small erectile organ located at the front of the vulva. Its sole purpose is pleasure — and that is a right."},
   ]},
   {cat:"🔄 Cycle & Reproduction",terms:[
-    {w:"Menstrual cycle",d:"A monthly process in which the body prepares for a possible pregnancy. It lasts on average 28 days, but can vary between 21 and 35 days."},
-    {w:"Ovulation",d:"The release of an egg from an ovary, usually around day 14 of the cycle. This is the fertile window."},
-    {w:"Menstruation",d:"Another word for periods. The monthly shedding of the uterine lining as a bloody discharge."},
-    {w:"Follicular phase",d:"The first part of the cycle (days 1-13): an egg matures in the ovary. Energy and vitality tend to increase."},
-    {w:"Luteal phase",d:"The second part of the cycle (days 15-28): the body prepares for a possible pregnancy. PMS symptoms may appear."},
-    {w:"Egg (ovum)",d:"The female reproductive cell produced by the ovaries. One egg is released each month during ovulation."},
-    {w:"Fertilisation",d:"The union of an egg and a sperm cell in the fallopian tube. The starting point of a pregnancy."},
-    {w:"Hormones",d:"Chemical substances (oestrogen, progesterone) that regulate the menstrual cycle, mood and body development."},
+    {w:"Menstrual cycle",d:"A monthly process in which the body prepares for a possible pregnancy. It lasts on average 28 days, though anywhere between 21 and 35 days is normal."},
+    {w:"Ovulation",d:"The release of a mature egg from one of the ovaries, typically around day 14 of the cycle. This is the body's most fertile window."},
+    {w:"Menstruation",d:"Another word for periods. The monthly shedding of the uterine lining as a bloody discharge, usually lasting 3 to 7 days."},
+    {w:"Follicular phase",d:"The first part of the cycle (days 1-13): an egg matures inside a follicle in the ovary. Energy and vitality often increase during this time."},
+    {w:"Luteal phase",d:"The second part of the cycle (days 15-28): the body prepares for a possible pregnancy. PMS symptoms may arise during this phase."},
+    {w:"Egg (ovum)",d:"The female reproductive cell produced by the ovaries. One egg is typically released each month during ovulation."},
+    {w:"Fertilisation",d:"The union of an egg and a sperm cell, usually in the fallopian tube. This is the starting point of a pregnancy."},
+    {w:"Hormones",d:"Chemical messengers — including oestrogen and progesterone — that regulate the menstrual cycle, mood and physical development."},
   ]},
   {cat:"🧼 Hygiene & Protection",terms:[
-    {w:"Sanitary product",d:"A product used to absorb or collect menstrual blood: sanitary towels, tampons, menstrual cups or period pants."},
-    {w:"Washable pad",d:"A reusable cloth pad that is washed after use. Eco-friendly, economical and just as effective."},
-    {w:"Menstrual cup",d:"A flexible cup made of medical-grade silicone inserted into the vagina to collect blood. Reusable for years."},
-    {w:"Tampon",d:"An internal absorbent product. Change every 4-8 hours to prevent infection."},
-    {w:"Menstrual poverty",d:"Lack of access to sanitary products, water and information. It causes thousands of girls to miss school every month."},
-    {w:"Box de Dignite",d:"A distribution point set up by ONG Happy Mum's in partner schools in Abidjan and Bouake, providing free sanitary products."},
+    {w:"Sanitary product",d:"Any product used to absorb or collect menstrual blood, including sanitary towels, tampons, menstrual cups and period pants."},
+    {w:"Washable pad",d:"A reusable cloth pad that can be washed and used again. Eco-friendly, cost-effective and just as effective as disposable options."},
+    {w:"Menstrual cup",d:"A small, flexible cup made from medical-grade silicone, inserted into the vagina to collect menstrual blood. Reusable for years with proper care."},
+    {w:"Tampon",d:"An internal absorbent product. It should be changed every 4 to 8 hours to reduce the risk of infection."},
+    {w:"Menstrual poverty",d:"The inability to access sanitary products, clean water or reliable menstrual health information. It causes thousands of girls to miss school every month."},
+    {w:"Dignity Box",d:"A free sanitary product distribution point set up by ONG Happy Mum's in partner schools in Abidjan and Bouake."},
   ]},
   {cat:"💊 Health",terms:[
-    {w:"Endometriosis",d:"A condition where endometrial tissue grows outside the uterus, causing intense pain. It affects 1 in 10 women. See a doctor if you suffer severely."},
-    {w:"Premenstrual syndrome (PMS)",d:"A set of symptoms (pain, mood swings, fatigue, bloating) that appear in the days before a period."},
-    {w:"Dysmenorrhoea",d:"The medical term for period pain. Mild to moderate pain is normal. Severe pain deserves medical attention."},
-    {w:"Amenorrhoea",d:"Absence of periods. Normal during pregnancy or breastfeeding. Otherwise abnormal — speak to a doctor."},
-    {w:"Menopause",d:"The permanent end of periods, usually between 45 and 55 years of age. It marks the end of female fertility."},
-    {w:"Puberty",d:"A period of bodily transformation (around ages 10-16 in girls) marked by the arrival of periods and physical development."},
+    {w:"Endometriosis",d:"A condition in which tissue similar to the uterine lining grows outside the uterus, causing intense pain. It affects around 1 in 10 women. Seek medical advice if your pain is severe."},
+    {w:"Premenstrual syndrome (PMS)",d:"A collection of physical and emotional symptoms — including cramps, mood changes, fatigue and bloating — that appear in the days leading up to a period."},
+    {w:"Dysmenorrhoea",d:"The medical term for painful periods. Mild to moderate discomfort is common; severe pain that affects daily life warrants medical attention."},
+    {w:"Amenorrhoea",d:"The absence of periods. This is normal during pregnancy or breastfeeding, but otherwise requires medical investigation."},
+    {w:"Menopause",d:"The natural end of menstruation, usually occurring between the ages of 45 and 55. It marks the end of a person's reproductive years."},
+    {w:"Puberty",d:"A period of significant physical and emotional change, typically beginning between the ages of 10 and 16 in girls, marked by the onset of periods and bodily development."},
   ]},
   {cat:"⚖️ Rights & Society",terms:[
-    {w:"Menstrual dignity",d:"The fundamental right to access sanitary products, education about periods and respect during menstruation."},
-    {w:"Sexual and reproductive health rights",d:"Rights related to sexual and reproductive health, including the right to information, care, consent and contraception."},
-    {w:"Consent",d:"A free, informed and enthusiastic agreement to any intimate relationship. It can be withdrawn at any time. No means no."},
-    {w:"Gender-based violence",d:"Any act that harms a person because of their gender. Includes physical, psychological and sexual violence."},
-    {w:"Child marriage",d:"Marriage before the age of 18. Illegal in Cote d'Ivoire. It deprives girls of education and freedom."},
+    {w:"Menstrual dignity",d:"The fundamental right of every person to access sanitary products, accurate menstrual health information and respectful treatment during menstruation."},
+    {w:"Sexual and reproductive health rights",d:"Rights relating to sexual and reproductive health, including the right to information, quality healthcare, consent and contraception."},
+    {w:"Consent",d:"A free, informed and enthusiastic agreement to any form of physical or intimate contact. Consent can be withdrawn at any time. No means no."},
+    {w:"Gender-based violence",d:"Any act that harms a person because of their gender. This includes physical, psychological and sexual violence."},
+    {w:"Child marriage",d:"Marriage before the age of 18. It is illegal in Cote d'Ivoire and deprives girls of their education, freedom and future."},
   ]},
 ];
-
-// ── ENGLISH DAILY CHALLENGES ─────────────────────────────────────
-const DEFIS_REACT_EN=[
-  {cat:"🩸",text:"Do you know how long your cycle lasts? Write down the start date of your next period. Knowing your body is power."},
-  {cat:"🩸",text:"If you have ever had very painful periods, tell yourself: 'I deserve a pain-free period.' You do not have to suffer in silence."},
-  {cat:"🩸",text:"Menstrual blood is not dirty. It is your body renewing itself. Remind yourself of this truth today. 💪"},
-  {cat:"🩸",text:"Move gently today: a walk, a few stretches. Notice how your body feels."},
-  {cat:"🩸",text:"Set a quiet alarm to remind yourself to change your pad every 4 to 6 hours."},
-  {cat:"🩸",text:"Try to note the start date of your next period somewhere. Your cycle is unique — learn to know it."},
-  {cat:"🩸",text:"Talk about what periods really are with a friend today — just to normalise the conversation."},
-  {cat:"🩸",text:"Take 3 deep breaths right now. Your body and your cycle are connected to how you feel emotionally."},
-  {cat:"🩸",text:"Do you remember your first period? How did you feel? It is okay to talk about it."},
-  {cat:"🩸",text:"Ask someone you trust a real health question, or look for reliable information today."},
-  {cat:"🩸",text:"Have you ever tried washable pads? Do some research — it could change a lot of things."},
-  {cat:"🩸",text:"As your next period approaches, try drinking more water. Notice the difference."},
-  {cat:"🩸",text:"Tell someone who does not know what menstrual poverty is. Just one sentence."},
-  {cat:"🩸",text:"Take care of yourself with kindness today. A shower is fine — it is actually recommended."},
-  {cat:"🩸",text:"Do you have a rough idea of when you ovulate? Your cycle has its own signals — learn to read them."},
-  {cat:"🩸",text:"Do you know your usual flow? Start observing it — it is valuable information about your health."},
-  {cat:"🩸",text:"Put a hot water bottle on your stomach if you are in pain. It really helps."},
-  {cat:"🩸",text:"Say the word 'periods' out loud today, without lowering your voice. 🌸"},
-  {cat:"🩸",text:"The next time you feel unusually emotional without reason, check where you are in your cycle."},
-  {cat:"🩸",text:"If you truly suffer every cycle, note it down and see a doctor. Your pain is not in your head."},
-  {cat:"💪",text:"Calculate the approximate start date of your next period. Write it down. Knowing your body is power."},
-  {cat:"💪",text:"Look at yourself in a mirror for 30 seconds. Say one thing you like about yourself."},
-  {cat:"💪",text:"Prepare a small emergency kit in your bag: one pad and pain relief if you often experience cramps."},
-  {cat:"💪",text:"Today, refuse a hurtful comment about your body — even silently. You do not have to accept it."},
-  {cat:"💪",text:"Talk about your periods with a friend without lowering your voice. Just naturally. Because it is normal."},
-  {cat:"💪",text:"Write 3 words that describe you as you are — not as others would like you to be."},
-  {cat:"💪",text:"Today, say no to something that does not suit you. Even something small."},
-  {cat:"💪",text:"Drink 8 glasses of water today. Especially during your period — your body needs it."},
-  {cat:"💪",text:"Send a message of encouragement to a friend. Tell them one thing you admire about them."},
-  {cat:"💪",text:"Today, take up space. Speak in class, raise your hand, share your opinion. Even if your voice trembles."},
-  {cat:"💪",text:"Talk to your mum, older sister or aunt about periods. Ask her how it was for her at your age."},
-  {cat:"💪",text:"Make a list of 5 things you know how to do. Not qualities — skills. Everything counts."},
-  {cat:"💪",text:"Today, do not apologise for existing. Notice how many times you say 'sorry' unnecessarily."},
-  {cat:"💪",text:"Explain to someone what periods are in one simple sentence. Without embarrassment."},
-  {cat:"💪",text:"Write down a fear you keep to yourself. You do not have to show it. Just name it."},
-  {cat:"💪",text:"Today, compare yourself only to who you were yesterday. Not to others. Just: am I moving forward?"},
-  {cat:"💪",text:"If you tend to over-apologise — notice it and choose differently today."},
-  {cat:"💪",text:"Do something that makes you happy today, just for yourself. Even 10 minutes."},
-  {cat:"💪",text:"Say out loud: 'I deserve respect.' Once. In front of your mirror."},
-  {cat:"💪",text:"Think of a woman who inspires you. What do you admire about her? You have that too."},
-  {cat:"🗣️",text:"Today, learn the scientific name of a part of your body you have never dared to say out loud."},
-  {cat:"🗣️",text:"Ask a trusted adult a real question about your body — one you have never dared to ask."},
-  {cat:"🗣️",text:"If someone makes a joke about periods, do not laugh along. Just say: 'That is not funny.'"},
-  {cat:"🗣️",text:"Write on a piece of paper a myth about periods you once believed. Cross it out. It has no power over you."},
-  {cat:"🗣️",text:"Today, name a pain you usually keep to yourself. To yourself, or just on paper."},
-  {cat:"🗣️",text:"Say 'I have my period' to someone without looking for a replacement word. Periods."},
-  {cat:"🗣️",text:"Find an adult and ask her how she experienced periods at your age. Really listen to her answer."},
-  {cat:"🗣️",text:"Today, gently but clearly correct a false piece of information about the female body if you hear one."},
-  {cat:"🗣️",text:"Tell someone who does not know about menstrual poverty. One sentence. You can change a mindset."},
-  {cat:"🗣️",text:"If you have ever felt ashamed of your periods, write down why. To understand and let the shame go."},
-  {cat:"🗣️",text:"Explain ovulation to someone in one simple sentence. If you do not know — research it, then explain it."},
-  {cat:"🗣️",text:"Say out loud: 'My body does not shame me.' In front of your mirror. Even if you do not believe it yet."},
-  {cat:"🗣️",text:"If you know a younger girl, tell her one truth about periods you wish you had known."},
-  {cat:"🗣️",text:"Write a question you have never dared to ask about your body. Find the answer before the week is over."},
-  {cat:"🗣️",text:"Talk about your periods without apologising for mentioning them. No 'sorry, this is awkward but...'"},
-  {cat:"🗣️",text:"Tell a boy in your life one real fact about the menstrual cycle. Without embarrassment."},
-  {cat:"🗣️",text:"Think of a taboo in your family related to the female body. Write it down. You do not have to accept it."},
-  {cat:"🗣️",text:"Today, talk about yourself in the first person. 'I think', 'I want', 'I feel'. Your voice matters."},
-  {cat:"🗣️",text:"Share one piece of information about menstrual health with a friend today. Just one true thing."},
-  {cat:"🤝",text:"Pass a sanitary pad to a friend without her having to ask twice."},
-  {cat:"🤝",text:"Today, defend a girl being criticised for her body. One sentence is enough."},
-  {cat:"🤝",text:"Send a message to a friend telling her one true and beautiful thing about her. Not an emoji — words."},
-  {cat:"🤝",text:"If a friend has her period and feels unwell, offer something concrete — sit with her, bring her water."},
-  {cat:"🤝",text:"Today, do not take part in gossip about another girl's private life. Leave the conversation if you must."},
-  {cat:"🤝",text:"Think of a girl you admire in your circle. Tell her directly today."},
-  {cat:"🤝",text:"If you see a girl who is uncomfortable, approach her. Just ask: 'Are you okay?'"},
-  {cat:"🤝",text:"Share a useful piece of information about menstrual health in a WhatsApp group. Just one simple true thing."},
-  {cat:"🤝",text:"Today, celebrate a friend's success without jealousy. Her victory does not diminish yours."},
-  {cat:"🤝",text:"Think of a girl you judged without knowing her. Decide today to see her differently."},
-  {cat:"🤝",text:"If a friend tells you about period pain, do not tell her to 'just cope'. Really listen to her."},
-  {cat:"🤝",text:"Invite a friend to do the Dignity Quiz with you. Compare your results. Laugh and learn together."},
-  {cat:"🤝",text:"Today, lend something without expecting it back — a pen, a pad, a smile."},
-  {cat:"🤝",text:"Remind a friend that she has the right to say no — to going out, to pressure, to any situation."},
-  {cat:"🤝",text:"Today, listen to a friend without looking to give advice. Just listen. That is already huge."},
-  {cat:"🤝",text:"Think of a girl near you who lacks sanitary products. What could you do?"},
-  {cat:"🤝",text:"Tell a friend: 'You do not have to suffer in silence.' These words can change her day."},
-  {cat:"🤝",text:"Create or join a space for girls to talk — even informally, even just 3 people."},
-  {cat:"🤝",text:"Today, be the older sister you wish you had had. For a girl around you."},
-  {cat:"🤝",text:"Send love to a friend going through a difficult time. Without waiting for her to ask."},
-  {cat:"🧘",text:"Sleep 8 hours tonight. No negotiation. Your body rebuilds everything while you sleep."},
-  {cat:"🧘",text:"Drink 1.5 litres of water today. Put a bottle in front of you first thing in the morning."},
-  {cat:"🧘",text:"Do 10 minutes of stretches this evening before bed. Not exercise — just let your body settle."},
-  {cat:"🧘",text:"Try eating a fruit or vegetable today that you do not usually have."},
-  {cat:"🧘",text:"Place one hand on your stomach. Breathe deeply 5 times. Feel your body alive. That is enough."},
-  {cat:"🧘",text:"Rest without guilt today. Resting is not laziness. It is care."},
-  {cat:"🧘",text:"Note how you feel physically today. Energy, stomach, head. Just observe."},
-  {cat:"🧘",text:"Dance alone in your room to one song. Your body deserves to move for pleasure."},
-  {cat:"🧘",text:"Eat slowly at one meal today. Listen to when your body says 'that is enough'."},
-  {cat:"🧘",text:"Identify a tension in your body — shoulders, jaw, stomach. Breathe into it. Let it go."},
-  {cat:"🧘",text:"Limit social media to 30 minutes today. Notice how you feel when you disconnect."},
-  {cat:"🧘",text:"Walk for 20 minutes outside. Not to lose weight. To feel alive and present in your body."},
-  {cat:"🧘",text:"Have a shower slowly — not in a rush. Your body deserves attention."},
-  {cat:"🧘",text:"This evening, write 3 positive sensations your body gave you today."},
-  {cat:"🧘",text:"Today, skip no meals. Your body needs regular fuel."},
-  {cat:"🧘",text:"Laugh today — genuinely. Find something that makes you really laugh. Laughter is medicine."},
-  {cat:"🧘",text:"Touch your body with kindness — not to judge it. Just to say: this body is mine."},
-  {cat:"🧘",text:"Go to bed early tonight — before 10pm if you can. Notice how you wake up tomorrow morning."},
-  {cat:"🧘",text:"Write a one-sentence letter to your body: 'What I want for you this year is...'"},
-  {cat:"🧘",text:"Do something gentle for yourself this evening. A warm tea, calm music — just for you."},
-];
-
 const GLOSSAIRE_DATA=[
   {cat:"🫀 Anatomie",terms:[
     {w:"Utérus",d:"Organe en forme de poire situé dans le bassin féminin. C'est là que se développe le bébé pendant la grossesse et d'où viennent les règles."},
@@ -2578,9 +2709,9 @@ function Glossaire({onBack,lang}){
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>📚</div>
         <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
-        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>30 mots clés pour comprendre ton corps et tes droits</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"30 key terms to understand your body and your rights":"30 mots clés pour comprendre ton corps et tes droits"}</div>
       </div>
-      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 Rechercher un mot..."
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={lang==="en"?"🔍 Search for a term...":"🔍 Rechercher un mot..."}
         style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:14,padding:"12px 16px",fontSize:".9rem",outline:"none",marginBottom:14,boxSizing:"border-box",fontFamily:"'Nunito',sans-serif",color:P.text}}/>
       {cats.map((c,ci)=>(
         <div key={ci} style={{marginBottom:14}}>
@@ -2974,7 +3105,7 @@ export default function App(){
       c.strokeStyle="rgba(255,255,255,.3)";c.lineWidth=1.5;
       c.beginPath();c.moveTo(200,1040);c.lineTo(880,1040);c.stroke();
       // Level name inside box - smaller font to avoid cramping
-      const lvlDisplay=lang==="en"?(sc>=9?"Expert":sc>=6?"Curious":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
+      const lvlDisplay=lang==="en"?(sc>=9?"Expert":sc>=6?"Learner":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
       c.fillStyle="rgba(255,255,255,.9)";c.font="bold 36px Arial";
       c.fillText(`🩸  ${lvlDisplay}`,540,1083);
       // Badge box
@@ -3096,9 +3227,9 @@ export default function App(){
               <div style={{fontSize:".82rem",color:P.muted,marginTop:4,fontWeight:700}}>{lang==="en"?"Who is using the app?":"Qui utilise l'application ?"}</div>
             </div>
             {(lang==="en"?[
-              {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"I am a girl",d:"Understand my body, break the taboos",dec:"🌸💕"},
-              {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"I am a boy",d:"Education, respect and empathy",dec:"🦁🛡️"},
-              {id:"parent",cls:"linear-gradient(135deg,#FFECD2,#FCB69F)",e:"👨‍👩‍👧",n:"Parent / Educator",d:"Communication and support",dec:"❤️📖"},
+              {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"I am a girl",d:"Understand my body and break the taboos",dec:"🌸💕"},
+              {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"I am a boy",d:"Education, empathy and mutual respect",dec:"🦁🛡️"},
+              {id:"parent",cls:"linear-gradient(135deg,#FFECD2,#FCB69F)",e:"👨‍👩‍👧",n:"Parent / Educator",d:"Supportive communication with young people",dec:"❤️📖"},
             ]:[
               {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"Je suis une fille",d:"Comprendre mon corps, briser les tabous",dec:"🌸💕"},
               {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"Je suis un garçon",d:"Éducation, respect et empathie",dec:"🦁🛡️"},
@@ -3127,14 +3258,14 @@ export default function App(){
             <div style={{fontSize:".8rem",color:P.muted,marginBottom:15,fontWeight:600}}>{lang==="en"?"Choose a question type:":"Choisis un type de questions :"}</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
               {(lang==="en"?[
-                {id:"qcm",icon:"🧠",name:"Multiple Choice",info:"10 multiple choice questions"},
-                {id:"vf",icon:"✅",name:"True / False",info:"10 true or false questions"},
-                {id:"mr",icon:"💡",name:"Myth or Reality",info:"10 questions against taboos"},
-                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Daily Challenge":"Educational Challenges",info:profile==='fille'?"Your daily challenge 🌸":"5 challenges — oral discussion"},
-                {id:"ca",icon:"📖",name:"Learn & Understand",info:"3 levels · badges to earn"},
-                {id:"qsj",icon:"🔍",name:"Who am I?",info:"3 levels · educational riddles"},
-                {id:"violence",icon:"🛡️",name:"Violence & Safety",info:"10 questions — recognise and react"},
-                {id:"urgence",icon:"🚨",name:"Emergency & Help",info:"5 essential questions"},
+                {id:"qcm",icon:"🧠",name:"Multiple Choice",info:"10 questions with four answer options"},
+                {id:"vf",icon:"✅",name:"True or False",info:"10 true or false questions"},
+                {id:"mr",icon:"💡",name:"Myth or Reality",info:"10 myth-busting questions"},
+                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Daily Challenge":"Educational Challenges",info:profile==='fille'?"Your daily challenge 🌸":"5 challenges for group discussion"},
+                {id:"ca",icon:"📖",name:"Learn & Understand",info:"3 levels · earn a badge at each stage"},
+                {id:"qsj",icon:"🔍",name:"Who Am I?",info:"3 levels · educational riddles"},
+                {id:"violence",icon:"🛡️",name:"Violence & Safety",info:"10 questions — recognise, react and protect"},
+                {id:"urgence",icon:"🚨",name:"Emergency & Help",info:"5 essential safety questions"},
               ]:[
                 {id:"qcm",icon:"🧠",name:"QCM",info:"10 questions à choix multiples"},
                 {id:"vf",icon:"✅",name:"Vrai / Faux",info:"10 questions Vrai ou Faux"},
@@ -3231,9 +3362,9 @@ export default function App(){
 
         {screen==="sos"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:14}}>🚨 Urgence & Aide</div>
-            <p style={{fontSize:".84rem",color:P.muted,marginBottom:16,lineHeight:1.6,fontWeight:600}}>Numéros <strong>gratuits</strong> disponibles <strong>24h/24</strong> :</p>
-            {(lang==="en"?[{n:"1308",l:"SOS Violence & Support",i:"🆘"},{n:"116",l:"Child in Danger",i:"👶"},{n:"110",l:"Police Emergency",i:"👮"}]:[{n:"1308",l:"SOS Violences & Aide aux femmes",i:"🆘"},{n:"116",l:"Allô Enfant en Danger",i:"👶"},{n:"110",l:"Police Secours",i:"👮"}]).map(n=>(
+            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:14}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
+            <p style={{fontSize:".84rem",color:P.muted,marginBottom:16,lineHeight:1.6,fontWeight:600}}>{lang==="en"?<><strong>Free</strong> helplines available <strong>24 hours a day</strong>:</>:<>Numéros <strong>gratuits</strong> disponibles <strong>24h/24</strong> :</>}</p>
+            {(lang==="en"?[{n:"1308",l:"Violence Support Line",i:"🆘"},{n:"116",l:"Child Protection Line",i:"👶"},{n:"110",l:"Police",i:"👮"}]:[{n:"1308",l:"SOS Violences & Aide aux femmes",i:"🆘"},{n:"116",l:"Allô Enfant en Danger",i:"👶"},{n:"110",l:"Police Secours",i:"👮"}]).map(n=>(
               <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:17,padding:"15px 18px",marginBottom:11,display:"flex",alignItems:"center",gap:13,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left",boxShadow:"0 5px 18px rgba(232,0,61,.26)"}}>
                 <span style={{fontSize:"1.7rem"}}>{n.i}</span>
                 <div><div className="T" style={{fontSize:"1.9rem",fontWeight:800}}>{n.n}</div><div style={{fontSize:".78rem",opacity:.9}}>{n.l}</div></div>
@@ -3242,11 +3373,11 @@ export default function App(){
             ))}
             <div style={{background:"rgba(255,255,255,.85)",border:"2px solid rgba(255,107,157,.22)",borderRadius:17,padding:17,textAlign:"center",marginTop:10}}>
               <img src={HM_LOGO} alt="" style={{width:48,height:48,objectFit:"contain",marginBottom:8}}/>
-              <div className="T" style={{color:P.red,fontWeight:800,fontSize:".98rem",marginBottom:10}}>ONG Happy Mum's est là pour toi 🌸</div>
+              <div className="T" style={{color:P.red,fontWeight:800,fontSize:".98rem",marginBottom:10}}>{lang==="en"?"ONG Happy Mum's is here for you 🌸":"ONG Happy Mum's est là pour toi 🌸"}</div>
               <a href="tel:+2250713512698" style={{display:"block",color:P.rose,fontWeight:800,marginBottom:5,textDecoration:"none"}}>📱 +225 07 13 51 26 98</a>
               <a href="mailto:onghappymums@gmail.com" style={{display:"block",color:P.muted,fontSize:".83rem",textDecoration:"none"}}>📧 onghappymums@gmail.com</a>
             </div>
-            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
           </div>
         )}
 
