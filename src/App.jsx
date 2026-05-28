@@ -245,6 +245,23 @@ const DEFIS_Q = [
   {q:"Comment réagir si une élève demande une protection en urgence ?",rep:"Avoir une trousse de protections disponibles. Répondre avec discrétion et bienveillance. Orienter vers l'infirmerie si nécessaire. Ne jamais humilier ni exposer l'élève.",isDefi:true},
 ];
 
+const URGENCE_Q_EN=[
+  Q("What should you do in case of immediate danger?","Wait","Call 110","Hide without saying anything","Ignore it",1,"110 (Police Emergency) connects you to the authorities immediately. Never hesitate to call!"),
+  Q("Which number should you call in case of violence or if you need help?","1308","110","101","15",0,"1308 is free and available 24/7. You can speak to someone who can help you."),
+  Q("Can you call an emergency number without phone credit?","Yes, always free","No, you need credit","Only 15","Only in the city",0,"Emergency numbers are accessible even without phone credit."),
+  Q("If you are scared or someone is hurting you, you should:","Stay silent","Ask for help or call 1308","Wait for it to pass","Post about it on social media",1,"Speaking up is a way to protect yourself. Never be ashamed to ask for help!"),
+  Q("Making false calls to emergency numbers is:","Funny","Dangerous and illegal","Normal","Consequence-free",1,"A false call may prevent someone in real danger from getting help. It is a serious offence."),
+];
+
+const DEFIS_Q_EN=[
+  {q:"Explain the menstrual cycle in 1 minute.",rep:"Every month, the body prepares the uterus for a possible pregnancy. If no baby is formed, the uterus renews itself — this is a period. It lasts 3 to 7 days and repeats approximately every 28 days.",isDefi:true},
+  {q:"Name 3 good hygiene practices during periods.",rep:"1. Change your sanitary product every 4-8 hours.\n2. Wash with water and mild soap morning and evening.\n3. Dry properly after washing to avoid infections.",isDefi:true},
+  {q:"How would you explain periods to a 10-year-old?",rep:"Women have a body that prepares itself every month to welcome a baby. When there is no baby, the body renews itself. This is called a period. It is not an illness.",isDefi:true},
+  {q:"What would you say to a girl who is ashamed of her periods?",rep:"Your periods are normal and natural. They do not make you impure. All women have them. You can talk about it — you have nothing to hide.",isDefi:true},
+  {q:"How should you respond if a pupil urgently needs a sanitary product?",rep:"Keep a kit of sanitary products available. Respond with discretion and kindness. Direct them to the school nurse if necessary. Never humiliate or expose the pupil.",isDefi:true},
+];
+
+
 const CA_DB = {
   fille:{
     ca_1:[
@@ -382,14 +399,26 @@ const CA_BADGES = {
     {id:"ca_p_champ",icon:"🏆",name:"Champion Éducation"},
   ],
 };
+const CA_BADGES_EN={
+  fille:[{id:"ca_f_l1",icon:"🥉",name:"Explorer"},{id:"ca_f_l2",icon:"🥈",name:"Learner"},{id:"ca_f_l3",icon:"🥇",name:"Expert"},{id:"ca_f_champ",icon:"🏆",name:"Dignity Champion"}],
+  garcon:[{id:"ca_g_l1",icon:"🥉",name:"Explorer"},{id:"ca_g_l2",icon:"🥈",name:"Learner"},{id:"ca_g_l3",icon:"🥇",name:"Expert"},{id:"ca_g_champ",icon:"🏆",name:"Respect Champion"}],
+  parent:[{id:"ca_p_l1",icon:"🥉",name:"Guide Beginner"},{id:"ca_p_l2",icon:"🥈",name:"Guide Confirmed"},{id:"ca_p_l3",icon:"🥇",name:"Expert Guide"},{id:"ca_p_champ",icon:"🏆",name:"Education Champion"}],
+};
 
 const QUIZ_BADGES = {
   fille:  [{id:"f1",icon:"🌸",name:"Fleur de Dignité"},{id:"f2",icon:"🩸",name:"Experte du Cycle"},{id:"f3",icon:"💬",name:"Briseuse de Tabous"},{id:"f4",icon:"🔦",name:"Lumière du Savoir"},{id:"f5",icon:"💪",name:"Fille Invincible"},{id:"f6",icon:"🌍",name:"Ambassadrice"},{id:"f7",icon:"🤝",name:"Voix des Filles"}],
   garcon: [{id:"g1",icon:"🦁",name:"Gardien du Respect"},{id:"g2",icon:"🤝",name:"Allié de la Dignité"},{id:"g3",icon:"👊",name:"Briseur de Préjugés"},{id:"g4",icon:"💡",name:"Éclaireur du Savoir"},{id:"g5",icon:"⚽",name:"Champion Empathie"},{id:"g6",icon:"🌍",name:"Ambassadeur"},{id:"g7",icon:"🛡️",name:"Protecteur Bienveillant"}],
   parent: [{id:"p1",icon:"❤️",name:"Cœur de Famille"},{id:"p2",icon:"📖",name:"Guide Bienveillant"},{id:"p3",icon:"🌱",name:"Semeur de Confiance"},{id:"p4",icon:"🏫",name:"Éducateur Engagé"},{id:"p5",icon:"🔑",name:"Clé du Dialogue"},{id:"p6",icon:"🌍",name:"Leader Changement"},{id:"p7",icon:"✨",name:"Source Inspiration"}],
 };
-const QUIZ_LEVELS = [{icon:"🌱",label:"Débutant(e)",min:0},{icon:"📚",label:"Intermédiaire",min:150},{icon:"🌟",label:"Expert(e)",min:400},{icon:"🏆",label:"Champion(ne)",min:800}];
-const getLevel = pts => [...QUIZ_LEVELS].reverse().find(l=>pts>=l.min)||QUIZ_LEVELS[0];
+const QUIZ_BADGES_EN={
+  fille:[{id:"f1",icon:"🌸",name:"Flower of Dignity"},{id:"f2",icon:"🩸",name:"Cycle Expert"},{id:"f3",icon:"💬",name:"Taboo Breaker"},{id:"f4",icon:"🔦",name:"Light of Knowledge"},{id:"f5",icon:"💪",name:"Invincible Girl"},{id:"f6",icon:"🌍",name:"Ambassador"},{id:"f7",icon:"🤝",name:"Voice of Girls"}],
+  garcon:[{id:"g1",icon:"🦁",name:"Guardian of Respect"},{id:"g2",icon:"🤝",name:"Dignity Ally"},{id:"g3",icon:"👊",name:"Prejudice Breaker"},{id:"g4",icon:"💡",name:"Knowledge Scout"},{id:"g5",icon:"⚽",name:"Empathy Champion"},{id:"g6",icon:"🌍",name:"Ambassador"},{id:"g7",icon:"🛡️",name:"Caring Protector"}],
+  parent:[{id:"p1",icon:"❤️",name:"Heart of Family"},{id:"p2",icon:"📖",name:"Caring Guide"},{id:"p3",icon:"🌱",name:"Sower of Trust"},{id:"p4",icon:"🏫",name:"Committed Educator"},{id:"p5",icon:"🔑",name:"Key to Dialogue"},{id:"p6",icon:"🌍",name:"Change Leader"},{id:"p7",icon:"✨",name:"Source of Inspiration"}],
+};
+const QUIZ_LEVELS_FR=[{icon:"🌱",label:"Débutant(e)",min:0},{icon:"📚",label:"Intermédiaire",min:150},{icon:"🌟",label:"Expert(e)",min:400},{icon:"🏆",label:"Champion(ne)",min:800}];
+const QUIZ_LEVELS_EN=[{icon:"🌱",label:"Beginner",min:0},{icon:"📚",label:"Intermediate",min:150},{icon:"🌟",label:"Expert",min:400},{icon:"🏆",label:"Champion",min:800}];
+const QUIZ_LEVELS=QUIZ_LEVELS_FR;
+const getLevel=(pts,lang)=>{const lvls=lang==="en"?QUIZ_LEVELS_EN:QUIZ_LEVELS_FR;return[...lvls].reverse().find(l=>pts>=l.min)||lvls[0];};
 
 // ── GAMES DATA ─────────────────────────────────────────────────
 const ASSOC_DATA=[
@@ -472,7 +501,7 @@ const MAZE_DATA=[
   {rows:9,cols:9,start:[0,0],end:[8,8],grid:[[0,0,1,0,0,0,1,0,0],[1,0,1,0,1,0,0,1,0],[1,0,0,0,1,1,0,1,0],[1,1,1,0,0,0,0,1,0],[0,0,1,1,1,0,1,1,0],[0,1,0,0,0,0,0,0,0],[0,1,0,1,1,1,1,0,1],[0,0,0,0,0,0,0,0,1],[1,1,1,0,1,1,0,0,0]]},
   {rows:11,cols:11,start:[0,0],end:[10,10],grid:[[0,0,1,0,0,0,1,0,0,0,1],[1,0,1,0,1,0,1,0,1,0,0],[1,0,0,0,1,0,0,0,1,1,0],[1,1,1,0,1,1,1,0,0,0,0],[0,0,1,0,0,0,1,1,1,0,1],[0,1,1,0,1,0,0,0,1,0,1],[0,0,0,0,1,1,1,0,1,0,1],[1,1,1,0,0,0,1,0,0,0,1],[0,0,1,1,1,0,1,1,1,0,1],[0,1,0,0,0,0,0,0,0,0,1],[0,0,0,1,1,1,0,1,1,0,0]]},
 ];
-const GAME_DEF=[
+const GAME_DEF_FR=[
   {id:"g1",e:"🎯",t:"Associe !",d:"Classe dans les bonnes catégories",col:P.blue,main:true,timer:false},
   {id:"g2",e:"🧩",t:"Mon Corps",d:"Explore le corps féminin",col:P.purple,main:true,timer:false},
   {id:"g3",e:"🃏",t:"Jeu de Mémoire",d:"Retrouve les paires cachées",col:P.teal,main:true,timer:false},
@@ -484,6 +513,19 @@ const GAME_DEF=[
   {id:"ws",e:"🔍",t:"Mots Mêlés",d:"Trouve tous les mots cachés",col:P.teal,main:false,timer:false},
   {id:"lab",e:"🌿",t:"Labyrinthe",d:"Trouve la sortie",col:P.green,main:false,timer:false},
 ];
+const GAME_DEF_EN=[
+  {id:"g1",e:"🎯",t:"Match It!",d:"Sort into the right categories",col:P.blue,main:true,timer:false},
+  {id:"g2",e:"🧩",t:"My Body",d:"Explore the female body",col:P.purple,main:true,timer:false},
+  {id:"g3",e:"🃏",t:"Memory Game",d:"Find the hidden pairs",col:P.teal,main:true,timer:false},
+  {id:"g4",e:"🍽️",t:"Chef Nyalê",d:"Good foods for your period",col:P.green,main:true,timer:true},
+  {id:"g5",e:"📅",t:"My Cycle",d:"Put the phases in order",col:P.coral,main:true,timer:false},
+  {id:"g6",e:"🆘",t:"SOS Periods",d:"What would you do?",col:P.red,main:true,timer:true},
+  {id:"dev",e:"💡",t:"Riddles",d:"5 riddles about menstrual health",col:P.amber,main:false,timer:false,noLevels:true},
+  {id:"img",e:"🖼️",t:"4 Images 1 Word",d:"Guess the word behind the images",col:P.coral,main:false,timer:false},
+  {id:"ws",e:"🔍",t:"Word Search",d:"Find all the hidden words",col:P.teal,main:false,timer:false},
+  {id:"lab",e:"🌿",t:"Maze",d:"Find the way out",col:P.green,main:false,timer:false},
+];
+const GAME_DEF=GAME_DEF_FR;
 
 // ── SERPENTS & ÉCHELLES ────────────────────────────────────────
 const QUIZ_DB_N2={
@@ -982,6 +1024,313 @@ const QUIZ_DB_QSJ={
     ],
   },
 };
+const QUIZ_DB_N2_EN={
+  fille:{
+    qcm:[
+      Q("What is premenstrual syndrome (PMS)?","Symptoms before a period like mood changes and fatigue","A serious illness","A hormonal treatment","A medical emergency",0,"PMS affects many people — mood changes, bloating and fatigue are common signs."),
+      Q("What is endometriosis?","A condition causing very painful periods","A dietary disorder","A hormonal supplement","A type of allergy",0,"Endometriosis affects 1 in 10 women and can cause intense pain."),
+      Q("What is ovulation?","The release of an egg from the ovary","The shedding of the uterine lining","The start of menstruation","The end of the cycle",0,"Ovulation occurs approximately mid-cycle, around day 14."),
+      Q("How can you track your menstrual cycle?","By recording start and end dates each month","By watching TV","By eating less","By sleeping more",0,"Tracking your cycle helps you understand your body and plan ahead."),
+      Q("What does heavy menstrual bleeding suggest?","It may require medical attention","It is always normal","Periods will stop soon","It only happens once",0,"Unusually heavy bleeding should always be discussed with a doctor."),
+      Q("What is the best way to manage period pain?","Heat packs, rest and pain relief if needed","Ignoring it completely","Exercising intensely","Eating nothing",0,"Heat, rest and appropriate pain relief can significantly help."),
+      Q("What is the function of progesterone?","To prepare the uterus for a possible pregnancy","To regulate blood pressure","To control digestion","To produce red blood cells",0,"Progesterone prepares the uterine lining for a potential embryo."),
+      Q("What is a reusable sanitary product?","A washable towel or menstrual cup","A disposable pad","A type of medication","A dietary supplement",0,"Reusable products are eco-friendly and effective options."),
+      Q("Why is iron important during menstruation?","To replace iron lost through blood","To boost energy only","To prevent infections","To regulate hormones",0,"Iron is lost during menstruation and needs to be replaced through diet."),
+      Q("Which professional should you consult about menstrual problems?","A gynaecologist or GP","A dentist","An optician","A physiotherapist",0,"A gynaecologist or GP is the right person to consult."),
+    ],
+    vf:[
+      VF("The menstrual cycle is controlled by hormones.",true,"Hormones like oestrogen and progesterone regulate the cycle."),
+      VF("Heavy periods are always normal.",false,"Very heavy periods may indicate a medical condition."),
+      VF("Endometriosis can affect fertility.",true,"Endometriosis may impact fertility if left untreated."),
+      VF("Period pain is always severe.",false,"Pain varies greatly — some girls have little discomfort, others a lot."),
+      VF("You should only change a pad once a day.",false,"Pads should be changed every 4-6 hours to prevent infection."),
+      VF("A menstrual cup is a reusable product.",true,"A menstrual cup can be washed and reused."),
+      VF("Menstruation stops during pregnancy.",true,"Periods stop when a woman is pregnant."),
+      VF("Iron deficiency can result from heavy periods.",true,"Heavy periods can lead to iron deficiency anaemia."),
+      VF("You cannot swim during your period.",false,"Swimming is possible with a tampon or menstrual cup."),
+      VF("Girls should rest completely during their period.",false,"Light activity and rest can both be beneficial."),
+    ],
+    mr:[
+      MR("Periods cause permanent damage to the body.",true,"This is a myth. Periods are a natural process."),
+      MR("Tracking your cycle helps you understand your body.",false,"True. Tracking is an important health habit."),
+      MR("Using a menstrual cup is dangerous.",true,"This is a myth. Cups are safe when used correctly."),
+      MR("Period blood smells because you are unclean.",true,"This is a myth. A mild odour is normal."),
+      MR("Consulting a gynaecologist is important for reproductive health.",false,"True. Regular check-ups support health."),
+      MR("All girls feel the same way about their period.",true,"This is a myth. Experiences vary greatly."),
+      MR("Heavy periods always require medical attention.",false,"True. Unusually heavy periods should be discussed with a doctor."),
+      MR("PMS symptoms are purely imaginary.",true,"This is a myth. PMS symptoms are real."),
+      MR("Eating iron-rich foods helps during menstruation.",false,"True. Iron-rich foods help replace what is lost."),
+      MR("Exercise makes period pain worse.",true,"This is often a myth. Gentle exercise can relieve cramps."),
+    ],
+    violence:[
+      Q("What is victim-blaming?","Holding someone responsible for harm done to them","Helping a victim","Listening to a victim","Supporting a victim",0,"Victim-blaming is harmful — responsibility lies with the perpetrator."),
+      Q("What is the definition of sexual consent?","Freely and clearly agreeing to sexual activity","Being forced to agree","Staying silent","Agreeing once for all future situations",0,"Consent must be freely given and can be withdrawn at any time."),
+      Q("What is cyberbullying?","Harassing or threatening someone online","Playing video games","Sharing news articles","Sending birthday wishes",0,"Cyberbullying includes sending threatening or humiliating messages online."),
+      Q("What is a healthy relationship?","One based on respect, trust and equality","One based on control","One where one person decides everything","One with no disagreements",0,"Healthy relationships are built on mutual respect and equality."),
+      Q("What should you do if you witness harassment?","Report it and support the victim","Ignore it","Laugh along","Film it and share online",0,"Witnesses play a crucial role in stopping harassment."),
+      Q("What is an unhealthy relationship?","One based on control, fear or manipulation","One with occasional disagreements","One where partners have different interests","One with open communication",0,"Unhealthy relationships involve control or emotional manipulation."),
+      Q("What is the importance of setting personal boundaries?","To protect your wellbeing and dignity","To exclude others","To be antisocial","To show you are different",0,"Personal boundaries protect your physical and emotional wellbeing."),
+      Q("What is gaslighting?","Making someone question their own reality","Being honest","Giving advice","Offering support",0,"Gaslighting is emotional abuse where someone is made to doubt themselves."),
+      Q("What should you do if you receive unwanted sexual messages?","Block the person and tell a trusted adult","Respond politely","Ignore it","Keep it secret",0,"Unwanted sexual messages are harassment — block, report and tell an adult."),
+      Q("What is the role of bystanders in preventing violence?","To speak up and report what they see","To stay out of it","To remain silent","To encourage conflict",0,"Active bystanders play a vital role in preventing violence."),
+    ],
+  },
+  garcon:{
+    qcm:[
+      Q("Which hormone mainly controls the male reproductive system?","Testosterone","Oestrogen","Progesterone","Adrenaline",0,"Testosterone is the primary male sex hormone."),
+      Q("What is puberty in boys?","A period of physical and emotional development","A medical condition","A sport","A type of diet",0,"Puberty in boys involves voice deepening, hair growth and muscle development."),
+      Q("What is a healthy way to manage stress?","Exercise, sleep and talking to someone","Eating unhealthily","Playing video games only","Avoiding the issue",0,"Healthy stress management includes physical activity and open communication."),
+      Q("What does respecting consent mean?","Always asking and accepting a no","Being persistent","Ignoring how others feel","Deciding for others",0,"Consent must always be asked for and a 'no' must be respected."),
+      Q("What is emotional intelligence?","Understanding and managing emotions","Being very clever","Having great physical strength","Being popular",0,"Emotional intelligence helps build healthy relationships."),
+      Q("How can a boy support a girl during her period?","By being kind and understanding","By making jokes","By ignoring her","By asking personal questions",0,"Support and empathy are always the right response."),
+      Q("What is the role of the ovaries in women?","Producing eggs and female hormones","Filtering blood","Controlling breathing","Producing bile",0,"The ovaries produce eggs and hormones such as oestrogen."),
+      Q("Why is menstrual education important for boys?","It helps them understand and respect girls","It is not important","It is only for medical students","It is irrelevant",0,"Boys who understand menstruation become more respectful allies."),
+      Q("What is menstrual poverty?","Lack of access to sanitary products","A medical condition","A dietary issue","A social event",0,"Menstrual poverty prevents girls from attending school."),
+      Q("What makes someone a positive male ally?","Showing respect, empathy and speaking against injustice","Being the strongest","Having the most friends","Ignoring problems",0,"A positive ally uses their voice and actions to support others."),
+    ],
+    vf:[
+      VF("Periods are a natural biological process.",true,"Periods are completely natural and healthy."),
+      VF("A good hygiene helps to stay healthy.",true,"Good hygiene is essential, especially during periods."),
+      VF("Boys are not allowed to cry.",false,"Everyone has the right to express their emotions."),
+      VF("A sanitary towel absorbs menstrual blood.",true,"That is exactly its purpose."),
+      VF("Making humiliating jokes can hurt someone.",true,"Words can cause as much harm as actions."),
+      VF("Periods are natural.",true,"Periods are a natural biological process."),
+      VF("A girl chooses when to have her periods.",false,"The menstrual cycle is natural and cannot be controlled."),
+      VF("Respecting others is a sign of maturity.",true,"Respect is a fundamental value."),
+      VF("Getting enough sleep is important for health.",true,"Sleep is essential for physical and mental health."),
+      VF("Menstrual education concerns only girls.",false,"It concerns everyone, including boys."),
+    ],
+    mr:[
+      MR("Boys do not need to understand periods.",true,"This is a myth. Understanding periods makes boys better allies."),
+      MR("Consent must be respected in all relationships.",false,"True. Consent is non-negotiable."),
+      MR("Crying makes a boy weak.",true,"This is a myth. Expressing emotions is healthy for everyone."),
+      MR("Menstrual poverty affects girls' education.",false,"True. Without sanitary products, many girls miss school."),
+      MR("A boy who defends a girl is showing weakness.",true,"This is a myth. Standing up for others shows courage."),
+      MR("Healthy communication helps resolve conflict.",false,"True. Open and calm communication is key."),
+      MR("Boys cannot experience emotional difficulties.",true,"This is a myth. Boys experience the same range of emotions."),
+      MR("Bullying is harmless fun.",true,"This is a myth. Bullying causes serious psychological harm."),
+      MR("Respecting someone's privacy is important.",false,"True. Everyone has the right to privacy and dignity."),
+      MR("A true friend supports you when you are struggling.",false,"True. Friendship includes being there in difficult times."),
+    ],
+    violence:[
+      Q("What should you do if a friend is being bullied?","Support them and report it to an adult","Ignore it","Join in","Film it",0,"Active bystanders help stop bullying by reporting it."),
+      Q("What is consent in a relationship?","Freely and clearly agreeing to something","Staying silent","Being told what to do","Following peer pressure",0,"Consent must always be freely given and respected."),
+      Q("How can a boy be a positive ally?","By showing respect and speaking out against injustice","By staying silent","By making jokes","By excluding others",0,"Positive allies use their voice and actions to support others."),
+      Q("What is online harassment?","Sending threatening or humiliating messages online","Sending birthday wishes","Playing games online","Sharing funny content",0,"Online harassment is abusive behaviour carried out digitally."),
+      Q("What is a trusted adult?","Someone safe to talk to about problems","Any adult","Only family","Only teachers",0,"A trusted adult is someone you feel safe with and can ask for help."),
+      Q("What is the impact of using violent language?","It hurts and intimidates others","It is harmless","It is funny","It builds respect",0,"Violent language causes fear and emotional harm."),
+      Q("What does it mean to respect boundaries?","To stop when someone says no","To continue until they agree","To ignore their feelings","To ask again later",0,"Respecting boundaries means accepting a 'no' immediately."),
+      Q("What should you do if you witness a fight?","Get a trusted adult involved","Join in","Walk away and ignore","Film it",0,"Involving a trusted adult is the safest response."),
+      Q("What is the harm of sharing someone's private photos?","It is a serious breach of privacy and may be illegal","It is funny","It is harmless","It gets more people to see them",0,"Sharing someone's private photos without consent is illegal."),
+      Q("What is the best way to resolve a disagreement?","Calm dialogue and listening to both sides","Shouting","Ignoring the issue","Fighting",0,"Calm and respectful communication is always best."),
+    ],
+  },
+  parent:{
+    qcm:[
+      Q("What is puberty?","A stage of physical and emotional development","A medical condition","A dietary change","A social phase",0,"Puberty is when a child's body and mind develop into adulthood."),
+      Q("What is the best way to talk to a child about periods?","Calmly and honestly at an appropriate age","By avoiding the topic","By using complex medical terms","By waiting until problems arise",0,"Age-appropriate, honest conversations help children feel informed."),
+      Q("What is menstrual poverty?","Inability to access or afford sanitary products","A medical condition","A dietary issue","A cultural practice",0,"Menstrual poverty is a barrier to education and health."),
+      Q("What is a Box de Dignite?","A free sanitary product distribution point","A type of school","A medical clinic","A community centre",0,"Boxes de Dignite by ONG Happy Mum's provide free products in schools."),
+      Q("What is the role of oestrogen?","Regulating the menstrual cycle and reproductive development","Controlling digestion","Building muscle","Regulating sleep",0,"Oestrogen is essential for reproductive health."),
+      Q("What should a parent do if their child has very painful periods?","Consult a doctor","Tell them to rest","Give them sweets","Ignore the pain",0,"Severe pain may indicate endometriosis and must be investigated."),
+      Q("How can parents reduce menstrual stigma?","By speaking openly and positively about periods","By avoiding the topic","By laughing it off","By only discussing it with girls",0,"Open conversations at home help normalise periods."),
+      Q("What is endometriosis?","A condition causing very painful periods","A vitamin deficiency","A skin condition","A digestive disorder",0,"Endometriosis affects 1 in 10 women."),
+      Q("What is menstrual education?","Teaching children about menstruation without shame","Only biology lessons","Medical training","Something only for professionals",0,"Menstrual education reduces shame and improves health."),
+      Q("How does puberty affect a child emotionally?","It can cause mood changes, anxiety and self-consciousness","It has no emotional impact","It only affects behaviour at school","It only affects girls",0,"Emotional support during puberty is as important as physical advice."),
+    ],
+    vf:[
+      VF("Puberty education should start before it happens.",true,"Early education helps children feel prepared."),
+      VF("Boys do not need menstrual education.",false,"Boys who understand menstruation become better allies."),
+      VF("Endometriosis is a common and serious condition.",true,"1 in 10 women are affected — awareness matters."),
+      VF("Girls should avoid physical activity during periods.",false,"Gentle physical activity is beneficial during menstruation."),
+      VF("A parent's calm reaction shapes a child's attitude to puberty.",true,"Children take cues from caregivers on how to feel about their bodies."),
+      VF("Menstrual hygiene is only a girl's responsibility.",false,"Everyone in a household can support good menstrual hygiene."),
+      VF("Menstrual poverty affects girls' school attendance.",true,"Without sanitary products, many girls miss school."),
+      VF("Puberty only involves physical changes.",false,"Puberty involves significant emotional and social changes too."),
+      VF("Open communication with children about bodies reduces shame.",true,"Honest conversations build trust and reduce shame."),
+      VF("Parents are role models for how children view their bodies.",true,"Parental attitudes greatly influence children's self-image."),
+    ],
+    mr:[
+      MR("Talking about puberty embarrasses children unnecessarily.",true,"This is a myth. Open conversations reduce anxiety."),
+      MR("A parent's support during puberty makes a real difference.",false,"True. Parental support significantly improves wellbeing."),
+      MR("Severe period pain should always be ignored.",true,"This is a myth. Severe pain requires medical attention."),
+      MR("Including boys in menstrual education benefits everyone.",false,"True. Informed boys become respectful and supportive allies."),
+      MR("Puberty education should only happen at school.",true,"This is a myth. Home discussions are equally important."),
+      MR("A child asking questions about puberty is being inappropriate.",true,"This is a myth. Curiosity is natural and healthy."),
+      MR("Early education about puberty reduces anxiety.",false,"True. Being prepared helps children face changes confidently."),
+      MR("Menstrual products are a luxury item.",true,"This is a myth. Menstrual products are a basic health necessity."),
+      MR("Emotional support during puberty is as important as physical health advice.",false,"True. Emotional wellbeing must not be neglected."),
+      MR("Parents and educators share responsibility for puberty education.",false,"True. A team approach ensures children get consistent support."),
+    ],
+    violence:[
+      Q("What should a parent do if a child reports abuse?","Believe them and seek help immediately","Question if they are telling the truth","Wait and observe","Ask them to keep it secret",0,"Believing and supporting the child while seeking help is paramount."),
+      Q("What is emotional abuse?","Using words or actions to control, humiliate or frighten someone","Speaking loudly","Giving instructions","Offering advice",0,"Emotional abuse causes long-lasting psychological harm."),
+      Q("What are the warning signs that a child may be experiencing abuse?","Sudden changes in behaviour, withdrawal or fearfulness","Getting better at school","Making new friends","Being more talkative",0,"Behavioural changes are often signs that a child is distressed."),
+      Q("What is a child protection plan?","A plan to keep a child safe from harm","A school timetable","A diet plan","A sports programme",0,"Child protection plans are put in place to safeguard children at risk."),
+      Q("What does unconditional love from a parent mean?","Loving a child regardless of their behaviour or circumstances","Only loving them when they behave","Loving them only when they succeed","Offering support only sometimes",0,"Unconditional love provides a safe foundation for a child's development."),
+      Q("What should you do if you suspect a child is being abused?","Report your concerns to the appropriate authorities","Do nothing","Wait for the child to ask for help","Ask the suspected abuser",0,"Any suspicion of child abuse must be reported immediately."),
+      Q("What is the difference between discipline and punishment?","Discipline teaches; punishment uses fear or pain","There is no difference","Punishment is more effective","Discipline is only for younger children",0,"Discipline aims to guide behaviour through understanding, not fear."),
+      Q("What is a trusted adult for a child?","Someone they feel safe with and can talk to freely","Any adult they know","Only family members","Only teachers",0,"A trusted adult is someone a child can turn to for support."),
+      Q("Why is it important for a parent to listen actively to a child?","It builds trust and encourages openness","It wastes time","It is only necessary for serious issues","It is the school's responsibility",0,"Active listening builds the trust children need to share concerns."),
+      Q("How can parents protect children from online risks?","By maintaining open conversations and setting boundaries","By banning all screen time","By ignoring the issue","By only allowing supervised internet use",0,"Open communication and age-appropriate guidelines are most effective."),
+    ],
+  },
+};
+
+const QUIZ_DB_N3_EN={
+  fille:{
+    qcm:[
+      Q("What is the endometrium?","The lining of the uterus that sheds during periods","A hormone","A type of ovarian cyst","Part of the fallopian tube",0,"The endometrium builds up and is shed monthly during menstruation."),
+      Q("What does a gynaecologist do?","Specialises in female reproductive health","Treats bones","Checks eyesight","Performs heart surgery",0,"A gynaecologist is the specialist to consult for menstrual health."),
+      Q("What is hormonal imbalance?","When hormones are not at their normal levels","When you exercise too much","When you eat too much sugar","When you sleep too little",0,"Hormonal imbalance can affect the menstrual cycle and overall health."),
+      Q("What is menstrual stigma?","Negative social attitudes toward menstruation","A medical condition","A dietary habit","A positive celebration",0,"Menstrual stigma leads to shame and prevents girls from getting support."),
+      Q("What rights should every girl have regarding menstrual health?","Access to products and information without shame","No specific rights","Only educational rights","Rights only at school",0,"Menstrual health rights include access to products, education and dignity."),
+      Q("What is the impact of menstrual poverty on education?","Girls miss school due to lack of sanitary products","No impact","Improved concentration","Only affects older students",0,"Menstrual poverty causes millions of girls to miss school every year."),
+      Q("What is the role of a Box de Dignite?","Providing free sanitary products in schools","Selling products","Distributing medicines","Providing school meals",0,"Boxes de Dignite by ONG Happy Mum's ensure girls can stay in school."),
+      Q("What is the connection between nutrition and menstrual health?","Good nutrition supports hormonal balance","No connection","More sugar helps","Only fasting helps",0,"Eating well, especially iron-rich foods, supports menstrual health."),
+      Q("What is a menstrual health advocate?","Someone who promotes education and dignity around periods","A doctor only","A product seller","A government official",0,"Advocates work to end taboos and ensure access to menstrual health resources."),
+      Q("What is the message of the Dignity Quiz?","Everyone deserves to be treated with dignity and respect","Only girls need dignity","Dignity is a luxury","Only adults deserve dignity",0,"The Dignity Quiz promotes dignity, education and respect for all."),
+    ],
+    vf:[
+      VF("Access to sanitary products is a basic human right.",true,"Every girl has the right to manage her period with dignity."),
+      VF("Menstrual education only benefits girls.",false,"Menstrual education benefits everyone by reducing stigma."),
+      VF("Endometriosis can cause fertility problems.",true,"Endometriosis affects 1 in 10 women and may impact fertility."),
+      VF("Menstrual poverty is a global issue.",true,"Millions of girls worldwide lack adequate sanitary products."),
+      VF("Hormonal changes only affect the body physically.",false,"Hormonal changes affect mood, energy and emotional wellbeing too."),
+      VF("Breaking menstrual taboos requires collective action.",true,"Change happens when communities, schools and families work together."),
+      VF("Consulting a gynaecologist regularly is important.",true,"Regular check-ups are important for reproductive health."),
+      VF("Girls who lack sanitary products often miss school.",true,"Menstrual poverty is a barrier to education for millions."),
+      VF("Good nutrition supports menstrual health.",true,"A balanced diet rich in iron and vitamins supports the cycle."),
+      VF("Everyone has a role to play in ending menstrual stigma.",true,"Stigma is reduced when communities openly support menstrual health."),
+    ],
+    mr:[
+      MR("Menstrual poverty only affects developing countries.",true,"This is a myth. Menstrual poverty exists in all countries."),
+      MR("Access to menstrual products is a fundamental right.",false,"True. Every girl deserves to manage her period with dignity."),
+      MR("Endometriosis is easy to diagnose.",true,"This is a myth. Endometriosis often takes years to diagnose."),
+      MR("Schools play an important role in menstrual education.",false,"True. Schools are key environments for normalising menstrual health."),
+      MR("Menstrual stigma has no real-world consequences.",true,"This is a myth. Stigma leads to shame and missed education."),
+      MR("Reusable sanitary products are a viable option.",false,"True. Washable pads and menstrual cups are effective and eco-friendly."),
+      MR("Only doctors can talk about menstrual health.",true,"This is a myth. Parents, educators and peers all play a role."),
+      MR("The menstrual cycle affects overall health and wellbeing.",false,"True. The cycle impacts mood, energy, skin and overall health."),
+      MR("Menstrual health advocacy is only for adult women.",true,"This is a myth. Young people are powerful advocates for change."),
+      MR("Normalising periods benefits everyone in society.",false,"True. When periods are treated normally, stigma decreases for all."),
+    ],
+    violence:[
+      Q("What is gender-based violence?","Violence targeting someone because of their gender","A sporting competition","A type of argument","A family disagreement",0,"Gender-based violence includes physical, sexual and emotional harm."),
+      Q("What is the importance of consent education?","It helps prevent abuse and build respectful relationships","It is not important","It is only for adults","It is only in romantic relationships",0,"Consent education is fundamental to preventing abuse."),
+      Q("What is a survivor of violence?","Someone who has experienced violence and is still alive","Someone who escaped danger","A victim who has fully recovered","All of the above",0,"Survivors deserve support, belief and access to appropriate resources."),
+      Q("What is the role of community in preventing gender-based violence?","To create a culture of respect and zero tolerance","To stay out of family matters","To only support victims after the fact","To report only serious incidents",0,"Communities that actively challenge violence protect their most vulnerable."),
+      Q("What is the cycle of abuse?","A pattern where abuse repeats after periods of calm","A one-time event","A disagreement","A medical condition",0,"Understanding the cycle of abuse helps victims recognise patterns."),
+      Q("What resources are available for victims of violence?","Helplines, shelters, counsellors and trusted adults","No resources exist","Only medical professionals","Only the police",0,"Multiple resources exist — helplines and counsellors can all provide support."),
+      Q("What does empowerment of girls involve?","Education, access to resources and freedom from discrimination","Making them independent","Teaching them to fight","Separating them from boys",0,"Empowerment involves education, equal rights and freedom to make choices."),
+      Q("Why is it important to teach children about healthy relationships?","To help them recognise and build respectful connections","It is not important","It is only for teenagers","It is only relevant after marriage",0,"Early education about healthy relationships helps prevent abuse."),
+      Q("What is the link between education and gender-based violence prevention?","Educated communities are better equipped to recognise and stop violence","There is no link","Education only helps after violence occurs","Only higher education makes a difference",0,"Education is one of the most powerful tools in preventing violence."),
+      Q("What is the message of the Dignity Quiz?","Everyone deserves to be treated with dignity and respect","Only girls need dignity","Dignity is a luxury","Only adults deserve dignity",0,"The Dignity Quiz promotes dignity and respect for all."),
+    ],
+  },
+  garcon:{
+    qcm:[
+      Q("What is the full menstrual cycle?","The complete series of hormonal changes from one period to the next","Only the days of bleeding","A week of hormonal changes","A month of pain",0,"The full cycle includes menstruation, follicular, ovulation and luteal phases."),
+      Q("What is endometriosis?","A condition causing very painful periods in women","A male hormone imbalance","A type of allergy","A bone condition",0,"Endometriosis affects 1 in 10 women — important for boys to understand."),
+      Q("What is a positive male ally?","Someone who supports equality and speaks against injustice","Someone who is the strongest","Someone with the most friends","Someone who never gets emotional",0,"A positive ally uses their voice and privilege to support others."),
+      Q("Why do girls miss school due to menstruation?","Often because of pain or lack of sanitary products","Because they want to","Because they are ill","Because of school rules",0,"Menstrual poverty and severe pain are the main reasons."),
+      Q("What is consent?","Freely and clearly agreeing to something","Saying nothing","Being pressured","Following the crowd",0,"Consent must be freely given and can be withdrawn at any time."),
+      Q("What is menstrual stigma?","Negative social attitudes toward periods","A medical condition","A celebration","A dietary practice",0,"Menstrual stigma causes shame and prevents open health discussions."),
+      Q("What is a Box de Dignite?","A free sanitary product distribution point in schools","A type of classroom","A medical kit","A donation box",0,"Boxes de Dignite ensure girls can manage their periods with dignity."),
+      Q("What is gender equality?","Equal rights and opportunities for all genders","Men and women being identical","Only women's rights","A political party",0,"Gender equality means the same rights and opportunities regardless of gender."),
+      Q("Why is menstrual education important for boys?","It builds empathy and helps boys be respectful allies","It is not important","It is only for medical students","It is not relevant",0,"Understanding menstruation helps boys treat girls with empathy."),
+      Q("What does breaking a taboo mean?","Openly discussing a topic that was previously considered shameful","Creating a new rule","Starting an argument","Disrespecting tradition",0,"Breaking taboos around periods promotes health, dignity and understanding."),
+    ],
+    vf:[
+      VF("Mocking a girl about her periods can affect her self-confidence.",true,"Mockery causes real harm to self-esteem and wellbeing."),
+      VF("Stress can influence emotions and behaviour.",true,"Stress affects both the body and the mind."),
+      VF("Respecting consent is important in all relationships.",true,"Consent is non-negotiable."),
+      VF("All girls experience their periods in the same way.",false,"Every girl's experience is different."),
+      VF("Boys can help break menstrual taboos.",true,"Informed boys become powerful allies in ending stigma."),
+      VF("Asking questions about health is a sign of weakness.",false,"Seeking information is a sign of strength, not weakness."),
+      VF("The words we use can have an impact on others.",true,"Words can either hurt or encourage — they carry real power."),
+      VF("A girl must stop all sport during her period.",false,"Sport is possible and even beneficial during periods."),
+      VF("Supporting and protecting your friends is a good attitude.",true,"True friendship includes being there for others."),
+      VF("A boy must like certain things to be a real man.",false,"Masculinity is not defined by stereotypes."),
+    ],
+    mr:[
+      MR("Boys cannot be allies in the fight for gender equality.",true,"This is a myth. Informed boys are powerful allies."),
+      MR("Consent must be respected in every relationship.",false,"True. Consent is the foundation of all respectful relationships."),
+      MR("Standing up for a girl shows weakness in a boy.",true,"This is a myth. Standing up for others shows integrity and courage."),
+      MR("Menstrual poverty is a serious issue affecting education.",false,"True. Girls who lack products often miss school."),
+      MR("Boys do not experience emotional difficulties.",true,"This is a myth. Boys experience the same emotional range as everyone."),
+      MR("Empathy helps build better relationships.",false,"True. Empathy is essential for respectful relationships."),
+      MR("Talking about periods is shameful.",true,"This is a myth. Open discussion protects health and reduces stigma."),
+      MR("A respectful male ally listens without judgement.",false,"True. Listening without judgement is a key quality of a good ally."),
+      MR("Gender equality benefits only women.",true,"This is a myth. Gender equality benefits everyone in society."),
+      MR("Breaking menstrual taboos requires courage.",false,"True. Speaking openly about periods takes courage and creates change."),
+    ],
+    violence:[
+      Q("What is dialogue?","A calm conversation aimed at resolving a conflict","A heated argument","Staying silent","Shouting at someone",0,"Dialogue is the most effective and peaceful way to resolve conflict."),
+      Q("What is endometriosis?","A condition causing severe period pain","A male hormonal condition","A type of allergy","A bone disease",0,"Knowing about endometriosis helps boys support women who suffer from it."),
+      Q("What is discrimination?","Treating someone unfairly because of who they are","A type of sport","A friendly competition","A cultural tradition",0,"Discrimination is harmful and violates basic human rights."),
+      Q("What makes a positive leader?","Responsibility, empathy and respect","Being the strongest","Having the most authority","Never admitting mistakes",0,"Positive leadership is built on responsibility, empathy and care."),
+      Q("What is social inequality?","Unequal access to rights, resources and opportunities","A competitive sport","A type of wealth","A temporary situation",0,"Social inequalities affect millions and require collective action."),
+      Q("What is awareness-raising?","Educating people about an issue without shame","Creating fear","Punishing people","Silencing discussion",0,"Awareness-raising empowers communities to address health issues openly."),
+      Q("What does respecting limits mean?","Accepting a no immediately and completely","Continuing until they agree","Asking again later","Ignoring their response",0,"Respecting limits means stopping immediately when someone says no."),
+      Q("Why is talking about emotions important for mental health?","It reduces stress and helps build supportive relationships","It shows weakness","It is unnecessary","It is only for women",0,"Expressing emotions is essential for mental health."),
+      Q("What can a boy become when he protects and respects others?","A positive ally and role model","A leader only","A popular person","An authority figure",0,"Boys who respect and protect others become positive role models."),
+      Q("What is a world where everyone is treated with dignity?","A fair and equal world","A perfect world","An impossible dream","A world only for some",0,"A world of dignity and equality is something we can all work towards."),
+    ],
+  },
+  parent:{
+    qcm:[
+      Q("What is the endometrium?","The uterine lining that sheds during periods","A type of hormone","An ovarian cyst","Part of the fallopian tube",0,"The endometrium builds up and sheds each month."),
+      Q("What is the role of a parent in puberty education?","To provide accurate, compassionate information","To leave it to the school only","To avoid the topic","To pretend nothing is happening",0,"Parents play a vital role in preparing children for puberty."),
+      Q("What is menstrual activism?","Advocating for access to products, education and dignity","Selling sanitary products","A medical speciality","A government policy",0,"Menstrual activism works to end stigma and ensure menstrual health is a right."),
+      Q("What is the connection between menstrual health and school attendance?","Girls without products often miss school","There is no connection","It only affects very young girls","It is not a concern",0,"Menstrual poverty is a major barrier to girls' education worldwide."),
+      Q("What is active listening?","Giving full attention, asking questions and reflecting back","Just hearing words","Giving advice immediately","Waiting to speak",0,"Active listening builds trust and helps children feel genuinely heard."),
+      Q("What is the role of ONG Happy Mum's?","Providing sanitary products and menstrual education","Running medical clinics","Providing school meals","Building schools only",0,"ONG Happy Mum's promotes menstrual dignity through products and education."),
+      Q("What is hormonal balance?","When hormones are at healthy levels","When all emotions are controlled","A state of complete calm","A medical procedure",0,"Hormonal balance is important for menstrual health and overall wellbeing."),
+      Q("What is the psychological impact of menstrual stigma?","It causes shame, isolation and low self-esteem","It has no impact","It only affects adults","It only affects rural communities",0,"Menstrual stigma has serious and lasting psychological consequences."),
+      Q("What is a menstrual health policy?","A set of rules supporting menstrual health in a community","A school schedule","A type of medical treatment","A dietary plan",0,"Policies that support menstrual health protect girls' dignity."),
+      Q("Why should parents involve boys in menstrual education?","Boys who understand menstruation become respectful allies","It is not necessary","It embarrasses boys","It is only for older boys",0,"Inclusive menstrual education creates more supportive communities."),
+    ],
+    vf:[
+      VF("Menstrual health is a human rights issue.",true,"Every person has the right to manage their menstrual health with dignity."),
+      VF("Puberty education should be left entirely to schools.",false,"Home conversations are equally important."),
+      VF("Endometriosis often takes years to diagnose.",true,"Early awareness helps speed up diagnosis and treatment."),
+      VF("Menstrual stigma affects girls' mental health.",true,"Shame and taboos around periods cause lasting psychological harm."),
+      VF("A parent who talks openly about periods reduces shame for their child.",true,"Open discussions normalise periods and build confidence."),
+      VF("Sanitary products are a luxury.",false,"Sanitary products are a basic health necessity, not a luxury."),
+      VF("Both boys and girls benefit from menstrual education.",true,"Inclusive education creates empathy and reduces stigma for everyone."),
+      VF("Good menstrual health requires access to both products and information.",true,"Access to both is essential for menstrual dignity and health."),
+      VF("Parents can make a real difference in how their child views menstruation.",true,"Parental attitudes strongly shape children's perceptions."),
+      VF("Menstrual poverty is a global educational issue.",true,"Menstrual poverty affects girls' school attendance worldwide."),
+    ],
+    mr:[
+      MR("Menstrual education at home is not as important as at school.",true,"This is a myth. Home education is equally vital."),
+      MR("A supportive parent helps their child develop a healthy body image.",false,"True. Parental support is key to positive self-perception."),
+      MR("Menstrual stigma is not harmful.",true,"This is a myth. Stigma causes serious psychological and educational harm."),
+      MR("Inclusive menstrual education benefits the whole community.",false,"True. Communities that address menstrual health openly are healthier."),
+      MR("Talking about periods with boys is unnecessary.",true,"This is a myth. Educating boys builds empathy and respect."),
+      MR("A child who is informed about puberty is better prepared.",false,"True. Knowledge reduces anxiety and promotes confidence."),
+      MR("Menstrual health only concerns women and girls.",true,"This is a myth. It is a public health issue that affects everyone."),
+      MR("Active listening helps a child feel supported.",false,"True. Feeling heard is fundamental to a child's emotional wellbeing."),
+      MR("Parental involvement in puberty education is not important.",true,"This is a myth. Parents are among the most influential educators."),
+      MR("Everyone has a role in breaking menstrual taboos.",false,"True. Change happens when families, schools and communities work together."),
+    ],
+    violence:[
+      Q("What is a benevolent approach in education?","Guiding with kindness, patience and respect","Strict punishment","Ignoring behaviour","Competing with other parents",0,"Benevolent education guides children through love and understanding."),
+      Q("What is endometriosis?","A condition causing very painful periods","A dietary disorder","A skin condition","A sleep disorder",0,"Endometriosis is a serious condition — early awareness saves years of suffering."),
+      Q("What is active listening?","Fully attending to and reflecting on what someone says","Waiting to speak","Giving immediate advice","Agreeing with everything",0,"Active listening shows a child that their feelings and experiences matter."),
+      Q("What problem can push girls to miss school during their period?","Menstrual poverty","Fear of exams","Tiredness","Bad weather",0,"Lack of sanitary products is the main reason girls miss school during menstruation."),
+      Q("What quality is essential in a trusted educator?","Patience, empathy and consistency","Strictness","Authority","Distance",0,"A trusted educator creates a safe, consistent and empathetic environment."),
+      Q("What action helps reduce menstrual taboos?","Raising awareness and discussing openly","Silence","Punishment","Avoiding the topic",0,"Open awareness-raising reduces shame and promotes menstrual health."),
+      Q("What does a child need to develop healthily?","Emotional security, support and respect","Only material things","Only education","Only food and shelter",0,"Emotional security is a fundamental need for healthy child development."),
+      Q("What attitude from a parent can break a child's confidence?","Contempt, ridicule or dismissiveness","Patience","Listening","Encouragement",0,"Contempt and dismissiveness cause lasting damage to a child's self-esteem."),
+      Q("What does an educator transmit when they accompany without judgement?","Trust, confidence and openness","Fear","Obedience","Academic knowledge only",0,"Non-judgemental support builds lasting trust between child and adult."),
+      Q("What kind of environment allows every child to grow with dignity?","One that is safe, inclusive and respectful","One focused only on discipline","One with strict rules","One with no conversation",0,"A benevolent community is the best environment for a child's development."),
+    ],
+  },
+};
+
+const QUIZ_DB_QSJ_EN=QUIZ_DB_QSJ;
 
 const LEVEL_CATS=['qcm','vf','mr','violence','qsj'];
 
@@ -1095,7 +1444,7 @@ function TRing({secs,onExpire,tkey}){
   );
 }
 
-function LvlSelect({gDef,onSelect,onBack,unlocked}){
+function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
   const[msg,setMsg]=useState(false);
   const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Beginner",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Intermediate",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Expert",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
   return(
@@ -1560,10 +1909,10 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
 // ── QUIZ COMPONENTS ────────────────────────────────────────────
 function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   const scoreRef=useRef(0);
-  const pool=category==="urgence"?URGENCE_Q:category==="defi"?DEFIS_Q:category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
-    category==="qsj"?(level===2?(QUIZ_DB_QSJ.n2[profile]||[]):level===3?(QUIZ_DB_QSJ.n3[profile]||[]):(QUIZ_DB_QSJ.n1[profile]||[])):
+  const pool=category==="urgence"?(lang==="en"?URGENCE_Q_EN:URGENCE_Q):category==="defi"?(lang==="en"?DEFIS_Q_EN:DEFIS_Q):category.startsWith("ca_")?(CA_DB[profile]?.[category]||[]):
+    category==="qsj"?(level===2?((lang==="en"?QUIZ_DB_QSJ_EN:QUIZ_DB_QSJ).n2[profile]||[]):level===3?((lang==="en"?QUIZ_DB_QSJ_EN:QUIZ_DB_QSJ).n3[profile]||[]):((lang==="en"?QUIZ_DB_QSJ_EN:QUIZ_DB_QSJ).n1[profile]||[])):
     (LEVEL_CATS.includes(category)&&profile!=='parent')
-      ?(lang==="en"?(level===2?(QUIZ_DB_N2_EN[profile]?.[category]||[]):level===3?(QUIZ_DB_N3_EN[profile]?.[category]||[]):(QUIZ_DB_EN[profile]?.[category]||[])):(level===2?(QUIZ_DB_N2[profile]?.[category]||[]):level===3?(QUIZ_DB_N3[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[])))
+      ?(level===2?(lang==="en"?(QUIZ_DB_N2_EN[profile]?.[category]||[]):(QUIZ_DB_N2[profile]?.[category]||[])):level===3?(lang==="en"?(QUIZ_DB_N3_EN[profile]?.[category]||[]):(QUIZ_DB_N3[profile]?.[category]||[])):(lang==="en"?(QUIZ_DB_EN[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[])))
       :(lang==="en"?(QUIZ_DB_EN[profile]?.[category]||[]):(QUIZ_DB[profile]?.[category]||[]));
   const total=category==="urgence"||category==="defi"?5:10;
   const[qs]=useState(()=>{
@@ -1639,7 +1988,8 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
                 let bg="rgba(255,255,255,.9)",border=`2.5px solid rgba(232,0,61,.13)`;
                 if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border=`2.5px solid ${P.green}`;}else if(i===sel){bg="rgba(231,76,60,.1)";border="2.5px solid #E74C3C";}}
                 return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"13px 16px",cursor:showFb?"default":"pointer",fontSize:".93rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
-                  <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>{a}
+                  <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
+                  {lang==="en"?(a==="Vrai"?"True":a==="Faux"?"False":a==="Mythe"?"Myth":a==="Réalité"?"Reality":a):a}
                 </button>);
               })}
             </div>
@@ -1665,11 +2015,11 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
 
 function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,storyDataUrl,userName,lang,onReplay,onHome,onShareWA,onNextLevel}){
   const pct=Math.round((finalScore/(qLen*10))*100);
-  const isLeveled=LEVEL_CATS.includes(category)&&profile!=='parent';
+  const isLeveled=LEVEL_CATS.includes(category);
   const passed=pct>=80&&isLeveled;
-  const hasNextLevel=passed&&levelNum<3;
+  const hasNextLevel=passed&&levelNum<3&&levelNum>0;
   const sc=Math.round(finalScore/10);
-  const lvlName=sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)";
+  const lvlName=lang==="en"?(sc>=9?"Expert":sc>=6?"Curious":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
   const shareText=`${userName||'Quelqu\'un'} a obtenu ${sc}/10 au Quiz Dignité 🌸 Teste tes connaissances à ton tour sur les règles !\n\n👉 quizdignite.org\n\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`;
   const fbUrl=`https://www.facebook.com/sharer/sharer.php?u=https://quizdignite.org`;
 
@@ -1714,6 +2064,11 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
         </div>
       )}
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
+      {hasNextLevel&&onNextLevel&&(
+        <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"16px 22px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",marginBottom:12}}>
+          {lang==="en"?`➜ Level ${levelNum+1} — Unlock now!`:`➜ Niveau ${levelNum+1} — Débloquer maintenant !`}
+        </button>
+      )}
       <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>{lang==="en"?"Share your score 🌍":"Partager ton score 🌍"}</div>
       {storyDataUrl?(
         <div>
@@ -1740,11 +2095,6 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
         <div style={{textAlign:"center",padding:"10px 0",color:P.muted,fontSize:".8rem"}}>⏳ Génération de la carte...</div>
       )}
       <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
-      {hasNextLevel&&onNextLevel&&(
-        <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"15px 22px",fontWeight:800,fontSize:"1rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)",marginBottom:10}}>
-          {lang==="en"?`Level ${levelNum+1} → 🥈`:`Niveau ${levelNum+1} →  🥈`}
-        </button>
-      )}
       <div style={{display:"flex",gap:10}}>
         <button onClick={onReplay} style={{flex:1,background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Play again 🔄":"Rejouer 🔄"}</button>
         <button onClick={onHome} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Home 🏠":"Accueil 🏠"}</button>
@@ -1929,7 +2279,22 @@ function DefiModal({onClose,lang}){
   );
 }
 
-// ── WELCOME SCREEN ─────────────────────────────────────────────
+function GamePlay({gameId,gameLevel,onBack,onBadge,onComplete}){
+  const props={level:gameLevel,onBack,onBadge,onComplete};
+  if(gameId==="g1")return<JeuAssocie  key={`g1-${gameLevel}`}  {...props}/>;
+  if(gameId==="g2")return<JeuCorps    key={`g2-${gameLevel}`}  {...props}/>;
+  if(gameId==="g3")return<JeuMemoire  key={`g3-${gameLevel}`}  {...props}/>;
+  if(gameId==="g4")return<JeuChef     key={`g4-${gameLevel}`}  {...props}/>;
+  if(gameId==="g5")return<JeuCycle    key={`g5-${gameLevel}`}  {...props}/>;
+  if(gameId==="g6")return<JeuSOS      key={`g6-${gameLevel}`}  {...props}/>;
+  if(gameId==="dev")return<JeuDevinettes key="dev" onBack={onBack} onBadge={onBadge}/>;
+  if(gameId==="img")return<JeuImages  key={`img-${gameLevel}`} {...props}/>;
+  if(gameId==="ws")return<JeuMotsMeles key={`ws-${gameLevel}`} {...props}/>;
+  if(gameId==="lab")return<JeuLabyrinthe key={`lab-${gameLevel}`} {...props}/>;
+  return null;
+}
+
+
 function WelcomeScreen({onStart,lang,setLang}){
   return(
     <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",padding:"48px 28px 36px",position:"relative",overflow:"hidden"}}>
@@ -2343,23 +2708,24 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,o
 }
 
 // ── GAMES HUB ──────────────────────────────────────────────────
-function GamesHub({soundOn,toggleSound,unlocked,onGame}){
+function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
+  const gameDef=lang==="en"?GAME_DEF_EN:GAME_DEF_FR;
   return(
     <div style={{paddingBottom:88}}>
       <div style={{background:HERO,padding:"22px 18px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px #C8102E2A",marginBottom:16}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
             <div style={{fontSize:40,lineHeight:1}}>🕹️</div>
-            <h1 className="T" style={{margin:"5px 0 2px",fontSize:25,fontWeight:700,color:"white"}}>Jeux Éducatifs</h1>
+            <h1 className="T" style={{margin:"5px 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
             <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>10 jeux · 3 niveaux chacun ✨</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
         </div>
       </div>
       <div style={{padding:"0 15px"}}>
-        <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎮 Jeux Principaux</div>
+        <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎮 {lang==="en"?"Main Games":"Jeux Principaux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
-          {GAME_DEF.filter(g=>g.main).map(g=>(
+          {gameDef.filter(g=>g.main).map(g=>(
             <button key={g.id} onClick={()=>onGame(g.id)} style={{background:"white",border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
               <div style={{width:44,height:44,borderRadius:13,background:`linear-gradient(135deg,${g.col}22,${g.col}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0,position:"relative"}}>
                 {g.e}
@@ -2376,9 +2742,9 @@ function GamesHub({soundOn,toggleSound,unlocked,onGame}){
             </button>
           ))}
         </div>
-        <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎲 Mini-Jeux</div>
+        <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎲 {lang==="en"?"Mini-Games":"Mini-Jeux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          {GAME_DEF.filter(g=>!g.main).map(g=>(
+          {gameDef.filter(g=>!g.main).map(g=>(
             <button key={g.id} onClick={()=>onGame(g.id)} style={{background:"white",border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
               <div style={{width:44,height:44,borderRadius:13,background:`linear-gradient(135deg,${g.col}22,${g.col}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0}}>{g.e}</div>
               <div style={{flex:1}}>
@@ -2412,7 +2778,7 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
       <div style={{display:"flex",flexDirection:"column",gap:11}}>
         {lvls.map(l=>{
           const locked=l.lv>unlk;const isDone=done.includes(l.lv);
-          const badge=CA_BADGES[profile]?.[l.lv-1];
+          const badge=(lang==="en"?CA_BADGES_EN:CA_BADGES)[profile]?.[l.lv-1];
           return(<button key={l.lv} onClick={()=>{if(locked){setCaMsg(true);setTimeout(()=>setCaMsg(false),2000);}else onStart(l.lv);}}
             style={{background:locked?"#F5F0F8":"white",border:`2px solid ${locked?"#D4C8E8":l.col+"33"}`,borderRadius:18,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,textAlign:"left",width:"100%",boxShadow:locked?"none":`0 4px 14px ${l.col}18`,opacity:locked?.72:1,cursor:locked?"default":"pointer"}}>
             <div style={{width:48,height:48,borderRadius:15,background:locked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{locked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
@@ -2512,7 +2878,7 @@ export default function App(){
 
   function onQuizResult(score,qLen){
     const newTotal=totalPts+score;const newSess=sessions+1;
-    const bList=QUIZ_BADGES[profile]||[];const pct=Math.round((score/(qLen*10))*100);
+    const bList=(lang==="en"?QUIZ_BADGES_EN:QUIZ_BADGES)[profile]||[];const pct=Math.round((score/(qLen*10))*100);
     const fresh=bList.filter((b,i)=>{
       if(badges.includes(b.id))return false;
       if(i===0)return true;if(i===1)return pct===100&&category==="qcm";
@@ -2530,7 +2896,7 @@ export default function App(){
     if(category.startsWith("ca_")){
       const lvl=parseInt(category.split("_")[1]);
       const np=saveCaProgress(profile,lvl);
-      const caBadges=CA_BADGES[profile]||[];
+      const caBadges=(lang==="en"?CA_BADGES_EN:CA_BADGES)[profile]||[];
       const lvlBadge=caBadges[lvl-1];
       if(lvlBadge&&!allB.includes(lvlBadge.id)){fresh.push(lvlBadge);allB.push(lvlBadge.id);}
       const allDone=(np[profile]||[]).length>=3;
@@ -2550,7 +2916,7 @@ export default function App(){
 
   const[storyDataUrl,setStoryDataUrl]=useState(null);
 
-  function generateStoryCard(score,qLen,userName,badgeIcon,badgeName,levelNum,catLabel){
+  function generateStoryCard(score,qLen,userName,badgeIcon,badgeName,levelNum,catLabel,lang){
     const sc=Math.round(score/10);
     const canvas=document.createElement("canvas");
     canvas.width=1080;canvas.height=1920;
@@ -2595,21 +2961,31 @@ export default function App(){
       c.fillStyle="#2A0A1F";c.font="bold 72px Arial";
       c.fillText(userName||"Joueur.se",540,780);
       // Score box
-      const box=c.createLinearGradient(160,830,920,1050);
+      const box=c.createLinearGradient(120,820,960,1060);
       box.addColorStop(0,"#E8003D");box.addColorStop(1,"#FF6B9D");
-      c.fillStyle=box;
-      roundRect(c,160,830,760,240,44);c.fill();
-      c.fillStyle="white";c.font="bold 140px Arial";c.textAlign="center";
-      c.fillText(`${sc}/10`,540,990);
-      c.fillStyle="rgba(255,255,255,.8)";c.font="38px Arial";
-      c.fillText("🏆  Score",540,845);
+      c.fillStyle=box;roundRect(c,120,810,840,290,44);c.fill();
+      // Score label
+      c.fillStyle="rgba(255,255,255,.75)";c.font="bold 34px Arial";c.textAlign="center";
+      c.fillText("🏆  SCORE",540,855);
+      // Score number
+      c.fillStyle="white";c.font="bold 160px Arial";
+      c.fillText(`${sc}/10`,540,1005);
+      // Divider inside box
+      c.strokeStyle="rgba(255,255,255,.3)";c.lineWidth=1.5;
+      c.beginPath();c.moveTo(200,1040);c.lineTo(880,1040);c.stroke();
+      // Level name inside box - smaller font to avoid cramping
+      const lvlDisplay=lang==="en"?(sc>=9?"Expert":sc>=6?"Curious":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
+      c.fillStyle="rgba(255,255,255,.9)";c.font="bold 36px Arial";
+      c.fillText(`🩸  ${lvlDisplay}`,540,1083);
       // Badge box
-      c.fillStyle="white";c.shadowColor="rgba(232,0,61,.15)";c.shadowBlur=30;
-      roundRect(c,160,1100,760,140,30);c.fill();c.shadowBlur=0;
-      c.fillStyle="#E8003D";c.font="bold 46px Arial";
-      c.fillText(`${badgeIcon||'🌸'}  ${badgeName||'Participante'}`,540,1150);
-      c.fillStyle="#9B6B8A";c.font="36px Arial";
-      c.fillText(catLabel?(levelNum?`${catLabel} — Niveau ${levelNum}`:`${catLabel}`):"",540,1210);
+      c.fillStyle="white";c.shadowColor="rgba(232,0,61,.18)";c.shadowBlur=28;
+      roundRect(c,120,1135,840,130,28);c.fill();c.shadowBlur=0;
+      c.fillStyle="#E8003D";c.font="bold 42px Arial";
+      const badgeDisplay=`${badgeIcon||"🌸"}  ${badgeName||"Participant"}`;
+      // Truncate badge name if too long
+      c.fillText(badgeDisplay.length>30?badgeDisplay.substring(0,28)+"…":badgeDisplay,540,1182);
+      c.fillStyle="#9B6B8A";c.font="32px Arial";
+      c.fillText(catLabel?(levelNum?`${catLabel} — ${lang==="en"?`Level ${levelNum}`:`Niveau ${levelNum}`}`:`${catLabel}`):"",540,1237);
       // Divider
       c.strokeStyle="rgba(232,0,61,.2)";c.lineWidth=2;
       c.beginPath();c.moveTo(200,1280);c.lineTo(880,1280);c.stroke();
@@ -2650,7 +3026,7 @@ export default function App(){
       setStoryDataUrl(null);
       const badge=newBadges[0]||null;
       const catLbl=getCatLabelFn(category);
-      generateStoryCard(quizScore,quizQLen,user?.name||'',badge?.icon||'🌸',badge?.name||'Participante',quizLevelNum||0,catLbl);
+      generateStoryCard(quizScore,quizQLen,user?.name||'',badge?.icon||'🌸',badge?.name||'Participante',quizLevelNum||0,catLbl,lang);
     }
   },[screen]);
 
@@ -2667,8 +3043,10 @@ export default function App(){
 
 
   function startGame(id){
-    const gDef=GAME_DEF.find(g=>g.id===id);setGameId(id);setNewBadges([]);
-    if(gDef?.noLevels){setGameLevel(1);setScreen("game_play");}else setScreen("game_level");
+    const defList=lang==="en"?GAME_DEF_EN:GAME_DEF_FR;
+    const gDefFound=defList.find(g=>g.id===id)||GAME_DEF_FR.find(g=>g.id===id);
+    setGameId(id);setNewBadges([]);
+    if(gDefFound?.noLevels){setGameLevel(1);setScreen("game_play");}else setScreen("game_level");
   }
 
   function selectLevel(lv){setGameLevel(lv);setScreen("game_play");}
@@ -2685,9 +3063,9 @@ export default function App(){
     else setScreen(id);
   }
 
-  const lvl=getLevel(totalPts);
+  const lvl=getLevel(totalPts,lang);
   const showNav=!["quiz_game","game_play","welcome","onboarding"].includes(screen);
-  const gDef=GAME_DEF.find(g=>g.id===gameId);
+  const gDef=(lang==="en"?GAME_DEF_EN:GAME_DEF_FR).find(g=>g.id===gameId)||GAME_DEF_FR.find(g=>g.id===gameId);
 
   return(
     <div>
@@ -2791,24 +3169,11 @@ export default function App(){
 
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
-        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} onGame={startGame}/>}
+        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame}/>}
 
-        {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
+        {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
-        {screen==="game_play"&&gameId&&(()=>{
-          const props={level:gameLevel,onBack:()=>setScreen("games_hub"),onBadge:earnBadge,onComplete:()=>onLevelComplete(gameId,gameLevel)};
-          if(gameId==="g1")return<JeuAssocie  key={`g1-${gameLevel}`}  {...props}/>;
-          if(gameId==="g2")return<JeuCorps    key={`g2-${gameLevel}`}  {...props}/>;
-          if(gameId==="g3")return<JeuMemoire  key={`g3-${gameLevel}`}  {...props}/>;
-          if(gameId==="g4")return<JeuChef     key={`g4-${gameLevel}`}  {...props}/>;
-          if(gameId==="g5")return<JeuCycle    key={`g5-${gameLevel}`}  {...props}/>;
-          if(gameId==="g6")return<JeuSOS      key={`g6-${gameLevel}`}  {...props}/>;
-          if(gameId==="dev")return<JeuDevinettes key="dev" onBack={()=>setScreen("games_hub")} onBadge={earnBadge}/>;
-          if(gameId==="img")return<JeuImages  key={`img-${gameLevel}`} {...props}/>;
-          if(gameId==="ws")return<JeuMotsMeles key={`ws-${gameLevel}`} {...props}/>;
-          if(gameId==="lab")return<JeuLabyrinthe key={`lab-${gameLevel}`}{...props}/>;
-          return null;
-        })()}
+        {screen==="game_play"&&gameId&&<GamePlay gameId={gameId} gameLevel={gameLevel} onBack={()=>setScreen("games_hub")} onBadge={earnBadge} onComplete={()=>onLevelComplete(gameId,gameLevel)}/>}
 
         {screen==="progress"&&(
           <div style={{padding:"16px 16px 88px"}}>
