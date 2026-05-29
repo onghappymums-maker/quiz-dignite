@@ -1632,7 +1632,7 @@ function GHdr({title,onBack,score,prog=0}){
   );
 }
 
-function GWin({title,score,max,badge,onHome,onNext,hasNext}){
+function GWin({title,score,max,badge,msg,lang,onHome,onNext,hasNext}){
   useEffect(()=>{setTimeout(()=>SND.play("win"),200);},[]);
   const pct=max>0?score/max:0;
   const wm=pct>=.8?{col:P.green,t:"🌟 Tu es une actrice de dignité !",b:"Tes choix montrent que tu respectes et soutiens les femmes. Ce type d'attitude change des vies. 💛"}:pct>=.5?{col:P.amber,t:"🌺 Tu es sur le bon chemin !",b:"Tu as déjà les bons réflexes. Avec un peu plus d'engagement, tu peux avoir un vrai impact."}:{col:P.coral,t:"💪 Tu peux faire la différence !",b:"Maintenant que tu sais, tu peux agir autrement. Chaque geste compte."};
@@ -1650,7 +1650,7 @@ function GWin({title,score,max,badge,onHome,onNext,hasNext}){
         <div style={{fontSize:12,color:P.text,lineHeight:1.6,fontWeight:600}}>{wm.b}</div>
       </div>
       <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-        {hasNext&&<button onClick={onNext} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>Niveau suivant →</button>}
+        {hasNext&&<button onClick={onNext} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"Next level →":"Niveau suivant →"}</button>}
         <button onClick={onHome} style={{background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>🏠 Menu</button>
       </div>
     </div>
@@ -1674,7 +1674,7 @@ function TRing({secs,onExpire,tkey}){
         <circle cx="21" cy="21" r={r} fill="none" stroke={col} strokeWidth="3.5" strokeDasharray={circ} strokeDashoffset={circ*(1-pct)} strokeLinecap="round" transform="rotate(-90 21 21)" style={{transition:"stroke-dashoffset 1s linear,stroke .4s"}}/>
         <text x="21" y="26" textAnchor="middle" fontSize="12" fontWeight="900" fill={col} fontFamily="Nunito,sans-serif">{left}</text>
       </svg>
-      <div style={{flex:1,fontSize:12,fontWeight:800,color:left<=4?"#FF4444":P.muted}}>{left<=4?"⚡ Vite !":"⏱️ Réfléchis bien..."}</div>
+      <div style={{flex:1,fontSize:12,fontWeight:800,color:left<=4?"#FF4444":P.muted}}>{left<=4?"⚡ Quick!":"⏱️ Think carefully..."}</div>
     </div>
   );
 }
@@ -1709,8 +1709,49 @@ function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
 }
 
 // ── GAME COMPONENTS ────────────────────────────────────────────
-function JeuAssocie({level,onBack,onBadge,onComplete}){
-  const d=ASSOC_DATA[level-1];
+function JeuAssocie({level,lang,onBack,onBadge,onComplete}){
+  const d=(lang==="en"?ASSOC_DATA_EN:ASSOC_DATA)[level-1];
+  const mk=()=>({items:shuffle(d.items),placed:{},sel:null,wrongId:null,fb:null,score:0,done:false});
+  const[st,setSt]=useState(mk);
+  const remaining=st.items.filter(i=>!st.placed[i.id]);
+  const drop=catId=>{
+    if(!st.sel)return;
+    const item=st.items.find(i=>i.id===st.sel);if(!item)return;
+    if(item.c===catId){SND.play("ok");const np={...st.placed,[item.id]:catId};const isDone=Object.keys(np).length===st.items.length;setSt(s=>({...s,placed:np,sel:null,fb:"ok",score:s.score+10,done:isDone}));if(isDone)onBadge(lang==="en"?`🎯 Matcher L${level}`:`🎯 Associatrice N${level}`);setTimeout(()=>setSt(s=>({...s,fb:null})),1400);}
+    else{SND.play("ko");setSt(s=>({...s,sel:null,wrongId:item.id,fb:"ko"}));setTimeout(()=>setSt(s=>({...s,wrongId:null,fb:null})),1200);}
+  };
+  if(st.done)return<GWin title={lang==="en"?"🎯 Match It!":"🎯 Associe !"} score={st.score} max={st.items.length*10} badge={lang==="en"?"🎯 Matcher":"🎯 Associatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  return(
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🎯 Match It! L${level}`:`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 10px",fontWeight:600}}>{st.sel?(lang==="en"?"↓ Tap the correct category ↓":"↓ Appuie sur la bonne catégorie ↓"):(lang==="en"?"Select a card then a category":"Sélectionne une carte puis une catégorie")}</p>
+      {st.fb&&<div className="up" style={{textAlign:"center",fontSize:17,fontWeight:900,color:st.fb==="ok"?P.green:P.amber,marginBottom:10}}>{st.fb==="ok"?(lang==="en"?"🌸 Well done!":"🌸 Bravo !"):(lang==="en"?"💛 Try again!":"💛 Essaie encore !")}</div>}
+      {remaining.length>0&&(
+        <div style={{marginBottom:13}}>
+          <div style={{fontSize:11,color:P.muted,fontWeight:800,textTransform:"uppercase",letterSpacing:.8,marginBottom:7}}>{lang==="en"?`To sort — ${remaining.length} remaining`:`À classer — ${remaining.length} restant${remaining.length>1?"s":""}`}</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
+            {remaining.map(item=>{const sel=st.sel===item.id,bad=st.wrongId===item.id;return(
+              <button key={item.id} onClick={()=>setSt(s=>({...s,sel:s.sel===item.id?null:item.id}))} className={bad?"shake":""}
+                style={{background:sel?G:bad?"#FFE8E8":"white",border:`2px solid ${sel?"transparent":bad?"#FF6B6B":"#FFD4E8"}`,borderRadius:13,padding:"7px 11px",display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:sel?800:600,color:sel?"white":P.text,transition:"all .15s"}}>
+                <span style={{fontSize:17}}>{item.e}</span><span>{item.l}</span>
+              </button>
+            );})}
+          </div>
+        </div>
+      )}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+        {d.cats.map((cat,ci)=>{const inCat=st.items.filter(i=>st.placed[i.id]===cat.id);const last=ci===d.cats.length-1&&d.cats.length%2!==0;return(
+          <button key={cat.id} onClick={()=>drop(cat.id)} style={{background:st.sel?cat.bg:"white",border:`2px solid ${st.sel?cat.color:"#FFD4E8"}`,borderRadius:16,padding:"10px 11px",textAlign:"left",cursor:st.sel?"pointer":"default",transition:"all .2s",transform:st.sel?"scale(1.02)":"scale(1)",minHeight:74,gridColumn:last?"span 2":"auto"}}>
+            <div style={{fontSize:19,marginBottom:2}}>{cat.e}</div>
+            <div style={{fontWeight:800,fontSize:11,color:cat.color,letterSpacing:.3}}>{cat.label}</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginTop:4}}>{inCat.map(it=><span key={it.id} className="up" style={{fontSize:14}}>{it.e}</span>)}</div>
+            {inCat.length===0&&<div style={{fontSize:10,color:"#D4A0B0",marginTop:3,fontWeight:600}}>{st.sel?(lang==="en"?"Drop here?":"Mettre ici ?"):(lang==="en"?"Empty":"Vide")}</div>}
+          </button>
+        );})}
+      </div>
+    </div>
+  );
+}
   const mk=()=>({items:shuffle(d.items),placed:{},sel:null,wrongId:null,fb:null,score:0,done:false});
   const[st,setSt]=useState(mk);
   const remaining=st.items.filter(i=>!st.placed[i.id]);
@@ -1720,7 +1761,7 @@ function JeuAssocie({level,onBack,onBadge,onComplete}){
     if(item.c===catId){SND.play("ok");const np={...st.placed,[item.id]:catId};const isDone=Object.keys(np).length===st.items.length;setSt(s=>({...s,placed:np,sel:null,fb:"ok",score:s.score+10,done:isDone}));if(isDone)onBadge(`🎯 Associatrice N${level}`);setTimeout(()=>setSt(s=>({...s,fb:null})),1400);}
     else{SND.play("ko");setSt(s=>({...s,sel:null,wrongId:item.id,fb:"ko"}));setTimeout(()=>setSt(s=>({...s,wrongId:null,fb:null})),1200);}
   };
-  if(st.done)return<GWin title="🎯 Associe !" score={st.score} max={st.items.length*10} badge="🎯 Associatrice" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(st.done)return<GWin lang={lang} title="🎯 Associe !" score={st.score} max={st.items.length*10} badge="🎯 Associatrice" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length}/>
@@ -1753,21 +1794,21 @@ function JeuAssocie({level,onBack,onBadge,onComplete}){
   );
 }
 
-function JeuCorps({level,onBack,onBadge,onComplete}){
-  const parts=CORPS_DATA[level-1];
+function JeuCorps({level,lang,onBack,onBadge,onComplete}){
+  const parts=(lang==="en"?CORPS_DATA_EN:CORPS_DATA)[level-1];
   const[disc,setDisc]=useState(new Set());
   const[active,setActive]=useState(null);
   const[done,setDone]=useState(false);
-  const tap=id=>{SND.play("ok");setActive(id);const nd=new Set([...disc,id]);setDisc(nd);if(nd.size===parts.length&&!done)setTimeout(()=>{setDone(true);onBadge(`🧩 Exploratrice N${level}`);},600);};
+  const tap=id=>{SND.play("ok");setActive(id);const nd=new Set([...disc,id]);setDisc(nd);if(nd.size===parts.length&&!done)setTimeout(()=>{setDone(true);onBadge(lang==="en"?`🧩 Explorer L${level}`:`🧩 Exploratrice N${level}`);},600);};
   const gc=id=>{const p=parts.find(x=>x.id===id);if(!p)return"#FFD4E8";if(active===id)return p.color;if(disc.has(id))return p.color+"99";return"#FFD4E8";};
   const gs=id=>disc.has(id)?(parts.find(x=>x.id===id)?.color||"#FFB3CC"):"#FFB3CC";
   const ap=parts.find(p=>p.id===active);
   const showU=level===3;
-  if(done)return<GWin title="🧩 Mon Corps !" score={disc.size*10} max={parts.length*10} badge="🧩 Exploratrice" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin title={lang==="en"?"🧩 My Body!":"🧩 Mon Corps !"} score={disc.size*10} max={parts.length*10} badge={lang==="en"?"🧩 Body Explorer":"🧩 Exploratrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={`🧩 Mon Corps N${level}`} onBack={onBack} prog={disc.size/parts.length}/>
-      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 8px",fontWeight:600}}>Appuie sur chaque partie pour la découvrir ! ✨</p>
+      <GHdr title={lang==="en"?`🧩 My Body L${level}`:`🧩 Mon Corps N${level}`} onBack={onBack} prog={disc.size/parts.length}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 8px",fontWeight:600}}>{lang==="en"?"Tap each body part to discover it! ✨":"Appuie sur chaque partie pour la découvrir ! ✨"}</p>
       <svg viewBox="0 0 160 285" style={{display:"block",margin:"0 auto",maxWidth:185,width:"100%",userSelect:"none",filter:"drop-shadow(0 4px 12px #C8102E18)"}}>
         <path d="M54 28 Q58 7 80 5 Q102 7 106 28 Q98 16 80 16 Q62 16 54 28Z" fill="#5D3A6A"/>
         <g onClick={()=>parts.find(p=>p.id==="tete")&&tap("tete")} style={{cursor:"pointer"}}>
@@ -1825,8 +1866,8 @@ function JeuCorps({level,onBack,onBadge,onComplete}){
   );
 }
 
-function JeuMemoire({level,onBack,onBadge,onComplete}){
-  const pairs=MEM_DATA[level-1];
+function JeuMemoire({level,lang,onBack,onBadge,onComplete}){
+  const pairs=(lang==="en"?MEM_DATA_EN:MEM_DATA)[level-1];
   const mkC=()=>shuffle(pairs.flatMap(p=>[{uid:`${p.id}a`,pairId:p.id,face:p.e,isEmoji:true,flipped:false,matched:false},{uid:`${p.id}b`,pairId:p.id,face:p.l,isEmoji:false,flipped:false,matched:false}]));
   const[cards,setCards]=useState(mkC);const[sel,setSel]=useState([]);const[score,setScore]=useState(0);const[tries,setTries]=useState(0);const[lock,setLock]=useState(false);const[done,setDone]=useState(false);
   const total=pairs.length,matched=cards.filter(c=>c.matched).length/2;
@@ -1835,15 +1876,15 @@ function JeuMemoire({level,onBack,onBadge,onComplete}){
     const nc=cards.map(c=>c.uid===uid?{...c,flipped:true}:c);setCards(nc);const ns=[...sel,uid];
     if(ns.length===1){setSel(ns);}
     else{setLock(true);setTries(t=>t+1);setSel([]);const[u1,u2]=ns,c1=nc.find(c=>c.uid===u1),c2=nc.find(c=>c.uid===u2);
-      if(c1.pairId===c2.pairId){SND.play("ok");setTimeout(()=>{setCards(cs=>{const u=cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,matched:true}:c);if(u.every(c=>c.matched)){setDone(true);onBadge(`🃏 Mémoire d'Or N${level}`);}return u;});setScore(s=>s+10);setLock(false);},600);}
+      if(c1.pairId===c2.pairId){SND.play("ok");setTimeout(()=>{setCards(cs=>{const u=cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,matched:true}:c);if(u.every(c=>c.matched)){setDone(true);onBadge(lang==="en"?`🃏 Memory Gold L${level}`:`🃏 Mémoire d'Or N${level}`);}return u;});setScore(s=>s+10);setLock(false);},600);}
       else{SND.play("ko");setTimeout(()=>{setCards(cs=>cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,flipped:false}:c));setLock(false);},1100);}
     }
   };
-  if(done)return<GWin title="🃏 Mémoire parfaite !" score={score} max={total*10} badge="🃏 Mémoire d'Or" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin title={lang==="en"?"🃏 Perfect Memory!":"🃏 Mémoire parfaite !"} score={score} max={total*10} badge={lang==="en"?"🃏 Memory Gold":"🃏 Mémoire d'Or"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total}/>
-      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>Associe chaque 🌸 à son mot ! — Essais : <strong style={{color:P.text}}>{tries}</strong></p>
+      <GHdr title={lang==="en"?`🃏 Memory L${level}`:`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?`Match each 🌸 to its word! — Tries: `:"Associe chaque 🌸 à son mot ! — Essais : "}<strong style={{color:P.text}}>{tries}</strong></p>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:7}}>
         {cards.map(card=>{const show=card.flipped||card.matched;return(
           <button key={card.uid} onClick={()=>flip(card.uid)} style={{aspectRatio:"1",borderRadius:13,border:card.matched?`2.5px solid ${P.green}`:show?`2.5px solid ${P.rose}`:`2px solid #FFD4E8`,background:card.matched?P.greenSoft:show?"white":G,display:"flex",alignItems:"center",justifyContent:"center",fontSize:card.isEmoji&&show?26:show?9:18,fontWeight:800,color:card.matched?P.green:show?P.text:"white",padding:3,transition:"all .25s",cursor:card.matched?"default":"pointer",textAlign:"center",lineHeight:1.2}}>
@@ -1856,71 +1897,74 @@ function JeuMemoire({level,onBack,onBadge,onComplete}){
   );
 }
 
-function JeuChef({level,onBack,onBadge,onComplete}){
+function JeuChef({level,lang,onBack,onBadge,onComplete}){
   const d=CHEF_DATA[level-1];
-  const[foods]=useState(()=>shuffle(d.foods));
+  const allFoods=lang==="en"?FOODS_ALL_EN:FOODS_ALL;
+  const[foods]=useState(()=>shuffle(d.foods.map(f=>allFoods.find(x=>x.e===f.e)||f)));
   const[idx,setIdx]=useState(0);const[ans,setAns]=useState(null);const[score,setScore]=useState(0);const[done,setDone]=useState(false);
   const food=foods[idx];
-  const next=()=>{if(idx+1>=foods.length){setDone(true);onBadge(`🍽️ Chef Nyalê N${level}`);}else{setIdx(i=>i+1);setAns(null);}};
+  const next=()=>{if(idx+1>=foods.length){setDone(true);onBadge(lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`);}else{setIdx(i=>i+1);setAns(null);}};
   const answer=choice=>{if(ans)return;const ok=(choice==="bon")===food.good;setAns(choice);if(ok)setScore(s=>s+10);SND.play(ok?"ok":"ko");setTimeout(next,2200);};
   const expire=()=>{if(ans)return;setAns("time");SND.play("ko");setTimeout(next,1800);};
-  if(done)return<GWin title="🍽️ Chef Nyalê !" score={score} max={foods.length*10} badge="🍽️ Chef Nyalê" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin lang={lang} title="🍽️ Chef Nyalê!" score={score} max={foods.length*10} badge="🍽️ Chef Nyalê" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   const isTime=ans==="time";const ok=!isTime&&ans!==null&&(ans==="bon")===food.good;
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length}/>
-      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 8px",fontWeight:600}}>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</p>
+      <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 8px",fontWeight:600}}>{lang==="en"?<>Food <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Good or bad for your period?</>:<>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</>}</p>
       {!ans&&<TRing key={`c-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
       <div style={{background:"white",borderRadius:26,padding:"22px 18px",textAlign:"center",border:`2.5px solid ${ans?(ok?P.green:"#FF6B6B"):"#FFD4E8"}`,boxShadow:`0 6px 22px ${P.red}12`,marginBottom:14,transition:"border .3s"}}>
         <div style={{fontSize:62,marginBottom:6}}>{food.e}</div>
         <div className="F" style={{fontSize:20,fontWeight:600,color:P.text}}>{food.l}</div>
       </div>
       {!ans&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-        <button onClick={()=>answer("bon")} style={{background:P.greenSoft,color:P.green,border:`2.5px solid ${P.green}`,borderRadius:18,padding:"14px 8px",fontSize:14,fontWeight:900}}>✅ Bon pour moi !</button>
-        <button onClick={()=>answer("mauvais")} style={{background:"#FFF0F0",color:"#FF6B6B",border:"2.5px solid #FF6B6B",borderRadius:18,padding:"14px 8px",fontSize:14,fontWeight:900}}>❌ À éviter</button>
+        <button onClick={()=>answer("bon")} style={{background:P.greenSoft,color:P.green,border:`2.5px solid ${P.green}`,borderRadius:18,padding:"14px 8px",fontSize:14,fontWeight:900}}>{lang==="en"?"✅ Good for me!":"✅ Bon pour moi !"}</button>
+        <button onClick={()=>answer("mauvais")} style={{background:"#FFF0F0",color:"#FF6B6B",border:"2.5px solid #FF6B6B",borderRadius:18,padding:"14px 8px",fontSize:14,fontWeight:900}}>{lang==="en"?"❌ Avoid!":"❌ À éviter"}</button>
       </div>}
-      {ans&&<Fb ok={isTime?null:ok} msg={isTime?"⏰ Temps écoulé !":ok?"🌸 Bravo !":"💛 Pas tout à fait..."} exp={food.why}/>}
+      {ans&&<Fb ok={isTime?null:ok} msg={isTime?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):ok?(lang==="en"?"🌸 Well done!":"🌸 Bravo !"):(lang==="en"?"💛 Not quite...":"💛 Pas tout à fait...")} exp={food.why}/>}
     </div>
   );
 }
 
-function JeuCycle({level,onBack,onBadge,onComplete}){
-  const[phases]=useState(()=>shuffle(PHASES_ALL));
+function JeuCycle({level,lang,onBack,onBadge,onComplete}){
+  const phaseData=lang==="en"?PHASES_ALL_EN:PHASES_ALL;
+  const sympData=lang==="en"?CYCLE_SYMP_EN:CYCLE_SYMP;
+  const[phases]=useState(()=>shuffle(phaseData));
   const[order,setOrder]=useState([]);
   const orderRef=useRef([]);
   const[wrong,setWrong]=useState(null);const[info,setInfo]=useState(null);const[done,setDone]=useState(false);
-  const[sympAns,setSympAns]=useState({});const[sympScore,setSympScore]=useState(0);const[sympShuffle]=useState(()=>shuffle(CYCLE_SYMP));const[sympDone,setSympDone]=useState(false);
+  const[sympAns,setSympAns]=useState({});const[sympScore,setSympScore]=useState(0);const[sympShuffle]=useState(()=>shuffle(sympData));const[sympDone,setSympDone]=useState(false);
   const tap=p=>{
     if(done)return;const nextExp=orderRef.current.length+1;
-    if(p.id===nextExp){SND.play("ok");const no=[...orderRef.current,p.id];orderRef.current=no;setOrder(no);setInfo(p);if(no.length===PHASES_ALL.length)setTimeout(()=>{if(level!==2){setDone(true);onBadge(`📅 Cycle N${level}`);}},900);}
+    if(p.id===nextExp){SND.play("ok");const no=[...orderRef.current,p.id];orderRef.current=no;setOrder(no);setInfo(p);if(no.length===phaseData.length)setTimeout(()=>{if(level!==2){setDone(true);onBadge(lang==="en"?`📅 Cycle L${level}`:`📅 Cycle N${level}`);}},900);}
     else{SND.play("ko");setWrong(p.id);setTimeout(()=>setWrong(null),800);}
   };
   const tapSymp=(si,phaseId)=>{
-    if(sympAns[si]!==undefined)return;const correct=CYCLE_SYMP[si].phaseId===phaseId;SND.play(correct?"ok":"ko");
-    setSympAns(prev=>{const na={...prev,[si]:phaseId};if(Object.keys(na).length===CYCLE_SYMP.length)setTimeout(()=>{setSympDone(true);onBadge(`📅 Cycle N${level}`);},700);return na;});
+    if(sympAns[si]!==undefined)return;const correct=sympData[si].phaseId===phaseId;SND.play(correct?"ok":"ko");
+    setSympAns(prev=>{const na={...prev,[si]:phaseId};if(Object.keys(na).length===sympData.length)setTimeout(()=>{setSympDone(true);onBadge(lang==="en"?`📅 Cycle L${level}`:`📅 Cycle N${level}`);},700);return na;});
     if(correct)setSympScore(s=>s+15);
   };
-  const phase1Done=order.length===PHASES_ALL.length;
+  const phase1Done=order.length===phaseData.length;
   const totalScore=level===2?(order.length*10+sympScore):order.length*25;
-  const totalMax=level===2?(PHASES_ALL.length*10+CYCLE_SYMP.length*15):100;
-  if(done||(level===2&&sympDone))return<GWin title="📅 Cycle Maîtrisé !" score={totalScore} max={totalMax} badge="📅 Cycle Maîtrisé" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  const totalMax=level===2?(phaseData.length*10+sympData.length*15):100;
+  if(done||(level===2&&sympDone))return<GWin title={lang==="en"?"📅 Cycle Mastered!":"📅 Cycle Maîtrisé !"} score={totalScore} max={totalMax} badge={lang==="en"?"📅 Cycle Expert":"📅 Cycle Maîtrisé"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   if(level===2&&phase1Done&&!sympDone)return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title="📅 Mon Cycle N2" onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/CYCLE_SYMP.length}/>
-      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>Associe chaque symptôme à sa phase !</p>
+      <GHdr title={lang==="en"?"📅 My Cycle L2":"📅 Mon Cycle N2"} onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/sympData.length}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?"Match each symptom to its phase!":"Associe chaque symptôme à sa phase !"}</p>
       <div style={{display:"flex",flexDirection:"column",gap:10}}>
         {sympShuffle.map((s,si)=>{const ans2=sympAns[si];const correct=ans2!==undefined&&ans2===s.phaseId;return(
           <div key={si} style={{background:"white",borderRadius:16,padding:"12px 14px",border:`1.5px solid ${ans2?(correct?P.green:"#FF6B6B"):"#FFD4E8"}`}}>
             <div style={{fontWeight:800,fontSize:13,color:P.text,marginBottom:8}}>{s.e} {s.symptom}</div>
             <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-              {PHASES_ALL.map(ph=>(
+              {phaseData.map(ph=>(
                 <button key={ph.id} onClick={()=>tapSymp(si,ph.id)} disabled={ans2!==undefined}
                   style={{background:ans2===ph.id?(correct?P.greenSoft:"#FFF0F0"):`${ph.c}18`,color:ans2===ph.id?(correct?P.green:"#FF6B6B"):ph.c,border:`1.5px solid ${ans2===ph.id?(correct?P.green:"#FF6B6B"):ph.c+"44"}`,borderRadius:10,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:ans2!==undefined?"default":"pointer",transition:"all .2s"}}>
                   {ph.e} {ph.t}
                 </button>
               ))}
             </div>
-            {ans2&&<div style={{fontSize:11,color:correct?P.green:"#FF6B6B",fontWeight:800,marginTop:5}}>{correct?"✓ Correct !":"✗ Incorrect"}</div>}
+            {ans2&&<div style={{fontSize:11,color:correct?P.green:"#FF6B6B",fontWeight:800,marginTop:5}}>{correct?(lang==="en"?"✓ Correct!":"✓ Correct !"):(lang==="en"?"✗ Incorrect":"✗ Incorrect")}</div>}
           </div>
         );})}
       </div>
@@ -1929,10 +1973,10 @@ function JeuCycle({level,onBack,onBadge,onComplete}){
   const nextExp=order.length+1;
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={`📅 Mon Cycle N${level}`} onBack={onBack} score={order.length*25} prog={order.length/PHASES_ALL.length}/>
-      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 10px",fontWeight:600}}>Appuie dans le bon ordre : <strong style={{color:P.text}}>1 → 2 → 3 → 4</strong></p>
+      <GHdr title={lang==="en"?`📅 My Cycle L${level}`:`📅 Mon Cycle N${level}`} onBack={onBack} score={order.length*25} prog={order.length/phaseData.length}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 10px",fontWeight:600}}>{lang==="en"?"Tap in the correct order:":"Appuie dans le bon ordre :"} <strong style={{color:P.text}}>1 → 2 → 3 → 4</strong></p>
       <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:13}}>
-        {[1,2,3,4].map(n=>{const d=order.includes(n),a=n===nextExp,ph=PHASES_ALL[n-1];return<div key={n} style={{width:36,height:36,borderRadius:"50%",background:d?ph.c:a?"white":"#FFF0F3",border:`2.5px solid ${d?ph.c:a?ph.c:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:d?"white":a?ph.c:P.muted,transition:"all .3s",boxShadow:a?`0 2px 10px ${ph.c}44`:"none"}}>{d?"✓":n}</div>;})}
+        {[1,2,3,4].map(n=>{const d=order.includes(n),a=n===nextExp,ph=phaseData[n-1];return<div key={n} style={{width:36,height:36,borderRadius:"50%",background:d?ph.c:a?"white":"#FFF0F3",border:`2.5px solid ${d?ph.c:a?ph.c:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:d?"white":a?ph.c:P.muted,transition:"all .3s",boxShadow:a?`0 2px 10px ${ph.c}44`:"none"}}>{d?"✓":n}</div>;})}
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:11}}>
         {phases.map(p=>{const d=order.includes(p.id),w=wrong===p.id;return(
@@ -1950,20 +1994,21 @@ function JeuCycle({level,onBack,onBadge,onComplete}){
   );
 }
 
-function JeuSOS({level,onBack,onBadge,onComplete}){
-  const d=SOS_DATA[level-1];
+function JeuSOS({level,lang,onBack,onBadge,onComplete}){
+  const sosAll=lang==="en"?SOS_ALL_EN:SOS_ALL;
+  const d={scens:sosAll.slice(0,level===1?2:level===2?3:sosAll.length),timer:level===1?30:level===2?25:15};
   const[scens]=useState(()=>shuffle(d.scens));
   const[idx,setIdx]=useState(0);const[ans,setAns]=useState(null);const[score,setScore]=useState(0);const[done,setDone]=useState(false);
   const s=scens[idx];
-  const next=()=>{if(idx+1>=scens.length){setDone(true);onBadge(`🆘 Experte SOS N${level}`);}else{setIdx(j=>j+1);setAns(null);}};
+  const next=()=>{if(idx+1>=scens.length){setDone(true);onBadge(lang==="en"?`🆘 SOS Expert L${level}`:`🆘 Experte SOS N${level}`);}else{setIdx(j=>j+1);setAns(null);}};
   const answer=i=>{if(ans!==null)return;const ok=s.opts[i].ok;setAns(i);if(ok)setScore(sc=>sc+20);SND.play(ok?"ok":"ko");setTimeout(next,2600);};
   const expire=()=>{if(ans!==null)return;setAns("time");SND.play("ko");setTimeout(next,2000);};
-  if(done)return<GWin title="🆘 SOS Maîtrisé !" score={score} max={scens.length*20} badge="🆘 Experte SOS" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin title={lang==="en"?"🆘 SOS Mastered!":"🆘 SOS Maîtrisé !"} score={score} max={scens.length*20} badge={lang==="en"?"🆘 SOS Expert":"🆘 Experte SOS"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   const isTime=ans==="time";const chosenOk=!isTime&&ans!==null&&s.opts[ans]?.ok;const correctOpt=s.opts.find(o=>o.ok);
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length}/>
-      <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 7px",fontWeight:600}}>Situation <strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
+      <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length}/>
+      <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 7px",fontWeight:600}}>{lang==="en"?"Situation ":"Situation "}<strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
       {ans===null&&<TRing key={`s-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
       <div style={{background:"white",borderRadius:22,padding:"16px 14px",border:"2px solid #FFD4E8",boxShadow:"0 4px 18px #C8102E10",marginBottom:12}}>
         <div style={{fontSize:38,textAlign:"center",marginBottom:8}}>{s.ctx}</div>
@@ -1977,25 +2022,26 @@ function JeuSOS({level,onBack,onBadge,onComplete}){
           </button>
         );})}
       </div>
-      {ans!==null&&<Fb ok={isTime?null:chosenOk} msg={isTime?"⏰ Temps écoulé !":chosenOk?"🌸 Bonne réponse !":"💛 Pas tout à fait..."} exp={isTime?(correctOpt?.exp||""):(s.opts[ans]?.exp||"")}/>}
+      {ans!==null&&<Fb ok={isTime?null:chosenOk} msg={isTime?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):chosenOk?(lang==="en"?"🌸 Well done!":"🌸 Bonne réponse !"):(lang==="en"?"💛 Not quite...":"💛 Pas tout à fait...")} exp={isTime?(correctOpt?.exp||""):(s.opts[ans]?.exp||"")}/>}
     </div>
   );
 }
 
-function JeuDevinettes({onBack,onBadge}){
+function JeuDevinettes({onBack,onBadge,lang}){
+  const devs=lang==="en"?DEVINETTES_EN:DEVINETTES;
   const[idx,setIdx]=useState(0);const[ans,setAns]=useState(null);const[score,setScore]=useState(0);const[done,setDone]=useState(false);
-  const q=DEVINETTES[idx];
-  const next=()=>{if(idx+1>=DEVINETTES.length){setDone(true);onBadge("💡 Devinettes Maître");}else{setIdx(i=>i+1);setAns(null);}};
+  const q=devs[idx];
+  const next=()=>{if(idx+1>=devs.length){setDone(true);onBadge(lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître");}else{setIdx(i=>i+1);setAns(null);}};
   const choose=opt=>{if(ans)return;const ok=opt===q.a;setAns(opt);SND.play(ok?"ok":"ko");if(ok)setScore(s=>s+20);setTimeout(next,2400);};
-  if(done)return<GWin title="💡 Devinettes !" score={score} max={DEVINETTES.length*20} badge="💡 Devinettes Maître" msg="Tu as tout trouvé ! 🌟" onHome={onBack} onNext={()=>{setIdx(0);setAns(null);setScore(0);setDone(false);}} hasNext={false}/>;
+  if(done)return<GWin title={lang==="en"?"💡 Riddles!":"💡 Devinettes !"} score={score} max={devs.length*20} badge={lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître"} msg={lang==="en"?"You got them all! 🌟":"Tu as tout trouvé ! 🌟"} onHome={onBack} onNext={()=>{setIdx(0);setAns(null);setScore(0);setDone(false);}} hasNext={false}/>;
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title="💡 Devinettes" onBack={onBack} score={score} prog={(idx+(ans?1:0))/DEVINETTES.length}/>
-      <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 12px",fontWeight:700}}>Devinette {idx+1} / {DEVINETTES.length}</div>
+      <GHdr title={lang==="en"?"💡 Riddles":"💡 Devinettes"} onBack={onBack} score={score} prog={(idx+(ans?1:0))/devs.length}/>
+      <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 12px",fontWeight:700}}>{lang==="en"?"Riddle ":"Devinette "}{idx+1} / {devs.length}</div>
       <div style={{background:G,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:14,boxShadow:"0 6px 22px #C8102E33"}}>
         <div style={{fontSize:44,marginBottom:10}}>{q.emoji}</div>
         <div className="F" style={{fontSize:16,fontWeight:600,color:"white",lineHeight:1.55,whiteSpace:"pre-line"}}>{q.q}</div>
-        <div style={{fontSize:11,color:"rgba(255,255,255,.7)",marginTop:10,fontWeight:600}}>💡 Indice : {q.hint}</div>
+        <div style={{fontSize:11,color:"rgba(255,255,255,.7)",marginTop:10,fontWeight:600}}>💡 {lang==="en"?"Hint":"Indice"} : {q.hint}</div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
         {q.opts.map(opt=>{const chosen=ans===opt,correct=chosen&&opt===q.a,wrong=chosen&&opt!==q.a,revealed=ans&&opt===q.a&&!chosen;return(
@@ -2005,15 +2051,15 @@ function JeuDevinettes({onBack,onBadge}){
         );})}
       </div>
       {ans&&<div className="up" style={{textAlign:"center",marginTop:12,padding:"12px",background:ans===q.a?P.greenSoft:P.amberSoft,borderRadius:16,border:`2px solid ${ans===q.a?P.green:P.amber}`}}>
-        <div style={{fontSize:16,fontWeight:900,color:ans===q.a?P.green:P.amber,marginBottom:3}}>{ans===q.a?"🌸 Bravo ! C'est bien ça !":"💛 La bonne réponse était :"}</div>
+        <div style={{fontSize:16,fontWeight:900,color:ans===q.a?P.green:P.amber,marginBottom:3}}>{ans===q.a?(lang==="en"?"🌸 Well done!":"🌸 Bravo ! C'est bien ça !"):(lang==="en"?"💛 The answer was:":"💛 La bonne réponse était :")}</div>
         {ans!==q.a&&<div style={{fontSize:14,fontWeight:900,color:P.green}}>{q.a}</div>}
       </div>}
     </div>
   );
 }
 
-function JeuImages({level,onBack,onBadge,onComplete}){
-  const rounds=IMG_DATA[level-1];
+function JeuImages({level,lang,onBack,onBadge,onComplete}){
+  const rounds=(lang==="en"?IMG_DATA_EN:IMG_DATA)[level-1];
   const[ri,setRi]=useState(0);const[score,setScore]=useState(0);const[done,setDone]=useState(false);
   const[guess,setGuess]=useState([]);const[avail,setAvail]=useState(null);const[wrong,setWrong]=useState(false);const[correct,setCorrect]=useState(false);
   const word=rounds[ri]?.word||"";
@@ -2024,15 +2070,15 @@ function JeuImages({level,onBack,onBadge,onComplete}){
     if(av.used||correct)return;
     const na=avail.map(a=>a.i===av.i?{...a,used:true}:a);const ng=[...guess,av];setAvail(na);setGuess(ng);
     if(ng.length===word.length){const formed=ng.map(x=>x.l).join("");
-      if(formed===word){SND.play("ok");setScore(s=>s+20);setCorrect(true);setTimeout(()=>{if(ri+1>=rounds.length){setDone(true);onBadge(`🖼️ Détective N${level}`);}else setRi(r=>r+1);},1200);}
+      if(formed===word){SND.play("ok");setScore(s=>s+20);setCorrect(true);setTimeout(()=>{if(ri+1>=rounds.length){setDone(true);onBadge(lang==="en"?`🖼️ Word Detective L${level}`:`🖼️ Détective N${level}`);}else setRi(r=>r+1);},1200);}
       else{SND.play("ko");setWrong(true);setTimeout(()=>{setAvail(avail.map(a=>({...a,used:false})));setGuess([]);setWrong(false);},700);}
     }
   };
   const remL=idx=>{if(correct)return;const r=guess[idx];setGuess(guess.filter((_,i)=>i!==idx));setAvail(avail.map(a=>a.i===r.i?{...a,used:false}:a));};
-  if(done)return<GWin title="🖼️ 4 Images 1 Mot !" score={score} max={rounds.length*20} badge="🖼️ Détective des mots" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin title={lang==="en"?"🖼️ 4 Images 1 Word!":"🖼️ 4 Images 1 Mot !"} score={score} max={rounds.length*20} badge={lang==="en"?"🖼️ Word Detective":"🖼️ Détective des mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   return(
     <div style={{padding:"12px 16px 36px"}}>
-      <GHdr title={`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length}/>
+      <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 10px",fontWeight:700}}>{ri+1}/{rounds.length} — <em>{rounds[ri].hint}</em></div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:12}}>
         {rounds[ri].emojis.map((e,i)=><div key={i} style={{background:"white",borderRadius:16,border:`2px solid ${correct?P.green:"#FFD4E8"}`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",fontSize:46,transition:"border .3s"}}>{e}</div>)}
@@ -2040,7 +2086,7 @@ function JeuImages({level,onBack,onBadge,onComplete}){
       <div className={wrong?"shake":correct?"pop":""} style={{display:"flex",justifyContent:"center",gap:5,marginBottom:12,flexWrap:"wrap"}}>
         {Array.from({length:word.length},(_,i)=>{const g=guess[i];return(<div key={i} onClick={()=>g&&remL(i)} style={{width:32,height:36,borderRadius:8,background:correct?P.greenSoft:g?"white":"#FFF0F8",border:`2.5px solid ${correct?P.green:g?P.rose:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:900,color:correct?P.green:P.text,cursor:g?"pointer":"default",transition:"all .2s"}}>{g?g.l:""}</div>);})}
       </div>
-      {correct&&<div className="up" style={{textAlign:"center",fontSize:15,marginBottom:10}}>🌸 Bravo ! Le mot était <strong style={{color:P.green}}>{word}</strong> !</div>}
+      {correct&&<div className="up" style={{textAlign:"center",fontSize:15,marginBottom:10}}>🌸 {lang==="en"?`Well done! The word was `:`Bravo ! Le mot était `}<strong style={{color:P.green}}>{word}</strong>!</div>}
       <div style={{display:"flex",flexWrap:"wrap",gap:7,justifyContent:"center"}}>
         {avail.map(av=><button key={av.i} onClick={()=>pickL(av)} disabled={av.used||correct} style={{width:38,height:38,borderRadius:11,background:av.used?"#F0E8F8":G,color:av.used?"transparent":"white",border:"none",fontSize:15,fontWeight:900,opacity:av.used?.25:1,transition:"all .15s"}}>{av.used?"":av.l}</button>)}
       </div>
@@ -2065,8 +2111,8 @@ function genWS(words,size,dirs){
   return{grid,placed};
 }
 
-function JeuMotsMeles({level,onBack,onBadge,onComplete}){
-  const wsd=WS_DATA[level-1];
+function JeuMotsMeles({level,lang,onBack,onBadge,onComplete}){
+  const wsd=(lang==="en"?WS_DATA_EN:WS_DATA)[level-1];
   const[{grid,placed}]=useState(()=>genWS(wsd.words,wsd.size,wsd.dirs));
   const[found,setFound]=useState([]);const[sel1,setSel1]=useState(null);const[score,setScore]=useState(0);const[flash,setFlash]=useState(null);const[done,setDone]=useState(false);const[wrong,setWrong]=useState(false);
   const csz=Math.min(30,Math.floor(310/wsd.size));
@@ -2084,10 +2130,10 @@ function JeuMotsMeles({level,onBack,onBadge,onComplete}){
     else{SND.play("ko");setWrong(true);setTimeout(()=>setWrong(false),500);}
     setSel1(null);
   };
-  if(done)return<GWin title="🔍 Mots Mêlés !" score={score} max={wsd.words.length*15} badge="🔍 Chasseuse de mots" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin title={lang==="en"?"🔍 Word Search!":"🔍 Mots Mêlés !"} score={score} max={wsd.words.length*15} badge={lang==="en"?"🔍 Word Hunter":"🔍 Chasseuse de mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   return(
     <div style={{padding:"12px 13px 36px"}}>
-      <GHdr title={`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length}/>
+      <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:11,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} trouvés</div>
       {sel1&&<div style={{textAlign:"center",color:P.rose,fontSize:11,fontWeight:800,marginBottom:5}}>✅ Départ sélectionné — appuie sur la dernière lettre !</div>}
       {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontSize:12,fontWeight:800,marginBottom:5}}>💛 Pas dans la liste, essaie encore !</div>}
@@ -2106,17 +2152,17 @@ function JeuMotsMeles({level,onBack,onBadge,onComplete}){
   );
 }
 
-function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
+function JeuLabyrinthe({level,lang,onBack,onBadge,onComplete}){
   const md=MAZE_DATA[level-1];
   const[pos,setPos]=useState(md.start);const[visited,setVisited]=useState(new Set([`${md.start[0]},${md.start[1]}`]));const[done,setDone]=useState(false);const[moves,setMoves]=useState(0);const[timer,setTimer]=useState(0);
   useEffect(()=>{if(done)return;const t=setInterval(()=>setTimer(s=>s+1),1000);return()=>clearInterval(t);},[done]);
   const canMove=(r,c)=>r>=0&&r<md.rows&&c>=0&&c<md.cols&&md.grid[r][c]===0;
   const move=(dr,dc)=>{const nr=pos[0]+dr,nc=pos[1]+dc;if(!canMove(nr,nc))return;SND.play("ok");const nv=new Set([...visited,`${nr},${nc}`]);setVisited(nv);setPos([nr,nc]);setMoves(m=>m+1);if(nr===md.end[0]&&nc===md.end[1])setTimeout(()=>{setDone(true);onBadge(`🌿 Navigatrice N${level}`);},400);};
   const cellSz=Math.min(36,Math.floor(290/md.cols));const score=Math.max(10,100-moves*2);
-  if(done)return<GWin title="🌿 Labyrinthe !" score={score} max={100} badge="🌿 Navigatrice" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
+  if(done)return<GWin title={lang==="en"?"🌿 Maze!":"🌿 Labyrinthe !"} score={score} max={100} badge={lang==="en"?"🌿 Navigator":"🌿 Navigatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   return(
     <div style={{padding:"14px 14px 36px"}}>
-      <GHdr title={`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)}/>
+      <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)}/>
       <div style={{display:"flex",justifyContent:"space-between",margin:"4px 0 10px"}}>
         <span style={{fontSize:12,fontWeight:700,color:P.muted}}>🎯 Atteins la sortie 🌺</span>
         <span style={{fontSize:12,fontWeight:700,color:P.muted}}>⏱️ {timer}s | 👣 {moves}</span>
@@ -2136,7 +2182,7 @@ function JeuLabyrinthe({level,onBack,onBadge,onComplete}){
         <button onClick={()=>move(1,0)} style={{background:G,color:"white",border:"none",borderRadius:12,padding:"13px 0",fontSize:20,fontWeight:900}}>↓</button>
         <button onClick={()=>move(0,1)} style={{background:G,color:"white",border:"none",borderRadius:12,padding:"13px 0",fontSize:20,fontWeight:900}}>→</button>
       </div>
-      <p style={{textAlign:"center",fontSize:11,color:P.muted,marginTop:10,fontWeight:600}}>Appuie sur les cases adjacentes ou utilise les flèches ☝️</p>
+      <p style={{textAlign:"center",fontSize:11,color:P.muted,marginTop:10,fontWeight:600}}>{lang==="en"?"Tap adjacent cells or use the arrows ☝️":"Appuie sur les cases adjacentes ou utilise les flèches ☝️"}</p>
     </div>
   );
 }
@@ -2447,6 +2493,108 @@ const DEFIS_REACT=[
   {cat:"🧘",text:"Fais quelque chose de doux pour toi ce soir. Un thé chaud, une musique calme, rien que pour toi."},
 ];
 
+const DEFIS_REACT_EN=[
+  {cat:"🩸",text:"Do you know how long your cycle lasts? Write down the start date of your next period. Knowing your body is power."},
+  {cat:"🩸",text:"If you have ever had very painful periods, tell yourself: 'I deserve a pain-free period.' You do not have to suffer in silence."},
+  {cat:"🩸",text:"Menstrual blood is not dirty. It is your body renewing itself. Remind yourself of this truth today. 💪"},
+  {cat:"🩸",text:"Move gently today: a walk, a few stretches. Notice how your body feels."},
+  {cat:"🩸",text:"Set a quiet reminder to change your sanitary product every 4 to 6 hours."},
+  {cat:"🩸",text:"Try to note the start date of your next period somewhere. Your cycle is unique — learn to know it."},
+  {cat:"🩸",text:"Talk about what periods really are with a friend today — just to normalise the conversation."},
+  {cat:"🩸",text:"Take 3 deep breaths right now. Your body and your cycle are connected to how you feel emotionally."},
+  {cat:"🩸",text:"Do you remember your first period? How did you feel? It is okay to talk about it."},
+  {cat:"🩸",text:"Ask someone you trust a real health question, or look for reliable information today."},
+  {cat:"🩸",text:"Have you ever tried washable pads? Do some research — it could change a lot of things."},
+  {cat:"🩸",text:"As your next period approaches, try drinking more water. Notice the difference."},
+  {cat:"🩸",text:"Tell someone who does not know what menstrual poverty is. Just one sentence."},
+  {cat:"🩸",text:"Take care of yourself with kindness today. A shower is fine — it is actually recommended."},
+  {cat:"🩸",text:"Do you have a rough idea of when you ovulate? Your cycle has its own signals — learn to read them."},
+  {cat:"🩸",text:"Do you know your usual flow? Start observing it — it is valuable information about your health."},
+  {cat:"🩸",text:"Put a hot water bottle on your stomach if you are in pain. It really helps."},
+  {cat:"🩸",text:"Say the word 'periods' out loud today, without lowering your voice. 🌸"},
+  {cat:"🩸",text:"The next time you feel unusually emotional, check where you are in your cycle."},
+  {cat:"🩸",text:"If you truly suffer every cycle, note it down and see a doctor. Your pain is not in your head."},
+  {cat:"💪",text:"Calculate the approximate start date of your next period. Write it down. Knowing your body is power."},
+  {cat:"💪",text:"Look at yourself in a mirror for 30 seconds. Say one thing you like about yourself."},
+  {cat:"💪",text:"Prepare a small kit in your bag: one sanitary product and pain relief if you often get cramps."},
+  {cat:"💪",text:"Today, refuse a hurtful comment about your body — even silently. You do not have to accept it."},
+  {cat:"💪",text:"Talk about your periods with a friend without lowering your voice. Just naturally. Because it is normal."},
+  {cat:"💪",text:"Write 3 words that describe you as you are — not as others would like you to be."},
+  {cat:"💪",text:"Today, say no to something that does not suit you. Even something small."},
+  {cat:"💪",text:"Drink 8 glasses of water today. Especially during your period — your body needs it."},
+  {cat:"💪",text:"Send a message of encouragement to a friend. Tell them one thing you admire about them."},
+  {cat:"💪",text:"Today, take up space. Speak in class, raise your hand, share your opinion. Even if your voice trembles."},
+  {cat:"💪",text:"Talk to your mum, older sister or aunt about periods. Ask her how it was for her at your age."},
+  {cat:"💪",text:"Make a list of 5 things you know how to do. Not qualities — skills. Everything counts."},
+  {cat:"💪",text:"Today, do not apologise for existing. Notice how many times you say 'sorry' unnecessarily."},
+  {cat:"💪",text:"Explain to someone what periods are in one simple sentence. Without embarrassment."},
+  {cat:"💪",text:"Write down a fear you keep to yourself. You do not have to show it. Just name it."},
+  {cat:"💪",text:"Today, compare yourself only to who you were yesterday. Not to others. Just: am I moving forward?"},
+  {cat:"💪",text:"If you tend to over-apologise — notice it today and choose differently."},
+  {cat:"💪",text:"Do something that makes you happy today, just for yourself. Even 10 minutes."},
+  {cat:"💪",text:"Say out loud: 'I deserve respect.' Once. In front of your mirror."},
+  {cat:"💪",text:"Think of a woman who inspires you. What do you admire about her? You have that too."},
+  {cat:"🗣️",text:"Today, learn the scientific name of a part of your body you have never dared to say out loud."},
+  {cat:"🗣️",text:"Ask a trusted adult a real question about your body — one you have never dared to ask."},
+  {cat:"🗣️",text:"If someone makes a joke about periods, do not laugh along. Just say: 'That is not funny.'"},
+  {cat:"🗣️",text:"Write a myth about periods you once believed. Cross it out. It has no power over you."},
+  {cat:"🗣️",text:"Today, name a pain you usually keep to yourself. To yourself, or just on paper."},
+  {cat:"🗣️",text:"Say 'I have my period' to someone without looking for a replacement word. Periods."},
+  {cat:"🗣️",text:"Find an adult and ask her how she experienced periods at your age. Really listen to her answer."},
+  {cat:"🗣️",text:"Today, gently but clearly correct a false piece of information about the female body if you hear one."},
+  {cat:"🗣️",text:"Tell someone who does not know about menstrual poverty. One sentence. You can change a mindset."},
+  {cat:"🗣️",text:"If you have ever felt ashamed of your periods, write down why. To understand and let the shame go."},
+  {cat:"🗣️",text:"Explain ovulation to someone in one simple sentence. If you do not know — research it, then explain it."},
+  {cat:"🗣️",text:"Say out loud: 'My body does not shame me.' In front of your mirror. Even if you do not believe it yet."},
+  {cat:"🗣️",text:"If you know a younger girl, tell her one truth about periods you wish you had known."},
+  {cat:"🗣️",text:"Write a question you have never dared to ask about your body. Find the answer before the week is over."},
+  {cat:"🗣️",text:"Talk about your periods without apologising for mentioning them. No 'sorry, this is awkward but...'"},
+  {cat:"🗣️",text:"Tell a boy in your life one real fact about the menstrual cycle. Without embarrassment."},
+  {cat:"🗣️",text:"Think of a taboo in your family related to the female body. Write it down. You do not have to accept it."},
+  {cat:"🗣️",text:"Today, talk about yourself in the first person. 'I think', 'I want', 'I feel'. Your voice matters."},
+  {cat:"🗣️",text:"Share one piece of information about menstrual health with a friend today. Just one true thing."},
+  {cat:"🤝",text:"Pass a sanitary product to a friend without her having to ask twice."},
+  {cat:"🤝",text:"Today, defend a girl being criticised for her body. One sentence is enough."},
+  {cat:"🤝",text:"Send a message to a friend telling her one true and beautiful thing about her. Not an emoji — words."},
+  {cat:"🤝",text:"If a friend has her period and feels unwell, offer something concrete — sit with her, bring her water."},
+  {cat:"🤝",text:"Today, do not take part in gossip about another girl's private life. Leave the conversation if you must."},
+  {cat:"🤝",text:"Think of a girl you admire in your circle. Tell her directly today."},
+  {cat:"🤝",text:"If you see a girl who is uncomfortable, approach her. Just ask: 'Are you okay?'"},
+  {cat:"🤝",text:"Share a useful piece of information about menstrual health in a group chat. Just one simple true thing."},
+  {cat:"🤝",text:"Today, celebrate a friend's success without jealousy. Her victory does not diminish yours."},
+  {cat:"🤝",text:"Think of a girl you judged without knowing her. Decide today to see her differently."},
+  {cat:"🤝",text:"If a friend tells you about period pain, do not tell her to 'just cope'. Really listen to her."},
+  {cat:"🤝",text:"Invite a friend to do the Dignity Quiz with you. Compare your results. Laugh and learn together."},
+  {cat:"🤝",text:"Today, lend something without expecting it back — a pen, a pad, a smile."},
+  {cat:"🤝",text:"Remind a friend that she has the right to say no — to going out, to pressure, to any situation."},
+  {cat:"🤝",text:"Today, listen to a friend without looking to give advice. Just listen. That is already huge."},
+  {cat:"🤝",text:"Think of a girl near you who lacks sanitary products. What could you do?"},
+  {cat:"🤝",text:"Tell a friend: 'You do not have to suffer in silence.' These words can change her day."},
+  {cat:"🤝",text:"Create or join a space for girls to talk — even informally, even just 3 people."},
+  {cat:"🤝",text:"Today, be the older sister you wish you had had. For a girl around you."},
+  {cat:"🤝",text:"Send love to a friend going through a difficult time. Without waiting for her to ask."},
+  {cat:"🧘",text:"Sleep 8 hours tonight. No negotiation. Your body rebuilds everything while you sleep."},
+  {cat:"🧘",text:"Drink 1.5 litres of water today. Put a bottle in front of you first thing in the morning."},
+  {cat:"🧘",text:"Do 10 minutes of stretches this evening before bed. Not exercise — just let your body settle."},
+  {cat:"🧘",text:"Try eating a fruit or vegetable today that you do not usually have."},
+  {cat:"🧘",text:"Place one hand on your stomach. Breathe deeply 5 times. Feel your body alive. That is enough."},
+  {cat:"🧘",text:"Rest without guilt today. Resting is not laziness. It is care."},
+  {cat:"🧘",text:"Note how you feel physically today. Energy, stomach, head. Just observe."},
+  {cat:"🧘",text:"Dance alone in your room to one song. Your body deserves to move for pleasure."},
+  {cat:"🧘",text:"Eat slowly at one meal today. Listen to when your body says 'that is enough'."},
+  {cat:"🧘",text:"Identify a tension in your body — shoulders, jaw, stomach. Breathe into it. Let it go."},
+  {cat:"🧘",text:"Limit social media to 30 minutes today. Notice how you feel when you disconnect."},
+  {cat:"🧘",text:"Walk for 20 minutes outside. Not to lose weight. To feel alive and present in your body."},
+  {cat:"🧘",text:"Have a shower slowly — not in a rush. Your body deserves attention."},
+  {cat:"🧘",text:"This evening, write 3 positive sensations your body gave you today."},
+  {cat:"🧘",text:"Today, skip no meals. Your body needs regular fuel."},
+  {cat:"🧘",text:"Laugh today — genuinely. Find something that makes you really laugh. Laughter is medicine."},
+  {cat:"🧘",text:"Touch your body with kindness — not to judge it. Just to say: this body is mine."},
+  {cat:"🧘",text:"Go to bed early tonight — before 10pm if you can. Notice how you wake up tomorrow morning."},
+  {cat:"🧘",text:"Write a one-sentence letter to your body: 'What I want for you this year is...'"},
+  {cat:"🧘",text:"Do something gentle for yourself this evening. A warm tea, calm music — just for you."},
+];
+
 const SPECIAL_DEFIS_REACT={
   '5-28':{icon:"🌸",title:"Journée Mondiale de l'Hygiène Menstruelle",text:"Parle des règles à 3 personnes aujourd'hui. Pas en chuchotant. Naturellement. Parce que c'est normal."},
   '3-8':{icon:"💪",title:"Journée Internationale des Femmes",text:"Écris le nom d'une femme qui t'inspire. Dis-lui ou écris pourquoi elle compte. Aujourd'hui, les femmes se célèbrent."},
@@ -2514,8 +2662,8 @@ function DefiModal({onClose,lang}){
   );
 }
 
-function GamePlay({gameId,gameLevel,onBack,onBadge,onComplete}){
-  const props={level:gameLevel,onBack,onBadge,onComplete};
+function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
+  const props={level:gameLevel,lang,onBack,onBadge,onComplete};
   if(gameId==="g1")return<JeuAssocie  key={`g1-${gameLevel}`}  {...props}/>;
   if(gameId==="g2")return<JeuCorps    key={`g2-${gameLevel}`}  {...props}/>;
   if(gameId==="g3")return<JeuMemoire  key={`g3-${gameLevel}`}  {...props}/>;
@@ -2608,6 +2756,72 @@ function PrivacyPage({onBack,lang}){
 
 
 // ── ENGLISH GLOSSAIRE ────────────────────────────────────────────
+// ── ENGLISH GAME DATA ────────────────────────────────────────────
+const ASSOC_DATA_EN=[
+  {cats:[{id:"hygiene",e:"🧼",label:"Hygiene",color:P.blue,bg:P.blueSoft},{id:"protection",e:"🌸",label:"Protection",color:P.rose,bg:P.roseSoft},{id:"emotions",e:"💛",label:"Emotions",color:P.amber,bg:P.amberSoft}],items:[{id:1,e:"🧼",l:"Soap",c:"hygiene"},{id:2,e:"💧",l:"Clean hands",c:"hygiene"},{id:3,e:"🚿",l:"Shower",c:"hygiene"},{id:4,e:"📦",l:"Sanitary towel",c:"protection"},{id:5,e:"🩲",l:"Period pants",c:"protection"},{id:6,e:"🔵",l:"Menstrual cup",c:"protection"},{id:7,e:"😊",l:"Joy",c:"emotions"},{id:8,e:"😢",l:"Sadness",c:"emotions"},{id:9,e:"😴",l:"Fatigue",c:"emotions"}]},
+  {cats:[{id:"hygiene",e:"🧼",label:"Hygiene",color:P.blue,bg:P.blueSoft},{id:"protection",e:"🌸",label:"Protection",color:P.rose,bg:P.roseSoft},{id:"emotions",e:"💛",label:"Emotions",color:P.amber,bg:P.amberSoft},{id:"corps",e:"❤️",label:"My Body",color:P.red,bg:P.redSoft}],items:[{id:1,e:"🧼",l:"Soap",c:"hygiene"},{id:2,e:"💧",l:"Washing hands",c:"hygiene"},{id:3,e:"🚿",l:"Shower",c:"hygiene"},{id:4,e:"📦",l:"Sanitary towel",c:"protection"},{id:5,e:"🩲",l:"Period pants",c:"protection"},{id:6,e:"🧻",l:"Clean cloth",c:"protection"},{id:7,e:"😊",l:"Joy",c:"emotions"},{id:8,e:"💪",l:"Pride",c:"emotions"},{id:9,e:"😴",l:"Fatigue",c:"emotions"},{id:10,e:"💗",l:"The uterus",c:"corps"},{id:11,e:"🌺",l:"Puberty",c:"corps"},{id:12,e:"🩸",l:"Periods",c:"corps"}]},
+  {cats:[{id:"hygiene",e:"🧼",label:"Hygiene",color:P.blue,bg:P.blueSoft},{id:"protection",e:"🌸",label:"Protection",color:P.rose,bg:P.roseSoft},{id:"emotions",e:"💛",label:"Emotions",color:P.amber,bg:P.amberSoft},{id:"corps",e:"❤️",label:"My Body",color:P.red,bg:P.redSoft},{id:"habits",e:"⭐",label:"Good Habits",color:P.teal,bg:P.tealSoft}],items:[{id:1,e:"🧼",l:"Soap",c:"hygiene"},{id:2,e:"💧",l:"Washing hands",c:"hygiene"},{id:3,e:"🚿",l:"Shower",c:"hygiene"},{id:4,e:"👕",l:"Clean clothes",c:"hygiene"},{id:5,e:"📦",l:"Sanitary towel",c:"protection"},{id:6,e:"🩲",l:"Period pants",c:"protection"},{id:7,e:"🧻",l:"Clean cloth",c:"protection"},{id:8,e:"🔵",l:"Menstrual cup",c:"protection"},{id:9,e:"😊",l:"Joy",c:"emotions"},{id:10,e:"😢",l:"Sadness",c:"emotions"},{id:11,e:"😴",l:"Fatigue",c:"emotions"},{id:12,e:"💪",l:"Pride",c:"emotions"},{id:13,e:"💗",l:"The uterus",c:"corps"},{id:14,e:"🌺",l:"Puberty",c:"corps"},{id:15,e:"📏",l:"Growth",c:"corps"},{id:16,e:"🩸",l:"Periods",c:"corps"},{id:17,e:"🌙",l:"Sleep well",c:"habits"},{id:18,e:"🥗",l:"Eat well",c:"habits"},{id:19,e:"🏃",l:"Exercise",c:"habits"},{id:20,e:"💬",l:"Talk about it",c:"habits"}]},
+];
+const CORPS_DATA_EN=[
+  [{id:"tete",label:"The Head",icon:"😊",color:P.rose,info:"Your head thinks and feels! You may get headaches during your period. Drink plenty of water. 💧"},{id:"ventre",label:"The Stomach",icon:"🌺",color:P.coral,info:"Your stomach is home to the uterus. It may ache during your period — a hot water bottle helps! 💪"},{id:"jambes",label:"The Legs",icon:"🌈",color:P.green,info:"Your legs carry you everywhere! Walking helps reduce period pain. 🎶"}],
+  [{id:"tete",label:"The Head",icon:"😊",color:P.rose,info:"Your head thinks, dreams and feels! During your period, you may get headaches. Drink water and rest. 💧"},{id:"poitrine",label:"The Chest",icon:"💗",color:P.purple,info:"Your chest develops during puberty. It can feel tender — this is completely normal. 🌸"},{id:"ventre",label:"The Stomach",icon:"🌺",color:P.coral,info:"Your stomach is home to the uterus — an amazing organ! It prepares your cycle every month. A hot water bottle helps. 💪"},{id:"bras",label:"The Arms",icon:"💪",color:P.blue,info:"Your arms give you the strength to take care of yourself. Exercise can reduce period pain! 🌟"},{id:"jambes",label:"The Legs",icon:"🌈",color:P.green,info:"Your legs carry you everywhere! Walking, dancing, playing — your body is made to move freely. 🎶"}],
+  [{id:"tete",label:"The Head",icon:"😊",color:P.rose,info:"Your head thinks, dreams and feels! Cycle hormones can affect your mood. This is normal and temporary. 💧"},{id:"poitrine",label:"The Chest",icon:"💗",color:P.purple,info:"Your chest develops during puberty due to hormones. It can feel tender before your period. 🌸"},{id:"ventre",label:"The Stomach",icon:"🌺",color:P.coral,info:"Your stomach is home to the uterus. Pain is normal but a hot water bottle helps. If very intense, see a doctor. 💪"},{id:"bras",label:"The Arms",icon:"💪",color:P.blue,info:"Your arms give you strength! Light exercise during periods can reduce pain through endorphins. 🌟"},{id:"jambes",label:"The Legs",icon:"🌈",color:P.green,info:"Your legs carry you everywhere! Walking 20 minutes a day improves your menstrual wellbeing. 🎶"},{id:"uterus",label:"The Uterus",icon:"🫁",color:P.red,info:"The uterus is a pear-shaped organ in your lower abdomen. Every month, it prepares a nest. If there is no pregnancy, it renews itself — that is your period! 💗"},{id:"ovaires",label:"The Ovaries",icon:"🌸",color:P.amber,info:"Your ovaries produce eggs and hormones like oestrogen. They are what trigger your cycle! ✨"}],
+];
+const MEM_DATA_EN=[
+  [{id:1,e:"🩸",l:"Periods"},{id:2,e:"🧼",l:"Hygiene"},{id:3,e:"💧",l:"Hydration"},{id:4,e:"😊",l:"Joy"}],
+  [{id:1,e:"🩸",l:"Periods"},{id:2,e:"🧼",l:"Hygiene"},{id:3,e:"💧",l:"Hydration"},{id:4,e:"📦",l:"Protection"},{id:5,e:"😊",l:"Joy"},{id:6,e:"💪",l:"Strength"}],
+  [{id:1,e:"🩸",l:"Periods"},{id:2,e:"🧼",l:"Hygiene"},{id:3,e:"💧",l:"Hydration"},{id:4,e:"📦",l:"Protection"},{id:5,e:"😊",l:"Joy"},{id:6,e:"💪",l:"Strength"},{id:7,e:"💬",l:"Talk"},{id:8,e:"🌺",l:"Puberty"}],
+];
+const FOODS_ALL_EN=[
+  {e:"💧",l:"Water",good:true,why:"Staying hydrated reduces cramps. Aim for 8 glasses a day! 💧"},
+  {e:"🫚",l:"Ginger",good:true,why:"A natural anti-inflammatory! Ginger tea relieves period pain. 🌿"},
+  {e:"🥬",l:"Spinach",good:true,why:"Rich in iron, it helps replace blood lost during periods. 💪"},
+  {e:"🍌",l:"Banana",good:true,why:"Magnesium relaxes muscles and reduces cramps. 🌟"},
+  {e:"🍫",l:"Dark chocolate",good:true,why:"Rich in magnesium (70%+). A square does you good! 🍫"},
+  {e:"🌿",l:"Herbal tea",good:true,why:"Chamomile, mint, ginger… warmth and comfort. 🫖"},
+  {e:"🫘",l:"Lentils",good:true,why:"Rich in iron and protein — great energy! 💛"},
+  {e:"🥤",l:"Fizzy drinks",good:false,why:"Sugar and bubbles cause bloating and pain."},
+  {e:"☕",l:"Too much coffee",good:false,why:"Excess caffeine intensifies cramps. Max one cup!"},
+  {e:"🍟",l:"Chips / fries",good:false,why:"Very fatty foods make bloating worse."},
+  {e:"🧂",l:"Too much salt",good:false,why:"Excess salt causes water retention and swelling."},
+  {e:"🍬",l:"Sweets",good:false,why:"Fast sugar = energy spike then crash. Better to eat fruit!"},
+];
+const PHASES_ALL_EN=[
+  {id:1,e:"🩸",t:"Menstrual phase",j:"Days 1–5",c:P.red,bg:P.redSoft,info:"Your body is renewing itself. Rest, drink warm fluids and take care of yourself. 💗"},
+  {id:2,e:"🌱",t:"Follicular phase",j:"Days 6–13",c:P.green,bg:P.greenSoft,info:"Your energy returns! You feel creative and full of vitality. 🌟"},
+  {id:3,e:"🌺",t:"Ovulation",j:"Around day 14",c:P.rose,bg:P.roseSoft,info:"Your body is at peak vitality. You feel confident — enjoy it! 🌸"},
+  {id:4,e:"🌙",t:"Luteal phase",j:"Days 15–28",c:P.purple,bg:P.purpleSoft,info:"Your body slows down. You may feel more introspective. That is completely normal. 🫶"},
+];
+const CYCLE_SYMP_EN=[
+  {phaseId:1,symptom:"Cramps and fatigue",e:"😣"},
+  {phaseId:2,symptom:"Energy and creativity",e:"⚡"},
+  {phaseId:3,symptom:"Peak confidence",e:"💪"},
+  {phaseId:4,symptom:"Need for rest",e:"🌙"},
+];
+const SOS_ALL_EN=[
+  {ctx:"🏫",q:"You have your period at school without a sanitary product. What do you do?",opts:[{t:"I go home without saying anything",ok:false,exp:"Leaving alone without telling anyone causes worry. It is better to ask a trusted adult for help."},{t:"I ask a teacher or the school nurse",ok:true,exp:"Exactly right! School staff are there to help. There is no shame in asking. 🌸"},{t:"I wait all day without doing anything",ok:false,exp:"Waiting without acting can cause you a lot of discomfort and distress."}]},
+  {ctx:"😣",q:"You have severe stomach pain during your period. What do you do?",opts:[{t:"I take medication without telling an adult",ok:false,exp:"It is always better to speak to an adult before taking medication."},{t:"Hot water bottle on my stomach + rest",ok:true,exp:"Well done! Heat relaxes the muscles and relieves pain. 💪"},{t:"I exercise intensely to ignore the pain",ok:false,exp:"Light movement can help, but not when the pain is severe."}]},
+  {ctx:"👯",q:"Your friend is scared about getting her first period. What do you say?",opts:[{t:"It's awful, you'll see!",ok:false,exp:"Your fear makes hers worse. Be gentle and reassuring."},{t:"It's natural, it doesn't last long, I'm here for you",ok:true,exp:"Perfect! Kind and honest words — that's what a true friend does. 🌸"},{t:"I change the subject because it's embarrassing",ok:false,exp:"Avoiding the topic leaves your friend alone with her fear."}]},
+  {ctx:"📅",q:"Your periods haven't come for 2 months. What do you do?",opts:[{t:"I say nothing and wait longer",ok:false,exp:"An irregular cycle can have various causes. It is important to talk to a doctor."},{t:"I search the internet on my own",ok:false,exp:"The internet can be misleading. Talk to a trusted adult."},{t:"I talk to a trusted adult or a doctor",ok:true,exp:"Exactly right! Irregular cycles are common in young people. A doctor can reassure you. 💛"}]},
+  {ctx:"🏃",q:"You have your period and you need to do sport at school. What do you do?",opts:[{t:"I pretend to be ill to get out of it",ok:false,exp:"Periods are not an illness! You can take part with the right sanitary product."},{t:"I take part normally with an appropriate product",ok:true,exp:"Exactly! Sport is absolutely possible during your period. 🌟"},{t:"I tell the whole class about my period",ok:false,exp:"That is personal information. You can take part without having to explain everything."}]},
+];
+const DEVINETTES_EN=[
+  {q:"I flow once a month,\nbut I am not a river.\nI am a sign of good health.\nWhat am I?",a:"PERIOD",hint:"It arrives every month...",opts:["PERIOD","TEARS","SWEAT","RAIN"],emoji:"🩸"},
+  {q:"I am a pear-shaped organ,\nlodged in the lower abdomen.\nEvery month, I prepare a nest.\nWhat am I?",a:"UTERUS",hint:"A precious female organ...",opts:["UTERUS","STOMACH","LIVER","KIDNEY"],emoji:"💗"},
+  {q:"I last approximately 28 days.\nI am made up of 4 phases.\nEvery girl has me inside her.\nWhat am I?",a:"CYCLE",hint:"It begins with your period...",opts:["CYCLE","MONTH","WEEK","YEAR"],emoji:"📅"},
+  {q:"I am the stage when\na young girl's body\ntransforms into a woman's.\nWhat am I?",a:"PUBERTY",hint:"Between 9 and 16 years old...",opts:["PUBERTY","PREGNANCY","CHILDHOOD","OLD AGE"],emoji:"🌱"},
+  {q:"I am produced by the ovaries.\nI control your cycle.\nI make you feel confident.\nWhat am I?",a:"HORMONE",hint:"A chemical substance in the body...",opts:["HORMONE","VITAMIN","MINERAL","ENZYME"],emoji:"✨"},
+];
+const IMG_DATA_EN=[
+  [{word:"BLOOD",emojis:["🩸","❤️","💉","🔴"],hint:"Vital red liquid"},{word:"CARE",emojis:["🧼","💧","🛁","✨"],hint:"Taking ... of yourself"},{word:"BODY",emojis:["🧍","💪","🌸","👗"],hint:"It belongs entirely to you"},{word:"PERIOD",emojis:["📅","🌙","🌸","🩸"],hint:"Natural and normal every month"},{word:"GIRL",emojis:["👧","🌺","💕","🌟"],hint:"A ... can be proud of her body"}],
+  [{word:"HYGIENE",emojis:["🧼","🚿","💧","🧽"],hint:"Daily cleanliness practices"},{word:"CYCLE",emojis:["🔄","📅","🌙","🌺"],hint:"It lasts on average 28 days"},{word:"UTERUS",emojis:["💗","🌺","🩸","📅"],hint:"The organ that prepares the cycle"},{word:"DIGNITY",emojis:["👑","🌸","💪","✨"],hint:"Feeling respected and valued"},{word:"HEALTH",emojis:["🏥","💊","🩺","❤️"],hint:"Physical and emotional wellbeing"}],
+  [{word:"PUBERTY",emojis:["🌱","📏","🌺","💗"],hint:"Transformation of a young girl's body"},{word:"HORMONE",emojis:["✨","🌸","💗","🔬"],hint:"Chemical substance controlling the cycle"},{word:"EMOTION",emojis:["😊","😢","😴","💪"],hint:"What we feel in our heart"},{word:"TOWEL",emojis:["📦","🩲","🌸","🧻"],hint:"Common menstrual protection"},{word:"DIGNITY",emojis:["👑","🌟","💕","✨"],hint:"Every girl deserves dignity"}],
+];
+const WS_DATA_EN=[
+  {size:8,words:["PERIOD","BLOOD","BODY","CARE","CYCLE","GIRL"],dirs:[[0,1],[1,0]],label:"Across & Down"},
+  {size:10,words:["HYGIENE","UTERUS","HEALTH","DIGNITY","STRONG","CYCLE","BLOOD","PERIOD","GIRL"],dirs:[[0,1],[1,0],[1,1],[1,-1]],label:"+ Diagonals"},
+  {size:12,words:["PUBERTY","UTERUS","HYGIENE","TOWEL","HEALTH","BODY","DIGNITY","STRONG","BLOOD","CYCLE","GIRL","PERIOD"],dirs:[[0,1],[1,0],[1,1],[1,-1],[0,-1],[-1,0]],label:"All directions"},
+];
 const GLOSSAIRE_DATA_EN=[
   {cat:"🫀 Anatomy",terms:[
     {w:"Uterus",d:"A pear-shaped organ in the female pelvis. This is where a baby develops during pregnancy and where menstrual blood originates."},
@@ -2785,7 +2999,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,o
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
             <img src={HM_LOGO} alt="Happy Mum's" style={{width:52,height:52,objectFit:"contain",filter:"drop-shadow(0 4px 12px rgba(255,255,255,.3))"}}/>
-            <h1 className="T" style={{margin:"8px 0 2px",fontSize:26,fontWeight:800,color:"white"}}>Bonjour {user.name} 🌸</h1>
+            <h1 className="T" style={{margin:"8px 0 2px",fontSize:26,fontWeight:800,color:"white"}}>{lang==="en"?`Hello ${user.name} 🌸`:`Bonjour ${user.name} 🌸`}</h1>
             <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:12,fontWeight:600}}>{user.country} · Quiz Dignité by Happy Mum's</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
@@ -3311,7 +3525,7 @@ export default function App(){
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
-        {screen==="game_play"&&gameId&&<GamePlay gameId={gameId} gameLevel={gameLevel} onBack={()=>setScreen("games_hub")} onBadge={earnBadge} onComplete={()=>onLevelComplete(gameId,gameLevel)}/>}
+        {screen==="game_play"&&gameId&&<GamePlay gameId={gameId} gameLevel={gameLevel} lang={lang} onBack={()=>setScreen("games_hub")} onBadge={earnBadge} onComplete={()=>onLevelComplete(gameId,gameLevel)}/>}
 
         {screen==="progress"&&(
           <div style={{padding:"16px 16px 88px"}}>
