@@ -1635,7 +1635,9 @@ function GHdr({title,onBack,score,prog=0}){
 function GWin({title,score,max,badge,msg,lang,onHome,onNext,hasNext}){
   useEffect(()=>{setTimeout(()=>SND.play("win"),200);},[]);
   const pct=max>0?score/max:0;
-  const wm=pct>=.8?{col:P.green,t:"🌟 Tu es une actrice de dignité !",b:"Tes choix montrent que tu respectes et soutiens les femmes. Ce type d'attitude change des vies. 💛"}:pct>=.5?{col:P.amber,t:"🌺 Tu es sur le bon chemin !",b:"Tu as déjà les bons réflexes. Avec un peu plus d'engagement, tu peux avoir un vrai impact."}:{col:P.coral,t:"💪 Tu peux faire la différence !",b:"Maintenant que tu sais, tu peux agir autrement. Chaque geste compte."};
+  const wm=lang==="en"
+    ?(pct>=.8?{col:P.green,t:"🌟 You are a Dignity Champion!",b:"Your choices show respect and support for women. This kind of attitude changes lives. 💛"}:pct>=.5?{col:P.amber,t:"🌺 You're on the right track!",b:"You already have the right instincts. With a bit more commitment, you can make a real difference."}:{col:P.coral,t:"💪 You can make a difference!",b:"Now that you know, you can act differently. Every gesture counts."})
+    :(pct>=.8?{col:P.green,t:"🌟 Tu es une actrice de dignité !",b:"Tes choix montrent que tu respectes et soutiens les femmes. Ce type d'attitude change des vies. 💛"}:pct>=.5?{col:P.amber,t:"🌺 Tu es sur le bon chemin !",b:"Tu as déjà les bons réflexes. Avec un peu plus d'engagement, tu peux avoir un vrai impact."}:{col:P.coral,t:"💪 Tu peux faire la différence !",b:"Maintenant que tu sais, tu peux agir autrement. Chaque geste compte."});
   return(
     <div style={{padding:"32px 20px 44px",textAlign:"center"}}>
       <div style={{fontSize:58,marginBottom:6}} className="pop">🎉</div>
@@ -1651,7 +1653,7 @@ function GWin({title,score,max,badge,msg,lang,onHome,onNext,hasNext}){
       </div>
       <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
         {hasNext&&<button onClick={onNext} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"Next level →":"Niveau suivant →"}</button>}
-        <button onClick={onHome} style={{background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>🏠 Menu</button>
+        <button onClick={onHome} style={{background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"🏠 Home":"🏠 Menu"}</button>
       </div>
     </div>
   );
@@ -1684,7 +1686,7 @@ function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
   const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Foundation",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Deepening",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Mastery",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
   return(
     <div style={{padding:"14px 18px 40px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← Menu</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← {lang==="en"?"Menu":"Menu"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:48,marginBottom:6}}>{gDef.e}</div>
         <h2 className="T" style={{color:"white",fontSize:22,fontWeight:700,margin:"0 0 4px"}}>{gDef.t}</h2>
@@ -2093,8 +2095,8 @@ function JeuMotsMeles({level,lang,onBack,onBadge,onComplete}){
   return(
     <div style={{padding:"12px 13px 36px"}}>
       <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length}/>
-      <div style={{textAlign:"center",color:P.muted,fontSize:11,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} trouvés</div>
-      {sel1&&<div style={{textAlign:"center",color:P.rose,fontSize:11,fontWeight:800,marginBottom:5}}>✅ Départ sélectionné — appuie sur la dernière lettre !</div>}
+      <div style={{textAlign:"center",color:P.muted,fontSize:11,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} {lang==="en"?"found":"trouvés"}</div>
+      {sel1&&<div style={{textAlign:"center",color:P.rose,fontSize:11,fontWeight:800,marginBottom:5}}>✅ {lang==="en"?"Start selected — tap the last letter!":"Départ sélectionné — appuie sur la dernière lettre !"}</div>}
       {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontSize:12,fontWeight:800,marginBottom:5}}>💛 Pas dans la liste, essaie encore !</div>}
       <div style={{overflowX:"auto",marginBottom:10}}>
         <div style={{display:"inline-grid",gridTemplateColumns:`repeat(${wsd.size},${csz}px)`,gap:2}}>
@@ -2123,7 +2125,7 @@ function JeuLabyrinthe({level,lang,onBack,onBadge,onComplete}){
     <div style={{padding:"14px 14px 36px"}}>
       <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)}/>
       <div style={{display:"flex",justifyContent:"space-between",margin:"4px 0 10px"}}>
-        <span style={{fontSize:12,fontWeight:700,color:P.muted}}>🎯 Atteins la sortie 🌺</span>
+        <span style={{fontSize:12,fontWeight:700,color:P.muted}}>{lang==="en"?"🎯 Reach the exit 🌺":"🎯 Atteins la sortie 🌺"}</span>
         <span style={{fontSize:12,fontWeight:700,color:P.muted}}>⏱️ {timer}s | 👣 {moves}</span>
       </div>
       <div style={{overflowX:"auto",marginBottom:14}}>
