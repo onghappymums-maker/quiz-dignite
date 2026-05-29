@@ -1752,47 +1752,6 @@ function JeuAssocie({level,lang,onBack,onBadge,onComplete}){
     </div>
   );
 }
-  const mk=()=>({items:shuffle(d.items),placed:{},sel:null,wrongId:null,fb:null,score:0,done:false});
-  const[st,setSt]=useState(mk);
-  const remaining=st.items.filter(i=>!st.placed[i.id]);
-  const drop=catId=>{
-    if(!st.sel)return;
-    const item=st.items.find(i=>i.id===st.sel);if(!item)return;
-    if(item.c===catId){SND.play("ok");const np={...st.placed,[item.id]:catId};const isDone=Object.keys(np).length===st.items.length;setSt(s=>({...s,placed:np,sel:null,fb:"ok",score:s.score+10,done:isDone}));if(isDone)onBadge(`🎯 Associatrice N${level}`);setTimeout(()=>setSt(s=>({...s,fb:null})),1400);}
-    else{SND.play("ko");setSt(s=>({...s,sel:null,wrongId:item.id,fb:"ko"}));setTimeout(()=>setSt(s=>({...s,wrongId:null,fb:null})),1200);}
-  };
-  if(st.done)return<GWin lang={lang} title="🎯 Associe !" score={st.score} max={st.items.length*10} badge="🎯 Associatrice" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
-    <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length}/>
-      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 10px",fontWeight:600}}>{st.sel?"↓ Appuie sur la bonne catégorie ↓":"Sélectionne une carte puis une catégorie"}</p>
-      {st.fb&&<div className="up" style={{textAlign:"center",fontSize:17,fontWeight:900,color:st.fb==="ok"?P.green:P.amber,marginBottom:10}}>{st.fb==="ok"?"🌸 Bravo !":"💛 Essaie encore !"}</div>}
-      {remaining.length>0&&(
-        <div style={{marginBottom:13}}>
-          <div style={{fontSize:11,color:P.muted,fontWeight:800,textTransform:"uppercase",letterSpacing:.8,marginBottom:7}}>À classer — {remaining.length} restant{remaining.length>1?"s":""}</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
-            {remaining.map(item=>{const sel=st.sel===item.id,bad=st.wrongId===item.id;return(
-              <button key={item.id} onClick={()=>setSt(s=>({...s,sel:s.sel===item.id?null:item.id}))} className={bad?"shake":""}
-                style={{background:sel?G:bad?"#FFE8E8":"white",border:`2px solid ${sel?"transparent":bad?"#FF6B6B":"#FFD4E8"}`,borderRadius:13,padding:"7px 11px",display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:sel?800:600,color:sel?"white":P.text,transition:"all .15s"}}>
-                <span style={{fontSize:17}}>{item.e}</span><span>{item.l}</span>
-              </button>
-            );})}
-          </div>
-        </div>
-      )}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        {d.cats.map((cat,ci)=>{const inCat=st.items.filter(i=>st.placed[i.id]===cat.id);const last=ci===d.cats.length-1&&d.cats.length%2!==0;return(
-          <button key={cat.id} onClick={()=>drop(cat.id)} style={{background:st.sel?cat.bg:"white",border:`2px solid ${st.sel?cat.color:"#FFD4E8"}`,borderRadius:16,padding:"10px 11px",textAlign:"left",cursor:st.sel?"pointer":"default",transition:"all .2s",transform:st.sel?"scale(1.02)":"scale(1)",minHeight:74,gridColumn:last?"span 2":"auto"}}>
-            <div style={{fontSize:19,marginBottom:2}}>{cat.e}</div>
-            <div style={{fontWeight:800,fontSize:11,color:cat.color,letterSpacing:.3}}>{cat.label}</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginTop:4}}>{inCat.map(it=><span key={it.id} className="up" style={{fontSize:14}}>{it.e}</span>)}</div>
-            {inCat.length===0&&<div style={{fontSize:10,color:"#D4A0B0",marginTop:3,fontWeight:600}}>{st.sel?"Mettre ici ?":"Vide"}</div>}
-          </button>
-        );})}
-      </div>
-    </div>
-  );
-}
 
 function JeuCorps({level,lang,onBack,onBadge,onComplete}){
   const parts=(lang==="en"?CORPS_DATA_EN:CORPS_DATA)[level-1];
