@@ -37,6 +37,38 @@ class SndEng {
 }
 const SND = new SndEng();
 
+// ── WEB SPEECH API ──────────────────────────────────────────────
+// SpeechBtn component and speak() utility already defined below
+
+// ── SPEECH (Web Speech API) ──────────────────────────────────────
+function SpeechBtn({text,lang,style={}}){
+  const[on,setOn]=useState(false);
+  // Check support (also works after page load)
+  const supported=typeof window!=="undefined"&&!!window.speechSynthesis;
+  if(!supported)return null;
+  const go=e=>{
+    e.stopPropagation();
+    if(on){window.speechSynthesis.cancel();setOn(false);return;}
+    window.speechSynthesis.cancel();
+    // Small delay for Android Chrome
+    setTimeout(()=>{
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang=lang==="en"?"en-GB":"fr-FR";
+      u.rate=0.85;u.pitch=1;u.volume=1;
+      u.onend=()=>setOn(false);u.onerror=()=>setOn(false);
+      setOn(true);
+      window.speechSynthesis.speak(u);
+    },50);
+  };
+  return(
+    <button onClick={go} title={lang==="en"?"Listen":"Écouter"}
+      style={{background:on?"#E8003D":"rgba(232,0,61,.12)",border:`1.5px solid ${on?"#E8003D":"rgba(232,0,61,.25)"}`,borderRadius:22,padding:"6px 12px",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:5,color:on?"white":"#E8003D",fontWeight:800,fontSize:13,flexShrink:0,transition:"all .2s",...style}}>
+      <span style={{fontSize:16}}>{on?"⏹":"🔊"}</span>
+      <span style={{fontSize:11}}>{on?(lang==="en"?"stop":"stop"):(lang==="en"?"listen":"écouter")}</span>
+    </button>
+  );
+}
+
 const P = {
   red:"#C8102E", redSoft:"#FFE8EC", rose:"#FF6B9D", roseSoft:"#FFE4EE",
   coral:"#FF8C69", coralSoft:"#FFF0E8", amber:"#F59E0B", amberSoft:"#FEF9C3",
@@ -2207,7 +2239,8 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
           <div style={{fontSize:".7rem",textTransform:"uppercase",letterSpacing:2,color:P.muted,marginBottom:11,fontWeight:700}}>Défi {qi+1}/{qs.length}</div>
           <div style={{background:`linear-gradient(135deg,${P.rose}22,${P.coral}22)`,border:`2px solid ${P.rose}44`,borderRadius:22,padding:20,textAlign:"center",marginBottom:14}}>
             <span style={{fontSize:"2.8rem",display:"block",marginBottom:10}}>🎯</span>
-            <div className="T" style={{fontSize:"1.05rem",fontWeight:700,color:P.red,marginBottom:16,lineHeight:1.4}}>{q.q}</div>
+            <div className="T" style={{fontSize:"1.05rem",fontWeight:700,color:P.red,marginBottom:10,lineHeight:1.4}}>{q.q}</div>
+            <div style={{textAlign:"center",marginBottom:12}}><SpeechBtn text={q.q} lang={lang}/></div>
             {!showDA?<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"12px 24px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={()=>setShowDA(true)}>Voir la réponse 👀</button>
             :<div style={{background:"white",borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
           </div>
@@ -2224,7 +2257,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
             </div>
           </div>
           <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:22,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
-            <div className="T" style={{fontSize:"1.08rem",fontWeight:700,lineHeight:1.45,marginBottom:18,color:P.text}}>{q.q}</div>
+            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:18}}><div className="T" style={{fontSize:"1.08rem",fontWeight:700,lineHeight:1.45,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
             <div style={{display:"flex",flexDirection:"column",gap:10}}>
               {q.answers.map((a,i)=>{
                 let bg="rgba(255,255,255,.9)",border=`2.5px solid rgba(232,0,61,.13)`;
@@ -2238,7 +2271,10 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
             {showFb&&(
               <div style={{marginTop:15,padding:"15px 17px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
                 <div className="T" style={{fontSize:".97rem",fontWeight:800,marginBottom:5,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
-                <div style={{fontSize:".83rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
+                <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
+                  <div style={{fontSize:".83rem",color:P.muted,lineHeight:1.6,flex:1}}>{q.ex}</div>
+                  <SpeechBtn text={q.ex} lang={lang} style={{marginTop:1}}/>
+                </div>
                 <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:13}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
               </div>
             )}
@@ -2603,7 +2639,10 @@ function DefiModal({onClose,lang}){
           <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Daily Challenge 🌸":"Défi du jour 🌸"}</div>
         </div>}
         <div style={{background:"linear-gradient(135deg,#FFF0F5,#FFE8EF)",borderRadius:18,padding:"20px 18px",marginBottom:16,border:"1.5px solid rgba(232,0,61,.12)"}}>
-          <div style={{fontSize:".95rem",color:P.text,lineHeight:1.75,fontWeight:600}}>{defi.text}</div>
+          <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+            <div style={{fontSize:".95rem",color:P.text,lineHeight:1.75,fontWeight:600,flex:1}}>{defi.text}</div>
+            <SpeechBtn text={defi.text} lang={lang} style={{marginTop:2}}/>
+          </div>
         </div>
         {streak>0&&<div style={{background:"linear-gradient(135deg,#FFE8EF,#FFD6E8)",borderRadius:14,padding:"12px 16px",display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
           <span style={{fontSize:"1.5rem"}}>🔥</span>
@@ -2899,7 +2938,12 @@ function Glossaire({onBack,lang}){
                 <div className="T" style={{fontSize:".95rem",fontWeight:700,color:P.text}}>{t.w}</div>
                 <span style={{fontSize:".9rem",color:P.red,fontWeight:800,transition:"transform .2s",display:"inline-block",transform:isOpen?"rotate(180deg)":"rotate(0)"}}>{isOpen?"▲":"▼"}</span>
               </div>
-              {isOpen&&<div style={{fontSize:".83rem",color:P.muted,lineHeight:1.7,marginTop:10,paddingTop:10,borderTop:"1px solid rgba(232,0,61,.1)"}}>{t.d}</div>}
+              {isOpen&&<div style={{fontSize:".83rem",color:P.muted,lineHeight:1.7,marginTop:10,paddingTop:10,borderTop:"1px solid rgba(232,0,61,.1)"}}>
+                <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
+                  <span style={{flex:1}}>{t.d}</span>
+                  <SpeechBtn text={`${t.w}. ${t.d}`} lang={lang} style={{marginTop:1}}/>
+                </div>
+              </div>}
             </div>);
           })}
         </div>
@@ -2952,8 +2996,135 @@ function Onboarding({onSubmit,lang}){
   );
 }
 
+// ── JE ME CÉLÈBRE ───────────────────────────────────────────────
+function JeMeCelebre({lang,onBack}){
+  const STORAGE_KEY="hm_celebrate_journal";
+  const todayKey=()=>{const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;};
+  const fmtDate=k=>{const[y,m,d]=k.split("-");const months_fr=["jan","fév","mar","avr","mai","juin","juil","août","sep","oct","nov","déc"];const months_en=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return `${parseInt(d)} ${lang==="en"?months_en[parseInt(m)-1]:months_fr[parseInt(m)-1]} ${y}`;};
+  const loadJournal=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}catch{return[];}};
+  const INTRO_FR=`Un espace rien que pour toi.\n\nChaque jour, une question t'attend. Tu lis. Tu prends 2 minutes. Tu écris une phrase — une seule suffit.\n\nCe n'est pas une liste de choses à faire. C'est un moment pour poser les yeux sur toi avec bienveillance.\n\nAu bout d'une semaine → tu vois tes forces. Au bout d'un mois → tu te connais mieux. Au bout d'un an → tu as un miroir de ta croissance. 🌸`;
+  const INTRO_EN=`A space that belongs entirely to you.\n\nEach day, one question is waiting. You read it. You take 2 minutes. You write one sentence — that is enough.\n\nThis is not a to-do list. It is a moment to look at yourself with kindness.\n\nAfter one week → you see your strengths. After one month → you know yourself better. After one year → you have a mirror of your growth. 🌸`;
+  const[showIntro,setShowIntro]=useState(()=>!loadJournal().length);
+  const PROMPTS_FR=["✨ Cite une chose dont tu es fière aujourd'hui","💗 Comment ton corps t'a-t-il servie aujourd'hui ?","🌟 Qu'est-ce que tu as accompli aujourd'hui ?","💪 Quelle force as-tu montrée aujourd'hui ?","😊 Qu'est-ce qui t'a fait sourire aujourd'hui ?","🌸 Qu'as-tu appris sur toi cette semaine ?","🧘 Comment prends-tu soin de toi aujourd'hui ?"];
+  const PROMPTS_EN=["✨ Name one thing you are proud of today","💗 How has your body served you today?","🌟 What did you accomplish today?","💪 What strength did you show today?","😊 What made you smile today?","🌸 What did you learn about yourself this week?","🧘 How are you taking care of yourself today?"];
+  const prompts=lang==="en"?PROMPTS_EN:PROMPTS_FR;
+  const todayPrompt=prompts[new Date().getDay()];
+  const[journal,setJournal]=useState(loadJournal);
+  const[text,setText]=useState(()=>{const j=loadJournal();const t=j.find(e=>e.date===todayKey());return t?t.text:"";});
+  const[saved,setSaved]=useState(()=>loadJournal().some(e=>e.date===todayKey()));
+  const[editing,setEditing]=useState(false);
+  const save=()=>{
+    if(!text.trim())return;
+    const j=loadJournal().filter(e=>e.date!==todayKey());
+    const entry={date:todayKey(),prompt:todayPrompt,text:text.trim()};
+    const nj=[entry,...j];
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(nj));
+    setJournal(nj);setSaved(true);setEditing(false);
+  };
+  const del=date=>{
+    const nj=journal.filter(e=>e.date!==date);
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(nj));
+    setJournal(nj);
+    if(date===todayKey()){setText("");setSaved(false);}
+  };
+  return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      {/* Header */}
+      <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.25)"}}>
+        <div style={{fontSize:42,marginBottom:6}}>🌸</div>
+        <div className="T" style={{color:"white",fontSize:"1.4rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".82rem",fontWeight:600}}>{lang==="en"?"Your personal journal — for your eyes only 🔒":"Ton journal personnel — rien que pour toi 🔒"}</div>
+      </div>
+      {/* Intro card — shown first time or on demand */}
+      {showIntro&&(
+        <div style={{background:"white",border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+          <div style={{fontSize:".7rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>✨ {lang==="en"?"What is this?":"C'est quoi ?"}</div>
+          <p style={{fontSize:".88rem",color:P.text,lineHeight:1.75,margin:"0 0 14px",whiteSpace:"pre-line"}}>{lang==="en"?INTRO_EN:INTRO_FR}</p>
+          <div style={{background:"rgba(255,240,250,.8)",borderRadius:14,padding:"12px 14px",marginBottom:14}}>
+            <div style={{fontSize:".72rem",fontWeight:900,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:.8}}>{lang==="en"?"Examples":"Exemples concrets"}</div>
+            {(lang==="en"?[
+              {day:"Monday",q:"Name one thing you are proud of today",a:"I answered a question in class even though I was scared."},
+              {day:"Friday",q:"What made you smile today?",a:"My sister made me laugh at dinner."},
+              {day:"Sunday",q:"How are you taking care of yourself today?",a:"I went to bed early and drank plenty of water."},
+            ]:[
+              {day:"Lundi",q:"Cite une chose dont tu es fière aujourd'hui",a:"J'ai répondu à une question en classe même si j'avais peur."},
+              {day:"Vendredi",q:"Qu'est-ce qui t'a fait sourire aujourd'hui ?",a:"Ma sœur m'a fait rire au dîner."},
+              {day:"Dimanche",q:"Comment prends-tu soin de toi aujourd'hui ?",a:"J'ai dormi tôt et j'ai bu de l'eau."},
+            ]).map((ex,i)=>(
+              <div key={i} style={{marginBottom:i<2?10:0}}>
+                <div style={{fontSize:".72rem",fontWeight:800,color:P.muted}}>📅 {ex.day} — <em>{ex.q}</em></div>
+                <div style={{fontSize:".82rem",color:P.text,marginTop:3,paddingLeft:10,borderLeft:`2px solid ${P.rose}`,fontStyle:"italic"}}>"{ex.a}"</div>
+              </div>
+            ))}
+          </div>
+          <button onClick={()=>setShowIntro(false)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer"}}>
+            {lang==="en"?"I'm ready — let's go! 🌸":"Je suis prête — c'est parti ! 🌸"}
+          </button>
+        </div>
+      )}
+      {!showIntro&&journal.length>0&&(
+        <button onClick={()=>setShowIntro(true)} style={{background:"transparent",border:"none",color:P.muted,fontSize:".75rem",fontWeight:700,cursor:"pointer",marginBottom:8,textDecoration:"underline"}}>
+          {lang==="en"?"? What is Je me célèbre":"? C'est quoi Je me célèbre"}
+        </button>
+      )}
+      <div style={{background:"rgba(255,255,255,.95)",border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+        <div style={{fontSize:".72rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>{lang==="en"?"Today":"Aujourd'hui"} · {fmtDate(todayKey())}</div>
+        <div style={{fontSize:".9rem",color:P.muted,fontWeight:700,marginBottom:12,lineHeight:1.4}}>
+          <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
+            <span style={{flex:1}}>{todayPrompt}</span>
+            <SpeechBtn text={todayPrompt} lang={lang} style={{marginTop:1}}/>
+          </div>
+        </div>
+        {(!saved||editing)?(
+          <>
+            <textarea
+              value={text}
+              onChange={e=>setText(e.target.value)}
+              placeholder={lang==="en"?"Write freely... this space belongs to you 🌸":"Écris librement… cet espace t'appartient 🌸"}
+              rows={4}
+              style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:14,padding:"12px 14px",fontSize:".9rem",color:P.text,fontFamily:"'Nunito',sans-serif",resize:"none",outline:"none",boxSizing:"border-box",lineHeight:1.6,background:"rgba(255,245,250,.6)"}}
+            />
+            <button onClick={save} disabled={!text.trim()} style={{width:"100%",background:text.trim()?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(200,180,200,.3)",color:text.trim()?"white":"#C0A0B0",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:text.trim()?"pointer":"default",marginTop:10}}>
+              {lang==="en"?"Save my celebration 🌸":"Sauvegarder ma célébration 🌸"}
+            </button>
+          </>
+        ):(
+          <div>
+            <div style={{background:"rgba(255,240,250,.8)",borderRadius:14,padding:"14px",marginBottom:10,lineHeight:1.6,fontSize:".9rem",color:P.text,fontStyle:"italic",borderLeft:`3px solid ${P.red}`}}>"{text}"</div>
+            <button onClick={()=>setEditing(true)} style={{background:"transparent",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"8px 18px",color:P.red,fontSize:".8rem",fontWeight:700,cursor:"pointer"}}>
+              {lang==="en"?"✏️ Edit":"✏️ Modifier"}
+            </button>
+          </div>
+        )}
+        {saved&&!editing&&<div style={{fontSize:".72rem",color:P.green,fontWeight:800,marginTop:8}}>✅ {lang==="en"?"Saved today":"Sauvegardé aujourd'hui"}</div>}
+      </div>
+      {/* Journal history */}
+      {journal.length>1&&(
+        <div>
+          <div style={{fontSize:".8rem",fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.8,marginBottom:12}}>{lang==="en"?"My journal":"Mon journal"} · {journal.length} {lang==="en"?`entr${journal.length>1?"ies":"y"}`:`entrée${journal.length>1?"s":""}`}</div>
+          {journal.filter(e=>e.date!==todayKey()).map(entry=>(
+            <div key={entry.date} style={{background:"white",border:"1.5px solid rgba(255,107,157,.15)",borderRadius:18,padding:"14px 16px",marginBottom:10,position:"relative"}}>
+              <div style={{fontSize:".7rem",fontWeight:800,color:P.red,marginBottom:4,opacity:.8}}>🌸 {fmtDate(entry.date)}</div>
+              <div style={{fontSize:".78rem",color:P.muted,marginBottom:6,fontStyle:"italic"}}>{entry.prompt}</div>
+              <div style={{fontSize:".88rem",color:P.text,lineHeight:1.55}}>"{entry.text}"</div>
+              <button onClick={()=>del(entry.date)} style={{position:"absolute",top:10,right:12,background:"none",border:"none",color:"#D4B0C0",fontSize:14,cursor:"pointer",fontWeight:700}}>×</button>
+            </div>
+          ))}
+        </div>
+      )}
+      {journal.length===0&&(
+        <div style={{textAlign:"center",padding:"24px 0",color:P.muted}}>
+          <div style={{fontSize:36,marginBottom:8}}>📖</div>
+          <div style={{fontSize:".82rem",fontWeight:600}}>{lang==="en"?"Your journal is empty — start today!":"Ton journal est vide — commence aujourd'hui !"}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onNav}){
+function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onCelebrate,onNav}){
   return(
     <div style={{paddingBottom:88}}>
       <div style={{background:HERO,padding:"26px 20px 24px",borderRadius:"0 0 34px 34px",boxShadow:"0 10px 34px rgba(232,0,61,.22)",marginBottom:16}}>
@@ -2998,6 +3169,13 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,o
             </div>
           </div>
           <span style={{fontSize:22,color:P.blue,fontWeight:900}}>›</span>
+        </button>
+        <button onClick={onCelebrate} style={{width:"100%",background:"linear-gradient(135deg,#FFE8F5,#FFF0FA)",border:"2px solid rgba(232,0,61,.2)",borderRadius:24,padding:"18px 18px",textAlign:"left",marginBottom:12,boxShadow:"0 4px 18px rgba(232,0,61,.08)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
+          <div style={{width:52,height:52,borderRadius:18,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>🌸</div>
+          <div>
+            <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:P.red}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
+            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"Your daily journal · write & keep":"Ton journal quotidien · écris & garde"}</div>
+          </div>
         </button>
         <div style={{background:"rgba(232,0,61,.06)",border:"1.5px solid rgba(232,0,61,.15)",borderRadius:18,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}} onClick={()=>onNav("sos")}>
           <span style={{fontSize:"1.6rem"}}>🚨</span>
@@ -3392,7 +3570,7 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} lang={lang} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onNav={goNav}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} lang={lang} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onCelebrate={()=>setScreen("celebrate")} onNav={goNav}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
@@ -3482,7 +3660,7 @@ export default function App(){
 
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
-        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame}/>}
+        {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
