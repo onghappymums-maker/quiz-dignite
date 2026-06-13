@@ -3040,24 +3040,7 @@ function JeMeCelebre({lang,onBack}){
       {showIntro&&(
         <div style={{background:"white",border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
           <div style={{fontSize:".7rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>✨ {lang==="en"?"What is this?":"C'est quoi ?"}</div>
-          <p style={{fontSize:".88rem",color:P.text,lineHeight:1.75,margin:"0 0 14px",whiteSpace:"pre-line"}}>{lang==="en"?INTRO_EN:INTRO_FR}</p>
-          <div style={{background:"rgba(255,240,250,.8)",borderRadius:14,padding:"12px 14px",marginBottom:14}}>
-            <div style={{fontSize:".72rem",fontWeight:900,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:.8}}>{lang==="en"?"Examples":"Exemples concrets"}</div>
-            {(lang==="en"?[
-              {day:"Monday",q:"Name one thing you are proud of today",a:"I answered a question in class even though I was scared."},
-              {day:"Friday",q:"What made you smile today?",a:"My sister made me laugh at dinner."},
-              {day:"Sunday",q:"How are you taking care of yourself today?",a:"I went to bed early and drank plenty of water."},
-            ]:[
-              {day:"Lundi",q:"Cite une chose dont tu es fière aujourd'hui",a:"J'ai répondu à une question en classe même si j'avais peur."},
-              {day:"Vendredi",q:"Qu'est-ce qui t'a fait sourire aujourd'hui ?",a:"Ma sœur m'a fait rire au dîner."},
-              {day:"Dimanche",q:"Comment prends-tu soin de toi aujourd'hui ?",a:"J'ai dormi tôt et j'ai bu de l'eau."},
-            ]).map((ex,i)=>(
-              <div key={i} style={{marginBottom:i<2?10:0}}>
-                <div style={{fontSize:".72rem",fontWeight:800,color:P.muted}}>📅 {ex.day} — <em>{ex.q}</em></div>
-                <div style={{fontSize:".82rem",color:P.text,marginTop:3,paddingLeft:10,borderLeft:`2px solid ${P.rose}`,fontStyle:"italic"}}>"{ex.a}"</div>
-              </div>
-            ))}
-          </div>
+          <p style={{fontSize:".88rem",color:P.text,lineHeight:1.75,margin:"0 0 16px",whiteSpace:"pre-line"}}>{lang==="en"?INTRO_EN:INTRO_FR}</p>
           <button onClick={()=>setShowIntro(false)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer"}}>
             {lang==="en"?"I'm ready — let's go! 🌸":"Je suis prête — c'est parti ! 🌸"}
           </button>
