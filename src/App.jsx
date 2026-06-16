@@ -2999,20 +2999,26 @@ function Onboarding({onSubmit,lang}){
 // ── JE ME CÉLÈBRE ───────────────────────────────────────────────
 function JeMeCelebre({lang,onBack}){
   const STORAGE_KEY="hm_celebrate_journal";
-  const todayKey=()=>{const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;};
-  const fmtDate=k=>{const[y,m,d]=k.split("-");const months_fr=["jan","fév","mar","avr","mai","juin","juil","août","sep","oct","nov","déc"];const months_en=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return `${parseInt(d)} ${lang==="en"?months_en[parseInt(m)-1]:months_fr[parseInt(m)-1]} ${y}`;};
-  const loadJournal=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}catch{return[];}};
-  const INTRO_FR=`Un espace rien que pour toi.\n\nChaque jour, une question t'attend. Tu lis. Tu prends 2 minutes. Tu écris une phrase — une seule suffit.\n\nCe n'est pas une liste de choses à faire. C'est un moment pour poser les yeux sur toi avec bienveillance.\n\nAu bout d'une semaine → tu vois tes forces. Au bout d'un mois → tu te connais mieux. Au bout d'un an → tu as un miroir de ta croissance. 🌸`;
-  const INTRO_EN=`A space that belongs entirely to you.\n\nEach day, one question is waiting. You read it. You take 2 minutes. You write one sentence — that is enough.\n\nThis is not a to-do list. It is a moment to look at yourself with kindness.\n\nAfter one week → you see your strengths. After one month → you know yourself better. After one year → you have a mirror of your growth. 🌸`;
-  const[showIntro,setShowIntro]=useState(()=>!loadJournal().length);
   const PROMPTS_FR=["✨ Cite une chose dont tu es fière aujourd'hui","💗 Comment ton corps t'a-t-il servie aujourd'hui ?","🌟 Qu'est-ce que tu as accompli aujourd'hui ?","💪 Quelle force as-tu montrée aujourd'hui ?","😊 Qu'est-ce qui t'a fait sourire aujourd'hui ?","🌸 Qu'as-tu appris sur toi cette semaine ?","🧘 Comment prends-tu soin de toi aujourd'hui ?"];
   const PROMPTS_EN=["✨ Name one thing you are proud of today","💗 How has your body served you today?","🌟 What did you accomplish today?","💪 What strength did you show today?","😊 What made you smile today?","🌸 What did you learn about yourself this week?","🧘 How are you taking care of yourself today?"];
-  const prompts=lang==="en"?PROMPTS_EN:PROMPTS_FR;
-  const todayPrompt=prompts[new Date().getDay()];
+  const INTRO_FR=`Un espace rien que pour toi.\n\nChaque jour, une question t'attend. Tu lis. Tu prends 2 minutes. Tu écris une phrase — une seule suffit.\n\nCe n'est pas une liste de choses à faire. C'est un moment pour poser les yeux sur toi avec bienveillance.\n\nAu bout d'une semaine → tu vois tes forces. Au bout d'un mois → tu te connais mieux. Au bout d'un an → tu as un miroir de ta croissance. 🌸`;
+  const INTRO_EN=`A space that belongs entirely to you.\n\nEach day, one question is waiting. You read it. You take 2 minutes. You write one sentence — that is enough.\n\nThis is not a to-do list. It is a moment to look at yourself with kindness.\n\nAfter one week → you see your strengths. After one month → you know yourself better. After one year → you have a mirror of your growth. 🌸`;
+
+  const loadJournal=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}catch{return[];}};
+  const todayKey=()=>{const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;};
+  const fmtDate=k=>{const[y,m,d]=k.split("-");const mfr=["jan","fév","mar","avr","mai","juin","juil","août","sep","oct","nov","déc"];const men=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return`${parseInt(d)} ${lang==="en"?men[parseInt(m)-1]:mfr[parseInt(m)-1]} ${y}`;};
+
+  // ALL hooks first — no exceptions
   const[journal,setJournal]=useState(loadJournal);
   const[text,setText]=useState(()=>{const j=loadJournal();const t=j.find(e=>e.date===todayKey());return t?t.text:"";});
   const[saved,setSaved]=useState(()=>loadJournal().some(e=>e.date===todayKey()));
   const[editing,setEditing]=useState(false);
+  const[showIntro,setShowIntro]=useState(()=>!loadJournal().length);
+  const[showJournal,setShowJournal]=useState(false);
+
+  const prompts=lang==="en"?PROMPTS_EN:PROMPTS_FR;
+  const todayPrompt=prompts[new Date().getDay()];
+
   const save=()=>{
     if(!text.trim())return;
     const j=loadJournal().filter(e=>e.date!==todayKey());
@@ -3021,23 +3027,54 @@ function JeMeCelebre({lang,onBack}){
     localStorage.setItem(STORAGE_KEY,JSON.stringify(nj));
     setJournal(nj);setSaved(true);setEditing(false);
   };
+
   const del=date=>{
     const nj=journal.filter(e=>e.date!==date);
     localStorage.setItem(STORAGE_KEY,JSON.stringify(nj));
     setJournal(nj);
     if(date===todayKey()){setText("");setSaved(false);}
   };
+
+  // Full journal view
+  if(showJournal)return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:18}}>
+        <button onClick={()=>setShowJournal(false)} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
+        <div>
+          <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:P.red}}>🌸 {lang==="en"?"My Journal":"Mon Journal"}</div>
+          <div style={{fontSize:".72rem",color:P.muted,fontWeight:600}}>{journal.length} {lang==="en"?`entr${journal.length>1?"ies":"y"}`:`entrée${journal.length>1?"s":""}`}</div>
+        </div>
+      </div>
+      {journal.length===0?(
+        <div style={{textAlign:"center",padding:"40px 0",color:P.muted}}>
+          <div style={{fontSize:42,marginBottom:10}}>📖</div>
+          <div style={{fontSize:".85rem",fontWeight:600}}>{lang==="en"?"Nothing yet — write your first entry today!":"Rien encore — écris ta première entrée aujourd'hui !"}</div>
+        </div>
+      ):(
+        journal.map((entry,idx)=>(
+          <div key={entry.date} style={{background:"white",border:`1.5px solid rgba(232,0,61,${idx===0?.2:.1})`,borderRadius:20,padding:"16px 18px",marginBottom:12,boxShadow:idx===0?"0 4px 16px rgba(232,0,61,.08)":"none",position:"relative"}}>
+            {idx===0&&<div style={{position:"absolute",top:12,left:18,fontSize:".65rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8}}>{lang==="en"?"Today":"Aujourd'hui"}</div>}
+            <div style={{fontSize:".7rem",fontWeight:800,color:P.red,marginBottom:5,opacity:.8,marginTop:idx===0?14:0}}>🌸 {fmtDate(entry.date)}</div>
+            <div style={{fontSize:".75rem",color:P.muted,marginBottom:8,fontStyle:"italic",lineHeight:1.4}}>{entry.prompt}</div>
+            <div style={{fontSize:".92rem",color:P.text,lineHeight:1.65,fontWeight:500}}>"{entry.text}"</div>
+            <button onClick={()=>del(entry.date)} style={{position:"absolute",top:12,right:14,background:"none",border:"none",color:"#D4B0C0",fontSize:16,cursor:"pointer",fontWeight:700,padding:"2px 6px"}}>×</button>
+          </div>
+        ))
+      )}
+    </div>
+  );
+
+  // Main view
   return(
     <div style={{padding:"16px 16px 88px"}}>
       <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
-      {/* Header */}
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.25)"}}>
         <div style={{fontSize:42,marginBottom:6}}>🌸</div>
         <div className="T" style={{color:"white",fontSize:"1.4rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
         <div style={{color:"rgba(255,255,255,.85)",fontSize:".82rem",fontWeight:600}}>{lang==="en"?"Your personal journal — for your eyes only 🔒":"Ton journal personnel — rien que pour toi 🔒"}</div>
       </div>
-      {/* Intro card — shown first time or on demand */}
-      {showIntro&&(
+
+      {showIntro?(
         <div style={{background:"white",border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
           <div style={{fontSize:".7rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>✨ {lang==="en"?"What is this?":"C'est quoi ?"}</div>
           <p style={{fontSize:".88rem",color:P.text,lineHeight:1.75,margin:"0 0 16px",whiteSpace:"pre-line"}}>{lang==="en"?INTRO_EN:INTRO_FR}</p>
@@ -3045,29 +3082,23 @@ function JeMeCelebre({lang,onBack}){
             {lang==="en"?"I'm ready — let's go! 🌸":"Je suis prête — c'est parti ! 🌸"}
           </button>
         </div>
-      )}
-      {!showIntro&&journal.length>0&&(
+      ):(
         <button onClick={()=>setShowIntro(true)} style={{background:"transparent",border:"none",color:P.muted,fontSize:".75rem",fontWeight:700,cursor:"pointer",marginBottom:8,textDecoration:"underline"}}>
-          {lang==="en"?"? What is Je me célèbre":"? C'est quoi Je me célèbre"}
+          {lang==="en"?"? What is I Celebrate Myself":"? C'est quoi Je me célèbre"}
         </button>
       )}
-      <div style={{background:"rgba(255,255,255,.95)",border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+
+      <div style={{background:"rgba(255,255,255,.95)",border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:16,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
         <div style={{fontSize:".72rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>{lang==="en"?"Today":"Aujourd'hui"} · {fmtDate(todayKey())}</div>
-        <div style={{fontSize:".9rem",color:P.muted,fontWeight:700,marginBottom:12,lineHeight:1.4}}>
-          <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
-            <span style={{flex:1}}>{todayPrompt}</span>
-            <SpeechBtn text={todayPrompt} lang={lang} style={{marginTop:1}}/>
-          </div>
+        <div style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:12}}>
+          <div style={{fontSize:".9rem",color:P.muted,fontWeight:700,lineHeight:1.4,flex:1}}>{todayPrompt}</div>
+          <SpeechBtn text={todayPrompt} lang={lang} style={{marginTop:1}}/>
         </div>
         {(!saved||editing)?(
           <>
-            <textarea
-              value={text}
-              onChange={e=>setText(e.target.value)}
+            <textarea value={text} onChange={e=>setText(e.target.value)}
               placeholder={lang==="en"?"Write freely... this space belongs to you 🌸":"Écris librement… cet espace t'appartient 🌸"}
-              rows={4}
-              style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:14,padding:"12px 14px",fontSize:".9rem",color:P.text,fontFamily:"'Nunito',sans-serif",resize:"none",outline:"none",boxSizing:"border-box",lineHeight:1.6,background:"rgba(255,245,250,.6)"}}
-            />
+              rows={4} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:14,padding:"12px 14px",fontSize:".9rem",color:P.text,fontFamily:"'Nunito',sans-serif",resize:"none",outline:"none",boxSizing:"border-box",lineHeight:1.6,background:"rgba(255,245,250,.6)"}}/>
             <button onClick={save} disabled={!text.trim()} style={{width:"100%",background:text.trim()?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(200,180,200,.3)",color:text.trim()?"white":"#C0A0B0",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:text.trim()?"pointer":"default",marginTop:10}}>
               {lang==="en"?"Save my celebration 🌸":"Sauvegarder ma célébration 🌸"}
             </button>
@@ -3082,25 +3113,18 @@ function JeMeCelebre({lang,onBack}){
         )}
         {saved&&!editing&&<div style={{fontSize:".72rem",color:P.green,fontWeight:800,marginTop:8}}>✅ {lang==="en"?"Saved today":"Sauvegardé aujourd'hui"}</div>}
       </div>
-      {/* Journal history */}
-      {journal.length>1&&(
-        <div>
-          <div style={{fontSize:".8rem",fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.8,marginBottom:12}}>{lang==="en"?"My journal":"Mon journal"} · {journal.length} {lang==="en"?`entr${journal.length>1?"ies":"y"}`:`entrée${journal.length>1?"s":""}`}</div>
-          {journal.filter(e=>e.date!==todayKey()).map(entry=>(
-            <div key={entry.date} style={{background:"white",border:"1.5px solid rgba(255,107,157,.15)",borderRadius:18,padding:"14px 16px",marginBottom:10,position:"relative"}}>
-              <div style={{fontSize:".7rem",fontWeight:800,color:P.red,marginBottom:4,opacity:.8}}>🌸 {fmtDate(entry.date)}</div>
-              <div style={{fontSize:".78rem",color:P.muted,marginBottom:6,fontStyle:"italic"}}>{entry.prompt}</div>
-              <div style={{fontSize:".88rem",color:P.text,lineHeight:1.55}}>"{entry.text}"</div>
-              <button onClick={()=>del(entry.date)} style={{position:"absolute",top:10,right:12,background:"none",border:"none",color:"#D4B0C0",fontSize:14,cursor:"pointer",fontWeight:700}}>×</button>
+
+      {journal.length>0&&(
+        <button onClick={()=>setShowJournal(true)} style={{width:"100%",background:"white",border:`2px solid rgba(232,0,61,.2)`,borderRadius:18,padding:"14px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <span style={{fontSize:28}}>📖</span>
+            <div style={{textAlign:"left"}}>
+              <div className="T" style={{fontSize:".95rem",fontWeight:800,color:P.red}}>{lang==="en"?"See my journal":"Voir mon journal"}</div>
+              <div style={{fontSize:".75rem",color:P.muted,fontWeight:600}}>{journal.length} {lang==="en"?`entr${journal.length>1?"ies":"y"}`:`entrée${journal.length>1?"s":""}`} · {lang==="en"?"all your celebrations":"toutes tes célébrations"}</div>
             </div>
-          ))}
-        </div>
-      )}
-      {journal.length===0&&(
-        <div style={{textAlign:"center",padding:"24px 0",color:P.muted}}>
-          <div style={{fontSize:36,marginBottom:8}}>📖</div>
-          <div style={{fontSize:".82rem",fontWeight:600}}>{lang==="en"?"Your journal is empty — start today!":"Ton journal est vide — commence aujourd'hui !"}</div>
-        </div>
+          </div>
+          <span style={{fontSize:20,color:P.red,fontWeight:900}}>›</span>
+        </button>
       )}
     </div>
   );
