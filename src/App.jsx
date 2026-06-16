@@ -1754,8 +1754,7 @@ function JeuAssocie({level,lang,onBack,onBadge,onComplete}){
     if(item.c===catId){SND.play("ok");const np={...st.placed,[item.id]:catId};const isDone=Object.keys(np).length===st.items.length;setSt(s=>({...s,placed:np,sel:null,fb:"ok",score:s.score+10,done:isDone}));if(isDone)onBadge(lang==="en"?`🎯 Matcher L${level}`:`🎯 Associatrice N${level}`);setTimeout(()=>setSt(s=>({...s,fb:null})),1400);}
     else{SND.play("ko");setSt(s=>({...s,sel:null,wrongId:item.id,fb:"ko"}));setTimeout(()=>setSt(s=>({...s,wrongId:null,fb:null})),1200);}
   };
-  if(st.done)return<GWin title={lang==="en"?"🎯 Match It!":"🎯 Associe !"} score={st.score} max={st.items.length*10} badge={lang==="en"?"🎯 Matcher":"🎯 Associatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
+  return st.done?<GWin title={lang==="en"?"🎯 Match It!":"🎯 Associe !"} score={st.score} max={st.items.length*10} badge={lang==="en"?"🎯 Matcher":"🎯 Associatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?`🎯 Match It! L${level}`:`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 10px",fontWeight:600}}>{st.sel?(lang==="en"?"↓ Tap the correct category ↓":"↓ Appuie sur la bonne catégorie ↓"):(lang==="en"?"Select a card then a category":"Sélectionne une carte puis une catégorie")}</p>
@@ -1797,8 +1796,7 @@ function JeuCorps({level,lang,onBack,onBadge,onComplete}){
   const gs=id=>disc.has(id)?(parts.find(x=>x.id===id)?.color||"#FFB3CC"):"#FFB3CC";
   const ap=parts.find(p=>p.id===active);
   const showU=level===3;
-  if(done)return<GWin title={lang==="en"?"🧩 My Body!":"🧩 Mon Corps !"} score={disc.size*10} max={parts.length*10} badge={lang==="en"?"🧩 Body Explorer":"🧩 Exploratrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
+  return done?<GWin title={lang==="en"?"🧩 My Body!":"🧩 Mon Corps !"} score={disc.size*10} max={parts.length*10} badge={lang==="en"?"🧩 Body Explorer":"🧩 Exploratrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?`🧩 My Body L${level}`:`🧩 Mon Corps N${level}`} onBack={onBack} prog={disc.size/parts.length}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 8px",fontWeight:600}}>{lang==="en"?"Tap each body part to discover it! ✨":"Appuie sur chaque partie pour la découvrir ! ✨"}</p>
@@ -1873,8 +1871,7 @@ function JeuMemoire({level,lang,onBack,onBadge,onComplete}){
       else{SND.play("ko");setTimeout(()=>{setCards(cs=>cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,flipped:false}:c));setLock(false);},1100);}
     }
   };
-  if(done)return<GWin title={lang==="en"?"🃏 Perfect Memory!":"🃏 Mémoire parfaite !"} score={score} max={total*10} badge={lang==="en"?"🃏 Memory Gold":"🃏 Mémoire d'Or"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
+  return done?<GWin title={lang==="en"?"🃏 Perfect Memory!":"🃏 Mémoire parfaite !"} score={score} max={total*10} badge={lang==="en"?"🃏 Memory Gold":"🃏 Mémoire d'Or"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?`🃏 Memory L${level}`:`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?`Match each 🌸 to its word! — Tries: `:"Associe chaque 🌸 à son mot ! — Essais : "}<strong style={{color:P.text}}>{tries}</strong></p>
@@ -1899,9 +1896,8 @@ function JeuChef({level,lang,onBack,onBadge,onComplete}){
   const next=()=>{if(idx+1>=foods.length){setDone(true);onBadge(lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`);}else{setIdx(i=>i+1);setAns(null);}};
   const answer=choice=>{if(ans)return;const ok=(choice==="bon")===food.good;setAns(choice);if(ok)setScore(s=>s+10);SND.play(ok?"ok":"ko");setTimeout(next,2200);};
   const expire=()=>{if(ans)return;setAns("time");SND.play("ko");setTimeout(next,1800);};
-  if(done)return<GWin lang={lang} title="🍽️ Chef Nyalê!" score={score} max={foods.length*10} badge="🍽️ Chef Nyalê" onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   const isTime=ans==="time";const ok=!isTime&&ans!==null&&(ans==="bon")===food.good;
-  return(
+  return done?<GWin lang={lang} title="🍽️ Chef Nyalê!" score={score} max={foods.length*10} badge="🍽️ Chef Nyalê" onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 8px",fontWeight:600}}>{lang==="en"?<>Food <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Good or bad for your period?</>:<>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</>}</p>
@@ -1940,8 +1936,7 @@ function JeuCycle({level,lang,onBack,onBadge,onComplete}){
   const phase1Done=order.length===phaseData.length;
   const totalScore=level===2?(order.length*10+sympScore):order.length*25;
   const totalMax=level===2?(phaseData.length*10+sympData.length*15):100;
-  if(done||(level===2&&sympDone))return<GWin title={lang==="en"?"📅 Cycle Mastered!":"📅 Cycle Maîtrisé !"} score={totalScore} max={totalMax} badge={lang==="en"?"📅 Cycle Expert":"📅 Cycle Maîtrisé"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  if(level===2&&phase1Done&&!sympDone)return(
+  return done||(level===2&&sympDone)?<GWin title={lang==="en"?"📅 Cycle Mastered!":"📅 Cycle Maîtrisé !"} score={totalScore} max={totalMax} badge={lang==="en"?"📅 Cycle Expert":"📅 Cycle Maîtrisé"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?"📅 My Cycle L2":"📅 Mon Cycle N2"} onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/sympData.length}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?"Match each symptom to its phase!":"Associe chaque symptôme à sa phase !"}</p>
@@ -1996,9 +1991,8 @@ function JeuSOS({level,lang,onBack,onBadge,onComplete}){
   const next=()=>{if(idx+1>=scens.length){setDone(true);onBadge(lang==="en"?`🆘 SOS Expert L${level}`:`🆘 Experte SOS N${level}`);}else{setIdx(j=>j+1);setAns(null);}};
   const answer=i=>{if(ans!==null)return;const ok=s.opts[i].ok;setAns(i);if(ok)setScore(sc=>sc+20);SND.play(ok?"ok":"ko");setTimeout(next,2600);};
   const expire=()=>{if(ans!==null)return;setAns("time");SND.play("ko");setTimeout(next,2000);};
-  if(done)return<GWin title={lang==="en"?"🆘 SOS Mastered!":"🆘 SOS Maîtrisé !"} score={score} max={scens.length*20} badge={lang==="en"?"🆘 SOS Expert":"🆘 Experte SOS"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
   const isTime=ans==="time";const chosenOk=!isTime&&ans!==null&&s.opts[ans]?.ok;const correctOpt=s.opts.find(o=>o.ok);
-  return(
+  return done?<GWin title={lang==="en"?"🆘 SOS Mastered!":"🆘 SOS Maîtrisé !"} score={score} max={scens.length*20} badge={lang==="en"?"🆘 SOS Expert":"🆘 Experte SOS"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 7px",fontWeight:600}}>{lang==="en"?"Situation ":"Situation "}<strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
@@ -2026,8 +2020,7 @@ function JeuDevinettes({onBack,onBadge,lang}){
   const q=devs[idx];
   const next=()=>{if(idx+1>=devs.length){setDone(true);onBadge(lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître");}else{setIdx(i=>i+1);setAns(null);}};
   const choose=opt=>{if(ans)return;const ok=opt===q.a;setAns(opt);SND.play(ok?"ok":"ko");if(ok)setScore(s=>s+20);setTimeout(next,2400);};
-  if(done)return<GWin title={lang==="en"?"💡 Riddles!":"💡 Devinettes !"} score={score} max={devs.length*20} badge={lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître"} msg={lang==="en"?"You got them all! 🌟":"Tu as tout trouvé ! 🌟"} onHome={onBack} onNext={()=>{setIdx(0);setAns(null);setScore(0);setDone(false);}} hasNext={false}/>;
-  return(
+  return done?<GWin title={lang==="en"?"💡 Riddles!":"💡 Devinettes !"} score={score} max={devs.length*20} badge={lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître"} msg={lang==="en"?"You got them all! 🌟":"Tu as tout trouvé ! 🌟"} onHome={onBack} onNext={()=>{setIdx(0);setAns(null);setScore(0);setDone(false);}} hasNext={false}/>:(
     <div style={{padding:"14px 16px 36px"}}>
       <GHdr title={lang==="en"?"💡 Riddles":"💡 Devinettes"} onBack={onBack} score={score} prog={(idx+(ans?1:0))/devs.length}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 12px",fontWeight:700}}>{lang==="en"?"Riddle ":"Devinette "}{idx+1} / {devs.length}</div>
@@ -2068,8 +2061,7 @@ function JeuImages({level,lang,onBack,onBadge,onComplete}){
     }
   };
   const remL=idx=>{if(correct)return;const r=guess[idx];setGuess(guess.filter((_,i)=>i!==idx));setAvail(avail.map(a=>a.i===r.i?{...a,used:false}:a));};
-  if(done)return<GWin title={lang==="en"?"🖼️ 4 Images 1 Word!":"🖼️ 4 Images 1 Mot !"} score={score} max={rounds.length*20} badge={lang==="en"?"🖼️ Word Detective":"🖼️ Détective des mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
+  return done?<GWin title={lang==="en"?"🖼️ 4 Images 1 Word!":"🖼️ 4 Images 1 Mot !"} score={score} max={rounds.length*20} badge={lang==="en"?"🖼️ Word Detective":"🖼️ Détective des mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"12px 16px 36px"}}>
       <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 10px",fontWeight:700}}>{ri+1}/{rounds.length} — <em>{rounds[ri].hint}</em></div>
@@ -2123,8 +2115,7 @@ function JeuMotsMeles({level,lang,onBack,onBadge,onComplete}){
     else{SND.play("ko");setWrong(true);setTimeout(()=>setWrong(false),500);}
     setSel1(null);
   };
-  if(done)return<GWin title={lang==="en"?"🔍 Word Search!":"🔍 Mots Mêlés !"} score={score} max={wsd.words.length*15} badge={lang==="en"?"🔍 Word Hunter":"🔍 Chasseuse de mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
+  return done?<GWin title={lang==="en"?"🔍 Word Search!":"🔍 Mots Mêlés !"} score={score} max={wsd.words.length*15} badge={lang==="en"?"🔍 Word Hunter":"🔍 Chasseuse de mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"12px 13px 36px"}}>
       <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:11,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} {lang==="en"?"found":"trouvés"}</div>
@@ -2152,8 +2143,7 @@ function JeuLabyrinthe({level,lang,onBack,onBadge,onComplete}){
   const canMove=(r,c)=>r>=0&&r<md.rows&&c>=0&&c<md.cols&&md.grid[r][c]===0;
   const move=(dr,dc)=>{const nr=pos[0]+dr,nc=pos[1]+dc;if(!canMove(nr,nc))return;SND.play("ok");const nv=new Set([...visited,`${nr},${nc}`]);setVisited(nv);setPos([nr,nc]);setMoves(m=>m+1);if(nr===md.end[0]&&nc===md.end[1])setTimeout(()=>{setDone(true);onBadge(`🌿 Navigatrice N${level}`);},400);};
   const cellSz=Math.min(36,Math.floor(290/md.cols));const score=Math.max(10,100-moves*2);
-  if(done)return<GWin title={lang==="en"?"🌿 Maze!":"🌿 Labyrinthe !"} score={score} max={100} badge={lang==="en"?"🌿 Navigator":"🌿 Navigatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>;
-  return(
+  return done?<GWin title={lang==="en"?"🌿 Maze!":"🌿 Labyrinthe !"} score={score} max={100} badge={lang==="en"?"🌿 Navigator":"🌿 Navigatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 14px 36px"}}>
       <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)}/>
       <div style={{display:"flex",justifyContent:"space-between",margin:"4px 0 10px"}}>
@@ -2164,8 +2154,8 @@ function JeuLabyrinthe({level,lang,onBack,onBadge,onComplete}){
         <div style={{display:"inline-grid",gridTemplateColumns:`repeat(${md.cols},${cellSz}px)`,gap:2,padding:2}}>
           {md.grid.map((row,r)=>row.map((cell,c)=>{
             const isPos=pos[0]===r&&pos[1]===c,isEnd=md.end[0]===r&&md.end[1]===c,wasV=visited.has(`${r},${c}`);
-            if(cell===1)return<div key={`${r},${c}`} style={{width:cellSz,height:cellSz,background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:5}}/>;
-            return(<div key={`${r},${c}`} onClick={()=>{if(Math.abs(r-pos[0])+Math.abs(c-pos[1])===1)move(r-pos[0],c-pos[1]);}} style={{width:cellSz,height:cellSz,borderRadius:5,background:isPos?"linear-gradient(135deg,#FF6B9D,#FF8C69)":isEnd?"linear-gradient(135deg,#3DBE82,#14B8A6)":wasV?P.roseSoft:"white",border:`1.5px solid ${isPos?P.rose:isEnd?P.green:wasV?P.rose+"44":"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:isPos||isEnd?cellSz*.5:12,cursor:"pointer",transition:"background .15s"}}>{isPos?"🌸":isEnd?"🌺":""}</div>);
+            return cell===1?<div key={`${r},${c}`} style={{width:cellSz,height:cellSz,background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:5}}/>:
+            (<div key={`${r},${c}`} onClick={()=>{if(Math.abs(r-pos[0])+Math.abs(c-pos[1])===1)move(r-pos[0],c-pos[1]);}} style={{width:cellSz,height:cellSz,borderRadius:5,background:isPos?"linear-gradient(135deg,#FF6B9D,#FF8C69)":isEnd?"linear-gradient(135deg,#3DBE82,#14B8A6)":wasV?P.roseSoft:"white",border:`1.5px solid ${isPos?P.rose:isEnd?P.green:wasV?P.rose+"44":"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:isPos||isEnd?cellSz*.5:12,cursor:"pointer",transition:"background .15s"}}>{isPos?"🌸":isEnd?"🌺":""}</div>);
           }))}
         </div>
       </div>
@@ -2664,17 +2654,19 @@ function DefiModal({onClose,lang}){
 
 function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
   const props={level:gameLevel,lang,onBack,onBadge,onComplete};
-  if(gameId==="g1")return<JeuAssocie  key={`g1-${gameLevel}`}  {...props}/>;
-  if(gameId==="g2")return<JeuCorps    key={`g2-${gameLevel}`}  {...props}/>;
-  if(gameId==="g3")return<JeuMemoire  key={`g3-${gameLevel}`}  {...props}/>;
-  if(gameId==="g4")return<JeuChef     key={`g4-${gameLevel}`}  {...props}/>;
-  if(gameId==="g5")return<JeuCycle    key={`g5-${gameLevel}`}  {...props}/>;
-  if(gameId==="g6")return<JeuSOS      key={`g6-${gameLevel}`}  {...props}/>;
-  if(gameId==="dev")return<JeuDevinettes key="dev" onBack={onBack} onBadge={onBadge}/>;
-  if(gameId==="img")return<JeuImages  key={`img-${gameLevel}`} {...props}/>;
-  if(gameId==="ws")return<JeuMotsMeles key={`ws-${gameLevel}`} {...props}/>;
-  if(gameId==="lab")return<JeuLabyrinthe key={`lab-${gameLevel}`} {...props}/>;
-  return null;
+  const games={
+    g1:<JeuAssocie  key={`g1-${gameLevel}`}  {...props}/>,
+    g2:<JeuCorps    key={`g2-${gameLevel}`}  {...props}/>,
+    g3:<JeuMemoire  key={`g3-${gameLevel}`}  {...props}/>,
+    g4:<JeuChef     key={`g4-${gameLevel}`}  {...props}/>,
+    g5:<JeuCycle    key={`g5-${gameLevel}`}  {...props}/>,
+    g6:<JeuSOS      key={`g6-${gameLevel}`}  {...props}/>,
+    dev:<JeuDevinettes key="dev" onBack={onBack} onBadge={onBadge} lang={lang}/>,
+    img:<JeuImages  key={`img-${gameLevel}`} {...props}/>,
+    ws:<JeuMotsMeles key={`ws-${gameLevel}`} {...props}/>,
+    lab:<JeuLabyrinthe key={`lab-${gameLevel}`} {...props}/>,
+  };
+  return games[gameId]||null;
 }
 
 
@@ -3035,8 +3027,8 @@ function JeMeCelebre({lang,onBack}){
     if(date===todayKey()){setText("");setSaved(false);}
   };
 
-  // Full journal view
-  if(showJournal)return(
+  // Single return with ternary — no early return (avoids Babel artifact issue)
+  return showJournal?(
     <div style={{padding:"16px 16px 88px"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:18}}>
         <button onClick={()=>setShowJournal(false)} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
@@ -3051,7 +3043,7 @@ function JeMeCelebre({lang,onBack}){
           <div style={{fontSize:".85rem",fontWeight:600}}>{lang==="en"?"Nothing yet — write your first entry today!":"Rien encore — écris ta première entrée aujourd'hui !"}</div>
         </div>
       ):(
-        journal.map((entry,idx)=>(
+        <div>{journal.map((entry,idx)=>(
           <div key={entry.date} style={{background:"white",border:`1.5px solid rgba(232,0,61,${idx===0?.2:.1})`,borderRadius:20,padding:"16px 18px",marginBottom:12,boxShadow:idx===0?"0 4px 16px rgba(232,0,61,.08)":"none",position:"relative"}}>
             {idx===0&&<div style={{position:"absolute",top:12,left:18,fontSize:".65rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8}}>{lang==="en"?"Today":"Aujourd'hui"}</div>}
             <div style={{fontSize:".7rem",fontWeight:800,color:P.red,marginBottom:5,opacity:.8,marginTop:idx===0?14:0}}>🌸 {fmtDate(entry.date)}</div>
@@ -3059,13 +3051,10 @@ function JeMeCelebre({lang,onBack}){
             <div style={{fontSize:".92rem",color:P.text,lineHeight:1.65,fontWeight:500}}>"{entry.text}"</div>
             <button onClick={()=>del(entry.date)} style={{position:"absolute",top:12,right:14,background:"none",border:"none",color:"#D4B0C0",fontSize:16,cursor:"pointer",fontWeight:700,padding:"2px 6px"}}>×</button>
           </div>
-        ))
+        ))}</div>
       )}
     </div>
-  );
-
-  // Main view
-  return(
+  ):(
     <div style={{padding:"16px 16px 88px"}}>
       <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.25)"}}>
@@ -3668,6 +3657,7 @@ export default function App(){
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
+        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame}/>}
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
