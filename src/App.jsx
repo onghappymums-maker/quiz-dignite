@@ -39,12 +39,12 @@ const SND = new SndEng();
 
 // ── WEB SPEECH API ──────────────────────────────────────────────
 // SpeechBtn component and speak() utility already defined below
+let AUDIO_ON=true; // controlled by Settings
 
 // ── SPEECH (Web Speech API) ──────────────────────────────────────
 function SpeechBtn({text,lang,style={}}){
   const[on,setOn]=useState(false);
-  // Check support (also works after page load)
-  const supported=typeof window!=="undefined"&&!!window.speechSynthesis;
+  const supported=typeof window!=="undefined"&&!!window.speechSynthesis&&AUDIO_ON;
   if(!supported)return null;
   const go=e=>{
     e.stopPropagation();
@@ -3119,6 +3119,377 @@ function JeMeCelebre({lang,onBack}){
   );
 }
 
+// ── SETTINGS ────────────────────────────────────────────────────
+function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,setDarkMode,user,setUser,onResetProgress,onBack}){
+  const[confirmReset,setConfirmReset]=useState(false);
+  const[editName,setEditName]=useState(false);
+  const[nameVal,setNameVal]=useState(user?.name||"");
+  const[countryVal,setCountryVal]=useState(user?.country||"");
+
+  const saveName=()=>{
+    if(!nameVal.trim())return;
+    const u={...user,name:nameVal.trim(),country:countryVal.trim()};
+    localStorage.setItem("qd-user",JSON.stringify(u));
+    setUser(u);setEditName(false);
+  };
+
+  const toggleDark=()=>{
+    const nd=!darkMode;setDarkMode(nd);
+    localStorage.setItem("hm_dark",nd?"1":"0");
+  };
+
+  const Section=({title,children})=>(
+    <div style={{marginBottom:20}}>
+      <div style={{fontSize:".68rem",fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:1.2,marginBottom:8,paddingLeft:4}}>{title}</div>
+      <div style={{background:"white",borderRadius:18,overflow:"hidden",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>{children}</div>
+    </div>
+  );
+
+  const Row=({icon,label,right,onClick,border=true})=>(
+    <div onClick={onClick} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:border?"1px solid rgba(232,0,61,.07)":"none",cursor:onClick?"pointer":"default"}}>
+      <span style={{fontSize:22,width:32,textAlign:"center"}}>{icon}</span>
+      <span style={{flex:1,fontSize:".88rem",fontWeight:700,color:P.text}}>{label}</span>
+      {right}
+    </div>
+  );
+
+  const Toggle=({on,onToggle})=>(
+    <div onClick={onToggle} style={{width:46,height:26,borderRadius:13,background:on?P.red:"#D4C0CC",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
+      <div style={{width:20,height:20,borderRadius:"50%",background:"white",position:"absolute",top:3,left:on?23:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
+    </div>
+  );
+
+  return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:P.red,marginBottom:20}}>⚙️ {lang==="en"?"Settings":"Réglages"}</div>
+
+      <Section title={lang==="en"?"Appearance":"Apparence"}>
+        <Row icon={darkMode?"🌙":"☀️"} label={lang==="en"?"Dark mode":"Mode sombre"} right={<Toggle on={darkMode} onToggle={toggleDark}/>} border={false}/>
+      </Section>
+
+      <Section title={lang==="en"?"Language":"Langue"}>
+        <Row icon="🇫🇷" label="Français" right={lang==="fr"?<span style={{color:P.red,fontWeight:900,fontSize:18}}>✓</span>:null} onClick={()=>{setLang("fr");localStorage.setItem("hm_lang","fr");}} border/>
+        <Row icon="🇬🇧" label="English" right={lang==="en"?<span style={{color:P.red,fontWeight:900,fontSize:18}}>✓</span>:null} onClick={()=>{setLang("en");localStorage.setItem("hm_lang","en");}} border={false}/>
+      </Section>
+
+      <Section title={lang==="en"?"Sound & Audio":"Son & Audio"}>
+        <Row icon={soundOn?"🔊":"🔇"} label={lang==="en"?"Game sounds":"Sons du jeu"} right={<Toggle on={soundOn} onToggle={()=>setSoundOn(p=>!p)}/>} border/>
+        <Row icon="🎤" label={lang==="en"?"Voice reading":"Lecture vocale"} right={<Toggle on={audioOn} onToggle={()=>setAudioOn(p=>!p)}/>} border={false}/>
+      </Section>
+
+      <Section title={lang==="en"?"Profile":"Profil"}>
+        {!editName?(
+          <Row icon="✏️" label={`${user?.name||""}${user?.country?" · "+user.country:""}`} right={<span style={{color:P.red,fontSize:13,fontWeight:700}}>{lang==="en"?"Edit":"Modifier"}</span>} onClick={()=>setEditName(true)} border={false}/>
+        ):(
+          <div style={{padding:"14px 16px"}}>
+            <input value={nameVal} onChange={e=>setNameVal(e.target.value)} placeholder={lang==="en"?"First name":"Prénom"} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:10,padding:"8px 12px",fontSize:".88rem",marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
+            <input value={countryVal} onChange={e=>setCountryVal(e.target.value)} placeholder={lang==="en"?"Country":"Pays"} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:10,padding:"8px 12px",fontSize:".88rem",marginBottom:10,boxSizing:"border-box",outline:"none"}}/>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={saveName} style={{flex:1,background:P.red,color:"white",border:"none",borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:".85rem"}}>{lang==="en"?"Save":"Sauvegarder"}</button>
+              <button onClick={()=>setEditName(false)} style={{flex:1,background:"transparent",color:P.muted,border:`1px solid rgba(200,150,160,.4)`,borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:".85rem"}}>{lang==="en"?"Cancel":"Annuler"}</button>
+            </div>
+          </div>
+        )}
+      </Section>
+
+      <Section title={lang==="en"?"Data":"Données"}>
+        {!confirmReset?(
+          <Row icon="🗑️" label={lang==="en"?"Reset progress":"Réinitialiser ma progression"} right={<span style={{color:"#E74C3C",fontSize:13,fontWeight:700}}>{lang==="en"?"Reset":"Effacer"}</span>} onClick={()=>setConfirmReset(true)} border={false}/>
+        ):(
+          <div style={{padding:"14px 16px"}}>
+            <p style={{fontSize:".82rem",color:P.text,margin:"0 0 12px",lineHeight:1.5}}>{lang==="en"?"Are you sure? All your progress will be lost.":"Êtes-vous sûre ? Toute ta progression sera effacée."}</p>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>{onResetProgress();setConfirmReset(false);}} style={{flex:1,background:"#E74C3C",color:"white",border:"none",borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:".85rem"}}>{lang==="en"?"Yes, reset":"Oui, effacer"}</button>
+              <button onClick={()=>setConfirmReset(false)} style={{flex:1,background:"transparent",color:P.muted,border:`1px solid rgba(200,150,160,.4)`,borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:".85rem"}}>{lang==="en"?"Cancel":"Annuler"}</button>
+            </div>
+          </div>
+        )}
+      </Section>
+
+      <Section title={lang==="en"?"App":"Application"}>
+        <Row icon="📲" label={lang==="en"?"Download Android app":"Télécharger l'app Android"} right={<span style={{color:P.red,fontSize:18}}>↗</span>} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")} border/>
+        <Row icon="ℹ️" label={`Quiz Dignité v2.0 · ONG Happy Mum's`} right={null} border={false}/>
+      </Section>
+    </div>
+  );
+}
+
+// ── ESCAPE GAME ────────────────────────────────────────────────
+const EG_LEVELS_FR=[
+  {id:"droits",name:"Le Code des Droits",emoji:"📜",desc:"Protocole de Maputo, consentement, droits humains",targetWord:"DIGNITE",display:"DIGNITÉ",hint:"La valeur au cœur de tous les droits défendus ici.",badge:"Défenseur·e de la Dignité",
+   fiche:"• Le <b>Protocole de Maputo</b> (2003) protège les droits des femmes africaines.<br>• Les <b>règles</b> sont un phénomène naturel, pas une maladie.<br>• La <b>santé sexuelle et reproductive</b> est un droit humain.<br>• Le <b>consentement</b> doit être clair et libre.<br>• L'<b>ODD 5</b> vise l'égalité des genres.",
+   riddles:[
+    {tag:"Énigme 1 · Protocole de Maputo",q:"Quel texte africain protège les droits des femmes en matière de santé et de dignité ?",opts:["La Charte du Sport","Le Protocole de Maputo","La Convention de Genève"],ok:1,l:"T",fb:"Le Protocole de Maputo (2003) est l'un des textes les plus complets sur les droits des femmes en Afrique."},
+    {tag:"Énigme 2 · Les règles",q:"Les règles sont-elles une maladie ?",opts:["Oui","Non"],ok:1,l:"D",fb:"Les menstruations sont un phénomène naturel. Les filles ont droit à l'information et à des conditions dignes."},
+    {tag:"Énigme 3 · Droits humains",q:"La santé sexuelle et reproductive fait partie :",opts:["Des droits humains","Des secrets personnels","Des privilèges"],ok:0,l:"I",fb:"La santé sexuelle et reproductive est reconnue comme un droit humain fondamental."},
+    {tag:"Énigme 4 · Consentement",q:"Le consentement doit être :",opts:["Forcé","Clair et libre","Deviné"],ok:1,l:"E",fb:"Le consentement doit toujours être donné librement et peut être retiré à tout moment."},
+    {tag:"Énigme 5 · Union africaine",q:"Quelle organisation a adopté le Protocole de Maputo ?",opts:["Union africaine","ONU uniquement","Union européenne"],ok:0,l:"G",fb:"Le Protocole de Maputo a été adopté par l'Union africaine en 2003."},
+    {tag:"Énigme 6 · Mariage des enfants",q:"Le mariage des enfants peut avoir des conséquences sur :",opts:["La santé et l'éducation","La couleur des yeux","La météo"],ok:0,l:"I",fb:"Le mariage des enfants compromet la santé, l'éducation et l'avenir des filles."},
+    {tag:"Énigme 7 · ODD 5",q:"L'égalité filles-garçons est portée par quel ODD ?",opts:["ODD 5","ODD 12","ODD 8"],ok:0,l:"N",fb:"L'ODD 5 vise à parvenir à l'égalité des sexes et à autonomiser toutes les femmes et les filles."}
+  ]},
+  {id:"cycle",name:"Le Code du Cycle",emoji:"🩸",desc:"Phases du cycle, mythes, hygiène",targetWord:"CYCLE",display:"CYCLE",hint:"Ce que vit chaque personne menstruée, tous les ~28 jours.",badge:"Experte du Cycle",
+   fiche:"• Le cycle a <b>4 phases</b> : menstruelle, folliculaire, ovulatoire, lutéale.<br>• Durée moyenne : <b>28 jours</b>.<br>• Se baigner pendant les règles est <b>sans danger</b>.<br>• La <b>coupe menstruelle</b> est réutilisable et écologique.<br>• L'<b>ovulation</b> a lieu au milieu du cycle.",
+   riddles:[
+    {tag:"Énigme 1 · Phases du cycle",q:"Combien de phases principales composent le cycle menstruel ?",opts:["3","4","5"],ok:1,l:"L",fb:"4 phases : menstruelle, folliculaire, ovulatoire et lutéale."},
+    {tag:"Énigme 2 · Durée du cycle",q:"Combien de jours dure un cycle menstruel en moyenne ?",opts:["14 jours","21 jours","28 jours"],ok:2,l:"C",fb:"Un cycle dure en moyenne 28 jours, mais peut varier de 21 à 35 jours."},
+    {tag:"Énigme 3 · Mythe ou réalité",q:"Peut-on se baigner pendant ses règles ?",opts:["Oui","Non"],ok:0,l:"E",fb:"Oui, c'est tout à fait possible et sans danger, avec une protection adaptée."},
+    {tag:"Énigme 4 · Hygiène",q:"Quel produit menstruel est réutilisable et plus écologique ?",opts:["La coupe menstruelle","La serviette jetable","Le tampon jetable"],ok:0,l:"C",fb:"La coupe menstruelle est réutilisable pendant plusieurs années."},
+    {tag:"Énigme 5 · Ovulation",q:"L'ovulation a généralement lieu :",opts:["Au milieu du cycle","Juste avant les règles","Le premier jour"],ok:0,l:"Y",fb:"L'ovulation survient vers le 14e jour d'un cycle de 28 jours."}
+  ]},
+  {id:"egalite",name:"Le Code de l'Égalité",emoji:"⚖️",desc:"VBG, signalement, éducation des filles",targetWord:"EGALITE",display:"ÉGALITÉ",hint:"Ce que réclame l'ODD 5 pour toutes et tous.",badge:"Ambassadeur·rice de l'Égalité",
+   fiche:"• <b>VBG</b> = Violences Basées sur le Genre.<br>• La <b>Charte africaine des droits de l'enfant</b> protège les enfants du continent.<br>• L'<b>éducation des filles</b> réduit la pauvreté et les inégalités.<br>• Des <b>mécanismes de signalement</b> existent pour les victimes de VBG.<br>• La <b>Convention des droits de l'enfant</b> (ONU, 1989).",
+   riddles:[
+    {tag:"Énigme 1 · VBG",q:"Que signifie le sigle VBG ?",opts:["Vie Bonne Garantie","Violences Basées sur le Genre","Valeurs et Bonnes Grâces"],ok:1,l:"L",fb:"VBG = Violences Basées sur le Genre : toute violence en raison du genre."},
+    {tag:"Énigme 2 · Droits de l'enfant",q:"Quel texte africain protège spécifiquement les droits de l'enfant ?",opts:["La Charte du sport africain","La Convention de Vienne","La Charte africaine des droits et du bien-être de l'enfant"],ok:2,l:"E",fb:"La Charte africaine des droits et du bien-être de l'enfant protège les enfants du continent."},
+    {tag:"Énigme 3 · Éducation des filles",q:"L'éducation des filles contribue à :",opts:["N'a aucun effet","Réduire la pauvreté et les inégalités","Ralentir le développement"],ok:1,l:"T",fb:"L'éducation des filles est un levier majeur pour réduire la pauvreté et les inégalités."},
+    {tag:"Énigme 4 · Signalement",q:"Où signaler un cas de VBG ?",opts:["Nulle part","Auprès de mécanismes dédiés (lignes vertes, structures d'accueil)","Seulement à la police"],ok:1,l:"G",fb:"Des mécanismes de signalement existent (lignes vertes, ONG) pour orienter et protéger les victimes."},
+    {tag:"Énigme 5 · Convention des droits de l'enfant",q:"La Convention relative aux droits de l'enfant a été adoptée par :",opts:["L'Union africaine","L'Union européenne","L'ONU"],ok:2,l:"A",fb:"La Convention relative aux droits de l'enfant a été adoptée par l'ONU en 1989."},
+    {tag:"Énigme 6 · Inégalités",q:"Une inégalité filles-garçons peut se manifester par :",opts:["Une couleur de cheveux différente","Un accès inégal à l'éducation","Rien de particulier"],ok:1,l:"I",fb:"L'accès inégal à l'éducation est l'une des formes les plus répandues d'inégalité."},
+    {tag:"Énigme 7 · Égalité des chances",q:"L'égalité des chances signifie que :",opts:["Seuls les garçons ont des opportunités","Cela ne concerne pas l'école","Chacun·e a les mêmes opportunités, peu importe son genre"],ok:2,l:"E",fb:"L'égalité des chances garantit les mêmes opportunités à toutes et tous."}
+  ]},
+  {id:"corps",name:"Le Code du Corps",emoji:"🌱",desc:"Puberté, anatomie, santé reproductive",targetWord:"PUBERTE",display:"PUBERTÉ",hint:"La période de transformation explorée dans tout ce niveau.",badge:"Gardien·ne du Corps",
+   fiche:"• La <b>puberté</b> = transformations physiques et hormonales.<br>• L'<b>utérus</b> fait partie de l'appareil reproducteur féminin.<br>• Les premières règles s'appellent la <b>ménarche</b>.<br>• Les changements d'humeur sont <b>normaux</b>.<br>• Les <b>hormones</b> pilotent les transformations du corps.",
+   riddles:[
+    {tag:"Énigme 1 · La puberté",q:"La puberté est une période de :",opts:["Stagnation totale","Transformations physiques et hormonales","Retour en enfance"],ok:1,l:"E",fb:"La puberté marque le passage à l'âge adulte avec des transformations physiques et hormonales."},
+    {tag:"Énigme 2 · Anatomie",q:"L'utérus fait partie de :",opts:["L'appareil digestif","L'appareil respiratoire","L'appareil reproducteur féminin"],ok:2,l:"T",fb:"L'utérus est un organe essentiel de l'appareil reproducteur féminin."},
+    {tag:"Énigme 3 · Premières règles",q:"Les premières règles s'appellent :",opts:["La ménopause","La ménarche","L'ovulation"],ok:1,l:"U",fb:"La ménarche désigne les toutes premières règles d'une jeune fille."},
+    {tag:"Énigme 4 · Ressentis",q:"Pendant la puberté, il est normal de ressentir :",opts:["Rien du tout","Des changements d'humeur et du corps","Uniquement de la fatigue"],ok:1,l:"P",fb:"Les changements d'humeur et les transformations du corps sont normaux à la puberté."},
+    {tag:"Énigme 5 · Se faire accompagner",q:"Qui peut répondre aux questions sur son corps ?",opts:["Personne","Seulement les ami·es","Un·e professionnel·le de santé ou un adulte de confiance"],ok:2,l:"E",fb:"Un·e professionnel·le de santé ou un adulte de confiance peut répondre de façon fiable."},
+    {tag:"Énigme 6 · Hormones",q:"Le développement de la poitrine et l'apparition de poils sont dus :",opts:["Au hasard","Aux hormones","Uniquement à l'alimentation"],ok:1,l:"R",fb:"Ces changements sont déclenchés par les hormones qui orchestrent le développement pubertaire."},
+    {tag:"Énigme 7 · Prendre soin de soi",q:"Pendant la puberté, il est important de :",opts:["Se comparer en permanence","Cacher toutes ses questions","Prendre soin de son corps et se sentir en confiance"],ok:2,l:"B",fb:"Prendre soin de son corps et cultiver la confiance en soi est essentiel pendant cette période."}
+  ]}
+];
+
+const EG_LEVELS_EN=[
+  {id:"droits",name:"The Code of Rights",emoji:"📜",desc:"Maputo Protocol, consent, human rights",targetWord:"DIGNITY",display:"DIGNITY",hint:"The value at the heart of all the rights defended here.",badge:"Dignity Defender",
+   fiche:"• The <b>Maputo Protocol</b> (2003) protects African women's rights.<br>• <b>Periods</b> are a natural phenomenon, not a disease.<br>• <b>Sexual and reproductive health</b> is a human right.<br>• <b>Consent</b> must be clear and freely given.<br>• <b>SDG 5</b> aims for gender equality.",
+   riddles:[
+    {tag:"Riddle 1 · Maputo Protocol",q:"Which African text protects women's rights regarding health and dignity?",opts:["The Sports Charter","The Maputo Protocol","The Geneva Convention"],ok:1,l:"I",fb:"The Maputo Protocol (2003) is one of the most comprehensive texts on women's rights in Africa."},
+    {tag:"Riddle 2 · Periods",q:"Are periods a disease?",opts:["Yes","No"],ok:1,l:"G",fb:"Menstruation is a natural phenomenon. Girls have the right to information and dignified conditions."},
+    {tag:"Riddle 3 · Human rights",q:"Sexual and reproductive health is:",opts:["A human right","A personal secret","A privilege for some"],ok:0,l:"N",fb:"Sexual and reproductive health is recognised as a fundamental human right."},
+    {tag:"Riddle 4 · Consent",q:"Consent must be:",opts:["Forced","Clear and freely given","Guessed"],ok:1,l:"I",fb:"Consent must always be given freely and clearly, and can be withdrawn at any time."},
+    {tag:"Riddle 5 · African Union",q:"Which organisation adopted the Maputo Protocol?",opts:["The African Union","The UN only","The European Union"],ok:0,l:"T",fb:"The Maputo Protocol was adopted by the African Union in 2003."},
+    {tag:"Riddle 6 · Child marriage",q:"Child marriage can have consequences on:",opts:["Health and education","Eye colour","The weather"],ok:0,l:"Y",fb:"Child marriage seriously compromises the health, education and future of girls affected."},
+    {tag:"Riddle 7 · Every girl's right",q:"What should every girl have access to when managing her period?",opts:["Silence and shame","Dignity and respect","Exclusion from school"],ok:1,l:"D",fb:"Every girl deserves to manage her period with dignity, respect and access to accurate information."}
+   ]},
+  {id:"cycle",name:"The Cycle Code",emoji:"🩸",desc:"Cycle phases, myths, menstrual hygiene",targetWord:"CYCLE",display:"CYCLE",hint:"What every menstruating person experiences, roughly every 28 days.",badge:"Cycle Expert",
+   fiche:"• The cycle has <b>4 phases</b>: menstrual, follicular, ovulatory, luteal.<br>• Average length: <b>28 days</b>.<br>• Swimming during periods is <b>safe</b>.<br>• A <b>menstrual cup</b> is reusable and eco-friendly.<br>• <b>Ovulation</b> occurs mid-cycle.",
+   riddles:[
+    {tag:"Riddle 1 · Cycle phases",q:"How many main phases does the menstrual cycle have?",opts:["3","4","5"],ok:1,l:"L",fb:"4 phases: menstrual, follicular, ovulatory and luteal."},
+    {tag:"Riddle 2 · Cycle length",q:"How many days does a menstrual cycle last on average?",opts:["14 days","21 days","28 days"],ok:2,l:"C",fb:"A cycle lasts an average of 28 days, but can vary from 21 to 35 days."},
+    {tag:"Riddle 3 · Myth or reality",q:"Can you swim during your period?",opts:["Yes","No"],ok:0,l:"E",fb:"Yes, swimming during your period is perfectly safe with appropriate protection."},
+    {tag:"Riddle 4 · Hygiene",q:"Which menstrual product is reusable and more eco-friendly?",opts:["The menstrual cup","Disposable pads","Disposable tampons"],ok:0,l:"C",fb:"The menstrual cup can be reused for several years, making it both economical and eco-friendly."},
+    {tag:"Riddle 5 · Ovulation",q:"Ovulation generally occurs:",opts:["In the middle of the cycle","Just before your period","On the first day of your period"],ok:0,l:"Y",fb:"Ovulation occurs around day 14 of a 28-day cycle, i.e. mid-cycle."}
+   ]},
+  {id:"egalite",name:"The Equality Code",emoji:"⚖️",desc:"GBV, reporting, girls' education",targetWord:"EQUALITY",display:"EQUALITY",hint:"What SDG 5 calls for — for everyone.",badge:"Equality Ambassador",
+   fiche:"• <b>GBV</b> = Gender-Based Violence.<br>• The <b>African Charter on the Rights of the Child</b> protects children on the continent.<br>• <b>Girls' education</b> reduces poverty and inequality.<br>• <b>Reporting mechanisms</b> exist for GBV victims.<br>• The <b>UN Convention on the Rights of the Child</b> (1989).",
+   riddles:[
+    {tag:"Riddle 1 · GBV",q:"What does the acronym GBV stand for?",opts:["Good Basic Values","Gender-Based Violence","General Benefit Vision"],ok:1,l:"L",fb:"GBV stands for Gender-Based Violence: any violence directed at a person because of their gender."},
+    {tag:"Riddle 2 · Children's rights in Africa",q:"Which African text specifically protects children's rights?",opts:["The African Sports Charter","The Vienna Convention","The African Charter on the Rights and Welfare of the Child"],ok:2,l:"I",fb:"The African Charter on the Rights and Welfare of the Child protects children across the continent."},
+    {tag:"Riddle 3 · Girls' education",q:"Girls' education contributes to:",opts:["Has no effect on society","Reducing poverty and inequality","Slowing development"],ok:1,l:"T",fb:"Girls' education is a major lever for reducing poverty and inequality in society."},
+    {tag:"Riddle 4 · Reporting GBV",q:"Where can a case of gender-based violence be reported?",opts:["Nowhere","Through dedicated reporting mechanisms (helplines, support structures)","Only to the police"],ok:1,l:"A",fb:"Reporting mechanisms exist (helplines, NGOs) to direct and protect victims."},
+    {tag:"Riddle 5 · Convention on the Rights of the Child",q:"The Convention on the Rights of the Child was adopted by:",opts:["The African Union","The European Union","The UN"],ok:2,l:"U",fb:"The Convention on the Rights of the Child was adopted by the UN in 1989."},
+    {tag:"Riddle 6 · Gender inequality",q:"A gender inequality can manifest as:",opts:["A different hair colour","Unequal access to education","Nothing particular"],ok:1,l:"E",fb:"Unequal access to education is one of the most widespread forms of inequality between girls and boys."},
+    {tag:"Riddle 7 · Equal opportunities",q:"Equal opportunities means:",opts:["Only boys have opportunities","It does not concern school","Everyone has the same opportunities, regardless of gender"],ok:2,l:"Q",fb:"Equal opportunities guarantee the same opportunities to everyone, regardless of gender."},
+    {tag:"Riddle 8 · Why equality matters",q:"Why does gender equality matter for society as a whole?",opts:["It only benefits girls","It has no real impact","It benefits everyone — stronger, fairer communities"],ok:2,l:"Y",fb:"Gender equality benefits everyone: it builds stronger, fairer and more prosperous communities."}
+   ]},
+  {id:"corps",name:"The Body Code",emoji:"🌱",desc:"Puberty, anatomy, reproductive health",targetWord:"PUBERTY",display:"PUBERTY",hint:"The period of transformation explored throughout this level.",badge:"Body Guardian",
+   fiche:"• <b>Puberty</b> = physical and hormonal transformations.<br>• The <b>uterus</b> is part of the female reproductive system.<br>• The first period is called <b>menarche</b>.<br>• Mood changes are <b>normal</b>.<br>• <b>Hormones</b> drive the body's transformations.",
+   riddles:[
+    {tag:"Riddle 1 · Puberty",q:"Puberty is a period of:",opts:["Complete stagnation","Physical and hormonal transformations","Return to childhood"],ok:1,l:"Y",fb:"Puberty marks the transition to adulthood with physical and hormonal changes."},
+    {tag:"Riddle 2 · Anatomy",q:"The uterus is part of:",opts:["The digestive system","The respiratory system","The female reproductive system"],ok:2,l:"T",fb:"The uterus is an essential organ of the female reproductive system."},
+    {tag:"Riddle 3 · First period",q:"The first period is called:",opts:["Menarche","Menopause","Ovulation"],ok:0,l:"R",fb:"Menarche refers to a young girl's very first period."},
+    {tag:"Riddle 4 · Feelings",q:"During puberty, it is normal to experience:",opts:["Nothing at all","Mood and body changes","Only fatigue"],ok:1,l:"E",fb:"Mood changes and body transformations are normal and part of puberty."},
+    {tag:"Riddle 5 · Getting support",q:"Who can answer questions about your body during puberty?",opts:["Nobody","Only friends","A health professional or trusted adult"],ok:2,l:"B",fb:"A health professional or trusted adult can give reliable answers about your body."},
+    {tag:"Riddle 6 · Hormones",q:"Breast development and body hair are caused by:",opts:["Chance","Diet alone","Hormones"],ok:2,l:"U",fb:"These changes are triggered by hormones, which orchestrate pubertal development."},
+    {tag:"Riddle 7 · Self-care",q:"During puberty, it is important to:",opts:["Compare yourself to others constantly","Hide all your questions","Take care of your body and feel confident"],ok:2,l:"P",fb:"Taking care of your body and building self-confidence is essential during this period of transformation."}
+   ]}
+];
+
+function EscapeGame({lang,onBack}){
+  const SK="hm_escape_progress";
+  const levels=lang==="en"?EG_LEVELS_EN:EG_LEVELS_FR;
+  const loadP=()=>{try{const r=JSON.parse(localStorage.getItem(SK)||"{}");return{unlocked:r.unlocked||[levels[0].id],completed:r.completed||[]};}catch{return{unlocked:[levels[0].id],completed:[]};};};
+  const[prog,setProg]=useState(loadP);
+  const[view,setView]=useState("menu"); // menu|intro|riddle|scramble|badge
+  const[lvIdx,setLvIdx]=useState(0);
+  const[step,setStep]=useState(0);
+  const[letters,setLetters]=useState([]);
+  const[chosen,setChosen]=useState(null);
+  const[showFb,setShowFb]=useState(false);
+  const[scramble,setScramble]=useState([]);
+  const[answer,setAnswer]=useState([]);
+
+  const saveP=np=>{localStorage.setItem(SK,JSON.stringify(np));setProg(np);};
+  const lv=levels[lvIdx];
+  const isUnlocked=id=>prog.unlocked.includes(id);
+  const isDone=id=>prog.completed.includes(id);
+
+  const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
+
+  const startLevel=idx=>{
+    setLvIdx(idx);setStep(0);setLetters([]);setChosen(null);setShowFb(false);
+    setView("intro");
+  };
+
+  const beginRiddles=()=>setView("riddle");
+
+  const answer_riddle=i=>{
+    if(chosen!==null)return;
+    setChosen(i);setShowFb(true);
+    const r=lv.riddles[step];
+    const nl=[...letters,r.l];
+    setLetters(nl);
+    setTimeout(()=>{
+      setShowFb(false);setChosen(null);
+      if(step+1>=lv.riddles.length){
+        setScramble(shuffle(nl).map((l,i)=>({l,used:false,id:i})));
+        setAnswer([]);setView("scramble");
+      }else{setStep(s=>s+1);}
+    },2000);
+  };
+
+  const pickLetter=id=>{
+    const ns=scramble.map(s=>s.id===id?{...s,used:true}:s);
+    const na=[...answer,scramble.find(s=>s.id===id).l];
+    setScramble(ns);setAnswer(na);
+    if(na.length===lv.targetWord.length){
+      if(na.join("")===lv.targetWord){
+        const np={...prog};
+        if(!np.completed.includes(lv.id))np.completed.push(lv.id);
+        const nextIdx=lvIdx+1;
+        if(nextIdx<levels.length&&!np.unlocked.includes(levels[nextIdx].id))np.unlocked.push(levels[nextIdx].id);
+        saveP(np);
+        setTimeout(()=>setView("badge"),800);
+      }else{
+        setTimeout(()=>{
+          setScramble(scramble.map(s=>({...s,used:false})));
+          setAnswer([]);
+        },600);
+      }
+    }
+  };
+
+  const RD=["#E8003D","#FF6B9D","#FF8C69","#FFAA5A","#3DBE82","#4FB3F6","#9B6BEA"];
+
+  if(view==="menu")return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"20px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
+        <div style={{fontSize:36,marginBottom:4}}>🔐</div>
+        <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
+        <div style={{color:"rgba(255,180,190,.8)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"Solve the riddles, find the code!":"Résous les énigmes, trouve le code !"}</div>
+        <div style={{color:"rgba(183,255,216,.7)",fontSize:".72rem",fontWeight:700,background:"rgba(46,204,113,.15)",display:"inline-block",borderRadius:12,padding:"4px 12px",marginTop:8}}>🏅 {prog.completed.length}/{levels.length} {lang==="en"?"completed":"complétés"}</div>
+      </div>
+      {levels.map((l,i)=>{
+        const unlocked=isUnlocked(l.id),done=isDone(l.id);
+        return(
+          <div key={l.id} onClick={unlocked?()=>startLevel(i):null} style={{display:"flex",alignItems:"center",gap:14,background:done?"rgba(61,190,130,.08)":"rgba(255,255,255,.95)",border:`1.5px solid ${done?"rgba(61,190,130,.4)":"rgba(232,0,61,.12)"}`,borderRadius:20,padding:"14px 16px",marginBottom:10,cursor:unlocked?"pointer":"default",opacity:unlocked?1:.5}}>
+            <div style={{width:48,height:48,borderRadius:14,background:unlocked?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(200,180,200,.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{l.emoji}</div>
+            <div style={{flex:1}}>
+              <div className="T" style={{fontSize:".9rem",fontWeight:800,color:done?P.green:P.text}}>{l.name}</div>
+              <div style={{fontSize:".72rem",color:P.muted,marginTop:2}}>{l.desc}</div>
+            </div>
+            <span style={{fontSize:20}}>{done?"🏅":unlocked?"▶️":"🔒"}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  if(view==="intro")return(
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={()=>setView("menu")} style={{background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:12,padding:"6px 14px",fontSize:13,color:"white",fontWeight:700,marginBottom:14}}>{lang==="en"?"← Menu":"← Menu"}</button>
+      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"24px 18px",textAlign:"center",boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
+        <div style={{fontSize:48,marginBottom:6}}>{lv.emoji}</div>
+        <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:900,marginBottom:6}}>{lv.name}</div>
+        <p style={{color:"rgba(255,210,220,.85)",fontSize:".82rem",lineHeight:1.65,margin:"0 0 16px"}}>{lang==="en"?`${lv.riddles.length} riddles await you. Each correct answer gives you a letter — in scrambled order. Collect them all, then use the final hint to reassemble the keyword.`:`${lv.riddles.length} énigmes t'attendent. Chaque bonne réponse te donne une lettre, dans le désordre. Rassemble-les toutes, puis utilise l'indice pour trouver le mot-clé.`}</p>
+        <button onClick={beginRiddles} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>🚀 {lang==="en"?"Start":"Commencer"}</button>
+        <button onClick={()=>setView("menu")} style={{background:"transparent",color:"rgba(255,210,220,.7)",border:"1px solid rgba(255,210,220,.3)",borderRadius:50,padding:"9px 18px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
+      </div>
+    </div>
+  );
+
+  if(view==="riddle"){
+    const r=lv.riddles[step];
+    return(
+      <div style={{padding:"16px 16px 88px"}}>
+        <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap",justifyContent:"center"}}>
+          {lv.riddles.map((_,i)=>(
+            <div key={i} style={{width:28,height:28,borderRadius:8,border:"2px solid rgba(255,255,255,.25)",background:i<letters.length?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,color:"white"}}>
+              {i<letters.length?letters[i]:"?"}
+            </div>
+          ))}
+        </div>
+        <div style={{background:"rgba(255,255,255,.96)",backdropFilter:"blur(14px)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
+          <div style={{fontSize:".68rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{r.tag}</div>
+          <p style={{fontSize:".95rem",fontWeight:700,color:P.text,lineHeight:1.5,marginBottom:16}}>{r.q}</p>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {r.opts.map((opt,i)=>{
+              let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.text;
+              if(showFb){if(i===r.ok){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#1A7A50";}else if(i===chosen){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
+              return(
+                <button key={i} disabled={chosen!==null} onClick={()=>answer_riddle(i)} style={{background:bg,border,borderRadius:13,padding:"11px 14px",fontSize:".88rem",fontWeight:700,textAlign:"left",cursor:chosen!==null?"default":"pointer",color:col,transition:"all .15s"}}>
+                  {String.fromCharCode(65+i)}. {opt}
+                </button>
+              );
+            })}
+          </div>
+          {showFb&&<div style={{marginTop:12,padding:"10px 12px",background:"rgba(232,0,61,.06)",borderLeft:`3px solid ${P.red}`,borderRadius:8,fontSize:".78rem",color:P.muted,lineHeight:1.55}}>{r.fb}</div>}
+        </div>
+      </div>
+    );
+  }
+
+  if(view==="scramble"){
+    return(
+      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
+          <div className="T" style={{fontSize:"1.1rem",fontWeight:900,color:P.red,marginBottom:4}}>{lang==="en"?"Rearrange the letters":"Réorganise les lettres"}</div>
+          <p style={{fontSize:".78rem",color:P.muted,marginBottom:14,lineHeight:1.5}}>{lang==="en"?`You collected ${letters.length} letters — in scrambled order. Put them in the right order to reveal the keyword.`:`Tu as recueilli ${letters.length} lettres dans le désordre. Remets-les dans le bon ordre pour révéler le mot-clé.`}</p>
+          <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:12,minHeight:46,flexWrap:"wrap"}}>
+            {lv.targetWord.split("").map((_,i)=>(
+              <div key={i} style={{width:38,height:38,borderRadius:10,border:`2px ${answer[i]?"solid":"dashed"} ${answer[i]?P.red:"rgba(232,0,61,.3)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"white",background:answer[i]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"transparent"}}>
+                {answer[i]||""}
+              </div>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginBottom:12}}>
+            {scramble.map(s=>(
+              <button key={s.id} onClick={()=>!s.used&&pickLetter(s.id)} style={{width:38,height:38,borderRadius:10,background:s.used?"rgba(200,180,200,.3)":"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",color:"white",fontWeight:800,fontSize:16,cursor:s.used?"default":"pointer",opacity:s.used?.3:1,transition:"all .15s"}}>
+                {s.l}
+              </button>
+            ))}
+          </div>
+          <button onClick={()=>{setScramble(scramble.map(s=>({...s,used:false})));setAnswer([]);}} style={{background:"transparent",border:"none",color:P.muted,fontSize:".75rem",textDecoration:"underline",cursor:"pointer",marginBottom:10}}>{lang==="en"?"Clear and try again":"Effacer et recommencer"}</button>
+          <div style={{background:"rgba(232,0,61,.06)",borderRadius:10,padding:"9px 12px",fontSize:".75rem",color:P.muted,border:"1px dashed rgba(232,0,61,.2)"}}>💡 {lv.hint}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if(view==="badge"){
+    const nextIdx=lvIdx+1;
+    const hasNext=nextIdx<levels.length;
+    return(
+      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"24px 18px",boxShadow:"0 8px 28px rgba(232,0,61,.15)"}}>
+          <div style={{fontSize:56,marginBottom:8}}>🏆</div>
+          <div className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.red,marginBottom:4}}>{lv.badge}</div>
+          <div style={{fontSize:".82rem",color:P.muted,marginBottom:16}}>{lang==="en"?"Code unlocked:":"Code débloqué :"} <strong>{lv.display}</strong></div>
+          <div style={{background:"rgba(232,0,61,.05)",borderRadius:14,padding:"14px",textAlign:"left",fontSize:".78rem",color:P.text,lineHeight:1.7,marginBottom:14}} dangerouslySetInnerHTML={{__html:`<strong>📚 ${lang==="en"?"Key takeaways":"À retenir"} :</strong><br>${lv.fiche}`}}/>
+          {hasNext&&<div style={{background:"rgba(61,190,130,.12)",border:"1px solid rgba(61,190,130,.3)",borderRadius:12,padding:"8px 14px",fontSize:".78rem",fontWeight:700,color:"#1A7A50",marginBottom:14}}>🎯 {lang==="en"?"Next level unlocked:":"Niveau suivant débloqué :"} {levels[nextIdx].emoji} {levels[nextIdx].name}</div>}
+          {hasNext&&<button onClick={()=>startLevel(nextIdx)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>▶️ {lang==="en"?"Next level":"Niveau suivant"}</button>}
+          <button onClick={()=>setView("menu")} style={{width:"100%",background:"transparent",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"11px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 // ── HUB ────────────────────────────────────────────────────────
 function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onCelebrate,onNav}){
   return(
@@ -3188,7 +3559,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,o
 }
 
 // ── GAMES HUB ──────────────────────────────────────────────────
-function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
+function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onEscape}){
   const gameDef=lang==="en"?GAME_DEF_EN:GAME_DEF_FR;
   return(
     <div style={{paddingBottom:88}}>
@@ -3197,12 +3568,21 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
           <div>
             <div style={{fontSize:40,lineHeight:1}}>🕹️</div>
             <h1 className="T" style={{margin:"5px 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
-            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"10 games · 3 levels each ✨":"10 jeux · 3 niveaux chacun ✨"}</p>
+            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"11 games · 3 levels each ✨":"11 jeux · 3 niveaux chacun ✨"}</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
         </div>
       </div>
       <div style={{padding:"0 15px"}}>
+        <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🔐 {lang==="en"?"Escape Game":"Escape Game"}</div>
+        <button onClick={onEscape} style={{width:"100%",background:"linear-gradient(135deg,#1A0A15,#3A0313)",border:"2px solid rgba(232,18,63,.35)",borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",boxShadow:"0 3px 12px rgba(232,0,61,.2)",marginBottom:16}}>
+          <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0}}>🔐</div>
+          <div style={{flex:1}}>
+            <div className="F" style={{fontWeight:600,fontSize:14,color:"#FF8FA3"}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
+            <div style={{fontSize:10,color:"rgba(255,180,190,.7)",marginTop:1,fontWeight:600}}>{lang==="en"?"4 levels · solve riddles · find the code":"4 niveaux · résous les énigmes · trouve le code"}</div>
+          </div>
+          <span style={{fontSize:15,color:"#FF8FA3",fontWeight:900}}>›</span>
+        </button>
         <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎮 {lang==="en"?"Main Games":"Jeux Principaux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
           {gameDef.filter(g=>g.main).map(g=>(
@@ -3296,6 +3676,8 @@ export default function App(){
   const[sessions,setSessions]=useState(0);
   const[newBadges,setNewBadges]=useState([]);
   const[soundOn,setSoundOn]=useState(true);
+  const[audioOn,setAudioOn]=useState(true);
+  const[darkMode,setDarkMode]=useState(()=>localStorage.getItem("hm_dark")==="1");
   const[navActive,setNavActive]=useState("home");
 
   useEffect(()=>{
@@ -3313,6 +3695,12 @@ export default function App(){
   },[]);
 
   SND.on=soundOn;
+  AUDIO_ON=audioOn;
+
+  useEffect(()=>{
+    const s=document.getElementById("hm-dark")||(()=>{const el=document.createElement("style");el.id="hm-dark";document.head.appendChild(el);return el;})();
+    s.textContent=darkMode?`body,#root{background:#1A0A15!important;}.app-root{background:linear-gradient(160deg,#2A0A20,#1A0A15)!important;}`:"";
+  },[darkMode]);
 
   function persist(pts,bdg,sess,unl){Store.save("qd-data",{pts,bdg,sess,unl,snd:soundOn});}
 
@@ -3543,10 +3931,18 @@ export default function App(){
     else setScreen("games_hub");
   }
 
+  function resetProgress(){
+    Store.save("qd-data",{pts:0,bdg:[],sess:0,unl:{},snd:soundOn});
+    localStorage.removeItem("hm_escape_progress");
+    setTotalPts(0);setBadges([]);setSessions(0);setUnlocked({});
+    setScreen("hub");
+  }
+
   function goNav(id){
     setNavActive(id);
     if(id==="home")setScreen("hub");
     else if(id==="snd")toggleSound();
+    else if(id==="settings")setScreen("settings");
     else setScreen(id);
   }
 
@@ -3657,7 +4053,9 @@ export default function App(){
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
-        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame}/>}
+        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={()=>setScreen("hub")}/>}
+        {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>setScreen("games_hub")}/>}
+        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onEscape={()=>setScreen("escape")}/>}
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
@@ -3742,7 +4140,7 @@ export default function App(){
 
       {showNav&&(
         <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(255,255,255,.93)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(255,107,157,.18)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.09)"}}>
-          {[{id:"home",icon:"🏠",label:lang==="en"?"Home":"Accueil"},{id:"progress",icon:"🏆",label:lang==="en"?"Progress":"Progrès"},{id:"glossaire",icon:"📚",label:lang==="en"?"Glossary":"Glossaire"},{id:"sos",icon:"🚨",label:"SOS"},{id:"snd",icon:soundOn?"🔊":"🔇",label:lang==="en"?(soundOn?"Sound":"Mute"):(soundOn?"Son":"Muet")},{id:"privacy",icon:"🔐",label:lang==="en"?"Privacy":"Confidentialité"}].map(n=>(
+          {[{id:"home",icon:"🏠",label:lang==="en"?"Home":"Accueil"},{id:"progress",icon:"🏆",label:lang==="en"?"Progress":"Progrès"},{id:"glossaire",icon:"📚",label:lang==="en"?"Glossary":"Glossaire"},{id:"sos",icon:"🚨",label:"SOS"},{id:"settings",icon:"⚙️",label:lang==="en"?"Settings":"Réglages"},{id:"privacy",icon:"🔐",label:lang==="en"?"Privacy":"Confidentialité"}].map(n=>(
             <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".52rem",fontWeight:700,gap:3,transition:"color .2s"}}>
               <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{n.label}
             </button>
