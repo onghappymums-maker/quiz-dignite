@@ -3606,7 +3606,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav}){
         <div style={{height:16}}/>
       </div>
       <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
-        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Défi"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
+        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
           </button>
@@ -4028,7 +4028,7 @@ function Explorer({lang,onTheme,onNav,navActive}){
       </div>
       {/* Nav */}
       <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
-        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Challenge"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"}].map(n=>(
+        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
           </button>
@@ -4101,7 +4101,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
       </div>
       {/* Nav */}
       <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
-        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Challenge"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"}].map(n=>(
+        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
           </button>
@@ -4511,6 +4511,7 @@ export default function App(){
     setNavActive(id);
     if(id==="home")setScreen("hub");
     else if(id==="explore")setScreen("explore");
+    else if(id==="glossaire")setScreen("glossaire");
     else if(id==="defi"){setShowDefiModal(true);}
     else if(id==="settings")setScreen("settings");
     else setScreen(id);
@@ -4768,7 +4769,7 @@ export default function App(){
 
       {showNav&&(
         <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(255,255,255,.93)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(255,107,157,.18)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.09)"}}>
-          {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Défi"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
+          {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
             <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3,transition:"color .2s"}}>
               <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
             </button>
