@@ -77,6 +77,67 @@ const P = {
   text:"#2D0A14", muted:"#8B5A6A",
 };
 const G    = "linear-gradient(135deg,#C8102E 0%,#E8426A 42%,#FF6B9D 75%,#FF8C69 100%)";
+const AKISSI_IMG = "/akissi.png";
+
+// ── A-KISSI ANIMATIONS CSS ────────────────────────────────────
+const AKISSI_STYLE = `
+@keyframes ak-wave { 0%,100%{transform:rotate(0deg) translateY(0)} 25%{transform:rotate(-3deg) translateY(-4px)} 75%{transform:rotate(3deg) translateY(-2px)} }
+@keyframes ak-bounce { 0%,100%{transform:translateY(0) scale(1)} 40%{transform:translateY(-14px) scale(1.05)} 70%{transform:translateY(-6px) scale(1.02)} }
+@keyframes ak-celebrate { 0%,100%{transform:scale(1) rotate(0deg)} 25%{transform:scale(1.1) rotate(-5deg)} 75%{transform:scale(1.1) rotate(5deg)} }
+@keyframes ak-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes ak-shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-5px)} 40%,80%{transform:translateX(5px)} }
+@keyframes ak-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+@keyframes ak-in { from{opacity:0;transform:translateY(16px) scale(.9)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes ak-bubble { from{opacity:0;transform:scale(.8) translateX(-10px)} to{opacity:1;transform:scale(1) translateX(0)} }
+`;
+
+const AK_ANIM = {
+  salut:        "ak-wave 1.2s ease-in-out infinite",
+  joie:         "ak-bounce .7s ease-in-out infinite",
+  celebration:  "ak-celebrate .6s ease-in-out infinite",
+  encouragement:"ak-float 1.8s ease-in-out infinite",
+  erreur:       "ak-shake .5s ease-in-out",
+  reflexion:    "ak-pulse 2s ease-in-out infinite",
+  neutre:       "ak-float 2.5s ease-in-out infinite",
+};
+
+const AK_MSGS_FR = {
+  salut:        ["Salut ! Je suis A-Kissi 🌸", "Bienvenue ! Je suis là pour t'accompagner ✨", "Hey ! On va apprendre ensemble 💗"],
+  joie:         ["Super bonne réponse ! 🎉", "Tu es brillante ! ✨", "C'est exactement ça ! 🌟"],
+  celebration:  ["BRAVO ! Tu assures ! 🏆", "Quel score incroyable ! 🌸🎉", "Tu es une championne de la dignité ! 💗"],
+  encouragement:["Tu peux le faire ! 💪", "Continue comme ça, tu es sur la bonne voie ! 🌸", "Chaque question t'apprend quelque chose ! ✨"],
+  erreur:       ["Pas grave, on apprend ! 💗", "C'est en se trompant qu'on grandit 🌱", "Aucun souci ! Voilà la bonne réponse 🌸"],
+  reflexion:    ["Prends le temps de réfléchir 🤔", "Fais confiance à ton instinct 💗", "Lis bien la question 😊"],
+  defi:         ["Ton défi du jour t'attend ! 🔥", "Prête à relever le défi ? 💪", "Un défi par jour, c'est ton moment ! 🌸"],
+};
+const AK_MSGS_EN = {
+  salut:        ["Hi! I'm A-Kissi 🌸", "Welcome! I'm here to guide you ✨", "Hey! Let's learn together 💗"],
+  joie:         ["Great answer! 🎉", "You're brilliant! ✨", "That's exactly right! 🌟"],
+  celebration:  ["AMAZING! You're crushing it! 🏆", "What an incredible score! 🌸🎉", "You're a dignity champion! 💗"],
+  encouragement:["You can do it! 💪", "Keep going, you're on the right track! 🌸", "Every question teaches you something! ✨"],
+  erreur:       ["No worries, we learn! 💗", "Mistakes help us grow 🌱", "No problem! Here's the right answer 🌸"],
+  reflexion:    ["Take your time to think 🤔", "Trust your instincts 💗", "Read the question carefully 😊"],
+  defi:         ["Your daily challenge is waiting! 🔥", "Ready for the challenge? 💪", "One challenge a day — your moment! 🌸"],
+};
+
+function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
+  const msgs=lang==="en"?AK_MSGS_EN:AK_MSGS_FR;
+  const message=msg||(msgs[state]?msgs[state][Math.floor(Date.now()/1000)%msgs[state].length]:"");
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"ak-in .4s ease-out",...style}}>
+      <img src={AKISSI_IMG} alt="A-Kissi"
+        style={{width:size,height:size*1.5,objectFit:"contain",objectPosition:"top",animation:AK_ANIM[state]||AK_ANIM.neutre,filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}
+        onError={e=>{e.target.style.display="none";}}
+      />
+      {message&&(
+        <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"9px 13px",maxWidth:200,textAlign:"center",fontSize:12,fontWeight:700,color:P.dark,lineHeight:1.45,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
+          {message}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const HERO = "linear-gradient(155deg,#C8102E 0%,#E8426A 28%,#FF6B9D 62%,#FFD4E8 100%)";
 const ALPHA = "ABCDEFGHIJKLMNOPRSTUVWYZ";
 const FC = ["#3DBE82","#9B5DE5","#F59E0B","#14B8A6","#4FB3F6","#FF8C69","#C8102E","#FF6B9D"];
@@ -101,6 +162,7 @@ button{font-family:'Nunito',sans-serif;cursor:pointer;}
 .FL{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
 .fl{position:absolute;bottom:-60px;animation:floatUp linear infinite;}
 .SH{position:relative;z-index:2;min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;}
+${AKISSI_STYLE}
 `;
 
 // ── QUIZ DATA ──────────────────────────────────────────────────
@@ -1651,12 +1713,14 @@ function FloatingBg(){
   return(<div className="FL">{el.map(e=><span key={e.id} className="fl" style={{left:`${e.left}%`,fontSize:e.sz,animationDuration:`${e.dur}s`,animationDelay:`${e.delay}s`}}>{e.type}</span>)}</div>);
 }
 
-function GHdr({title,onBack,score,prog=0}){
+function GHdr({title,onBack,score,prog=0,lang}){
   return(
     <div style={{marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-        <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>🏠 Menu</button>
-        <h2 className="F" style={{flex:1,margin:0,fontSize:17,fontWeight:600,color:P.text,textAlign:"center"}}>{title}</h2>
+        <button onClick={onBack} style={{background:"white",border:`2px solid rgba(232,0,61,.25)`,borderRadius:12,padding:"8px 14px",fontSize:13,color:P.red,fontWeight:800,display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
+          ← {lang==="en"?"Back":"Retour"}
+        </button>
+        <h2 className="F" style={{flex:1,margin:0,fontSize:16,fontWeight:700,color:P.text,textAlign:"center"}}>{title}</h2>
         {score!=null?<div style={{background:G,color:"white",borderRadius:12,padding:"5px 12px",fontSize:13,fontWeight:800,minWidth:48,textAlign:"center"}}>⭐{score}</div>:<div style={{width:48}}/>}
       </div>
       <div style={{height:6,background:"#FFE4EE",borderRadius:6,overflow:"hidden"}}><div style={{height:"100%",width:`${Math.round(prog*100)}%`,background:G,borderRadius:6,transition:"width .5s"}}/></div>
@@ -1756,7 +1820,7 @@ function JeuAssocie({level,lang,onBack,onBadge,onComplete}){
   };
   return st.done?<GWin title={lang==="en"?"🎯 Match It!":"🎯 Associe !"} score={st.score} max={st.items.length*10} badge={lang==="en"?"🎯 Matcher":"🎯 Associatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?`🎯 Match It! L${level}`:`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length}/>
+      <GHdr title={lang==="en"?`🎯 Match It! L${level}`:`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 10px",fontWeight:600}}>{st.sel?(lang==="en"?"↓ Tap the correct category ↓":"↓ Appuie sur la bonne catégorie ↓"):(lang==="en"?"Select a card then a category":"Sélectionne une carte puis une catégorie")}</p>
       {st.fb&&<div className="up" style={{textAlign:"center",fontSize:17,fontWeight:900,color:st.fb==="ok"?P.green:P.amber,marginBottom:10}}>{st.fb==="ok"?(lang==="en"?"🌸 Well done!":"🌸 Bravo !"):(lang==="en"?"💛 Try again!":"💛 Essaie encore !")}</div>}
       {remaining.length>0&&(
@@ -1798,7 +1862,7 @@ function JeuCorps({level,lang,onBack,onBadge,onComplete}){
   const showU=level===3;
   return done?<GWin title={lang==="en"?"🧩 My Body!":"🧩 Mon Corps !"} score={disc.size*10} max={parts.length*10} badge={lang==="en"?"🧩 Body Explorer":"🧩 Exploratrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?`🧩 My Body L${level}`:`🧩 Mon Corps N${level}`} onBack={onBack} prog={disc.size/parts.length}/>
+      <GHdr title={lang==="en"?`🧩 My Body L${level}`:`🧩 Mon Corps N${level}`} onBack={onBack} prog={disc.size/parts.length} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 8px",fontWeight:600}}>{lang==="en"?"Tap each body part to discover it! ✨":"Appuie sur chaque partie pour la découvrir ! ✨"}</p>
       <svg viewBox="0 0 160 285" style={{display:"block",margin:"0 auto",maxWidth:185,width:"100%",userSelect:"none",filter:"drop-shadow(0 4px 12px #C8102E18)"}}>
         <path d="M54 28 Q58 7 80 5 Q102 7 106 28 Q98 16 80 16 Q62 16 54 28Z" fill="#5D3A6A"/>
@@ -1873,7 +1937,7 @@ function JeuMemoire({level,lang,onBack,onBadge,onComplete}){
   };
   return done?<GWin title={lang==="en"?"🃏 Perfect Memory!":"🃏 Mémoire parfaite !"} score={score} max={total*10} badge={lang==="en"?"🃏 Memory Gold":"🃏 Mémoire d'Or"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?`🃏 Memory L${level}`:`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total}/>
+      <GHdr title={lang==="en"?`🃏 Memory L${level}`:`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?`Match each 🌸 to its word! — Tries: `:"Associe chaque 🌸 à son mot ! — Essais : "}<strong style={{color:P.text}}>{tries}</strong></p>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:7}}>
         {cards.map(card=>{const show=card.flipped||card.matched;return(
@@ -1899,7 +1963,7 @@ function JeuChef({level,lang,onBack,onBadge,onComplete}){
   const isTime=ans==="time";const ok=!isTime&&ans!==null&&(ans==="bon")===food.good;
   return done?<GWin lang={lang} title="🍽️ Chef Nyalê!" score={score} max={foods.length*10} badge="🍽️ Chef Nyalê" onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length}/>
+      <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 8px",fontWeight:600}}>{lang==="en"?<>Food <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Good or bad for your period?</>:<>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</>}</p>
       {!ans&&<TRing key={`c-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
       <div style={{background:"white",borderRadius:26,padding:"22px 18px",textAlign:"center",border:`2.5px solid ${ans?(ok?P.green:"#FF6B6B"):"#FFD4E8"}`,boxShadow:`0 6px 22px ${P.red}12`,marginBottom:14,transition:"border .3s"}}>
@@ -1938,7 +2002,7 @@ function JeuCycle({level,lang,onBack,onBadge,onComplete}){
   const totalMax=level===2?(phaseData.length*10+sympData.length*15):100;
   return done||(level===2&&sympDone)?<GWin title={lang==="en"?"📅 Cycle Mastered!":"📅 Cycle Maîtrisé !"} score={totalScore} max={totalMax} badge={lang==="en"?"📅 Cycle Expert":"📅 Cycle Maîtrisé"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?"📅 My Cycle L2":"📅 Mon Cycle N2"} onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/sympData.length}/>
+      <GHdr title={lang==="en"?"📅 My Cycle L2":"📅 Mon Cycle N2"} onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/sympData.length} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?"Match each symptom to its phase!":"Associe chaque symptôme à sa phase !"}</p>
       <div style={{display:"flex",flexDirection:"column",gap:10}}>
         {sympShuffle.map((s,si)=>{const ans2=sympAns[si];const correct=ans2!==undefined&&ans2===s.phaseId;return(
@@ -1961,7 +2025,7 @@ function JeuCycle({level,lang,onBack,onBadge,onComplete}){
   const nextExp=order.length+1;
   return(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?`📅 My Cycle L${level}`:`📅 Mon Cycle N${level}`} onBack={onBack} score={order.length*25} prog={order.length/phaseData.length}/>
+      <GHdr title={lang==="en"?`📅 My Cycle L${level}`:`📅 Mon Cycle N${level}`} onBack={onBack} score={order.length*25} prog={order.length/phaseData.length} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 10px",fontWeight:600}}>{lang==="en"?"Tap in the correct order:":"Appuie dans le bon ordre :"} <strong style={{color:P.text}}>1 → 2 → 3 → 4</strong></p>
       <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:13}}>
         {[1,2,3,4].map(n=>{const d=order.includes(n),a=n===nextExp,ph=phaseData[n-1];return<div key={n} style={{width:36,height:36,borderRadius:"50%",background:d?ph.c:a?"white":"#FFF0F3",border:`2.5px solid ${d?ph.c:a?ph.c:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:d?"white":a?ph.c:P.muted,transition:"all .3s",boxShadow:a?`0 2px 10px ${ph.c}44`:"none"}}>{d?"✓":n}</div>;})}
@@ -1994,7 +2058,7 @@ function JeuSOS({level,lang,onBack,onBadge,onComplete}){
   const isTime=ans==="time";const chosenOk=!isTime&&ans!==null&&s.opts[ans]?.ok;const correctOpt=s.opts.find(o=>o.ok);
   return done?<GWin title={lang==="en"?"🆘 SOS Mastered!":"🆘 SOS Maîtrisé !"} score={score} max={scens.length*20} badge={lang==="en"?"🆘 SOS Expert":"🆘 Experte SOS"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length}/>
+      <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length} lang={lang}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 7px",fontWeight:600}}>{lang==="en"?"Situation ":"Situation "}<strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
       {ans===null&&<TRing key={`s-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
       <div style={{background:"white",borderRadius:22,padding:"16px 14px",border:"2px solid #FFD4E8",boxShadow:"0 4px 18px #C8102E10",marginBottom:12}}>
@@ -2022,7 +2086,7 @@ function JeuDevinettes({onBack,onBadge,lang}){
   const choose=opt=>{if(ans)return;const ok=opt===q.a;setAns(opt);SND.play(ok?"ok":"ko");if(ok)setScore(s=>s+20);setTimeout(next,2400);};
   return done?<GWin title={lang==="en"?"💡 Riddles!":"💡 Devinettes !"} score={score} max={devs.length*20} badge={lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître"} msg={lang==="en"?"You got them all! 🌟":"Tu as tout trouvé ! 🌟"} onHome={onBack} onNext={()=>{setIdx(0);setAns(null);setScore(0);setDone(false);}} hasNext={false}/>:(
     <div style={{padding:"14px 16px 36px"}}>
-      <GHdr title={lang==="en"?"💡 Riddles":"💡 Devinettes"} onBack={onBack} score={score} prog={(idx+(ans?1:0))/devs.length}/>
+      <GHdr title={lang==="en"?"💡 Riddles":"💡 Devinettes"} onBack={onBack} score={score} prog={(idx+(ans?1:0))/devs.length} lang={lang}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 12px",fontWeight:700}}>{lang==="en"?"Riddle ":"Devinette "}{idx+1} / {devs.length}</div>
       <div style={{background:G,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:14,boxShadow:"0 6px 22px #C8102E33"}}>
         <div style={{fontSize:44,marginBottom:10}}>{q.emoji}</div>
@@ -2063,7 +2127,7 @@ function JeuImages({level,lang,onBack,onBadge,onComplete}){
   const remL=idx=>{if(correct)return;const r=guess[idx];setGuess(guess.filter((_,i)=>i!==idx));setAvail(avail.map(a=>a.i===r.i?{...a,used:false}:a));};
   return done?<GWin title={lang==="en"?"🖼️ 4 Images 1 Word!":"🖼️ 4 Images 1 Mot !"} score={score} max={rounds.length*20} badge={lang==="en"?"🖼️ Word Detective":"🖼️ Détective des mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"12px 16px 36px"}}>
-      <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length}/>
+      <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length} lang={lang}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 10px",fontWeight:700}}>{ri+1}/{rounds.length} — <em>{rounds[ri].hint}</em></div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:12}}>
         {rounds[ri].emojis.map((e,i)=><div key={i} style={{background:"white",borderRadius:16,border:`2px solid ${correct?P.green:"#FFD4E8"}`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",fontSize:46,transition:"border .3s"}}>{e}</div>)}
@@ -2117,7 +2181,7 @@ function JeuMotsMeles({level,lang,onBack,onBadge,onComplete}){
   };
   return done?<GWin title={lang==="en"?"🔍 Word Search!":"🔍 Mots Mêlés !"} score={score} max={wsd.words.length*15} badge={lang==="en"?"🔍 Word Hunter":"🔍 Chasseuse de mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"12px 13px 36px"}}>
-      <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length}/>
+      <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length} lang={lang}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:11,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} {lang==="en"?"found":"trouvés"}</div>
       {sel1&&<div style={{textAlign:"center",color:P.rose,fontSize:11,fontWeight:800,marginBottom:5}}>✅ {lang==="en"?"Start selected — tap the last letter!":"Départ sélectionné — appuie sur la dernière lettre !"}</div>}
       {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontSize:12,fontWeight:800,marginBottom:5}}>💛 Pas dans la liste, essaie encore !</div>}
@@ -2145,7 +2209,7 @@ function JeuLabyrinthe({level,lang,onBack,onBadge,onComplete}){
   const cellSz=Math.min(36,Math.floor(290/md.cols));const score=Math.max(10,100-moves*2);
   return done?<GWin title={lang==="en"?"🌿 Maze!":"🌿 Labyrinthe !"} score={score} max={100} badge={lang==="en"?"🌿 Navigator":"🌿 Navigatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
     <div style={{padding:"14px 14px 36px"}}>
-      <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)}/>
+      <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)} lang={lang}/>
       <div style={{display:"flex",justifyContent:"space-between",margin:"4px 0 10px"}}>
         <span style={{fontSize:12,fontWeight:700,color:P.muted}}>{lang==="en"?"🎯 Reach the exit 🌺":"🎯 Atteins la sortie 🌺"}</span>
         <span style={{fontSize:12,fontWeight:700,color:P.muted}}>⏱️ {timer}s | 👣 {moves}</span>
@@ -2229,7 +2293,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
           <div style={{fontSize:".7rem",textTransform:"uppercase",letterSpacing:2,color:P.muted,marginBottom:11,fontWeight:700}}>Défi {qi+1}/{qs.length}</div>
           <div style={{background:`linear-gradient(135deg,${P.rose}22,${P.coral}22)`,border:`2px solid ${P.rose}44`,borderRadius:22,padding:20,textAlign:"center",marginBottom:14}}>
             <span style={{fontSize:"2.8rem",display:"block",marginBottom:10}}>🎯</span>
-            <div className="T" style={{fontSize:"1.05rem",fontWeight:700,color:P.red,marginBottom:10,lineHeight:1.4}}>{q.q}</div>
+            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:10,lineHeight:1.4}}>{q.q}</div>
             <div style={{textAlign:"center",marginBottom:12}}><SpeechBtn text={q.q} lang={lang}/></div>
             {!showDA?<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"12px 24px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={()=>setShowDA(true)}>Voir la réponse 👀</button>
             :<div style={{background:"white",borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
@@ -2246,26 +2310,29 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
               <div style={{height:"100%",borderRadius:4,transition:"width 1s linear,background .5s",width:`${tPct}%`,background:tClr}}/>
             </div>
           </div>
-          <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:22,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
-            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:18}}><div className="T" style={{fontSize:"1.08rem",fontWeight:700,lineHeight:1.45,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
+            <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:22,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:18}}><div className="T" style={{fontSize:"1.25rem",fontWeight:800,lineHeight:1.45,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
             <div style={{display:"flex",flexDirection:"column",gap:10}}>
               {q.answers.map((a,i)=>{
                 let bg="rgba(255,255,255,.9)",border=`2.5px solid rgba(232,0,61,.13)`;
                 if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border=`2.5px solid ${P.green}`;}else if(i===sel){bg="rgba(231,76,60,.1)";border="2.5px solid #E74C3C";}}
-                return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"13px 16px",cursor:showFb?"default":"pointer",fontSize:".93rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
-                  <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
+                return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"14px 16px",cursor:showFb?"default":"pointer",fontSize:"1.05rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
+                  <span style={{width:30,height:30,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".75rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
                   {lang==="en"?(a==="Vrai"?"True":a==="Faux"?"False":a==="Mythe"?"Myth":a==="Réalité"?"Reality":a):a}
                 </button>);
               })}
             </div>
             {showFb&&(
               <div style={{marginTop:15,padding:"15px 17px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
-                <div className="T" style={{fontSize:".97rem",fontWeight:800,marginBottom:5,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
-                <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
-                  <div style={{fontSize:".83rem",color:P.muted,lineHeight:1.6,flex:1}}>{q.ex}</div>
-                  <SpeechBtn text={q.ex} lang={lang} style={{marginTop:1}}/>
+                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
+                  <AKissi state={sel===-1?"encouragement":sel===q.correct?"joie":"erreur"} lang={lang} size={60} msg={null} style={{flexShrink:0}}/>
+                  <div style={{flex:1}}>
+                    <div className="T" style={{fontSize:"1rem",fontWeight:800,marginBottom:4,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
+                    <div style={{fontSize:".9rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
+                  </div>
+                  <SpeechBtn text={q.ex} lang={lang} style={{marginTop:1,flexShrink:0}}/>
                 </div>
-                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:13}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
+                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:"1rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:6}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
               </div>
             )}
           </div>
@@ -2281,99 +2348,108 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   );
 }
 
-function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,storyDataUrl,userName,lang,onReplay,onHome,onShareWA,onNextLevel}){
+function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,newBadges,storyDataUrl,userName,lang,streak,onReplay,onHome,onShareWA,onNextLevel}){
   const pct=Math.round((finalScore/(qLen*10))*100);
   const isLeveled=LEVEL_CATS.includes(category);
   const passed=pct>=80&&isLeveled;
   const hasNextLevel=passed&&levelNum<3&&levelNum>0;
   const sc=Math.round(finalScore/10);
-  const lvlName=lang==="en"?(sc>=9?"Expert":sc>=6?"Learner":"Beginner"):(sc>=9?"Expert(e)":sc>=6?"Curieux(se)":"Débutant(e)");
-  const shareText=`${userName||'Quelqu\'un'} a obtenu ${sc}/10 au Quiz Dignité 🌸 Teste tes connaissances à ton tour sur les règles !\n\n👉 quizdignite.org\n\n📲 Télécharge l'app Android : https://quizdignite.org/Quiz%20Dignit%C3%A9.apk`;
-  const fbUrl=`https://www.facebook.com/sharer/sharer.php?u=https://quizdignite.org`;
+  const stars=pct>=90?5:pct>=75?4:pct>=60?3:pct>=40?2:1;
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const shareText=`${userName||'Quelqu\'un'} a obtenu ${sc}/10 au Quiz Dignité 🌸 Teste tes connaissances à ton tour sur les règles !\n\n👉 quizdignite.org`;
 
   async function shareCard(platform){
     if(!storyDataUrl)return;
     try{
       const blob=await fetch(storyDataUrl).then(r=>r.blob());
       const file=new File([blob],"quiz-dignite.png",{type:"image/png"});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],text:shareText,title:"Quiz Dignité"});
-        return;
-      }
+      if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:shareText,title:"Quiz Dignité"});return;}
     }catch(e){}
-    // Fallback : télécharge la carte + ouvre la plateforme
     const link=document.createElement("a");link.href=storyDataUrl;link.download="quiz-dignite.png";link.click();
     setTimeout(()=>{
       if(platform==="ig")window.open("https://www.instagram.com/","_blank");
-      else if(platform==="fb")window.open(fbUrl,"_blank");
+      else if(platform==="fb")window.open(`https://www.facebook.com/sharer/sharer.php?u=https://quizdignite.org`,"_blank");
       else window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`,"_blank");
     },800);
   }
 
-  const waShareText=encodeURIComponent(shareText);
   useEffect(()=>{SND.play("win");},[]);
+  const akState=pct>=80?"celebration":pct>=60?"joie":"encouragement";
+
   return(
-    <div style={{padding:"18px 20px 48px"}}>
-      <div style={{textAlign:"center",padding:"20px 0 14px"}}>
-        <span style={{fontSize:"4.2rem",display:"block",marginBottom:10}} className="pop">{pct>=100?"🏆":pct>=80?"⭐":pct>=60?"🌟":pct>=40?"📚":"🌱"}</span>
-        <div className="T" style={{fontSize:"2.8rem",fontWeight:800,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{finalScore/10}/{qLen}</div>
-        <div style={{fontSize:".88rem",color:P.muted,marginTop:6,lineHeight:1.5}}>{lang==="en"?(pct>=100?"Outstanding! A perfect score — you're a true champion!":pct>=80?"Excellent! You've earned expert status!":pct>=60?"Well done! Keep going — you're getting stronger!":pct>=40?"Good effort! Every attempt brings you closer!":"A great start — play again to raise your score!"):(pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !")}</div>
-        <div className="T" style={{fontSize:".85rem",fontWeight:700,color:P.rose,marginTop:8}}>+{finalScore} pts · Total: {totalPts} pts · {lvl.icon} {lvl.label}</div>
-      </div>
-      {newBadges.length>0&&(
-        <div style={{marginBottom:4}}>
-          <div className="T" style={{color:P.red,marginBottom:8,fontWeight:800}}>{lang==="en"?"🎉 Badge unlocked!":"🎉 Badge débloqué !"}</div>
-          {newBadges.map((b,i)=>(
-            <div key={i} style={{background:"linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,107,157,.18))",border:"2px solid gold",borderRadius:17,padding:"13px 16px",margin:"9px 0",display:"flex",alignItems:"center",gap:13}} className="up">
-              <span style={{fontSize:"2rem"}}>{b.icon}</span>
-              <div><div className="T" style={{color:P.red,fontWeight:800}}>{b.name}</div></div>
-            </div>
-          ))}
+    <div style={{paddingBottom:36}}>
+      {/* Hero */}
+      <div style={{background:pct>=80?"linear-gradient(135deg,#1A0A15,#3A0313)":"linear-gradient(135deg,#1A0A15,#2A1A25)",padding:"48px 20px 28px",textAlign:"center"}}>
+        <AKissi state={akState} lang={lang} size={100} style={{marginBottom:8}}/>
+        {/* Score */}
+        <div className="T" style={{fontSize:"4rem",fontWeight:900,color:"white",lineHeight:1}}>{sc}<span style={{fontSize:"1.8rem",color:"rgba(255,255,255,.6)"}}>/{qLen}</span></div>
+        <div style={{fontSize:"1.6rem",letterSpacing:3,margin:"8px 0"}}>{"⭐".repeat(stars)}{"☆".repeat(5-stars)}</div>
+        <div style={{fontSize:14,color:"rgba(255,180,200,.8)",fontWeight:700,marginBottom:12}}>
+          {t(pct>=100?"Parfait ! Tu es une vraie championne !":pct>=80?"Excellent ! Tu es une experte !":pct>=60?"Bien joué ! Continue comme ça !":pct>=40?"Pas mal ! Tu progresses !":"C'est un début — rejoue pour progresser !",
+             pct>=100?"Outstanding! A perfect score!":pct>=80?"Excellent! Expert level!":pct>=60?"Well done! Keep going!":pct>=40?"Good effort! Keep practicing!":"A great start — play again!")}
         </div>
-      )}
-      <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
-      {hasNextLevel&&onNextLevel&&(
-        <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"16px 22px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",marginBottom:12}}>
-          {lang==="en"?`➜ Unlock Level ${levelNum+1} — You've earned it!`:`➜ Niveau ${levelNum+1} — Débloquer maintenant !`}
-        </button>
-      )}
-      <div className="T" style={{color:P.muted,marginBottom:9,fontSize:".86rem",fontWeight:700}}>{lang==="en"?"Share your score 🌍":"Partager ton score 🌍"}</div>
-      {storyDataUrl?(
-        <div>
-          <div style={{fontSize:".74rem",color:P.muted,textAlign:"center",marginBottom:8,fontWeight:600}}>📸 Carte à partager</div>
-          <img src={storyDataUrl} alt="Carte" style={{width:"52%",display:"block",margin:"0 auto 12px",borderRadius:12,boxShadow:"0 4px 16px rgba(232,0,61,.15)"}}/>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}}>
-            <button onClick={()=>shareCard("ig")} style={{background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)",color:"white",border:"none",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
-              <span style={{fontSize:20}}>📸</span>Instagram
+        {/* Stats pills */}
+        <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+          <div style={{background:"rgba(255,255,255,.15)",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:800,color:"white"}}>+{finalScore} pts</div>
+          <div style={{background:"rgba(255,255,255,.15)",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:800,color:"white"}}>{lvl.icon} {lvl.label}</div>
+          {streak>0&&<div style={{background:"rgba(255,100,0,.3)",border:"1px solid rgba(255,150,50,.4)",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:800,color:"#FFB366"}}>🔥 {streak} {t(`jour${streak>1?"s":""}`,`day${streak>1?"s":""}`)}</div>}
+        </div>
+      </div>
+
+      <div style={{padding:"16px 16px 0"}}>
+        {/* Badges débloqués */}
+        {newBadges.length>0&&(
+          <div style={{marginBottom:14}}>
+            <div className="T" style={{fontSize:14,fontWeight:900,color:P.red,marginBottom:8}}>🎉 {t("Badge débloqué !","Badge unlocked!")}</div>
+            {newBadges.map((b,i)=>(
+              <div key={i} style={{background:"linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,107,157,.15))",border:"2px solid gold",borderRadius:16,padding:"12px 16px",marginBottom:8,display:"flex",alignItems:"center",gap:12}} className="up">
+                <span style={{fontSize:"2rem"}}>{b.icon}</span>
+                <div>
+                  <div className="T" style={{color:P.red,fontWeight:900,fontSize:15}}>{b.name}</div>
+                  <div style={{fontSize:12,color:P.muted,fontWeight:600}}>{t("Nouveau badge débloqué","New badge unlocked")} 🏅</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Série milestone */}
+        {streak>0&&[3,7,14,30].includes(streak)&&(
+          <div style={{background:"linear-gradient(135deg,rgba(255,100,0,.12),rgba(255,150,50,.08))",border:"2px solid rgba(255,120,0,.3)",borderRadius:16,padding:"12px 16px",marginBottom:14,textAlign:"center"}} className="up">
+            <div style={{fontSize:"2rem",marginBottom:4}}>🔥</div>
+            <div className="T" style={{fontSize:15,fontWeight:900,color:"#E67E00"}}>{streak} {t(`jours de suite !`,`days in a row!`)}</div>
+            <div style={{fontSize:12,color:P.muted,fontWeight:600,marginTop:2}}>{t("Continue demain pour maintenir ta série !","Keep going tomorrow to maintain your streak!")}</div>
+          </div>
+        )}
+
+        {/* Niveau suivant */}
+        {hasNextLevel&&(
+          <button onClick={()=>onNextLevel(levelNum+1)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"16px",fontWeight:900,fontSize:16,cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",marginBottom:12}}>
+            {t(`🚀 Niveau ${levelNum+1} — Débloquer !`,`🚀 Unlock Level ${levelNum+1}!`)}
+          </button>
+        )}
+
+        {/* Actions */}
+        <div style={{display:"flex",gap:10,marginBottom:12}}>
+          <button onClick={onReplay} style={{flex:1,background:"white",color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
+          <button onClick={onHome} style={{flex:1,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
+        </div>
+
+        {/* Partage */}
+        <div style={{background:"white",borderRadius:20,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
+          <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:10}}>📲 {t("Partager mon score","Share my score")}</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+            <button onClick={onShareWA} style={{background:"#25D366",color:"white",border:"none",borderRadius:12,padding:"11px 6px",fontWeight:700,fontSize:11,cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:18}}>💬</span>WhatsApp
             </button>
-            <button onClick={()=>shareCard("fb")} style={{background:"#1877F2",color:"white",border:"none",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
-              <span style={{fontSize:20}}>📘</span>Facebook
+            <button onClick={()=>shareCard("ig")} style={{background:"linear-gradient(135deg,#F58529,#DD2A7B)",color:"white",border:"none",borderRadius:12,padding:"11px 6px",fontWeight:700,fontSize:11,cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:18}}>📸</span>Instagram
+            </button>
+            <button onClick={()=>shareCard("fb")} style={{background:"#1877F2",color:"white",border:"none",borderRadius:12,padding:"11px 6px",fontWeight:700,fontSize:11,cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
+              <span style={{fontSize:18}}>👍</span>Facebook
             </button>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-            <button onClick={onShareWA} style={{background:"#25D366",color:"white",border:"none",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
-              <span style={{fontSize:20}}>📱</span>WhatsApp
-            </button>
-            <a href="https://quizdignite.org/Quiz%20Dignit%C3%A9.apk" target="_blank" rel="noreferrer" style={{background:"#E8003D",color:"white",borderRadius:12,padding:"12px 6px",fontWeight:700,fontSize:".78rem",textDecoration:"none",textAlign:"center",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
-              <span style={{fontSize:20}}>📲</span>App Android
-            </a>
-          </div>
         </div>
-      ):(
-        <div style={{textAlign:"center",padding:"10px 0",color:P.muted,fontSize:".8rem"}}>⏳ Génération de la carte...</div>
-      )}
-      <div style={{height:1.5,background:`linear-gradient(90deg,transparent,rgba(255,107,157,.28),transparent)`,margin:"16px 0"}}/>
-      <div style={{display:"flex",gap:10}}>
-        <button onClick={onReplay} style={{flex:1,background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Play again 🔄":"Rejouer 🔄"}</button>
-        <button onClick={onHome} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{lang==="en"?"Home 🏠":"Accueil 🏠"}</button>
-      </div>
-      <div style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.18)",borderRadius:15,padding:13,textAlign:"center",marginTop:12}}>
-        <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>📞 {lang==="en"?"Need help?":"Besoin d'aide ?"}</div>
-        <div className="T" style={{color:P.red,marginTop:4,fontWeight:800}}>110 · 1308</div>
-      </div>
-      <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
-      <div style={{textAlign:"center",marginTop:6}}>
-        <a href="https://quizdignite.org/Quiz%20Dignit%C3%A9.apk" target="_blank" rel="noreferrer" style={{fontSize:".7rem",color:P.red,textDecoration:"none",fontWeight:600,opacity:.8}}>📲 Télécharger l'app Android</a>
       </div>
     </div>
   );
@@ -2671,10 +2747,11 @@ function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
 
 
 function WelcomeScreen({onStart,lang,setLang}){
+  const t=(fr,en)=>lang==="en"?en:fr;
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",padding:"48px 28px 36px",position:"relative",overflow:"hidden"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",padding:"52px 28px 36px",position:"relative",overflow:"hidden"}}>
       {["🌸","🦋","✨","💕","🌸","✨"].map((e,i)=>(
-        <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.35,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`}}>{e}</span>
+        <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.3,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`,pointerEvents:"none"}}>{e}</span>
       ))}
       {/* Language selector */}
       <div style={{position:"absolute",top:16,right:16,display:"flex",gap:8,zIndex:10}}>
@@ -2682,24 +2759,29 @@ function WelcomeScreen({onStart,lang,setLang}){
         <button onClick={()=>{setLang("en");localStorage.setItem("hm_lang","en");}} style={{background:lang==="en"?"#E8003D":"rgba(232,0,61,.15)",color:lang==="en"?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:700,fontSize:".78rem",cursor:"pointer"}}>🇬🇧 EN</button>
       </div>
       <div style={{textAlign:"center",width:"100%"}}>
-        <div style={{marginBottom:24}}>
-          <img src={HM_LOGO} alt="Happy Mum's" style={{width:100,height:100,objectFit:"contain",filter:"drop-shadow(0 8px 20px rgba(232,0,61,.25))"}}/>
+        <div style={{display:"flex",justifyContent:"center",marginBottom:8}}>
+          <AKissi state="salut" lang={lang} size={100} msg={lang==="en"?"Hi! I'm A-Kissi 🌸":"Salut ! Je suis A-Kissi 🌸"}/>
         </div>
-        <div className="T" style={{fontSize:"3.2rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:12}}>Quiz Dignité</div>
-        <div style={{fontSize:".72rem",fontWeight:800,letterSpacing:"3px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:40}}>{lang==="en"?"THE QUIZ THAT CHANGES THE RULES ✨":"Le quiz qui change les règles ✨"}</div>
-        <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"24px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:36}}>
-          <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:0}}>
-            {lang==="en"?<><b>Learn about periods — no taboo, no shame, just confidence.</b></>:<>Apprends les règles <strong>sans tabou, sans honte, avec confiance.</strong></>}
+        <div className="T" style={{fontSize:"3.4rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:10}}>Quiz Dignité</div>
+        <div style={{fontSize:".8rem",fontWeight:800,letterSpacing:"2.5px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:32}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
+        <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"22px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:32}}>
+          <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:"0 0 10px"}}>
+            {t(<><strong>Apprends les règles sans tabou, sans honte, avec confiance.</strong></>,<><strong>Learn about periods — no taboo, no shame, just confidence.</strong></>)}
           </p>
-          <p style={{fontSize:".92rem",color:"#7A4A6A",lineHeight:1.7,margin:"12px 0 0"}}>
-            {lang==="en"?"Understand your body, find the answers you need and challenge the myths.":"Comprends ton corps, réponds à tes questions, brise les mythes."}
+          <p style={{fontSize:".9rem",color:"#7A4A6A",lineHeight:1.7,margin:0}}>
+            {t("Teste tes connaissances, déconstruis les mythes et apprends à mieux comprendre ton corps, tes droits et tes relations.","Test your knowledge, bust the myths and better understand your body, your rights and your relationships.")}
           </p>
         </div>
         <button onClick={onStart} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"18px 22px",fontWeight:900,fontSize:"1.2rem",cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.35)",letterSpacing:".5px"}}>
-          {lang==="en"?"Start 🌸":"Commencer 🌸"}
+          {t("Commencer 🌸","Start 🌸")}
         </button>
+        <div style={{display:"flex",gap:8,marginTop:16,flexWrap:"wrap",justifyContent:"center"}}>
+          {[t("🎮 Quiz","🎮 Quiz"),t("🔥 Défi du jour","🔥 Daily challenge"),t("🧠 Mythes","🧠 Myths"),t("🏆 Progrès","🏆 Progress")].map((f,i)=>(
+            <div key={i} style={{background:"rgba(232,0,61,.08)",borderRadius:12,padding:"6px 12px",fontSize:11,color:P.red,fontWeight:700}}>{f}</div>
+          ))}
+        </div>
       </div>
-      <p style={{fontSize:".65rem",color:"#B09AB0",textAlign:"center",marginTop:20}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
+      <p style={{fontSize:".65rem",color:"#B09AB0",textAlign:"center",marginTop:20}}>© 2026 ONG Happy Mum's – {t("Tous droits réservés","All rights reserved")}</p>
     </div>
   );
 }
@@ -3119,6 +3201,409 @@ function JeMeCelebre({lang,onBack}){
   );
 }
 
+// ── QUIZ DROITS DES FEMMES ──────────────────────────────────────
+const QD=(q,a,b,c,d,ok,ex)=>({q,answers:[a,b,c,d],correct:ok,ex});
+const QD2=(q,ok,ex)=>({q,answers:["Vrai","Faux"],correct:ok?0:1,ex,type:"vf"});
+
+const DROITS_MODULES_FR=[
+  {
+    id:"maputo",num:1,emoji:"📜",color:"#E8003D",
+    title:"Le Protocole de Maputo",
+    desc:"Le texte africain qui protège les droits des femmes",
+    badge:{icon:"📜",id:"droits_maputo",name:"Gardienne de Maputo"},
+    questions:[
+      QD("Quel texte africain protège spécifiquement les droits des femmes en matière de santé, d'éducation et de protection contre les violences ?","La Charte de Banjul","Le Protocole de Maputo","La Convention de Vienne","La Charte de Paris",1,"Le Protocole de Maputo (2003, Union africaine) est le texte africain le plus complet sur les droits des femmes."),
+      QD("En quelle année le Protocole de Maputo a-t-il été adopté ?","1995","2000","2003","2010",2,"Le Protocole de Maputo a été adopté le 11 juillet 2003 à Maputo, au Mozambique."),
+      QD("Quelle organisation a adopté le Protocole de Maputo ?","L'ONU","L'Union européenne","L'Union africaine","La Banque mondiale",2,"Le Protocole de Maputo a été adopté par l'Union africaine lors de son sommet à Maputo."),
+      QD2("Le Protocole de Maputo concerne uniquement les femmes adultes.",false,"Faux. Il protège toutes les femmes, y compris les filles et les adolescentes, notamment sur le mariage précoce et la scolarisation."),
+      QD("Le Protocole de Maputo interdit expressément :",
+        "Le divorce","Les mutilations génitales féminines","Le travail des femmes","L'allaitement",1,"Le Protocole de Maputo est l'un des premiers textes africains à interdire explicitement les mutilations génitales féminines (MGF)."),
+      QD2("La Côte d'Ivoire a ratifié le Protocole de Maputo.",true,"Vrai. La Côte d'Ivoire fait partie des pays africains ayant ratifié le Protocole, s'engageant ainsi à protéger les droits des femmes."),
+      QD("Quel droit le Protocole de Maputo garantit-il en matière de santé ?","Le droit au soleil","Le droit à la santé reproductive","Le droit aux loisirs","Le droit au travail domestique",1,"Le Protocole de Maputo garantit le droit à la santé sexuelle et reproductive, incluant la planification familiale et la santé maternelle."),
+      QD("Le Protocole de Maputo protège les femmes contre :",
+        "Les violences basées sur le genre","La mauvaise météo","Les décisions personnelles","Les études supérieures",0,"Le Protocole de Maputo protège spécifiquement les femmes contre les violences basées sur le genre, les discriminations et les pratiques traditionnelles néfastes."),
+      QD2("Le Protocole de Maputo reconnaît le droit des femmes à participer aux processus politiques.",true,"Vrai. Il garantit la participation égale des femmes à la vie politique, économique et sociale."),
+      QD("Le Protocole de Maputo a été signé dans quelle ville ?",
+        "Addis-Abeba","Lagos","Maputo","Nairobi",2,"C'est au Mozambique, à Maputo, que ce traité historique a été adopté — d'où son nom."),
+    ]
+  },
+  {
+    id:"consentement",num:2,emoji:"💗",color:"#FF6B9D",
+    title:"Consentement & Corps",
+    desc:"Comprendre le consentement et le respect du corps",
+    badge:{icon:"💗",id:"droits_consent",name:"Voix du Consentement"},
+    questions:[
+      QD("Le consentement doit être :","Deviné","Supposé","Clair, libre et révocable","Donné une fois pour toutes",2,"Le consentement doit toujours être donné librement, clairement exprimé, et peut être retiré à tout moment — même si on avait dit oui avant."),
+      QD2("Le silence signifie toujours le consentement.",false,"Faux. Le silence ne vaut pas consentement. Un consentement doit être exprimé de façon claire et non ambiguë."),
+      QD("Peut-on retirer son consentement après l'avoir donné ?","Non, jamais","Oui, seulement avant","Oui, à tout moment","Non, c'est trop tard",2,"Oui. Le consentement peut être retiré à tout moment, sans avoir à se justifier. L'autre personne doit respecter ce retrait immédiatement."),
+      QD("Un consentement donné sous la pression ou la menace est-il valable ?","Oui, il est signé","Non, il est invalide","Oui, si c'était verbal","Ça dépend de la situation",1,"Non. Un consentement obtenu sous pression, menace, manipulation ou chantage est invalide juridiquement et moralement."),
+      QD2("Une personne sous l'emprise d'alcool peut donner un consentement valable.",false,"Faux. Une personne en état d'ivresse ou sous l'effet de substances n'est pas en mesure de donner un consentement éclairé et libre."),
+      QD("Le droit à l'intégrité corporelle signifie :","Manger sainement","Que personne ne peut toucher ton corps sans ton accord","Avoir un corps parfait","Faire du sport",1,"L'intégrité corporelle est un droit fondamental : ton corps t'appartient. Personne ne peut le toucher, modifier ou blesser sans ton consentement."),
+      QD("Si quelqu'un te touche sans ta permission, c'est :","Normal entre amis","Une agression, quel que soit le lien","Acceptable en famille","Inévitable",1,"Tout contact physique non consenti est une agression, qu'il vienne d'un inconnu, d'un ami ou d'un membre de la famille."),
+      QD2("Le consentement peut être donné pour un acte mais refusé pour un autre.",true,"Vrai. Accepter une chose ne signifie pas accepter tout le reste. Chaque acte nécessite son propre consentement."),
+      QD("Qui peut donner un consentement valable ?","Toute personne","Uniquement les adultes","Une personne libre, informée et en état de décider","Seulement les hommes",2,"Un consentement valable doit être donné par une personne libre (sans contrainte), informée (consciente de ce qu'elle accepte) et en pleine capacité de décider."),
+      QD("Comment réagir si quelqu'un ne respecte pas ton non ?","Se taire","Chercher de l'aide auprès d'un adulte de confiance","Penser que c'est normal","Disparaître",1,"Si quelqu'un ne respecte pas ton refus, tu as le droit de crier, de partir et de chercher immédiatement de l'aide auprès d'un adulte de confiance ou d'une ligne d'écoute."),
+    ]
+  },
+  {
+    id:"mariage",num:3,emoji:"⚖️",color:"#9B6BEA",
+    title:"Mariage & Âge légal",
+    desc:"Droits autour du mariage, de l'âge légal et des choix de vie",
+    badge:{icon:"⚖️",id:"droits_mariage",name:"Défenseure des Choix"},
+    questions:[
+      QD("Selon la loi ivoirienne, quel est l'âge minimum du mariage ?","15 ans","16 ans pour les filles","18 ans pour tous","21 ans",2,"La loi ivoirienne fixe l'âge minimum du mariage à 18 ans pour les filles et les garçons, conformément aux engagements pris avec le Protocole de Maputo."),
+      QD2("Le mariage forcé est une violation des droits humains.",true,"Vrai. Tout mariage contracté sans le libre consentement des deux personnes est un mariage forcé, considéré comme une violation des droits fondamentaux."),
+      QD("Le mariage précoce peut entraîner :","De meilleures études","L'abandon scolaire, des grossesses précoces et des violences","Une vie plus épanouie","La réussite professionnelle",1,"Le mariage précoce est associé à l'abandon scolaire, aux grossesses à risque, aux violences conjugales et à la pauvreté. Il prive les filles de leur avenir."),
+      QD2("Une fille de 14 ans peut refuser un mariage arrangé par ses parents.",true,"Vrai. Le mariage doit être fondé sur le consentement libre et entier des deux personnes. Une mineure peut et doit être protégée contre un mariage non consenti."),
+      QD("Quel organisme international lutte contre le mariage des enfants ?","La FIFA","Le FMI","L'UNICEF et l'ONU","La Banque mondiale",2,"L'UNICEF et l'ONU portent des programmes mondiaux pour éliminer le mariage des enfants d'ici 2030, dans le cadre des ODD."),
+      QD("Le mariage des enfants touche principalement :","Les garçons","Les filles","Également filles et garçons","Seulement les adultes",1,"Le mariage des enfants touche principalement les filles : dans le monde, 1 fille sur 5 est mariée avant ses 18 ans."),
+      QD2("Une fille mariée précocement a autant de chances de finir ses études.",false,"Faux. Le mariage précoce est l'une des principales causes de déscolarisation des filles. Elles abandonnent souvent l'école pour s'occuper du foyer."),
+      QD("Si tu connais une fille menacée de mariage forcé, tu dois :","Ne rien dire","L'orienter vers une structure d'aide (association, travailleur social, police)","Lui dire que c'est normal","Attendre que ça passe",1,"Si tu connais une fille en danger de mariage forcé, oriente-la vers une association de protection, un travailleur social ou les autorités. Son silence ne signifie pas son accord."),
+      QD("Le mariage forcé est puni par la loi parce que :","C'est une tradition dépassée","Il prive les personnes de leur liberté fondamentale de choisir","Ce n'est pas rentable","Les familles s'y opposent",1,"Le mariage forcé est illégal car il prive les personnes de leur liberté fondamentale : celle de choisir librement leur vie, leur partenaire et leur avenir."),
+      QD("Que prévoit le Protocole de Maputo sur le mariage ?","L'encourager pour les jeunes","Fixer l'âge minimum à 18 ans et exiger le consentement libre","L'interdire totalement","Ne rien prévoir",1,"Le Protocole de Maputo (art. 6) fixe l'âge minimum du mariage à 18 ans et exige le consentement libre et entier des deux parties."),
+    ]
+  },
+  {
+    id:"education",num:4,emoji:"📚",color:"#3DBE82",
+    title:"Éducation des filles",
+    desc:"Pourquoi l'éducation est un droit et un levier de dignité",
+    badge:{icon:"📚",id:"droits_education",name:"Ambassadrice de l'École"},
+    questions:[
+      QD("L'éducation est considérée comme :","Un privilège","Un droit fondamental pour toutes","Réservée aux plus intelligentes","Facultative pour les filles",1,"L'éducation est un droit humain fondamental, reconnu par la Convention des droits de l'enfant (ONU, 1989). Ce droit appartient à toutes les filles, partout."),
+      QD2("Les filles qui vont à l'école ont tendance à se marier plus tard.",true,"Vrai. L'éducation des filles repousse l'âge du mariage, réduit les grossesses précoces et améliore leur santé et celle de leurs enfants."),
+      QD("Quel est l'ODD qui vise à garantir une éducation de qualité pour tous ?","ODD 1","ODD 3","ODD 4","ODD 10",2,"L'ODD 4 vise à garantir une éducation équitable, inclusive et de qualité pour tous — filles et garçons, sans exception."),
+      QD("L'éducation des filles contribue à :",
+        "Augmenter la pauvreté","Réduire la pauvreté et les inégalités","Fragiliser la famille","Affaiblir les traditions",1,"Chaque année d'école supplémentaire pour une fille augmente ses revenus futurs de 10 à 20% et réduit la mortalité infantile. C'est le meilleur investissement pour une société."),
+      QD2("Dans le monde, plus de 130 millions de filles ne vont pas à l'école.",true,"Vrai. Malgré les progrès, 130 millions de filles dans le monde n'ont pas accès à l'éducation — à cause de la pauvreté, des mariages forcés, des conflits ou des discriminations."),
+      QD("Quels sont les principaux obstacles à l'éducation des filles ?","Le manque d'intérêt","La pauvreté, les mariages précoces et les stéréotypes de genre","La trop grande distance","Le manque de livres",1,"Les principaux obstacles sont la pauvreté (coûts des fournitures), les mariages précoces, les grossesses, les stéréotypes sur les rôles des filles et les violences en chemin."),
+      QD("Que signifie 'éducation inclusive' ?","Réservée à certains","Une éducation pour tous, sans discrimination","Payante pour tous","Seulement en français",1,"Une éducation inclusive accueille tous les élèves, quels que soient leur genre, handicap, origine ou condition sociale — sans discrimination."),
+      QD2("Les filles réussissent naturellement moins bien que les garçons à l'école.",false,"Faux. Les différences de résultats scolaires sont dues aux inégalités sociales et aux stéréotypes, pas à des capacités biologiques différentes."),
+      QD("Quel document garantit le droit à l'éducation pour toutes les filles ?","La Constitution africaine","La Convention des droits de l'enfant (ONU)","La Charte du sport","La Déclaration du millénaire",1,"La Convention des droits de l'enfant (ONU, 1989), ratifiée par presque tous les pays du monde, garantit le droit à l'éducation pour chaque enfant, sans discrimination."),
+      QD("Si une fille abandonne l'école, la société :","Ne perd rien","Perd une compétence précieuse et une future actrice du développement","Gagne plus","Ne change pas",1,"Chaque fille qui abandonne l'école est une compétence perdue pour sa famille, sa communauté et son pays. L'éducation des filles bénéficie à toute la société."),
+    ]
+  },
+  {
+    id:"vbg",num:5,emoji:"🛡️",color:"#E74C3C",
+    title:"Violence Basée sur le Genre",
+    desc:"Reconnaître, nommer et agir face aux violences",
+    badge:{icon:"🛡️",id:"droits_vbg",name:"Sentinelle de la Dignité"},
+    questions:[
+      QD("VBG signifie :","Valeur Bonne Garantie","Violence Basée sur le Genre","Vie Belle et Grande","Valeurs Bien Gérées",1,"VBG = Violence Basée sur le Genre. Ce terme désigne toute violence infligée à une personne en raison de son genre — principalement les femmes et les filles."),
+      QD("Les VBG incluent :","Seulement les coups physiques","Les violences physiques, psychologiques, sexuelles et économiques","Les disputes normales","Les blagues entre amis",1,"Les VBG couvrent toutes les formes de violence : physiques (coups), sexuelles (agression), psychologiques (humiliation, menace) et économiques (priver d'argent ou de travail)."),
+      QD2("Les violences psychologiques (insultes, humiliations répétées) sont une forme de VBG.",true,"Vrai. Les violences psychologiques — insultes, dévalorisation, menaces, isolement — sont des formes reconnues de VBG, aussi graves que les violences physiques."),
+      QD("Le harcèlement en ligne (cyberharcèlement) est :",
+        "Normal entre jeunes","Une forme de VBG punie par la loi","Acceptable si c'est anonyme","Un jeu sans conséquences",1,"Le cyberharcèlement est une forme de VBG. Il est puni par la loi et peut causer des traumatismes profonds. Signale-le à un adulte de confiance."),
+      QD("Si tu es victime ou témoin de VBG en Côte d'Ivoire, tu peux appeler :",
+        "Le 118","Le 1308 (SOS Violences)","Le 100","Le 999",1,"Le 1308 est la ligne nationale d'écoute pour les victimes de violences en Côte d'Ivoire. Elle est gratuite et disponible 24h/24."),
+      QD2("Les VBG ne touchent que les femmes pauvres ou peu éduquées.",false,"Faux. Les VBG touchent les femmes de tous les milieux sociaux, de tous les niveaux d'éducation et de tous les pays. Aucune femme n'est à l'abri."),
+      QD("Que faire si une amie te confie subir des violences ?","Garder le secret absolument","L'écouter et l'aider à contacter une structure d'aide","Lui dire que c'est normal","En parler à tout le monde",1,"Écoute sans juger. Aide ton amie à contacter une association, une assistante sociale ou une ligne d'écoute. Garder le secret absolu peut aggraver la situation."),
+      QD("Les mutilations génitales féminines (MGF) sont :","Une pratique médicale","Une tradition à respecter","Une violation grave des droits humains, interdite par la loi","Un acte anodin",2,"Les MGF sont une forme grave de VBG et de violation des droits humains. Elles sont interdites par le Protocole de Maputo et les lois de nombreux pays africains, dont la Côte d'Ivoire."),
+      QD2("Un homme qui frappe sa femme commet un acte répréhensible par la loi.",true,"Vrai. Les violences conjugales sont un délit pénal. Un mari n'a aucun droit de frapper sa femme, quelles que soient les circonstances."),
+      QD("Quel est le principal obstacle qui empêche les victimes de VBG de parler ?","Le manque de temps","La honte, la peur et la méfiance envers les institutions","Elles ne connaissent pas les mots","Ce n'est pas grave",1,"La honte, la culpabilisation des victimes et la peur des représailles sont les principaux obstacles. Il est essentiel de créer des espaces sûrs où les femmes peuvent parler sans crainte."),
+    ]
+  },
+  {
+    id:"odd5",num:6,emoji:"🌍",color:"#4FB3F6",
+    title:"ODD 5 & Égalité des genres",
+    desc:"Les Objectifs de développement durable et l'égalité",
+    badge:{icon:"🌍",id:"droits_odd5",name:"Ambassadrice ODD 5"},
+    questions:[
+      QD("ODD signifie :","Objectifs De Demain","Objectifs De Développement Durable","Organisation Des Droits","Organisation Du Développement",1,"Les ODD (Objectifs de Développement Durable) sont 17 objectifs adoptés par l'ONU en 2015 pour un monde meilleur d'ici 2030."),
+      QD("L'ODD 5 porte sur :","La santé","L'éducation","L'égalité des genres","La pauvreté",2,"L'ODD 5 vise à parvenir à l'égalité des sexes et à autonomiser toutes les femmes et les filles d'ici 2030."),
+      QD2("L'ODD 5 concerne uniquement les pays en développement.",false,"Faux. L'ODD 5 concerne tous les pays du monde — y compris les pays riches — car les inégalités de genre existent partout."),
+      QD("Selon l'ODD 5, il faut éliminer :",
+        "Les écoles de filles","Toutes les formes de discrimination envers les femmes","Les droits des hommes","Les traditions familiales",1,"L'ODD 5 vise à éliminer toutes les formes de discrimination, de violence et de pratiques néfastes envers les femmes et les filles."),
+      QD2("La parité hommes-femmes dans les instances politiques fait partie des objectifs de l'ODD 5.",true,"Vrai. L'ODD 5 prévoit d'assurer la pleine participation des femmes et leur accès égal aux fonctions de direction dans les sphères politique, économique et publique."),
+      QD("Que vise l'ODD 5 en matière de santé ?",
+        "Supprimer la santé reproductive","Reconnaître le droit à la santé sexuelle et reproductive","Limiter l'accès aux soins","Interdire la contraception",1,"L'ODD 5 vise à assurer l'accès universel à la santé sexuelle et reproductive, et à reconnaître ce droit pour toutes les femmes et filles."),
+      QD("L'ODD 5 prévoit d'éliminer le mariage des enfants d'ici :","2025","2030","2040","2050",1,"Le cadre des ODD fixe 2030 comme échéance pour éliminer le mariage des enfants et les mutilations génitales — un objectif qui nécessite des efforts importants."),
+      QD2("L'égalité des genres bénéficie à toute la société, pas seulement aux femmes.",true,"Vrai. Des études montrent que l'égalité des genres augmente le PIB, réduit la pauvreté et améliore la santé de toute la population — pas seulement des femmes."),
+      QD("Quel est un indicateur concret de l'égalité des genres ?","La taille des vêtements","Le nombre de femmes dans les gouvernements et les entreprises","La couleur des uniformes","Le nombre d'écoles",1,"L'égalité des genres se mesure par des indicateurs concrets : représentation des femmes en politique, dans les entreprises, accès égal à l'éducation et aux soins."),
+      QD("En tant que jeune fille, comment peux-tu contribuer à l'ODD 5 ?","Ne rien faire","Rester à la maison","En t'éduquant, en t'exprimant et en connaissant tes droits","En évitant le sujet",2,"Connaître tes droits, aller à l'école, parler des inégalités et soutenir d'autres filles : chaque action compte pour atteindre l'égalité des genres."),
+    ]
+  },
+];
+
+// ── VERSION ANGLAISE ────────────────────────────────────────────
+const QDE=(q,a,b,c,d,ok,ex)=>({q,answers:[a,b,c,d],correct:ok,ex});
+const QDE2=(q,ok,ex)=>({q,answers:["True","False"],correct:ok?0:1,ex,type:"vf"});
+
+const DROITS_MODULES_EN=[
+  {
+    id:"maputo",num:1,emoji:"📜",color:"#E8003D",
+    title:"The Maputo Protocol",
+    desc:"The African text protecting women's rights",
+    badge:{icon:"📜",id:"droits_maputo",name:"Maputo Guardian"},
+    questions:[
+      QDE("Which African text specifically protects women's rights in health, education and protection from violence?","The Banjul Charter","The Maputo Protocol","The Vienna Convention","The Paris Charter",1,"The Maputo Protocol (2003, African Union) is the most comprehensive African text on women's rights."),
+      QDE("In which year was the Maputo Protocol adopted?","1995","2000","2003","2010",2,"The Maputo Protocol was adopted on 11 July 2003 in Maputo, Mozambique."),
+      QDE("Which organisation adopted the Maputo Protocol?","The UN","The European Union","The African Union","The World Bank",2,"The Maputo Protocol was adopted by the African Union at its summit in Maputo."),
+      QDE2("The Maputo Protocol only concerns adult women.",false,"False. It protects all women, including girls and adolescents — especially on early marriage and schooling."),
+      QDE("The Maputo Protocol expressly prohibits:","Divorce","Female genital mutilation","Women working","Breastfeeding",1,"The Maputo Protocol is one of the first African texts to explicitly ban female genital mutilation (FGM)."),
+      QDE2("Côte d'Ivoire has ratified the Maputo Protocol.",true,"True. Côte d'Ivoire has ratified the Protocol, committing to protect women's rights."),
+      QDE("What health right does the Maputo Protocol guarantee?","The right to sunlight","The right to reproductive health","The right to leisure","The right to domestic work",1,"The Maputo Protocol guarantees the right to sexual and reproductive health, including family planning and maternal health."),
+      QDE("The Maputo Protocol protects women against:","Gender-based violence","Bad weather","Personal decisions","Higher education",0,"The Maputo Protocol specifically protects women against gender-based violence, discrimination and harmful traditional practices."),
+      QDE2("The Maputo Protocol recognises women's right to participate in political processes.",true,"True. It guarantees equal participation of women in political, economic and social life."),
+      QDE("In which city was the Maputo Protocol signed?","Addis Ababa","Lagos","Maputo","Nairobi",2,"It was in Mozambique, in Maputo, that this historic treaty was adopted — hence its name."),
+    ]
+  },
+  {
+    id:"consentement",num:2,emoji:"💗",color:"#FF6B9D",
+    title:"Consent & Body",
+    desc:"Understanding consent and respect for the body",
+    badge:{icon:"💗",id:"droits_consent",name:"Voice of Consent"},
+    questions:[
+      QDE("Consent must be:","Guessed","Assumed","Clear, free and revocable","Given once and for all",2,"Consent must always be given freely, clearly expressed, and can be withdrawn at any time — even if you said yes before."),
+      QDE2("Silence always means consent.",false,"False. Silence does not mean consent. Consent must be expressed clearly and unambiguously."),
+      QDE("Can consent be withdrawn after it has been given?","No, never","Yes, but only before","Yes, at any time","No, it's too late",2,"Yes. Consent can be withdrawn at any time, without having to justify yourself. The other person must respect this withdrawal immediately."),
+      QDE("Is consent given under pressure or threat valid?","Yes, it was signed","No, it is invalid","Yes, if it was verbal","It depends on the situation",1,"No. Consent obtained under pressure, threat, manipulation or blackmail is legally and morally invalid."),
+      QDE2("A person under the influence of alcohol can give valid consent.",false,"False. A person under the influence of alcohol or substances is not able to give informed, free consent."),
+      QDE("The right to bodily integrity means:","Eating healthily","No one can touch your body without your agreement","Having a perfect body","Doing sport",1,"Bodily integrity is a fundamental right: your body belongs to you. No one can touch, modify or harm it without your consent."),
+      QDE("If someone touches you without your permission, it is:","Normal between friends","An assault, regardless of the relationship","Acceptable in family","Inevitable",1,"Any non-consensual physical contact is an assault, whether it comes from a stranger, a friend or a family member."),
+      QDE2("Consent can be given for one act but refused for another.",true,"True. Agreeing to one thing does not mean agreeing to everything else. Each act requires its own consent."),
+      QDE("Who can give valid consent?","Anyone","Only adults","A free, informed person able to decide","Only men",2,"Valid consent must be given by a person who is free (without constraint), informed (aware of what they are accepting) and fully capable of deciding."),
+      QDE("How should you react if someone does not respect your 'no'?","Stay silent","Seek help from a trusted adult","Think it's normal","Disappear",1,"If someone does not respect your refusal, you have the right to shout, leave and immediately seek help from a trusted adult or a helpline."),
+    ]
+  },
+  {
+    id:"mariage",num:3,emoji:"⚖️",color:"#9B6BEA",
+    title:"Marriage & Legal Age",
+    desc:"Rights around marriage, legal age and life choices",
+    badge:{icon:"⚖️",id:"droits_mariage",name:"Defender of Choices"},
+    questions:[
+      QDE("According to Ivorian law, what is the minimum age for marriage?","15 years","16 years for girls","18 years for everyone","21 years",2,"Ivorian law sets the minimum marriage age at 18 for both girls and boys, in line with commitments made through the Maputo Protocol."),
+      QDE2("Forced marriage is a violation of human rights.",true,"True. Any marriage contracted without the free consent of both persons is a forced marriage — a violation of fundamental rights."),
+      QDE("Early marriage can lead to:","Better studies","School dropout, early pregnancy and violence","A more fulfilled life","Professional success",1,"Child marriage is linked to school dropout, risky pregnancies, domestic violence and poverty. It deprives girls of their future."),
+      QDE2("A 14-year-old girl can refuse a marriage arranged by her parents.",true,"True. Marriage must be based on the free and full consent of both persons. A minor can and must be protected against non-consensual marriage."),
+      QDE("Which international body fights against child marriage?","FIFA","The IMF","UNICEF and the UN","The World Bank",2,"UNICEF and the UN run global programmes to eliminate child marriage by 2030, as part of the SDGs."),
+      QDE("Child marriage mainly affects:","Boys","Girls","Girls and boys equally","Only adults",1,"Child marriage mainly affects girls: worldwide, 1 in 5 girls is married before her 18th birthday."),
+      QDE2("A girl who marries early has the same chances of finishing her studies.",false,"False. Early marriage is one of the main causes of girls dropping out of school."),
+      QDE("If you know a girl threatened by forced marriage, you should:","Say nothing","Help her contact a support structure (association, social worker, police)","Tell her it's normal","Wait and see",1,"If you know a girl in danger of forced marriage, help her contact a support association, social worker or authorities. Her silence does not mean her agreement."),
+      QDE("Forced marriage is punishable by law because:","It's an outdated tradition","It deprives people of their fundamental freedom to choose","It's not profitable","Families oppose it",1,"Forced marriage is illegal because it deprives people of their fundamental freedom — to freely choose their life, their partner and their future."),
+      QDE("What does the Maputo Protocol say about marriage?","Encourage it for young people","Set the minimum age at 18 and require free consent","Prohibit it entirely","Make no provision",1,"The Maputo Protocol (art. 6) sets the minimum marriage age at 18 and requires the free and full consent of both parties."),
+    ]
+  },
+  {
+    id:"education",num:4,emoji:"📚",color:"#3DBE82",
+    title:"Girls' Education",
+    desc:"Why education is a right and a lever for dignity",
+    badge:{icon:"📚",id:"droits_education",name:"Education Ambassador"},
+    questions:[
+      QDE("Education is considered:","A privilege","A fundamental right for all","Reserved for the most intelligent","Optional for girls",1,"Education is a fundamental human right, recognised by the UN Convention on the Rights of the Child (1989). This right belongs to all girls, everywhere."),
+      QDE2("Girls who go to school tend to marry later.",true,"True. Girls' education delays marriage, reduces early pregnancies and improves their health and that of their children."),
+      QDE("Which SDG aims to guarantee quality education for all?","SDG 1","SDG 3","SDG 4","SDG 10",2,"SDG 4 aims to ensure inclusive, equitable and quality education for all — girls and boys, without exception."),
+      QDE("Girls' education contributes to:","Increasing poverty","Reducing poverty and inequality","Weakening families","Undermining traditions",1,"Each additional year of school for a girl increases her future earnings by 10–20% and reduces child mortality. It is the best investment for a society."),
+      QDE2("Over 130 million girls around the world do not go to school.",true,"True. Despite progress, 130 million girls worldwide have no access to education — due to poverty, forced marriages, conflicts or discrimination."),
+      QDE("What are the main barriers to girls' education?","Lack of interest","Poverty, early marriage and gender stereotypes","Too great a distance","Lack of books",1,"The main barriers are poverty (cost of supplies), early marriage, pregnancies, stereotypes about girls' roles and violence on the way to school."),
+      QDE("What does 'inclusive education' mean?","Reserved for some","Education for all, without discrimination","Paid for by everyone","Only in French",1,"Inclusive education welcomes all pupils, regardless of gender, disability, origin or social condition — without discrimination."),
+      QDE2("Girls naturally do less well than boys at school.",false,"False. Differences in academic performance are due to social inequalities and stereotypes, not different biological capacities."),
+      QDE("Which document guarantees the right to education for all girls?","The African Constitution","The UN Convention on the Rights of the Child","The Sports Charter","The Millennium Declaration",1,"The UN Convention on the Rights of the Child (1989), ratified by almost every country in the world, guarantees the right to education for every child, without discrimination."),
+      QDE("If a girl drops out of school, society:","Loses nothing","Loses a precious skill and a future development actor","Gains more","Doesn't change",1,"Every girl who drops out of school is a lost skill for her family, community and country. Girls' education benefits the whole of society."),
+    ]
+  },
+  {
+    id:"vbg",num:5,emoji:"🛡️",color:"#E74C3C",
+    title:"Gender-Based Violence",
+    desc:"Recognise, name and act against violence",
+    badge:{icon:"🛡️",id:"droits_vbg",name:"Dignity Sentinel"},
+    questions:[
+      QDE("GBV stands for:","Good Basic Values","Gender-Based Violence","General Benefit Vision","Great Budget Victory",1,"GBV = Gender-Based Violence. This term refers to any violence inflicted on a person because of their gender — primarily women and girls."),
+      QDE("GBV includes:","Only physical blows","Physical, psychological, sexual and economic violence","Normal arguments","Jokes between friends",1,"GBV covers all forms of violence: physical (hitting), sexual (assault), psychological (humiliation, threats) and economic (depriving of money or work)."),
+      QDE2("Psychological violence (repeated insults, humiliation) is a form of GBV.",true,"True. Psychological violence — insults, belittling, threats, isolation — is a recognised form of GBV, just as serious as physical violence."),
+      QDE("Online harassment (cyberbullying) is:","Normal among young people","A form of GBV punishable by law","Acceptable if anonymous","A harmless game",1,"Cyberbullying is a form of GBV. It is punishable by law and can cause deep trauma. Report it to a trusted adult."),
+      QDE("If you are a victim or witness of GBV in Côte d'Ivoire, you can call:","118","1308 (SOS Violence)","100","999",1,"1308 is the national helpline for victims of violence in Côte d'Ivoire. It is free and available 24 hours a day."),
+      QDE2("GBV only affects poor or uneducated women.",false,"False. GBV affects women of all social backgrounds, education levels and countries. No woman is immune."),
+      QDE("What should you do if a friend tells you she is suffering violence?","Keep it absolutely secret","Listen to her and help her contact a support organisation","Tell her it's normal","Tell everyone",1,"Listen without judging. Help your friend contact an association, social worker or helpline. Keeping absolute silence can make the situation worse."),
+      QDE("Female genital mutilation (FGM) is:","A medical procedure","A tradition to respect","A serious violation of human rights, prohibited by law","A harmless act",2,"FGM is a serious form of GBV and a violation of human rights. It is banned by the Maputo Protocol and the laws of many African countries, including Côte d'Ivoire."),
+      QDE2("A man who hits his wife commits an act punishable by law.",true,"True. Domestic violence is a criminal offence. A husband has no right to hit his wife, under any circumstances."),
+      QDE("What is the main obstacle that prevents GBV victims from speaking out?","Lack of time","Shame, fear and distrust of institutions","They don't know the words","It's not serious",1,"Shame, victim-blaming and fear of reprisals are the main obstacles. It is essential to create safe spaces where women can speak without fear."),
+    ]
+  },
+  {
+    id:"odd5",num:6,emoji:"🌍",color:"#4FB3F6",
+    title:"SDG 5 & Gender Equality",
+    desc:"The Sustainable Development Goals and gender equality",
+    badge:{icon:"🌍",id:"droits_odd5",name:"SDG 5 Ambassador"},
+    questions:[
+      QDE("SDG stands for:","Specific Development Goals","Sustainable Development Goals","Social Development Guidelines","Shared Development Goals",1,"The SDGs (Sustainable Development Goals) are 17 goals adopted by the UN in 2015 for a better world by 2030."),
+      QDE("SDG 5 focuses on:","Health","Education","Gender equality","Poverty",2,"SDG 5 aims to achieve gender equality and empower all women and girls by 2030."),
+      QDE2("SDG 5 only concerns developing countries.",false,"False. SDG 5 concerns all countries in the world — including wealthy ones — because gender inequalities exist everywhere."),
+      QDE("According to SDG 5, it is necessary to eliminate:","Girls' schools","All forms of discrimination against women","Men's rights","Family traditions",1,"SDG 5 aims to eliminate all forms of discrimination, violence and harmful practices against women and girls."),
+      QDE2("Gender parity in political bodies is part of SDG 5's objectives.",true,"True. SDG 5 aims to ensure full participation of women and their equal access to leadership roles in political, economic and public spheres."),
+      QDE("What does SDG 5 aim for in terms of health?","Abolish reproductive health","Recognise the right to sexual and reproductive health","Limit access to care","Ban contraception",1,"SDG 5 aims to ensure universal access to sexual and reproductive health, and to recognise this right for all women and girls."),
+      QDE("SDG 5 aims to eliminate child marriage by:","2025","2030","2040","2050",1,"The SDG framework sets 2030 as the deadline for eliminating child marriage and female genital mutilation."),
+      QDE2("Gender equality benefits all of society, not just women.",true,"True. Studies show that gender equality increases GDP, reduces poverty and improves the health of the entire population — not just women."),
+      QDE("What is a concrete indicator of gender equality?","Clothing size","The number of women in governments and companies","The colour of uniforms","The number of schools",1,"Gender equality is measured by concrete indicators: women's representation in politics, in companies, equal access to education and healthcare."),
+      QDE("As a young girl, how can you contribute to SDG 5?","Do nothing","Stay home","By educating yourself, speaking up and knowing your rights","By avoiding the subject",2,"Knowing your rights, going to school, talking about inequalities and supporting other girls: every action counts towards achieving gender equality."),
+    ]
+  },
+];
+
+// ── DROITS FEMMES COMPOSANT ─────────────────────────────────────
+function DroitsQuiz({module,lang,onBack,onFinish}){
+  const[qi,setQi]=useState(0);
+  const[sel,setSel]=useState(null);
+  const[showFb,setShowFb]=useState(false);
+  const[score,setScore]=useState(0);
+  const[done,setDone]=useState(false);
+  const qs=module.questions;
+  const q=qs[qi];
+  const L=["A","B","C","D"];
+  const t=(fr,en)=>lang==="en"?en:fr;
+
+  function answer(i){
+    if(showFb)return;
+    setSel(i);setShowFb(true);
+    if(i===q.correct)setScore(s=>s+10);
+  }
+
+  function next(){
+    if(qi+1>=qs.length){setDone(true);return;}
+    setQi(q=>q+1);setSel(null);setShowFb(false);
+  }
+
+  if(done){
+    const pct=Math.round((score/(qs.length*10))*100);
+    const akState=pct>=80?"celebration":pct>=60?"joie":"encouragement";
+    return(
+      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
+        <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"32px 20px",marginBottom:16}}>
+          <AKissi state={akState} lang={lang} size={100} style={{marginBottom:8}}/>
+          <div className="T" style={{fontSize:"3rem",fontWeight:900,color:"white"}}>{score/10}/{qs.length}</div>
+          <div style={{fontSize:"1.4rem",letterSpacing:3,margin:"8px 0"}}>{"⭐".repeat(pct>=90?5:pct>=75?4:pct>=60?3:pct>=40?2:1)}{"☆".repeat(5-(pct>=90?5:pct>=75?4:pct>=60?3:pct>=40?2:1))}</div>
+          <div style={{fontSize:14,color:"rgba(255,180,200,.8)",fontWeight:700}}>
+            {t(pct>=80?"Excellent ! Tu maîtrises ce module !":pct>=60?"Bien joué ! Continue à apprendre.":"Rejoue pour progresser !",
+               pct>=80?"Excellent! You've mastered this module!":pct>=60?"Well done! Keep learning.":"Play again to improve!")}
+          </div>
+        </div>
+        {pct>=80&&(
+          <div style={{background:"linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,107,157,.15))",border:"2px solid gold",borderRadius:20,padding:"16px",marginBottom:16}} className="up">
+            <div style={{fontSize:"2.5rem",marginBottom:6}}>{module.badge.icon}</div>
+            <div className="T" style={{fontSize:16,fontWeight:900,color:P.red}}>{t("Badge débloqué !","Badge unlocked!")}</div>
+            <div style={{fontSize:14,fontWeight:700,color:P.dark,marginTop:4}}>{module.badge.name}</div>
+          </div>
+        )}
+        <div style={{display:"flex",gap:10}}>
+          <button onClick={()=>{setQi(0);setSel(null);setShowFb(false);setScore(0);setDone(false);}} style={{flex:1,background:"white",color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
+          <button onClick={onBack} style={{flex:1,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>← {t("Modules","Modules")}</button>
+        </div>
+      </div>
+    );
+  }
+
+  return(
+    <div style={{paddingBottom:24}}>
+      <div style={{background:`linear-gradient(135deg,${module.color},${module.color}99)`,padding:"48px 16px 16px"}}>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:12}}>← {t("Retour","Back")}</button>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+          <div style={{flex:1,height:6,background:"rgba(255,255,255,.2)",borderRadius:3,overflow:"hidden"}}>
+            <div style={{height:"100%",background:"white",borderRadius:3,width:`${((qi)/qs.length)*100}%`,transition:"width .4s"}}/>
+          </div>
+          <span style={{fontSize:12,color:"white",fontWeight:800}}>{qi+1}/{qs.length}</span>
+        </div>
+      </div>
+      <div style={{padding:"14px 14px 0"}}>
+        <div style={{background:"white",borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
+          <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:16}}>{q.q}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:9}}>
+            {q.answers.map((a,i)=>{
+              let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.dark;
+              if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#18a044";}else if(i===sel){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
+              return(
+                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"13px 14px",cursor:showFb?"default":"pointer",fontSize:"1.02rem",fontWeight:700,display:"flex",alignItems:"center",gap:10,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
+                  <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?"#3DBE82":showFb&&i===sel?"#E74C3C":`${module.color}`,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{q.answers.length===2?(i===0?(lang==="en"?"T":"V"):(lang==="en"?"F":"F")):L[i]}</span>
+                  {a}
+                </button>
+              );
+            })}
+          </div>
+          {showFb&&(
+            <div style={{marginTop:14,padding:"14px",borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
+              <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+                <AKissi state={sel===q.correct?"joie":"erreur"} lang={lang} size={50} msg={null} style={{flexShrink:0}}/>
+                <div>
+                  <div className="T" style={{fontSize:14,fontWeight:800,color:sel===q.correct?"#18a044":"#E74C3C",marginBottom:4}}>
+                    {sel===q.correct?t("✅ Bonne réponse !","✅ Correct!"):`❌ ${t("Pas tout à fait...","Not quite...")}`}
+                  </div>
+                  <div style={{fontSize:13,color:P.muted,lineHeight:1.55}}>{q.ex}</div>
+                </div>
+              </div>
+              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"12px",fontSize:14,fontWeight:800,cursor:"pointer",width:"100%",marginTop:12}}>
+                {qi+1>=qs.length?t("Voir mes résultats 🏆","See results 🏆"):t("Question suivante →","Next question →")}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DroitsFemmes({lang,onBack,navActive,onNav}){
+  const[activeModule,setActiveModule]=useState(null);
+  const modules=lang==="en"?DROITS_MODULES_EN:DROITS_MODULES_FR;
+  const t=(fr,en)=>lang==="en"?en:fr;
+
+  if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={()=>setActiveModule(null)}/>;
+
+  return(
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      {/* Header riche */}
+      <div style={{background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)",padding:"52px 20px 28px",position:"relative",overflow:"hidden"}}>
+        {/* Cercles déco */}
+        <div style={{position:"absolute",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,0,61,.25),transparent)",top:-60,right:-40,pointerEvents:"none"}}/>
+        <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(79,179,246,.15),transparent)",bottom:-30,left:-20,pointerEvents:"none"}}/>
+        <div style={{position:"absolute",width:80,height:80,borderRadius:"50%",background:"radial-gradient(circle,rgba(155,107,234,.2),transparent)",top:40,left:"40%",pointerEvents:"none"}}/>
+        {/* Émojis flottants */}
+        {["📜","💗","⚖️","📚","🛡️","🌍"].map((e,i)=>(
+          <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.2,top:`${15+i*12}%`,left:i%2===0?`${3+i*5}%`:`${72+i*3}%`,animation:`ak-float ${2+i*.4}s ease-in-out infinite`,pointerEvents:"none"}}>{e}</span>
+        ))}
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.12)",border:"1.5px solid rgba(255,255,255,.2)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:18}}>← {t("Retour","Back")}</button>
+        <div style={{display:"flex",alignItems:"flex-end",gap:14}}>
+          <AKissi state="salut" lang={lang} size={90} msg={null} style={{flexShrink:0,marginBottom:-8}}/>
+          <div style={{flex:1}}>
+            <div style={{display:"inline-block",background:"rgba(232,0,61,.25)",border:"1px solid rgba(232,0,61,.4)",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:800,color:"#FF8FA3",marginBottom:8,letterSpacing:.5}}>🌸 ONG Happy Mum's</div>
+            <div className="T" style={{fontSize:22,fontWeight:900,color:"white",lineHeight:1.1,marginBottom:6}}>{t("Quiz Droits des Femmes","Women's Rights Quiz")}</div>
+            <div style={{fontSize:12,color:"rgba(255,180,200,.7)",fontWeight:600,lineHeight:1.5}}>{t("6 modules · 10 questions chacun","6 modules · 10 questions each")}</div>
+          </div>
+        </div>
+        {/* Pills modules */}
+        <div style={{display:"flex",gap:6,marginTop:16,flexWrap:"wrap"}}>
+          {modules.map(m=>(
+            <div key={m.id} style={{background:`${m.color}25`,border:`1px solid ${m.color}44`,borderRadius:20,padding:"4px 10px",fontSize:10,fontWeight:800,color:"white"}}>
+              {m.emoji} {t(`M${m.num}`,`M${m.num}`)}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
+        {modules.map((m,i)=>(
+          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,.06)",border:`1.5px solid ${m.color}22`}}>
+            <div style={{width:54,height:54,borderRadius:16,background:`${m.color}18`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <span style={{fontSize:22}}>{m.emoji}</span>
+              <span style={{fontSize:9,fontWeight:900,color:m.color}}>{t(`M${m.num}`,`M${m.num}`)}</span>
+            </div>
+            <div style={{flex:1}}>
+              <div className="T" style={{fontSize:16,fontWeight:800,color:P.dark,marginBottom:3}}>{m.title}</div>
+              <div style={{fontSize:12,color:P.muted,fontWeight:600,lineHeight:1.4}}>{m.desc}</div>
+              <div style={{fontSize:11,color:m.color,fontWeight:800,marginTop:4}}>10 {t("questions","questions")} · 🏅 {m.badge.name}</div>
+            </div>
+            <div style={{fontSize:20,color:m.color,fontWeight:900,flexShrink:0}}>›</div>
+          </div>
+        ))}
+        <div style={{height:16}}/>
+      </div>
+      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
+        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Défi"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
+          <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
+            <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
 // ── SETTINGS ────────────────────────────────────────────────────
 function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,setDarkMode,user,setUser,onResetProgress,onBack}){
   const[confirmReset,setConfirmReset]=useState(false);
@@ -3488,91 +3973,142 @@ function EscapeGame({lang,onBack}){
   return null;
 }
 
-// ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onCelebrate,onEscape,onNav}){
+// ── THÈMES ──────────────────────────────────────────────────────
+const THEMES_FR=[
+  {id:"corps",    name:"Mon corps",          emoji:"🌸",color:"#FF6B9D",bg:"rgba(255,107,157,.15)",desc:"Puberté, anatomie, cycle menstruel, fonctionnement du corps",    profile:"fille",cat:"qcm"},
+  {id:"regles",name:"Mes règles",emoji:"🩸",color:"#E8003D",bg:"rgba(232,0,61,.12)",  desc:"Menstruations, hygiène, produits, douleurs, précarité menstruelle",profile:"fille",cat:"mr"},
+  {id:"mythes",   name:"Mythes & vérités",    emoji:"🧠",color:"#9B6BEA",bg:"rgba(155,107,234,.15)",desc:"Idées reçues, tabous culturels, croyances liées aux règles",     profile:"fille",cat:"mr"},
+  {id:"dignite",  name:"Dignité & confiance", emoji:"💗",color:"#F5A623",bg:"rgba(245,166,35,.15)", desc:"Honte, confiance en soi, image du corps, stigmatisation menstruelle",profile:"fille",cat:"violence"},
+  {id:"droits",   name:"Droits & respect",    emoji:"⚖️",color:"#3DBE82",bg:"rgba(61,190,130,.15)", desc:"Droit à l'hygiène, dignité, discrimination, sécurité, consentement",profile:"fille",cat:"violence"},
+];
+const THEMES_EN=[
+  {id:"corps",    name:"My Body",             emoji:"🌸",color:"#FF6B9D",bg:"rgba(255,107,157,.15)",desc:"Puberty, anatomy, menstrual cycle, how the body works",          profile:"fille",cat:"qcm"},
+  {id:"regles",name:"Mes règles",emoji:"🩸",color:"#E8003D",bg:"rgba(232,0,61,.12)",  desc:"Menstruation, hygiene, products, pain, menstrual poverty",       profile:"fille",cat:"mr"},
+  {id:"mythes",   name:"Myths & Truths",      emoji:"🧠",color:"#9B6BEA",bg:"rgba(155,107,234,.15)",desc:"Misconceptions, cultural taboos, false beliefs about periods",   profile:"fille",cat:"mr"},
+  {id:"dignite",  name:"Dignity & Confidence",emoji:"💗",color:"#F5A623",bg:"rgba(245,166,35,.15)", desc:"Shame, self-confidence, body image, menstrual stigma",            profile:"fille",cat:"violence"},
+  {id:"droits",   name:"Rights & Respect",    emoji:"⚖️",color:"#3DBE82",bg:"rgba(61,190,130,.15)", desc:"Hygiene rights, dignity, discrimination, safety, consent",       profile:"fille",cat:"violence"},
+];
+
+// ── EXPLORER ─────────────────────────────────────────────────────
+function Explorer({lang,onTheme,onNav,navActive}){
+  const themes=lang==="en"?THEMES_EN:THEMES_FR;
+  const t=(fr,en)=>lang==="en"?en:fr;
   return(
-    <div style={{paddingBottom:88}}>
-      <div style={{background:HERO,padding:"26px 20px 24px",borderRadius:"0 0 34px 34px",boxShadow:"0 10px 34px rgba(232,0,61,.22)",marginBottom:16}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-          <div>
-            <img src={HM_LOGO} alt="Happy Mum's" style={{width:52,height:52,objectFit:"contain",filter:"drop-shadow(0 4px 12px rgba(255,255,255,.3))"}}/>
-            <h1 className="T" style={{margin:"8px 0 2px",fontSize:26,fontWeight:800,color:"white"}}>{lang==="en"?`Hello ${user.name} 🌸`:`Bonjour ${user.name} 🌸`}</h1>
-            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:12,fontWeight:600}}>{user.country} · Quiz Dignité by Happy Mum's</p>
-          </div>
-          <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
-        </div>
-        <div style={{marginTop:14,background:"rgba(255,255,255,.15)",borderRadius:16,padding:"12px 14px"}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-            <span style={{color:"rgba(255,255,255,.9)",fontSize:12,fontWeight:700}}>{lvl.icon} {lvl.label}</span>
-            <span style={{color:"white",fontSize:12,fontWeight:900}}>{totalPts} pts</span>
-          </div>
-          <div style={{height:7,background:"rgba(255,255,255,.22)",borderRadius:7,overflow:"hidden"}}>
-            <div style={{height:"100%",background:"white",borderRadius:7,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
-          </div>
-          {badges.length>0&&<div style={{marginTop:8,fontSize:11,color:"rgba(255,255,255,.8)",fontWeight:700}}>🏅 {badges.length} badge{badges.length>1?"s":""} débloqué{badges.length>1?"s":""}</div>}
-        </div>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      {/* Header */}
+      <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",padding:"52px 20px 22px"}}>
+        <div className="T" style={{fontSize:26,fontWeight:900,color:"white",marginBottom:5}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</div>
+        <p style={{fontSize:14,color:"rgba(255,255,255,.8)",fontWeight:600}}>{t("Choisis un thème pour commencer","Choose a theme to start")}</p>
       </div>
-      <div style={{padding:"0 16px"}}>
-        <button onClick={onQuiz} style={{width:"100%",background:"white",border:`2px solid rgba(232,0,61,.12)`,borderRadius:24,padding:"20px 18px",textAlign:"left",marginBottom:12,boxShadow:"0 6px 24px rgba(232,0,61,.1)",display:"flex",alignItems:"center",gap:16,cursor:"pointer"}}>
-          <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,rgba(232,0,61,.15),rgba(255,107,157,.25))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
-          <div style={{flex:1}}>
-            <div className="T" style={{fontSize:"1.15rem",fontWeight:800,color:P.red}}>Quiz Dignité</div>
-            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"3 profiles · 6 question categories":"3 profils · 6 catégories de questions"}</div>
-            <div style={{display:"flex",gap:5,marginTop:7}}>
-              {["👧","👦","👨‍👩‍👧"].map((e,i)=><span key={i} style={{background:"rgba(232,0,61,.08)",borderRadius:8,padding:"2px 8px",fontSize:".7rem",fontWeight:700,color:P.red}}>{e}</span>)}
+      {/* Themes */}
+      <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
+        {themes.map(th=>(
+          <div key={th.id} onClick={()=>onTheme(th)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
+            <div style={{width:52,height:52,borderRadius:16,background:th.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{th.emoji}</div>
+            <div style={{flex:1}}>
+              <div className="T" style={{fontSize:17,fontWeight:800,color:P.dark,marginBottom:3}}>{th.name}</div>
+              <div style={{fontSize:12,color:P.muted,fontWeight:600,lineHeight:1.4}}>{th.desc}</div>
+            </div>
+            <div style={{fontSize:20,color:th.color,fontWeight:900,flexShrink:0}}>›</div>
+          </div>
+        ))}
+        <div style={{height:16}}/>
+      </div>
+      {/* Nav */}
+      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
+        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Challenge"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"}].map(n=>(
+          <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
+            <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+// ── HUB ────────────────────────────────────────────────────────
+function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onCelebrate,onEscape,onNav,navActive,defiText}){
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const quickItems=[
+    {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),color:"#4FB3F6",action:onGames},
+    {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),color:"#E8003D",action:onDroits},
+    {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
+    {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
+  ];
+  return(
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      {/* Header */}
+      <div style={{background:HERO,padding:"50px 20px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px rgba(232,0,61,.22)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
+          <div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.7)",fontWeight:700,marginBottom:4}}>🌸 Quiz Dignité</div>
+            <div className="T" style={{fontSize:24,fontWeight:900,color:"white"}}>{t(`Bonjour ${user.name} !`,`Hello ${user.name}!`)}</div>
+            <div style={{display:"flex",gap:8,alignItems:"center",marginTop:4,flexWrap:"wrap"}}>
+              <div style={{fontSize:12,color:"rgba(255,255,255,.7)",fontWeight:600}}>{user.country} · {lvl.icon} {lvl.label}</div>
+              {streak>0&&<div style={{background:"rgba(255,100,0,.35)",borderRadius:12,padding:"2px 10px",fontSize:11,fontWeight:800,color:"#FFB366"}}>🔥 {streak}j</div>}
             </div>
           </div>
-          <span style={{fontSize:22,color:P.red,fontWeight:900}}>›</span>
-        </button>
-        <button onClick={onGames} style={{width:"100%",background:"white",border:`2px solid rgba(79,179,246,.2)`,borderRadius:24,padding:"20px 18px",textAlign:"left",marginBottom:16,boxShadow:"0 6px 24px rgba(79,179,246,.1)",display:"flex",alignItems:"center",gap:16,cursor:"pointer"}}>
-          <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,rgba(79,179,246,.15),rgba(20,184,166,.25))",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🕹️</div>
-          <div style={{flex:1}}>
-            <div className="F" style={{fontSize:"1.15rem",fontWeight:800,color:P.blue}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</div>
-            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"10 mini-games · 3 levels each":"10 mini-jeux · 3 niveaux chacun"}</div>
-            <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>
-              {["🎯","🧩","🃏","🍽️","📅","🆘","💡","🖼️","🔍","🌿"].map((e,i)=><span key={i} style={{fontSize:"1rem"}}>{e}</span>)}
-            </div>
+          <div style={{textAlign:"right"}}>
+            <div style={{fontSize:22,fontWeight:900,color:"white"}}>{totalPts}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,.7)",fontWeight:700}}>pts</div>
           </div>
-          <span style={{fontSize:22,color:P.blue,fontWeight:900}}>›</span>
-        </button>
-        <button onClick={onCelebrate} style={{width:"100%",background:"linear-gradient(135deg,#FFE8F5,#FFF0FA)",border:"2px solid rgba(232,0,61,.2)",borderRadius:24,padding:"18px 18px",textAlign:"left",marginBottom:12,boxShadow:"0 4px 18px rgba(232,0,61,.08)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
-          <div style={{width:52,height:52,borderRadius:18,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>🌸</div>
-          <div>
-            <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:P.red}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
-            <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"Your daily journal · write & keep":"Ton journal quotidien · écris & garde"}</div>
-          </div>
-        </button>
-        <button onClick={onEscape} style={{width:"100%",background:"linear-gradient(135deg,#1A0A15,#3A0313)",border:"2px solid rgba(232,18,63,.35)",borderRadius:24,padding:"18px 18px",textAlign:"left",marginBottom:12,boxShadow:"0 4px 18px rgba(232,0,61,.2)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
-          <div style={{width:52,height:52,borderRadius:18,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>🔐</div>
-          <div>
-            <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:"#FF8FA3"}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
-            <div style={{fontSize:".82rem",color:"rgba(255,180,190,.7)",marginTop:3,fontWeight:600}}>{lang==="en"?"4 levels · solve riddles · find the code":"4 niveaux · résous les énigmes · trouve le code"}</div>
-          </div>
-        </button>
-        <div style={{background:"rgba(232,0,61,.06)",border:"1.5px solid rgba(232,0,61,.15)",borderRadius:18,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}} onClick={()=>onNav("sos")}>
-          <span style={{fontSize:"1.6rem"}}>🚨</span>
-          <div>
-            <div className="T" style={{fontSize:".88rem",fontWeight:800,color:P.red}}>{lang==="en"?"Emergency & Help":"Urgence & Aide"}</div>
-            <div style={{fontSize:".75rem",color:P.muted,fontWeight:600}}>116 · 1308 · 110 — {lang==="en"?"Free 24/7":"Gratuits 24h/24"}</div>
-          </div>
-          <span style={{marginLeft:"auto",fontSize:18,color:P.red,fontWeight:900}}>›</span>
         </div>
-        <p style={{textAlign:"center",fontSize:".66rem",color:P.muted,marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
+        {/* Progress bar */}
+        <div style={{height:6,background:"rgba(255,255,255,.2)",borderRadius:6,overflow:"hidden"}}>
+          <div style={{height:"100%",background:"white",borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
+        </div>
+        {badges.length>0&&<div style={{fontSize:11,color:"rgba(255,255,255,.75)",fontWeight:700,marginTop:6}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""} débloqué${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""} unlocked`)}</div>}
       </div>
+      <div style={{flex:1,padding:"16px 14px",display:"flex",flexDirection:"column",gap:12,overflowY:"auto"}}>
+        {/* Explorer CTA */}
+        <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:"20px 18px",textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
+          <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
+          <div style={{flex:1}}>
+            <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("7 thèmes · 3 niveaux · bilingue","7 themes · 3 levels · bilingual")}</div>
+          </div>
+          <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
+        </button>
+        {/* Défi du jour */}
+        {defiText&&<div style={{background:"white",borderRadius:18,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+          <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:6}}>🔥 {t("Défi du jour","Daily challenge")}</div>
+          <div style={{display:"flex",alignItems:"flex-end",gap:10}}>
+            <AKissi state="encouragement" lang={lang} size={64} msg={null} style={{flexShrink:0,marginBottom:-6}}/>
+            <p style={{fontSize:14,color:P.dark,fontWeight:700,lineHeight:1.5,margin:0,flex:1}}>{defiText}</p>
+          </div>
+        </div>}
+        {/* Quick access grid */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {quickItems.map((it,i)=>(
+            <button key={i} onClick={it.action} style={{background:"white",border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
+              <div style={{width:40,height:40,borderRadius:12,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{it.icon}</div>
+              <div style={{fontSize:12,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Nav */}
+      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
+        {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Challenge"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"}].map(n=>(
+          <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
+            <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }
 
 // ── GAMES HUB ──────────────────────────────────────────────────
-function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
+function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
   const gameDef=lang==="en"?GAME_DEF_EN:GAME_DEF_FR;
   return(
     <div style={{paddingBottom:88}}>
-      <div style={{background:HERO,padding:"22px 18px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px #C8102E2A",marginBottom:16}}>
+      <div style={{background:HERO,padding:"48px 18px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px #C8102E2A",marginBottom:16}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
-            <div style={{fontSize:40,lineHeight:1}}>🕹️</div>
-            <h1 className="T" style={{margin:"5px 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
+            <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",fontSize:13,color:"white",fontWeight:800,cursor:"pointer",marginBottom:10}}>← {lang==="en"?"Back":"Retour"}</button>
+            <h1 className="T" style={{margin:"0 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
             <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"10 games · 3 levels each ✨":"10 jeux · 3 niveaux chacun ✨"}</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
@@ -3670,6 +4206,7 @@ export default function App(){
   const[totalPts,setTotalPts]=useState(0);
   const[badges,setBadges]=useState([]);
   const[sessions,setSessions]=useState(0);
+  const[streak,setStreak]=useState(()=>parseInt(localStorage.getItem('hm_streak')||'0',10));
   const[newBadges,setNewBadges]=useState([]);
   const[soundOn,setSoundOn]=useState(true);
   const[audioOn,setAudioOn]=useState(true);
@@ -3686,6 +4223,7 @@ export default function App(){
       if(d.sess!=null)setSessions(d.sess);
       if(d.unl)setUnlocked(d.unl);
       if(typeof d.snd==="boolean"){setSoundOn(d.snd);SND.on=d.snd;}
+      if(d.streak!=null)setStreak(d.streak);
       setScreen("hub");
     }else setScreen("welcome");
   },[]);
@@ -3698,7 +4236,21 @@ export default function App(){
     s.textContent=darkMode?`body,#root{background:#1A0A15!important;}.app-root{background:linear-gradient(160deg,#2A0A20,#1A0A15)!important;}`:"";
   },[darkMode]);
 
-  function persist(pts,bdg,sess,unl){Store.save("qd-data",{pts,bdg,sess,unl,snd:soundOn});}
+  function persist(pts,bdg,sess,unl,str){Store.save("qd-data",{pts,bdg,sess,unl,snd:soundOn,streak:str??streak});}
+
+  function updateStreak(){
+    const today=new Date().toISOString().split('T')[0];
+    const lastPlay=localStorage.getItem('hm_streak_date');
+    const cur=parseInt(localStorage.getItem('hm_streak')||'0',10);
+    if(lastPlay===today)return cur;
+    const yest=new Date();yest.setDate(yest.getDate()-1);
+    const yestStr=yest.toISOString().split('T')[0];
+    const ns=lastPlay===yestStr?cur+1:1;
+    localStorage.setItem('hm_streak_date',today);
+    localStorage.setItem('hm_streak',String(ns));
+    setStreak(ns);
+    return ns;
+  }
 
   function earnBadge(b){
     setBadges(prev=>{
@@ -3782,7 +4334,9 @@ export default function App(){
       if(allDone&&champBadge&&!allB.includes(champBadge.id)){fresh.push(champBadge);allB.push(champBadge.id);}
     }
     setTotalPts(newTotal);setSessions(newSess);setBadges(allB);setNewBadges(fresh);
-    setQuizScore(score);setQuizQLen(qLen);persist(newTotal,allB,newSess,unlocked);
+    setQuizScore(score);setQuizQLen(qLen);
+    const newStreak=updateStreak();
+    persist(newTotal,allB,newSess,unlocked,newStreak);
     ga("quiz_end",{profile,category,score,pct});setScreen("quiz_results");
   }
 
@@ -3944,7 +4498,8 @@ export default function App(){
   function goNav(id){
     setNavActive(id);
     if(id==="home")setScreen("hub");
-    else if(id==="snd")toggleSound();
+    else if(id==="explore")setScreen("explore");
+    else if(id==="defi"){setShowDefiModal(true);}
     else if(id==="settings")setScreen("settings");
     else setScreen(id);
   }
@@ -3952,6 +4507,11 @@ export default function App(){
   const lvl=getLevel(totalPts,lang);
   const showNav=!["quiz_game","game_play","welcome","onboarding"].includes(screen);
   const gDef=(lang==="en"?GAME_DEF_EN:GAME_DEF_FR).find(g=>g.id===gameId)||GAME_DEF_FR.find(g=>g.id===gameId);
+
+  // Défi du jour text for Hub
+  const DEFIS_TODAY_FR=["Nomme 3 parties de ton corps dont tu es fière 💗","Décris à une amie comment fonctionne le cycle menstruel","Cite un droit des femmes que tu as appris récemment","Comment peux-tu soutenir une amie qui souffre en silence ?","Qu'as-tu fait aujourd'hui pour prendre soin de toi ?"];
+  const DEFIS_TODAY_EN=["Name 3 parts of your body you are proud of 💗","Explain to a friend how the menstrual cycle works","Name a women's right you recently learned about","How can you support a friend who is silently suffering?","What did you do today to take care of yourself?"];
+  const defiToday=(lang==="en"?DEFIS_TODAY_EN:DEFIS_TODAY_FR)[new Date().getDay()%5];
 
   return(
     <div>
@@ -3965,7 +4525,11 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} lang={lang} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>setScreen("droits_femmes")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+
+        {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>setScreen("hub")} navActive={navActive} onNav={goNav}/>}
+
+        {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
@@ -4047,50 +4611,99 @@ export default function App(){
           </div>
         )}
 
-        {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} lang={lang} onBack={()=>setScreen("quiz_cats")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
+        {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} lang={lang} onBack={()=>setScreen("explore")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
 
         {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} lang={lang} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
 
         {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} lang={lang} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
 
-        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("quiz_profiles");setNavActive("home");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
+        {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
         {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={()=>setScreen("hub")}/>}
         {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>setScreen("hub")}/>}
-        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame}/>}
+        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onBack={()=>setScreen("hub")}/>}
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
         {screen==="game_play"&&gameId&&<GamePlay gameId={gameId} gameLevel={gameLevel} lang={lang} onBack={()=>setScreen("games_hub")} onBadge={earnBadge} onComplete={()=>onLevelComplete(gameId,gameLevel)}/>}
 
         {screen==="progress"&&(
-          <div style={{padding:"16px 16px 88px"}}>
-            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:14}}>🏆 Mes Progrès</div>
-            <div style={{background:`linear-gradient(135deg,${P.red},${P.rose},${P.coral})`,borderRadius:22,padding:20,color:"white",textAlign:"center",marginBottom:15}}>
-              <span style={{fontSize:"2.8rem",display:"block",marginBottom:5}}>{lvl.icon}</span>
-              <div className="T" style={{fontSize:"1.4rem",fontWeight:800}}>{lvl.label}</div>
-              <div style={{fontSize:".8rem",opacity:.85,marginTop:4}}>{totalPts} points · {sessions} session{sessions>1?"s":""}</div>
-            </div>
-            {badges.length===0?(
-              <div style={{textAlign:"center",padding:28,color:P.muted}}>
-                <div style={{fontSize:"2.4rem",marginBottom:9}}>🌸</div>
-                <div className="T" style={{color:P.red,fontWeight:700}}>Joue pour gagner tes premiers badges !</div>
+          <div style={{paddingBottom:88}}>
+            {/* Header */}
+            <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",padding:"52px 20px 24px",textAlign:"center"}}>
+              <AKissi state={streak>=7?"celebration":streak>=3?"joie":"encouragement"} lang={lang} size={90} style={{marginBottom:8}}/>
+              <div className="T" style={{fontSize:22,fontWeight:900,color:"white",marginBottom:4}}>{lvl.icon} {lvl.label}</div>
+              <div style={{fontSize:14,color:"rgba(255,180,200,.75)",fontWeight:600}}>{totalPts} pts · {sessions} {lang==="en"?`session${sessions>1?"s":""}`:`session${sessions>1?"s":""}`}</div>
+              {/* Barre de progression */}
+              <div style={{height:6,background:"rgba(255,255,255,.15)",borderRadius:6,overflow:"hidden",margin:"12px 0 8px"}}>
+                <div style={{height:"100%",background:"linear-gradient(90deg,#E8003D,#FF6B9D)",borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .8s"}}/>
               </div>
-            ):(
-              <>
-                <div className="T" style={{color:P.red,marginBottom:12,fontWeight:800}}>Mes badges</div>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                  {[...Object.values(QUIZ_BADGES).flat()].filter(b=>badges.includes(b.id)).map((b,i)=>(
-                    <div key={i} style={{background:"rgba(255,255,255,.86)",border:"1.5px solid rgba(255,107,157,.18)",borderRadius:15,padding:"13px 10px",textAlign:"center"}}>
-                      <span style={{fontSize:"1.7rem",display:"block",marginBottom:5}}>{b.icon}</span>
-                      <div className="T" style={{fontSize:".75rem",fontWeight:700,color:P.red}}>{b.name}</div>
-                    </div>
+              <div style={{fontSize:11,color:"rgba(255,180,200,.5)",fontWeight:600}}>{lang==="en"?"Progress to next level":"Progression vers le niveau suivant"}</div>
+            </div>
+
+            <div style={{padding:"14px 14px 0"}}>
+              {/* Streak */}
+              <div style={{background:"white",borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(255,120,0,.2)",boxShadow:"0 2px 12px rgba(255,120,0,.08)"}}>
+                <div style={{display:"flex",alignItems:"center",gap:14}}>
+                  <div style={{width:56,height:56,borderRadius:16,background:"linear-gradient(135deg,#FF6B00,#FF9A00)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🔥</div>
+                  <div style={{flex:1}}>
+                    <div className="T" style={{fontSize:16,fontWeight:900,color:"#E67E00"}}>{streak} {lang==="en"?`day${streak!==1?"s":""} in a row`:`jour${streak>1?"s":""} de suite`}</div>
+                    <div style={{fontSize:12,color:P.muted,fontWeight:600,marginTop:2}}>{lang==="en"?"Keep playing every day!":"Continue chaque jour !"}</div>
+                  </div>
+                  <div style={{textAlign:"right"}}>
+                    {[3,7,14,30].map(m=>(
+                      <div key={m} style={{fontSize:10,fontWeight:800,color:streak>=m?"#E67E00":P.muted,opacity:streak>=m?1:.4}}>🔥{m}j</div>
+                    ))}
+                  </div>
+                </div>
+                {/* Milestone bar */}
+                <div style={{display:"flex",gap:4,marginTop:10}}>
+                  {[{d:1,l:"1"},{d:3,l:"3"},{d:7,l:"7"},{d:14,l:"14"},{d:30,l:"30"}].map(({d,l})=>(
+                    <div key={d} style={{flex:1,height:6,borderRadius:3,background:streak>=d?"linear-gradient(90deg,#FF6B00,#FF9A00)":"rgba(255,120,0,.15)"}}/>
                   ))}
                 </div>
-              </>
-            )}
-            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – Tous droits réservés</p>
+                <div style={{display:"flex",justifyContent:"space-between",marginTop:3,fontSize:9,color:P.muted,fontWeight:700}}>
+                  {["1","3","7","14","30"].map(l=><span key={l}>{l}j</span>)}
+                </div>
+              </div>
+
+              {/* Stats */}
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+                {[
+                  {icon:"🎮",val:sessions,label:lang==="en"?"Quizzes played":"Quiz joués",color:"#E8003D"},
+                  {icon:"🏅",val:badges.length,label:lang==="en"?"Badges earned":"Badges gagnés",color:"#F5A623"},
+                  {icon:"⭐",val:totalPts,label:lang==="en"?"Total points":"Points totaux",color:"#9B6BEA"},
+                  {icon:"🔥",val:streak,label:lang==="en"?"Day streak":"Jours de suite",color:"#FF6B00"},
+                ].map((s,i)=>(
+                  <div key={i} style={{background:"white",borderRadius:18,padding:"14px 12px",textAlign:"center",border:`1.5px solid ${s.color}22`,boxShadow:`0 2px 10px ${s.color}11`}}>
+                    <div style={{fontSize:24,marginBottom:4}}>{s.icon}</div>
+                    <div className="T" style={{fontSize:22,fontWeight:900,color:s.color}}>{s.val}</div>
+                    <div style={{fontSize:11,color:P.muted,fontWeight:700,marginTop:2}}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Badges */}
+              <div style={{background:"white",borderRadius:20,padding:"16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
+                <div className="T" style={{fontSize:15,fontWeight:900,color:P.red,marginBottom:12}}>🏅 {lang==="en"?"My Badges":"Mes Badges"} ({badges.length})</div>
+                {badges.length===0?(
+                  <div style={{textAlign:"center",padding:"20px 0"}}>
+                    <AKissi state="encouragement" lang={lang} size={70} msg={lang==="en"?"Play to earn your first badge!":"Joue pour gagner ton premier badge !"}/>
+                  </div>
+                ):(
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+                    {[...Object.values(QUIZ_BADGES).flat()].filter(b=>badges.includes(b.id)).map((b,i)=>(
+                      <div key={i} style={{background:"rgba(255,215,0,.08)",border:"1.5px solid rgba(255,215,0,.3)",borderRadius:14,padding:"10px 6px",textAlign:"center"}}>
+                        <span style={{fontSize:"1.6rem",display:"block",marginBottom:4}}>{b.icon}</span>
+                        <div style={{fontSize:9,fontWeight:800,color:P.red,lineHeight:1.3}}>{b.name}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p style={{fontSize:11,color:P.muted,textAlign:"center",marginTop:16,opacity:.6}}>© 2026 ONG Happy Mum's</p>
+            </div>
           </div>
         )}
 
@@ -4143,9 +4756,9 @@ export default function App(){
 
       {showNav&&(
         <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(255,255,255,.93)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(255,107,157,.18)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.09)"}}>
-          {[{id:"home",icon:"🏠",label:lang==="en"?"Home":"Accueil"},{id:"progress",icon:"🏆",label:lang==="en"?"Progress":"Progrès"},{id:"glossaire",icon:"📚",label:lang==="en"?"Glossary":"Glossaire"},{id:"sos",icon:"🚨",label:"SOS"},{id:"settings",icon:"⚙️",label:lang==="en"?"Settings":"Réglages"},{id:"privacy",icon:"🔐",label:lang==="en"?"Privacy":"Confidentialité"}].map(n=>(
-            <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".52rem",fontWeight:700,gap:3,transition:"color .2s"}}>
-              <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{n.label}
+          {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"defi",icon:"🔥",fr:"Défi",en:"Défi"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
+            <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3,transition:"color .2s"}}>
+              <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
             </button>
           ))}
         </nav>
