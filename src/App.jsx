@@ -78,6 +78,16 @@ const P = {
 };
 const G    = "linear-gradient(135deg,#C8102E 0%,#E8426A 42%,#FF6B9D 75%,#FF8C69 100%)";
 const AKISSI_IMG = "/akissi.png";
+const AKISSI_IMGS = {
+  salut:        "/akissi.png",
+  confiance:    "/akissi-confiance.png",
+  neutre:       "/akissi-confiance.png",
+  reflexion:    "/akissi-reflexion.png",
+  joie:         "/akissi-joie.png",
+  celebration:  "/akissi-joie.png",
+  encouragement:"/akissi-encouragement.png",
+  erreur:       "/akissi-erreur.png",
+};
 
 // ── A-KISSI ANIMATIONS CSS ────────────────────────────────────
 const AKISSI_STYLE = `
@@ -123,10 +133,12 @@ const AK_MSGS_EN = {
 function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
   const msgs=lang==="en"?AK_MSGS_EN:AK_MSGS_FR;
   const message=msg||(msgs[state]?msgs[state][Math.floor(Date.now()/1000)%msgs[state].length]:"");
+  const src=AKISSI_IMGS[state]||AKISSI_IMGS.confiance;
+  const anim=AK_ANIM[state]||AK_ANIM.neutre;
   return(
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"ak-in .4s ease-out",...style}}>
-      <img src={AKISSI_IMG} alt="A-Kissi"
-        style={{width:size,height:size*1.5,objectFit:"contain",objectPosition:"top",animation:AK_ANIM[state]||AK_ANIM.neutre,filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}
+      <img src={src} alt="A-Kissi"
+        style={{width:size,height:"auto",objectFit:"contain",objectPosition:"top",animation:anim,filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}
         onError={e=>{e.target.style.display="none";}}
       />
       {message&&(
@@ -3994,7 +4006,7 @@ function Explorer({lang,onTheme,onNav,navActive}){
   const themes=lang==="en"?THEMES_EN:THEMES_FR;
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",padding:"52px 20px 22px"}}>
         <div className="T" style={{fontSize:26,fontWeight:900,color:"white",marginBottom:5}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</div>
@@ -4036,7 +4048,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
   ];
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:HERO,padding:"50px 20px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px rgba(232,0,61,.22)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
