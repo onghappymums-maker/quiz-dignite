@@ -3240,24 +3240,24 @@ const EG_LEVELS_FR=[
   {id:"egalite",name:"Le Code de l'Égalité",emoji:"⚖️",desc:"VBG, signalement, éducation des filles",targetWord:"EGALITE",display:"ÉGALITÉ",hint:"Ce que réclame l'ODD 5 pour toutes et tous.",badge:"Ambassadeur·rice de l'Égalité",
    fiche:"• <b>VBG</b> = Violences Basées sur le Genre.<br>• La <b>Charte africaine des droits de l'enfant</b> protège les enfants du continent.<br>• L'<b>éducation des filles</b> réduit la pauvreté et les inégalités.<br>• Des <b>mécanismes de signalement</b> existent pour les victimes de VBG.<br>• La <b>Convention des droits de l'enfant</b> (ONU, 1989).",
    riddles:[
-    {tag:"Énigme 1 · VBG",q:"Que signifie le sigle VBG ?",opts:["Vie Bonne Garantie","Violences Basées sur le Genre","Valeurs et Bonnes Grâces"],ok:1,l:"L",fb:"VBG = Violences Basées sur le Genre : toute violence en raison du genre."},
-    {tag:"Énigme 2 · Droits de l'enfant",q:"Quel texte africain protège spécifiquement les droits de l'enfant ?",opts:["La Charte du sport africain","La Convention de Vienne","La Charte africaine des droits et du bien-être de l'enfant"],ok:2,l:"E",fb:"La Charte africaine des droits et du bien-être de l'enfant protège les enfants du continent."},
-    {tag:"Énigme 3 · Éducation des filles",q:"L'éducation des filles contribue à :",opts:["N'a aucun effet","Réduire la pauvreté et les inégalités","Ralentir le développement"],ok:1,l:"T",fb:"L'éducation des filles est un levier majeur pour réduire la pauvreté et les inégalités."},
-    {tag:"Énigme 4 · Signalement",q:"Où signaler un cas de VBG ?",opts:["Nulle part","Auprès de mécanismes dédiés (lignes vertes, structures d'accueil)","Seulement à la police"],ok:1,l:"G",fb:"Des mécanismes de signalement existent (lignes vertes, ONG) pour orienter et protéger les victimes."},
-    {tag:"Énigme 5 · Convention des droits de l'enfant",q:"La Convention relative aux droits de l'enfant a été adoptée par :",opts:["L'Union africaine","L'Union européenne","L'ONU"],ok:2,l:"A",fb:"La Convention relative aux droits de l'enfant a été adoptée par l'ONU en 1989."},
-    {tag:"Énigme 6 · Inégalités",q:"Une inégalité filles-garçons peut se manifester par :",opts:["Une couleur de cheveux différente","Un accès inégal à l'éducation","Rien de particulier"],ok:1,l:"I",fb:"L'accès inégal à l'éducation est l'une des formes les plus répandues d'inégalité."},
-    {tag:"Énigme 7 · Égalité des chances",q:"L'égalité des chances signifie que :",opts:["Seuls les garçons ont des opportunités","Cela ne concerne pas l'école","Chacun·e a les mêmes opportunités, peu importe son genre"],ok:2,l:"E",fb:"L'égalité des chances garantit les mêmes opportunités à toutes et tous."}
+    {tag:"Énigme 1 · VBG",q:"Que signifie le sigle VBG ?",opts:["Violences Basées sur le Genre","Vie Bonne Garantie","Valeurs et Bonnes Grâces"],ok:0,l:"L",fb:"VBG = Violences Basées sur le Genre : toute violence en raison du genre."},
+    {tag:"Énigme 2 · Droits de l'enfant",q:"Quel texte africain protège spécifiquement les droits de l'enfant ?",opts:["La Charte africaine des droits et du bien-être de l'enfant","La Charte du sport africain","La Convention de Vienne"],ok:0,l:"E",fb:"La Charte africaine des droits et du bien-être de l'enfant protège les enfants du continent."},
+    {tag:"Énigme 3 · Éducation des filles",q:"L'éducation des filles contribue à :",opts:["Réduire la pauvreté et les inégalités","N'a aucun effet","Ralentir le développement"],ok:0,l:"T",fb:"L'éducation des filles est un levier majeur pour réduire la pauvreté et les inégalités."},
+    {tag:"Énigme 4 · Signalement",q:"Où signaler un cas de VBG ?",opts:["Auprès de mécanismes dédiés (lignes vertes, structures d'accueil)","Nulle part","Seulement à la police"],ok:0,l:"G",fb:"Des mécanismes de signalement existent (lignes vertes, ONG) pour orienter et protéger les victimes."},
+    {tag:"Énigme 5 · Convention des droits de l'enfant",q:"La Convention relative aux droits de l'enfant a été adoptée par :",opts:["L'ONU","L'Union africaine","L'Union européenne"],ok:0,l:"A",fb:"La Convention relative aux droits de l'enfant a été adoptée par l'ONU en 1989."},
+    {tag:"Énigme 6 · Inégalités",q:"Une inégalité filles-garçons peut se manifester par :",opts:["Un accès inégal à l'éducation","Une couleur de cheveux différente","Rien de particulier"],ok:0,l:"I",fb:"L'accès inégal à l'éducation est l'une des formes les plus répandues d'inégalité."},
+    {tag:"Énigme 7 · Égalité des chances",q:"L'égalité des chances signifie que :",opts:["Chacun·e a les mêmes opportunités, peu importe son genre","Seuls les garçons ont des opportunités","Cela ne concerne pas l'école"],ok:0,l:"E",fb:"L'égalité des chances garantit les mêmes opportunités à toutes et tous."}
   ]},
   {id:"corps",name:"Le Code du Corps",emoji:"🌱",desc:"Puberté, anatomie, santé reproductive",targetWord:"PUBERTE",display:"PUBERTÉ",hint:"La période de transformation explorée dans tout ce niveau.",badge:"Gardien·ne du Corps",
    fiche:"• La <b>puberté</b> = transformations physiques et hormonales.<br>• L'<b>utérus</b> fait partie de l'appareil reproducteur féminin.<br>• Les premières règles s'appellent la <b>ménarche</b>.<br>• Les changements d'humeur sont <b>normaux</b>.<br>• Les <b>hormones</b> pilotent les transformations du corps.",
    riddles:[
-    {tag:"Énigme 1 · La puberté",q:"La puberté est une période de :",opts:["Stagnation totale","Transformations physiques et hormonales","Retour en enfance"],ok:1,l:"E",fb:"La puberté marque le passage à l'âge adulte avec des transformations physiques et hormonales."},
-    {tag:"Énigme 2 · Anatomie",q:"L'utérus fait partie de :",opts:["L'appareil digestif","L'appareil respiratoire","L'appareil reproducteur féminin"],ok:2,l:"T",fb:"L'utérus est un organe essentiel de l'appareil reproducteur féminin."},
-    {tag:"Énigme 3 · Premières règles",q:"Les premières règles s'appellent :",opts:["La ménopause","La ménarche","L'ovulation"],ok:1,l:"U",fb:"La ménarche désigne les toutes premières règles d'une jeune fille."},
-    {tag:"Énigme 4 · Ressentis",q:"Pendant la puberté, il est normal de ressentir :",opts:["Rien du tout","Des changements d'humeur et du corps","Uniquement de la fatigue"],ok:1,l:"P",fb:"Les changements d'humeur et les transformations du corps sont normaux à la puberté."},
-    {tag:"Énigme 5 · Se faire accompagner",q:"Qui peut répondre aux questions sur son corps ?",opts:["Personne","Seulement les ami·es","Un·e professionnel·le de santé ou un adulte de confiance"],ok:2,l:"E",fb:"Un·e professionnel·le de santé ou un adulte de confiance peut répondre de façon fiable."},
-    {tag:"Énigme 6 · Hormones",q:"Le développement de la poitrine et l'apparition de poils sont dus :",opts:["Au hasard","Aux hormones","Uniquement à l'alimentation"],ok:1,l:"R",fb:"Ces changements sont déclenchés par les hormones qui orchestrent le développement pubertaire."},
-    {tag:"Énigme 7 · Prendre soin de soi",q:"Pendant la puberté, il est important de :",opts:["Se comparer en permanence","Cacher toutes ses questions","Prendre soin de son corps et se sentir en confiance"],ok:2,l:"B",fb:"Prendre soin de son corps et cultiver la confiance en soi est essentiel pendant cette période."}
+    {tag:"Énigme 1 · La puberté",q:"La puberté est une période de :",opts:["Transformations physiques et hormonales","Stagnation totale","Retour en enfance"],ok:0,l:"E",fb:"La puberté marque le passage à l'âge adulte avec des transformations physiques et hormonales."},
+    {tag:"Énigme 2 · Anatomie",q:"L'utérus fait partie de :",opts:["L'appareil reproducteur féminin","L'appareil digestif","L'appareil respiratoire"],ok:0,l:"T",fb:"L'utérus est un organe essentiel de l'appareil reproducteur féminin."},
+    {tag:"Énigme 3 · Premières règles",q:"Les premières règles s'appellent :",opts:["La ménarche","La ménopause","L'ovulation"],ok:0,l:"U",fb:"La ménarche désigne les toutes premières règles d'une jeune fille."},
+    {tag:"Énigme 4 · Ressentis",q:"Pendant la puberté, il est normal de ressentir :",opts:["Des changements d'humeur et du corps","Rien du tout","Uniquement de la fatigue"],ok:0,l:"P",fb:"Les changements d'humeur et les transformations du corps sont normaux à la puberté."},
+    {tag:"Énigme 5 · Se faire accompagner",q:"Qui peut répondre aux questions sur son corps ?",opts:["Un·e professionnel·le de santé ou un adulte de confiance","Personne","Seulement les ami·es"],ok:0,l:"E",fb:"Un·e professionnel·le de santé ou un adulte de confiance peut répondre de façon fiable."},
+    {tag:"Énigme 6 · Hormones",q:"Le développement de la poitrine et l'apparition de poils sont dus :",opts:["Aux hormones","Au hasard","Uniquement à l'alimentation"],ok:0,l:"R",fb:"Ces changements sont déclenchés par les hormones qui orchestrent le développement pubertaire."},
+    {tag:"Énigme 7 · Prendre soin de soi",q:"Pendant la puberté, il est important de :",opts:["Prendre soin de son corps et se sentir en confiance","Se comparer en permanence","Cacher toutes ses questions"],ok:0,l:"B",fb:"Prendre soin de son corps et cultiver la confiance en soi est essentiel pendant cette période."}
   ]}
 ];
 
@@ -3270,8 +3270,7 @@ const EG_LEVELS_EN=[
     {tag:"Riddle 3 · Human rights",q:"Sexual and reproductive health is:",opts:["A human right","A personal secret","A privilege for some"],ok:0,l:"N",fb:"Sexual and reproductive health is recognised as a fundamental human right."},
     {tag:"Riddle 4 · Consent",q:"Consent must be:",opts:["Forced","Clear and freely given","Guessed"],ok:1,l:"I",fb:"Consent must always be given freely and clearly, and can be withdrawn at any time."},
     {tag:"Riddle 5 · African Union",q:"Which organisation adopted the Maputo Protocol?",opts:["The African Union","The UN only","The European Union"],ok:0,l:"T",fb:"The Maputo Protocol was adopted by the African Union in 2003."},
-    {tag:"Riddle 6 · Child marriage",q:"Child marriage can have consequences on:",opts:["Health and education","Eye colour","The weather"],ok:0,l:"Y",fb:"Child marriage seriously compromises the health, education and future of girls affected."},
-    {tag:"Riddle 7 · Every girl's right",q:"What should every girl have access to when managing her period?",opts:["Silence and shame","Dignity and respect","Exclusion from school"],ok:1,l:"D",fb:"Every girl deserves to manage her period with dignity, respect and access to accurate information."}
+    {tag:"Riddle 6 · Child marriage",q:"Child marriage can have consequences on:",opts:["Health and education","Eye colour","The weather"],ok:0,l:"Y",fb:"Child marriage seriously compromises the health, education and future of girls affected."}
    ]},
   {id:"cycle",name:"The Cycle Code",emoji:"🩸",desc:"Cycle phases, myths, menstrual hygiene",targetWord:"CYCLE",display:"CYCLE",hint:"What every menstruating person experiences, roughly every 28 days.",badge:"Cycle Expert",
    fiche:"• The cycle has <b>4 phases</b>: menstrual, follicular, ovulatory, luteal.<br>• Average length: <b>28 days</b>.<br>• Swimming during periods is <b>safe</b>.<br>• A <b>menstrual cup</b> is reusable and eco-friendly.<br>• <b>Ovulation</b> occurs mid-cycle.",
@@ -3282,28 +3281,27 @@ const EG_LEVELS_EN=[
     {tag:"Riddle 4 · Hygiene",q:"Which menstrual product is reusable and more eco-friendly?",opts:["The menstrual cup","Disposable pads","Disposable tampons"],ok:0,l:"C",fb:"The menstrual cup can be reused for several years, making it both economical and eco-friendly."},
     {tag:"Riddle 5 · Ovulation",q:"Ovulation generally occurs:",opts:["In the middle of the cycle","Just before your period","On the first day of your period"],ok:0,l:"Y",fb:"Ovulation occurs around day 14 of a 28-day cycle, i.e. mid-cycle."}
    ]},
-  {id:"egalite",name:"The Equality Code",emoji:"⚖️",desc:"GBV, reporting, girls' education",targetWord:"EQUALITY",display:"EQUALITY",hint:"What SDG 5 calls for — for everyone.",badge:"Equality Ambassador",
+  {id:"egalite",name:"The Equality Code",emoji:"⚖️",desc:"GBV, reporting, girls' education",targetWord:"EQUALIT",display:"EQUALITY",hint:"What SDG 5 calls for — for everyone.",badge:"Equality Ambassador",
    fiche:"• <b>GBV</b> = Gender-Based Violence.<br>• The <b>African Charter on the Rights of the Child</b> protects children on the continent.<br>• <b>Girls' education</b> reduces poverty and inequality.<br>• <b>Reporting mechanisms</b> exist for GBV victims.<br>• The <b>UN Convention on the Rights of the Child</b> (1989).",
    riddles:[
-    {tag:"Riddle 1 · GBV",q:"What does the acronym GBV stand for?",opts:["Good Basic Values","Gender-Based Violence","General Benefit Vision"],ok:1,l:"L",fb:"GBV stands for Gender-Based Violence: any violence directed at a person because of their gender."},
-    {tag:"Riddle 2 · Children's rights in Africa",q:"Which African text specifically protects children's rights?",opts:["The African Sports Charter","The Vienna Convention","The African Charter on the Rights and Welfare of the Child"],ok:2,l:"I",fb:"The African Charter on the Rights and Welfare of the Child protects children across the continent."},
-    {tag:"Riddle 3 · Girls' education",q:"Girls' education contributes to:",opts:["Has no effect on society","Reducing poverty and inequality","Slowing development"],ok:1,l:"T",fb:"Girls' education is a major lever for reducing poverty and inequality in society."},
-    {tag:"Riddle 4 · Reporting GBV",q:"Where can a case of gender-based violence be reported?",opts:["Nowhere","Through dedicated reporting mechanisms (helplines, support structures)","Only to the police"],ok:1,l:"A",fb:"Reporting mechanisms exist (helplines, NGOs) to direct and protect victims."},
-    {tag:"Riddle 5 · Convention on the Rights of the Child",q:"The Convention on the Rights of the Child was adopted by:",opts:["The African Union","The European Union","The UN"],ok:2,l:"U",fb:"The Convention on the Rights of the Child was adopted by the UN in 1989."},
-    {tag:"Riddle 6 · Gender inequality",q:"A gender inequality can manifest as:",opts:["A different hair colour","Unequal access to education","Nothing particular"],ok:1,l:"E",fb:"Unequal access to education is one of the most widespread forms of inequality between girls and boys."},
-    {tag:"Riddle 7 · Equal opportunities",q:"Equal opportunities means:",opts:["Only boys have opportunities","It does not concern school","Everyone has the same opportunities, regardless of gender"],ok:2,l:"Q",fb:"Equal opportunities guarantee the same opportunities to everyone, regardless of gender."},
-    {tag:"Riddle 8 · Why equality matters",q:"Why does gender equality matter for society as a whole?",opts:["It only benefits girls","It has no real impact","It benefits everyone — stronger, fairer communities"],ok:2,l:"Y",fb:"Gender equality benefits everyone: it builds stronger, fairer and more prosperous communities."}
+    {tag:"Riddle 1 · GBV",q:"What does the acronym GBV stand for?",opts:["Gender-Based Violence","Good Basic Values","General Benefit Vision"],ok:0,l:"L",fb:"GBV stands for Gender-Based Violence: any violence directed at a person because of their gender."},
+    {tag:"Riddle 2 · Children's rights in Africa",q:"Which African text specifically protects children's rights?",opts:["The African Charter on the Rights and Welfare of the Child","The African Sports Charter","The Vienna Convention"],ok:0,l:"I",fb:"The African Charter on the Rights and Welfare of the Child protects children across the continent."},
+    {tag:"Riddle 3 · Girls' education",q:"Girls' education contributes to:",opts:["Reducing poverty and inequality","Has no effect on society","Slowing development"],ok:0,l:"T",fb:"Girls' education is a major lever for reducing poverty and inequality in society."},
+    {tag:"Riddle 4 · Reporting GBV",q:"Where can a case of gender-based violence be reported?",opts:["Through dedicated reporting mechanisms (helplines, support structures)","Nowhere","Only to the police"],ok:0,l:"A",fb:"Reporting mechanisms exist (helplines, NGOs) to direct and protect victims."},
+    {tag:"Riddle 5 · Convention on the Rights of the Child",q:"The Convention on the Rights of the Child was adopted by:",opts:["The UN","The African Union","The European Union"],ok:0,l:"U",fb:"The Convention on the Rights of the Child was adopted by the UN in 1989."},
+    {tag:"Riddle 6 · Gender inequality",q:"A gender inequality can manifest as:",opts:["Unequal access to education","A different hair colour","Nothing particular"],ok:0,l:"E",fb:"Unequal access to education is one of the most widespread forms of inequality between girls and boys."},
+    {tag:"Riddle 7 · Equal opportunities",q:"Equal opportunities means:",opts:["Everyone has the same opportunities, regardless of gender","Only boys have opportunities","It does not concern school"],ok:0,l:"Q",fb:"Equal opportunities guarantee the same opportunities to everyone, regardless of gender."}
    ]},
   {id:"corps",name:"The Body Code",emoji:"🌱",desc:"Puberty, anatomy, reproductive health",targetWord:"PUBERTY",display:"PUBERTY",hint:"The period of transformation explored throughout this level.",badge:"Body Guardian",
    fiche:"• <b>Puberty</b> = physical and hormonal transformations.<br>• The <b>uterus</b> is part of the female reproductive system.<br>• The first period is called <b>menarche</b>.<br>• Mood changes are <b>normal</b>.<br>• <b>Hormones</b> drive the body's transformations.",
    riddles:[
-    {tag:"Riddle 1 · Puberty",q:"Puberty is a period of:",opts:["Complete stagnation","Physical and hormonal transformations","Return to childhood"],ok:1,l:"Y",fb:"Puberty marks the transition to adulthood with physical and hormonal changes."},
-    {tag:"Riddle 2 · Anatomy",q:"The uterus is part of:",opts:["The digestive system","The respiratory system","The female reproductive system"],ok:2,l:"T",fb:"The uterus is an essential organ of the female reproductive system."},
+    {tag:"Riddle 1 · Puberty",q:"Puberty is a period of:",opts:["Physical and hormonal transformations","Complete stagnation","Return to childhood"],ok:0,l:"Y",fb:"Puberty marks the transition to adulthood with physical and hormonal changes."},
+    {tag:"Riddle 2 · Anatomy",q:"The uterus is part of:",opts:["The female reproductive system","The digestive system","The respiratory system"],ok:0,l:"T",fb:"The uterus is an essential organ of the female reproductive system."},
     {tag:"Riddle 3 · First period",q:"The first period is called:",opts:["Menarche","Menopause","Ovulation"],ok:0,l:"R",fb:"Menarche refers to a young girl's very first period."},
-    {tag:"Riddle 4 · Feelings",q:"During puberty, it is normal to experience:",opts:["Nothing at all","Mood and body changes","Only fatigue"],ok:1,l:"E",fb:"Mood changes and body transformations are normal and part of puberty."},
-    {tag:"Riddle 5 · Getting support",q:"Who can answer questions about your body during puberty?",opts:["Nobody","Only friends","A health professional or trusted adult"],ok:2,l:"B",fb:"A health professional or trusted adult can give reliable answers about your body."},
-    {tag:"Riddle 6 · Hormones",q:"Breast development and body hair are caused by:",opts:["Chance","Diet alone","Hormones"],ok:2,l:"U",fb:"These changes are triggered by hormones, which orchestrate pubertal development."},
-    {tag:"Riddle 7 · Self-care",q:"During puberty, it is important to:",opts:["Compare yourself to others constantly","Hide all your questions","Take care of your body and feel confident"],ok:2,l:"P",fb:"Taking care of your body and building self-confidence is essential during this period of transformation."}
+    {tag:"Riddle 4 · Feelings",q:"During puberty, it is normal to experience:",opts:["Mood and body changes","Nothing at all","Only fatigue"],ok:0,l:"E",fb:"Mood changes and body transformations are normal and part of puberty."},
+    {tag:"Riddle 5 · Getting support",q:"Who can answer questions about your body during puberty?",opts:["A health professional or trusted adult","Nobody","Only friends"],ok:0,l:"B",fb:"A health professional or trusted adult can give reliable answers about your body."},
+    {tag:"Riddle 6 · Hormones",q:"Breast development and body hair are caused by:",opts:["Hormones","Chance","Diet alone"],ok:0,l:"U",fb:"These changes are triggered by hormones, which orchestrate pubertal development."},
+    {tag:"Riddle 7 · Self-care",q:"During puberty, it is important to:",opts:["Take care of your body and feel confident","Compare yourself to others constantly","Hide all your questions"],ok:0,l:"P",fb:"Taking care of your body and building self-confidence is essential during this period of transformation."}
    ]}
 ];
 
@@ -3491,7 +3489,7 @@ function EscapeGame({lang,onBack}){
 }
 
 // ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onCelebrate,onNav}){
+function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,onCelebrate,onEscape,onNav}){
   return(
     <div style={{paddingBottom:88}}>
       <div style={{background:HERO,padding:"26px 20px 24px",borderRadius:"0 0 34px 34px",boxShadow:"0 10px 34px rgba(232,0,61,.22)",marginBottom:16}}>
@@ -3544,6 +3542,13 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,o
             <div style={{fontSize:".82rem",color:P.muted,marginTop:3,fontWeight:600}}>{lang==="en"?"Your daily journal · write & keep":"Ton journal quotidien · écris & garde"}</div>
           </div>
         </button>
+        <button onClick={onEscape} style={{width:"100%",background:"linear-gradient(135deg,#1A0A15,#3A0313)",border:"2px solid rgba(232,18,63,.35)",borderRadius:24,padding:"18px 18px",textAlign:"left",marginBottom:12,boxShadow:"0 4px 18px rgba(232,0,61,.2)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
+          <div style={{width:52,height:52,borderRadius:18,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>🔐</div>
+          <div>
+            <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:"#FF8FA3"}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
+            <div style={{fontSize:".82rem",color:"rgba(255,180,190,.7)",marginTop:3,fontWeight:600}}>{lang==="en"?"4 levels · solve riddles · find the code":"4 niveaux · résous les énigmes · trouve le code"}</div>
+          </div>
+        </button>
         <div style={{background:"rgba(232,0,61,.06)",border:"1.5px solid rgba(232,0,61,.15)",borderRadius:18,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}} onClick={()=>onNav("sos")}>
           <span style={{fontSize:"1.6rem"}}>🚨</span>
           <div>
@@ -3559,7 +3564,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,toggleSound,lang,onQuiz,onGames,o
 }
 
 // ── GAMES HUB ──────────────────────────────────────────────────
-function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onEscape}){
+function GamesHub({soundOn,toggleSound,unlocked,lang,onGame}){
   const gameDef=lang==="en"?GAME_DEF_EN:GAME_DEF_FR;
   return(
     <div style={{paddingBottom:88}}>
@@ -3568,21 +3573,12 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onEscape}){
           <div>
             <div style={{fontSize:40,lineHeight:1}}>🕹️</div>
             <h1 className="T" style={{margin:"5px 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
-            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"11 games · 3 levels each ✨":"11 jeux · 3 niveaux chacun ✨"}</p>
+            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"10 games · 3 levels each ✨":"10 jeux · 3 niveaux chacun ✨"}</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
         </div>
       </div>
       <div style={{padding:"0 15px"}}>
-        <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🔐 {lang==="en"?"Escape Game":"Escape Game"}</div>
-        <button onClick={onEscape} style={{width:"100%",background:"linear-gradient(135deg,#1A0A15,#3A0313)",border:"2px solid rgba(232,18,63,.35)",borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",boxShadow:"0 3px 12px rgba(232,0,61,.2)",marginBottom:16}}>
-          <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0}}>🔐</div>
-          <div style={{flex:1}}>
-            <div className="F" style={{fontWeight:600,fontSize:14,color:"#FF8FA3"}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
-            <div style={{fontSize:10,color:"rgba(255,180,190,.7)",marginTop:1,fontWeight:600}}>{lang==="en"?"4 levels · solve riddles · find the code":"4 niveaux · résous les énigmes · trouve le code"}</div>
-          </div>
-          <span style={{fontSize:15,color:"#FF8FA3",fontWeight:900}}>›</span>
-        </button>
         <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎮 {lang==="en"?"Main Games":"Jeux Principaux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
           {gameDef.filter(g=>g.main).map(g=>(
@@ -3726,15 +3722,22 @@ export default function App(){
     Notification.requestPermission().then(perm=>{
       if(perm!=='granted')return;
       localStorage.setItem('hm_notif_ok','1');
+      // Signal au Service Worker
+      if(navigator.serviceWorker&&navigator.serviceWorker.controller){
+        navigator.serviceWorker.controller.postMessage({type:'SCHEDULE_NOTIF'});
+      }
+      // Fallback local à 18h (UTC = heure Abidjan)
       const now=new Date();
-      const next=new Date();next.setHours(8,0,0,0);
-      if(now>=next)next.setDate(next.getDate()+1);
+      const next=new Date();next.setUTCHours(18,0,0,0);
+      if(now>=next)next.setUTCDate(next.getUTCDate()+1);
       const ms=next-now;
       clearTimeout(window._hmNotifTimer);
       window._hmNotifTimer=setTimeout(()=>{
-        if(localStorage.getItem('hm_defi_last_done')!==`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`){
-          new Notification('Quiz Dignité 🌸',{body:'Ton défi du jour t\'attend ! Ouvre l\'app pour le découvrir.',icon:'/icon-512.png',badge:'/icon-512.png'});
-        }
+        new Notification('Quiz Dignité 🌸',{
+          body:'🌸 Bonsoir ! Ton défi du jour t\'attend sur Quiz Dignité.',
+          icon:'/icon-192.png',
+          badge:'/icon-192.png'
+        });
         scheduleDefiNotif();
       },ms);
     });
@@ -3962,7 +3965,7 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} lang={lang} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onCelebrate={()=>setScreen("celebrate")} onNav={goNav}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} toggleSound={toggleSound} lang={lang} onQuiz={()=>setScreen("quiz_profiles")} onGames={()=>setScreen("games_hub")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
@@ -4054,8 +4057,8 @@ export default function App(){
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
         {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={()=>setScreen("hub")}/>}
-        {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>setScreen("games_hub")}/>}
-        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onEscape={()=>setScreen("escape")}/>}
+        {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>setScreen("hub")}/>}
+        {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame}/>}
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
 
