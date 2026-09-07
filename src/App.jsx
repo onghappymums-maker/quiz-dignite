@@ -3476,6 +3476,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
     setQi(q=>q+1);setSel(null);setShowFb(false);
   }
 
+  useEffect(()=>{if(done&&onFinish)onFinish(score,module.badge);},[done]);
   if(done){
     const pct=Math.round((score/(qs.length*10))*100);
     const akState=pct>=80?"celebration":pct>=60?"joie":"encouragement";
@@ -3553,12 +3554,12 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   );
 }
 
-function DroitsFemmes({lang,onBack,navActive,onNav}){
+function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
   const[activeModule,setActiveModule]=useState(null);
   const modules=lang==="en"?DROITS_MODULES_EN:DROITS_MODULES_FR;
   const t=(fr,en)=>lang==="en"?en:fr;
 
-  if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={()=>setActiveModule(null)}/>;
+  if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={(pts,badge)=>{onModuleFinish&&onModuleFinish(pts,badge);setActiveModule(null);}}/>;
 
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
@@ -4051,7 +4052,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
     {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
-    {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>onNav("glossaire")},
+    {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
   ];
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
@@ -4548,14 +4549,21 @@ export default function App(){
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
 
-        {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav}/>}
+        {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav} onModuleFinish={(pts,badge)=>{
+          const newTotal=totalPts+pts;
+          const allB=badges.includes(badge.id)?badges:[...badges,badge.id];
+          setTotalPts(newTotal);setBadges(allB);
+          if(!badges.includes(badge.id))setNewBadges([badge]);
+          persist(newTotal,allB,sessions,unlocked,streak);
+          updateStreak();
+        }}/>}
 
         {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
 
-        {screen==="privacy"&&<PrivacyPage onBack={()=>{setScreen("hub");setNavActive("home");}} lang={lang}/>}
+        {screen==="privacy"&&<PrivacyPage onBack={()=>setScreen("settings")} lang={lang}/>}
 
         {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")} lang={lang}/>}
 
@@ -4567,9 +4575,9 @@ export default function App(){
 
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
-        {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
+        {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
         {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
-        {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>setScreen("hub")}/>}
+        {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onBack={()=>setScreen("hub")}/>}
 
         {screen==="game_level"&&gDef&&<LvlSelect gDef={gDef} onSelect={selectLevel} lang={lang} onBack={()=>setScreen("games_hub")} unlocked={unlocked[gameId]||1}/>}
@@ -4580,6 +4588,7 @@ export default function App(){
           <div style={{paddingBottom:88}}>
             {/* Header */}
             <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",padding:"52px 20px 24px",textAlign:"center"}}>
+              <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{position:"absolute",top:14,left:16,background:"rgba(255,255,255,.15)",border:"1.5px solid rgba(255,255,255,.25)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer"}}>← {lang==="en"?"Back":"Retour"}</button>
               <AKissi state={streak>=7?"celebration":streak>=3?"joie":"encouragement"} lang={lang} size={90} style={{marginBottom:8}}/>
               <div className="T" style={{fontSize:22,fontWeight:900,color:"white",marginBottom:4}}>{lvl.icon} {lvl.label}</div>
               <div style={{fontSize:14,color:"rgba(255,180,200,.75)",fontWeight:600}}>{totalPts} pts · {sessions} {lang==="en"?`session${sessions>1?"s":""}`:`session${sessions>1?"s":""}`}</div>
@@ -4682,6 +4691,7 @@ export default function App(){
 
         {screen==="sos"&&(
           <div style={{padding:"16px 16px 88px"}}>
+            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:14}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
             <p style={{fontSize:".84rem",color:P.muted,marginBottom:16,lineHeight:1.6,fontWeight:600}}>{lang==="en"?<><strong>Free</strong> helplines available <strong>24 hours a day</strong>:</>:<>Numéros <strong>gratuits</strong> disponibles <strong>24h/24</strong> :</>}</p>
             {(lang==="en"?[{n:"1308",l:"Violence Support Line",i:"🆘"},{n:"116",l:"Child Protection Line",i:"👶"},{n:"110",l:"Police",i:"👮"}]:[{n:"1308",l:"SOS Violences & Aide aux femmes",i:"🆘"},{n:"116",l:"Allô Enfant en Danger",i:"👶"},{n:"110",l:"Police Secours",i:"👮"}]).map(n=>(
