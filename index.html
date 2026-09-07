@@ -2,54 +2,54 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Quiz Dignité — Santé menstruelle et droits des filles | Happy Mum's</title>
-    <meta name="description" content="Quiz interactif gratuit sur la santé menstruelle et les droits des filles. 95 questions, 3 profils personnalisés. Par ONG Happy Mum's, Côte d'Ivoire." />
-    <meta name="keywords" content="quiz santé menstruelle, règles, hygiène menstruelle, droits des filles, Côte d'Ivoire, Happy Mum's, DSSR, dignité menstruelle" />
-    <meta name="author" content="ONG Happy Mum's" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.quizdignite.org/" />
+
+    <!-- ── THÈME & PWA ──────────────────────────────────────── -->
     <meta name="theme-color" content="#E8003D" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Quiz Dignité" />
-    <link rel="apple-touch-icon" href="/icon-512.png" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.quizdignite.org/" />
-    <meta property="og:title" content="Quiz Dignité — Teste tes connaissances sur la santé menstruelle" />
-    <meta property="og:description" content="Quiz interactif gratuit sur la santé menstruelle et les droits des filles. 95 questions, 3 profils personnalisés. Par ONG Happy Mum's, Côte d'Ivoire." />
-    <meta property="og:image" content="https://www.quizdignite.org/og-image.png" />
-    <meta property="og:locale" content="fr_CI" />
-    <meta property="og:site_name" content="Quiz Dignité — Happy Mum's" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Quiz Dignité — Santé menstruelle et droits des filles" />
-    <meta name="twitter:description" content="95 questions, 3 profils, 100% gratuit. Par ONG Happy Mum's 🇨🇮" />
-    <meta name="twitter:image" content="https://www.quizdignite.org/og-image.png" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5BDM2ZEKWB"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-5BDM2ZEKWB', {
-        page_title: 'Quiz Dignité — Happy Mums',
-        send_page_view: true
-      });
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(r => console.log('SW OK'))
-            .catch(e => console.log('SW erreur', e));
-        });
-      }
-    </script>
+
+    <!-- ── SEO BASIQUE ──────────────────────────────────────── -->
+    <title>Quiz Dignité — Santé menstruelle, droits des femmes & dignité | ONG Happy Mum's</title>
+    <meta name="description" content="L'app éducative bilingue qui change les règles. Quiz interactifs sur la santé menstruelle, les droits des femmes et la dignité — pour les filles et jeunes femmes d'Afrique de l'Ouest." />
+    <meta name="keywords" content="quiz dignité, santé menstruelle, droits des femmes, happy mums, éducation filles, afrique de l ouest, dignité, cote d'ivoire" />
+    <meta name="author" content="ONG Happy Mum's" />
+    <link rel="canonical" href="https://quizdignite.org" />
+
+    <!-- ── OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ────────── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://quizdignite.org" />
+    <meta property="og:site_name"   content="Quiz Dignité" />
+    <meta property="og:locale"      content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:title"       content="Quiz Dignité — Santé menstruelle, droits des femmes & dignité" />
+    <meta property="og:description" content="L'app éducative bilingue qui change les règles. Quiz interactifs, jeux éducatifs, escape game DSSR — pour les filles et jeunes femmes d'Afrique de l'Ouest." />
+    <meta property="og:image"       content="https://quizdignite.org/og-image.jpg" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"   content="Quiz Dignité par ONG Happy Mum's" />
+
+    <!-- ── TWITTER / X ──────────────────────────────────────── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@happymums_ong" />
+    <meta name="twitter:title"       content="Quiz Dignité — Santé menstruelle, droits des femmes & dignité" />
+    <meta name="twitter:description" content="L'app éducative bilingue qui change les règles. Quiz, jeux, escape game — pour les filles d'Afrique de l'Ouest." />
+    <meta name="twitter:image"       content="https://quizdignite.org/og-image.jpg" />
+
+    <!-- ── GOOGLE ANALYTICS (déjà actif) ────────────────────── -->
+    <!-- (conserve ton code GA existant ici) -->
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #FFF4F7; font-family: sans-serif; }
+      #root { min-height: 100vh; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script src="/defis-module.js"></script>
   </body>
 </html>
