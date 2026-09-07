@@ -20,17 +20,17 @@
     <link rel="canonical" href="https://quizdignite.org" />
 
     <!-- ── OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ────────── -->
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://quizdignite.org" />
-    <meta property="og:site_name"   content="Quiz Dignité" />
-    <meta property="og:locale"      content="fr_FR" />
+    <meta property="og:type"         content="website" />
+    <meta property="og:url"          content="https://quizdignite.org" />
+    <meta property="og:site_name"    content="Quiz Dignité" />
+    <meta property="og:locale"       content="fr_FR" />
     <meta property="og:locale:alternate" content="en_GB" />
-    <meta property="og:title"       content="Quiz Dignité — Santé menstruelle, droits des femmes & dignité" />
-    <meta property="og:description" content="L'app éducative bilingue qui change les règles. Quiz interactifs, jeux éducatifs, escape game DSSR — pour les filles et jeunes femmes d'Afrique de l'Ouest." />
-    <meta property="og:image"       content="https://quizdignite.org/og-image.png" />
+    <meta property="og:title"        content="Quiz Dignité — Santé menstruelle, droits des femmes & dignité" />
+    <meta property="og:description"  content="L'app éducative bilingue qui change les règles. Quiz interactifs, jeux éducatifs, escape game DSSR — pour les filles et jeunes femmes d'Afrique de l'Ouest." />
+    <meta property="og:image"        content="https://quizdignite.org/og-image.png" />
     <meta property="og:image:width"  content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt"   content="Quiz Dignité par ONG Happy Mum's" />
+    <meta property="og:image:alt"    content="Quiz Dignité par ONG Happy Mum's" />
 
     <!-- ── TWITTER / X ──────────────────────────────────────── -->
     <meta name="twitter:card"        content="summary_large_image" />
@@ -39,8 +39,64 @@
     <meta name="twitter:description" content="L'app éducative bilingue qui change les règles. Quiz, jeux, escape game — pour les filles d'Afrique de l'Ouest." />
     <meta name="twitter:image"       content="https://quizdignite.org/og-image.png" />
 
-    <!-- ── GOOGLE ANALYTICS (déjà actif) ────────────────────── -->
-    <!-- (conserve ton code GA existant ici) -->
+    <!-- ── GOOGLE ANALYTICS (conserve ton code ici) ─────────── -->
+
+    <!-- ── SCHEMA.ORG — Organisation & Application ──────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "NGO",
+          "@id": "https://quizdignite.org/#organisation",
+          "name": "ONG Happy Mum's",
+          "alternateName": "Happy Mum's",
+          "url": "https://quizdignite.org",
+          "logo": "https://quizdignite.org/icon-512.png",
+          "image": "https://quizdignite.org/og-image.png",
+          "description": "ONG dédiée à la santé menstruelle, aux droits des femmes et à la dignité des filles et jeunes femmes d'Afrique de l'Ouest.",
+          "foundingDate": "2020",
+          "areaServed": {
+            "@type": "Country",
+            "name": "Côte d'Ivoire"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Abidjan",
+            "addressCountry": "CI"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "onghappymums@gmail.com",
+            "contactType": "customer support",
+            "availableLanguage": ["French", "English"]
+          },
+          "sameAs": [
+            "https://www.linkedin.com/company/ong-happy-mums"
+          ]
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://quizdignite.org/#app",
+          "name": "Quiz Dignité",
+          "url": "https://quizdignite.org",
+          "description": "Application éducative bilingue (FR/EN) sur la santé menstruelle, les droits des femmes et la dignité — pour les filles et jeunes femmes d'Afrique de l'Ouest.",
+          "applicationCategory": "EducationApplication",
+          "operatingSystem": "Web, Android",
+          "inLanguage": ["fr", "en"],
+          "isAccessibleForFree": true,
+          "author": {
+            "@id": "https://quizdignite.org/#organisation"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "XOF"
+          }
+        }
+      ]
+    }
+    </script>
 
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
