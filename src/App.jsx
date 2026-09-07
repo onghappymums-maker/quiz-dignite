@@ -3619,7 +3619,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav}){
 }
 
 // ── SETTINGS ────────────────────────────────────────────────────
-function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,setDarkMode,user,setUser,onResetProgress,onBack}){
+function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,setDarkMode,user,setUser,onResetProgress,onBack,onNav}){
   const[confirmReset,setConfirmReset]=useState(false);
   const[editName,setEditName]=useState(false);
   const[nameVal,setNameVal]=useState(user?.name||"");
@@ -3660,7 +3660,7 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={()=>onBack()} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:P.red,marginBottom:20}}>⚙️ {lang==="en"?"Settings":"Réglages"}</div>
 
       <Section title={lang==="en"?"Appearance":"Apparence"}>
@@ -3708,7 +3708,9 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
       <Section title={lang==="en"?"App":"Application"}>
         <Row icon="📲" label={lang==="en"?"Download Android app":"Télécharger l'app Android"} right={<span style={{color:P.red,fontSize:18}}>↗</span>} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")} border/>
-        <Row icon="ℹ️" label={`Quiz Dignité v2.0 · ONG Happy Mum's`} right={null} border={false}/>
+        <Row icon="ℹ️" label={lang==="en"?"About Quiz Dignité":"À propos de Quiz Dignité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("about")} border/>
+        <Row icon="🔐" label={lang==="en"?"Privacy policy":"Politique de confidentialité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("privacy")} border/>
+        <Row icon="📋" label={`Quiz Dignité v2.0 · ONG Happy Mum's`} right={null} border={false}/>
       </Section>
     </div>
   );
@@ -4049,7 +4051,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
     {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
-    {icon:"ℹ️",label:t("À propos","About"),color:"#9B6B8A",action:()=>onNav("about")},
+    {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>onNav("glossaire")},
   ];
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
@@ -4566,7 +4568,7 @@ export default function App(){
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>setScreen("hub")}/>}
-        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={()=>setScreen("hub")}/>}
+        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
         {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>setScreen("hub")}/>}
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onBack={()=>setScreen("hub")}/>}
 
@@ -4655,6 +4657,7 @@ export default function App(){
 
         {screen==="about"&&(
           <div style={{padding:"16px 16px 88px"}}>
+            <button onClick={()=>setScreen("settings")} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div style={{textAlign:"center",marginBottom:18}}>
               <img src={HM_LOGO} alt="" style={{width:65,height:65,objectFit:"contain"}}/>
               <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginTop:8}}>Qui est Happy Mum's ?</div>
