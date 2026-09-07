@@ -2996,6 +2996,18 @@ const GLOSSAIRE_DATA=[
     {w:"Consentement",d:"Accord libre, éclairé et enthousiaste donné pour toute relation intime. Il peut être retiré à tout moment. Non = non."},
     {w:"Violence basée sur le genre",d:"Tout acte nuisant à une personne en raison de son genre. Inclut les violences physiques, psychologiques et sexuelles."},
     {w:"Mariage précoce",d:"Mariage avant 18 ans. Interdit par la loi en Côte d'Ivoire. Prive les filles d'éducation et de liberté."},
+    {w:"Protocole de Maputo",d:"Traité africain adopté en 2003 par l'Union africaine. Il protège les droits des femmes en matière de santé, d'éducation et de protection contre les violences."},
+    {w:"ODD 5",d:"Objectif de Développement Durable n°5 : atteindre l'égalité des genres et autonomiser toutes les femmes et les filles d'ici 2030."},
+    {w:"Mutilations génitales féminines",d:"Pratiques consistant à modifier ou blesser les organes génitaux féminins. Interdites par la loi dans de nombreux pays africains dont la Côte d'Ivoire. Violation grave des droits humains."},
+  ]},
+  {cat:"🔬 Termes médicaux supplémentaires",terms:[
+    {w:"Spotting",d:"Légères pertes de sang entre deux règles. Peuvent être normales (ovulation) ou nécessiter une consultation si fréquentes."},
+    {w:"Flux menstruel",d:"Volume de sang perdu pendant les règles. Varie d'une personne à l'autre. En moyenne 30 à 80 ml par cycle."},
+    {w:"Crampes menstruelles",d:"Douleurs abdominales causées par les contractions de l'utérus pendant les règles. Une chaleur douce et l'ibuprofène peuvent aider."},
+    {w:"IST",d:"Infections Sexuellement Transmissibles. Peuvent être évitées par l'utilisation de préservatifs et le dépistage régulier."},
+    {w:"Pilule contraceptive",d:"Médicament hormonal pris quotidiennement pour éviter une grossesse. Ne protège pas contre les IST. Consulte un médecin avant de commencer."},
+    {w:"Leucorrhée",d:"Pertes vaginales blanches ou transparentes, normales et saines. Elles lubrifient et protègent le vagin. À surveiller si elles changent de couleur ou d'odeur."},
+    {w:"Périnée",d:"Ensemble des muscles qui soutiennent les organes pelviens (utérus, vessie, rectum). Le renforcement du périnée aide à prévenir les fuites urinaires."},
   ]},
 ];
 
@@ -3040,41 +3052,31 @@ function Glossaire({onBack,lang}){
 }
 
 function Onboarding({onSubmit,lang}){
-  const[name,setName]=useState("");const[country,setCountry]=useState("");const[step,setStep]=useState(1);const[err,setErr]=useState("");
+  const[name,setName]=useState("");const[err,setErr]=useState("");
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
-    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px"}}>
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",background:"linear-gradient(160deg,#FFE8EF,#FFF0F5,#FFE0EC)"}}>
       <div style={{width:"100%",maxWidth:440}} className="up">
         <div style={{textAlign:"center",marginBottom:28}}>
-          <img src={HM_LOGO} alt="Happy Mum's" style={{width:90,height:90,objectFit:"contain",filter:"drop-shadow(0 8px 18px rgba(232,0,61,.22))"}} className="pop"/>
+          <AKissi state="salut" lang={lang} size={100} msg={t("Salut ! Je suis A-Kissi 🌸","Hi! I'm A-Kissi 🌸")}/>
           <div className="T" style={{fontSize:"2rem",fontWeight:800,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginTop:10,lineHeight:1.1}}>Quiz Dignité</div>
-          <div style={{fontSize:".75rem",color:P.muted,letterSpacing:"2px",textTransform:"uppercase",marginTop:5}}>by Happy Mum's</div>
-          <div style={{fontSize:".82rem",color:P.rose,marginTop:6,fontWeight:700}}>{t("✨ Le quiz qui change les règles","✨ The quiz that changes the rules")}</div>
+          <div style={{fontSize:".78rem",color:P.muted,marginTop:5,fontWeight:700}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
         </div>
-        <div style={{background:"rgba(255,255,255,.88)",backdropFilter:"blur(14px)",borderRadius:26,padding:24,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
+        <div style={{background:"rgba(255,255,255,.9)",backdropFilter:"blur(14px)",borderRadius:26,padding:24,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
           <div style={{textAlign:"center",marginBottom:18}}>
-            <div style={{fontSize:"1.5rem",marginBottom:6}}>{step===1?"👋":"🌍"}</div>
-            <div className="T" style={{fontSize:"1.1rem",fontWeight:700,color:P.text}}>{step===1?t("Comment t'appelles-tu ?","What is your name?"):t("D'où viens-tu ?","Where are you from?")}</div>
-            <div style={{fontSize:".8rem",color:P.muted,marginTop:4}}>{step===1?t("Ton prénom pour personnaliser ton expérience","Your name to personalise your experience"):t("Ton pays pour mieux te comprendre","Your country to personalise your experience")}</div>
+            <div style={{fontSize:"1.5rem",marginBottom:6}}>👋</div>
+            <div className="T" style={{fontSize:"1.1rem",fontWeight:700,color:P.text}}>{t("Comment t'appelles-tu ?","What is your name?")}</div>
+            <div style={{fontSize:".8rem",color:P.muted,marginTop:4}}>{t("Ton prénom pour personnaliser ton expérience","Your name to personalise your experience")}</div>
           </div>
-          {step===1?(
-            <input value={name} onChange={e=>{setName(e.target.value);setErr("");}} placeholder={t("Ton prénom...","Your first name...")}
-              onKeyDown={e=>e.key==="Enter"&&(name.trim()?setStep(2):setErr(t("Ton prénom est requis 🌸","Your name is required 🌸")))}
-              style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":name?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:6,boxSizing:"border-box"}}/>
-          ):(
-            <input value={country} onChange={e=>{setCountry(e.target.value);setErr("");}} placeholder={t("Ton pays (ex: Côte d'Ivoire)...","Your country (e.g. United Kingdom)...")}
-              onKeyDown={e=>e.key==="Enter"&&(country.trim()?onSubmit(name,country):setErr(t("Ton pays est requis 🌍","Your country is required 🌍")))}
-              style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":country?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",transition:"border-color .2s",marginBottom:6,boxSizing:"border-box"}}/>
-          )}
+          <input value={name} onChange={e=>{setName(e.target.value);setErr("");}} placeholder={t("Ton prénom...","Your first name...")}
+            onKeyDown={e=>e.key==="Enter"&&(name.trim()?onSubmit(name,"Côte d'Ivoire"):setErr(t("Ton prénom est requis 🌸","Your name is required 🌸")))}
+            style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid ${err?"#E74C3C":name?"rgba(232,0,61,.4)":"rgba(255,107,157,.2)"}`,borderRadius:14,padding:"13px 18px",color:P.text,fontFamily:"'Nunito',sans-serif",fontSize:"1rem",outline:"none",marginBottom:6,boxSizing:"border-box"}}/>
           {err&&<div style={{fontSize:".78rem",color:"#E74C3C",fontWeight:700,marginBottom:10,textAlign:"center"}}>{err}</div>}
           {!err&&<div style={{height:14}}/>}
-          <div style={{display:"flex",gap:10}}>
-            {step===2&&<button onClick={()=>{setStep(1);setErr("");}} style={{background:"rgba(255,255,255,.88)",color:P.red,border:`2px solid rgba(232,0,61,.18)`,borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer"}}>{t("← Retour","← Back")}</button>}
-            <button onClick={()=>{if(step===1){name.trim()?setStep(2):setErr(t("Ton prénom est requis 🌸","Your name is required 🌸"));}else{country.trim()?onSubmit(name,country):setErr(t("Ton pays est requis 🌍","Your country is required 🌍"));}}}
-              style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)"}}>
-              {step===1?t("Continuer →","Continue →"):t("Commencer 🌸","Start 🌸")}
-            </button>
-          </div>
+          <button onClick={()=>name.trim()?onSubmit(name,"Côte d'Ivoire"):setErr(t("Ton prénom est requis 🌸","Your name is required 🌸"))}
+            style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontWeight:700,fontSize:".95rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)"}}>
+            {t("C'est parti ! 🌸","Let's go! 🌸")}
+          </button>
         </div>
         <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:16,opacity:.65}}>© 2026 ONG Happy Mum's – {t("Tous droits réservés","All rights reserved")}</p>
       </div>
@@ -3991,14 +3993,14 @@ const THEMES_FR=[
   {id:"regles",name:"Mes règles",emoji:"🩸",color:"#E8003D",bg:"rgba(232,0,61,.12)",  desc:"Menstruations, hygiène, produits, douleurs, précarité menstruelle",profile:"fille",cat:"mr"},
   {id:"mythes",   name:"Mythes & vérités",    emoji:"🧠",color:"#9B6BEA",bg:"rgba(155,107,234,.15)",desc:"Idées reçues, tabous culturels, croyances liées aux règles",     profile:"fille",cat:"mr"},
   {id:"dignite",  name:"Dignité & confiance", emoji:"💗",color:"#F5A623",bg:"rgba(245,166,35,.15)", desc:"Honte, confiance en soi, image du corps, stigmatisation menstruelle",profile:"fille",cat:"violence"},
-  {id:"droits",   name:"Droits & respect",    emoji:"⚖️",color:"#3DBE82",bg:"rgba(61,190,130,.15)", desc:"Droit à l'hygiène, dignité, discrimination, sécurité, consentement",profile:"fille",cat:"violence"},
+  {id:"droits",   name:"Droits & dignité",    emoji:"⚖️",color:"#3DBE82",bg:"rgba(61,190,130,.15)", desc:"Quiz sur les droits, la sécurité et le respect autour des menstruations",profile:"fille",cat:"violence"},
 ];
 const THEMES_EN=[
   {id:"corps",    name:"My Body",             emoji:"🌸",color:"#FF6B9D",bg:"rgba(255,107,157,.15)",desc:"Puberty, anatomy, menstrual cycle, how the body works",          profile:"fille",cat:"qcm"},
   {id:"regles",name:"Mes règles",emoji:"🩸",color:"#E8003D",bg:"rgba(232,0,61,.12)",  desc:"Menstruation, hygiene, products, pain, menstrual poverty",       profile:"fille",cat:"mr"},
   {id:"mythes",   name:"Myths & Truths",      emoji:"🧠",color:"#9B6BEA",bg:"rgba(155,107,234,.15)",desc:"Misconceptions, cultural taboos, false beliefs about periods",   profile:"fille",cat:"mr"},
   {id:"dignite",  name:"Dignity & Confidence",emoji:"💗",color:"#F5A623",bg:"rgba(245,166,35,.15)", desc:"Shame, self-confidence, body image, menstrual stigma",            profile:"fille",cat:"violence"},
-  {id:"droits",   name:"Rights & Respect",    emoji:"⚖️",color:"#3DBE82",bg:"rgba(61,190,130,.15)", desc:"Hygiene rights, dignity, discrimination, safety, consent",       profile:"fille",cat:"violence"},
+  {id:"droits",   name:"Rights & Dignity",    emoji:"⚖️",color:"#3DBE82",bg:"rgba(61,190,130,.15)", desc:"Quiz on rights, safety and respect around menstruation",           profile:"fille",cat:"violence"},
 ];
 
 // ── EXPLORER ─────────────────────────────────────────────────────
@@ -4046,6 +4048,8 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
     {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),color:"#E8003D",action:onDroits},
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
+    {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
+    {icon:"ℹ️",label:t("À propos","About"),color:"#9B6B8A",action:()=>onNav("about")},
   ];
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
@@ -4512,6 +4516,8 @@ export default function App(){
     if(id==="home")setScreen("hub");
     else if(id==="explore")setScreen("explore");
     else if(id==="glossaire")setScreen("glossaire");
+    else if(id==="about")setScreen("about");
+    else if(id==="sos")setScreen("sos");
     else if(id==="defi"){setShowDefiModal(true);}
     else if(id==="settings")setScreen("settings");
     else setScreen(id);
@@ -4538,9 +4544,9 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>setScreen("droits_femmes")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
 
-        {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>setScreen("hub")} navActive={navActive} onNav={goNav}/>}
+        {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav}/>}
 
         {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
 
@@ -4551,84 +4557,11 @@ export default function App(){
 
         {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")} lang={lang}/>}
 
-        {screen==="quiz_profiles"&&(
-          <div style={{padding:"16px 16px 88px"}}>
-            <div style={{textAlign:"center",marginBottom:16,paddingTop:6}}>
-              <img src={HM_LOGO} alt="" style={{width:60,height:60,objectFit:"contain"}}/>
-              <div className="T" style={{fontSize:"1.5rem",fontWeight:800,color:P.red,marginTop:6}}>Quiz Dignité</div>
-              <div style={{fontSize:".82rem",color:P.muted,marginTop:4,fontWeight:700}}>{lang==="en"?"Who is using the app?":"Qui utilise l'application ?"}</div>
-            </div>
-            {(lang==="en"?[
-              {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"I am a girl",d:"Understand my body and break the taboos",dec:"🌸💕"},
-              {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"I am a boy",d:"Education, empathy and mutual respect",dec:"🦁🛡️"},
-              {id:"parent",cls:"linear-gradient(135deg,#FFECD2,#FCB69F)",e:"👨‍👩‍👧",n:"Parent / Educator",d:"Supportive communication with young people",dec:"❤️📖"},
-            ]:[
-              {id:"fille",cls:"linear-gradient(135deg,#FF9A9E,#FAD0C4)",e:"👧",n:"Je suis une fille",d:"Comprendre mon corps, briser les tabous",dec:"🌸💕"},
-              {id:"garcon",cls:"linear-gradient(135deg,#A18CD1,#FBC2EB)",e:"👦",n:"Je suis un garçon",d:"Éducation, respect et empathie",dec:"🦁🛡️"},
-              {id:"parent",cls:"linear-gradient(135deg,#FFECD2,#FCB69F)",e:"👨‍👩‍👧",n:"Parent / Éducateur",d:"Communication et accompagnement",dec:"❤️📖"},
-            ]).map(p=>(
-              <button key={p.id} onClick={()=>{SND.play("ok");ga("profil",{p:p.id});setProfile(p.id);setScreen("quiz_cats");}}
-                style={{borderRadius:22,padding:"18px 20px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,border:"2.5px solid transparent",marginBottom:12,width:"100%",background:p.cls}}>
-                <span style={{fontSize:"2.6rem",filter:"drop-shadow(0 3px 6px rgba(0,0,0,.12))"}}>{p.e}</span>
-                <div style={{flex:1,textAlign:"left"}}>
-                  <div className="T" style={{fontSize:"1.05rem",fontWeight:800,color:P.text}}>{p.n}</div>
-                  <div style={{fontSize:".78rem",color:"rgba(45,10,31,.65)",marginTop:3}}>{p.d}</div>
-                </div>
-                <span style={{fontSize:"1.3rem",opacity:.4}}>{p.dec}</span>
-              </button>
-            ))}
-            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
-          </div>
-        )}
-
-        {screen==="quiz_cats"&&(
-          <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>setScreen("quiz_profiles")} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
-            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:4}}>
-              {profile==="fille"?(lang==="en"?"👧 I am a girl":"👧 Je suis une fille"):profile==="garcon"?(lang==="en"?"👦 I am a boy":"👦 Je suis un garçon"):(lang==="en"?"👨‍👩‍👧 Parent / Educator":"👨‍👩‍👧 Parent / Éducateur")}
-            </div>
-            <div style={{fontSize:".8rem",color:P.muted,marginBottom:15,fontWeight:600}}>{lang==="en"?"Choose a question type:":"Choisis un type de questions :"}</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
-              {(lang==="en"?[
-                {id:"qcm",icon:"🧠",name:"Multiple Choice",info:"10 questions with four answer options"},
-                {id:"vf",icon:"✅",name:"True or False",info:"10 true or false questions"},
-                {id:"mr",icon:"💡",name:"Myth or Reality",info:"10 myth-busting questions"},
-                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Daily Challenge":"Educational Challenges",info:profile==='fille'?"Your daily challenge 🌸":"5 challenges for group discussion"},
-                {id:"ca",icon:"📖",name:"Learn & Understand",info:"3 levels · earn a badge at each stage"},
-                {id:"qsj",icon:"🔍",name:"Who Am I?",info:"3 levels · educational riddles"},
-                {id:"violence",icon:"🛡️",name:"Violence & Safety",info:"10 questions — recognise, react and protect"},
-                {id:"urgence",icon:"🚨",name:"Emergency & Help",info:"5 essential safety questions"},
-              ]:[
-                {id:"qcm",icon:"🧠",name:"QCM",info:"10 questions à choix multiples"},
-                {id:"vf",icon:"✅",name:"Vrai / Faux",info:"10 questions Vrai ou Faux"},
-                {id:"mr",icon:"💡",name:"Mythe ou Réalité",info:"10 questions contre les tabous"},
-                {id:"defi",icon:profile==='fille'?"🌸":"🎯",name:profile==='fille'?"Défi du jour":"Défis éducatifs",info:profile==='fille'?"Ton défi quotidien 🌸":"5 défis — discussion orale"},
-                {id:"ca",icon:"📖",name:"Comprendre & Apprendre",info:"3 niveaux · badges à gagner"},
-                {id:"qsj",icon:"🔍",name:"Qui suis-je ?",info:"3 niveaux · devinettes éducatives"},
-                {id:"violence",icon:"🛡️",name:"Violences & Sécurité",info:"10 questions — reconnaître et réagir"},
-                {id:"urgence",icon:"🚨",name:"Urgence & Aide",info:"5 questions essentielles"},
-              ]).map(c=>(
-                <div key={c.id} onClick={()=>{
-                  if(profile==='fille'&&c.id==='defi'){setShowDefiModal(true);}
-                  else if(c.id==='ca'){setScreen("ca_levels");}
-                  else if(c.id==='qsj'){setQuizLevelCat('qsj');setScreen("quiz_level_select");}
-                  else if(['qcm','vf','mr','violence'].includes(c.id)&&profile!=='parent'){setQuizLevelCat(c.id);setScreen("quiz_level_select");}
-                  else{startQuiz(profile,c.id);}
-                }}style={{background:"rgba(255,255,255,.86)",borderRadius:18,padding:"16px 10px",cursor:"pointer",textAlign:"center",border:"2px solid rgba(255,255,255,.8)",transition:"all .2s",boxShadow:"0 4px 14px rgba(232,0,61,.07)"}}>
-                  <span style={{fontSize:"1.9rem",display:"block",marginBottom:7}}>{c.icon}</span>
-                  <div className="T" style={{fontSize:".88rem",fontWeight:700,color:P.red}}>{c.name}</div>
-                  <div style={{fontSize:".68rem",color:P.muted,marginTop:2}}>{c.info}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} lang={lang} onBack={()=>setScreen("explore")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
 
-        {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} lang={lang} onBack={()=>setScreen("quiz_cats")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
+        {screen==="ca_levels"&&<CaLevels profile={profile} caProgress={caProgress} getCaUnlocked={getCaUnlocked} lang={lang} onBack={()=>setScreen("explore")} onStart={(lv)=>startQuiz(profile,`ca_${lv}`)}/>}
 
-        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} lang={lang} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("quiz_cats")} onResult={onQuizResult}/>}
+        {screen==="quiz_game"&&<QuizGame profile={profile} category={category} level={quizLevelNum} soundOn={soundOn} lang={lang} onBack={()=>LEVEL_CATS.includes(category)&&profile!=='parent'?setScreen("quiz_level_select"):category.startsWith("ca_")?setScreen("ca_levels"):setScreen("explore")} onResult={onQuizResult}/>}
 
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
