@@ -3460,7 +3460,21 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   const[showFb,setShowFb]=useState(false);
   const[score,setScore]=useState(0);
   const[done,setDone]=useState(false);
-  const qs=module.questions;
+
+  // Shuffle answers so correct is not always B
+  const[qs]=useState(()=>{
+    const fy=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
+    const posPool=[0,1,2,3,0,1,2,3,0,1];
+    const pos=fy([...posPool]);
+    return module.questions.map((q,qi)=>{
+      if(!q.answers||q.answers.length!==4)return q;
+      const tgt=pos[qi]??Math.floor(Math.random()*4);
+      const wrong=fy(q.answers.filter((_,i)=>i!==q.correct));
+      const na=[];let wi=0;
+      for(let i=0;i<4;i++){if(i===tgt)na.push(q.answers[q.correct]);else na.push(wrong[wi++]);}
+      return{...q,answers:na,correct:tgt};
+    });
+  });
   const q=qs[qi];
   const L=["A","B","C","D"];
   const t=(fr,en)=>lang==="en"?en:fr;
