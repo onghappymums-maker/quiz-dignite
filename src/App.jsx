@@ -174,6 +174,10 @@ button{font-family:'Nunito',sans-serif;cursor:pointer;}
 .FL{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
 .fl{position:absolute;bottom:-60px;animation:floatUp linear infinite;}
 .SH{position:relative;z-index:2;min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;}
+@keyframes splashFadeOut{0%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1.02)}100%{opacity:0;transform:scale(1.04)}}
+.splash-screen{position:fixed;inset:0;z-index:9999;margin:0;padding:0;background:#E8003D;overflow:hidden;}
+.splash-screen img{display:block;width:100%;height:100%;width:100vw;height:100dvh;object-fit:cover;object-position:center;margin:0;padding:0;border:none;}
+.splash-screen.fading{animation:splashFadeOut .4s ease-in forwards;}
 ${AKISSI_STYLE}
 `;
 
@@ -2758,6 +2762,46 @@ function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
 }
 
 
+// ── SPLASH SCREEN ───────────────────────────────────────────────
+function SplashScreen({onDone,isReady}){
+  const[fading,setFading]=useState(false);
+  const startRef=useRef(Date.now());
+  const MIN_SHOW=900;   // minimum visible : 900ms
+  const FADE_DUR=400;   // fondu : 400ms
+  const MAX_TOTAL=1800; // jamais plus de 1.8s
+
+  // Déclencheur unique : ferme dès que l'app est prête ET min atteint, ou au bout de MAX_TOTAL
+  useEffect(()=>{
+    const hardStop=setTimeout(()=>{setFading(true);setTimeout(onDone,FADE_DUR);},MAX_TOTAL-FADE_DUR);
+    return()=>clearTimeout(hardStop);
+  },[]);
+
+  useEffect(()=>{
+    if(!isReady)return;
+    const elapsed=Date.now()-startRef.current;
+    const wait=Math.max(0,MIN_SHOW-elapsed);
+    const t=setTimeout(()=>{
+      setFading(true);
+      setTimeout(onDone,FADE_DUR);
+    },wait);
+    return()=>clearTimeout(t);
+  },[isReady]);
+
+  return(
+    <div
+      className={`splash-screen${fading?" fading":""}`}
+      style={{position:"fixed",inset:0,zIndex:9999,margin:0,padding:0,background:"#E8003D",overflow:"hidden",WebkitTapHighlightColor:"transparent"}}
+    >
+      <img
+        src="/splash.jpg"
+        alt="Quiz Dignité"
+        style={{display:"block",width:"100vw",height:"100dvh",minHeight:"100vh",objectFit:"cover",objectPosition:"center center",margin:0,padding:0,border:"none",maxWidth:"none",maxHeight:"none",WebkitUserSelect:"none",userSelect:"none"}}
+        draggable={false}
+      />
+    </div>
+  );
+}
+
 function WelcomeScreen({onStart,lang,setLang}){
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
@@ -4228,6 +4272,7 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
 
 export default function App(){
   const[screen,setScreen]=useState("boot");
+  const[showSplash,setShowSplash]=useState(true);
   const[user,setUser]=useState({name:"",country:""});
   const[profile,setProfile]=useState(null);
   const[category,setCategory]=useState(null);
@@ -4552,6 +4597,7 @@ export default function App(){
   return(
     <div>
       <style>{STYLE}</style>
+      {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)} isReady={screen!=="boot"}/>}
       <div className="BG"/>
       <FloatingBg/>
       <div className="SH">
