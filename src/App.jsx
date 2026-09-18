@@ -4597,10 +4597,13 @@ export default function App(){
   return(
     <div>
       <style>{STYLE}</style>
-      {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)} isReady={screen!=="boot"}/>}
-      <div className="BG"/>
-      <FloatingBg/>
-      <div className="SH">
+      {showSplash?(
+        <SplashScreen onDone={()=>setShowSplash(false)} isReady={screen!=="boot"}/>
+      ):(
+        <>
+          <div className="BG"/>
+          <FloatingBg/>
+          <div className="SH">
 
         {screen==="boot"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}><div style={{fontSize:64}} className="pulse">🌸</div></div>}
 
@@ -4781,6 +4784,8 @@ export default function App(){
             </button>
           ))}
         </nav>
+      )}
+        </>
       )}
     </div>
   );
