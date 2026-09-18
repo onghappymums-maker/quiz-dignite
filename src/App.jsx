@@ -4136,7 +4136,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
         </div>
         {badges.length>0&&<div style={{fontSize:11,color:"rgba(255,255,255,.75)",fontWeight:700,marginTop:6}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""} débloqué${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""} unlocked`)}</div>}
       </div>
-      <div style={{flex:1,padding:"16px 14px",display:"flex",flexDirection:"column",gap:12,overflowY:"auto"}}>
+      <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
         {/* Explorer CTA */}
         <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:"20px 18px",textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
           <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
@@ -4273,6 +4273,12 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
 export default function App(){
   const[screen,setScreen]=useState("boot");
   const[showSplash,setShowSplash]=useState(true);
+
+  // Masque le pré-splash CSS dès que React monte
+  useEffect(()=>{
+    const el=document.getElementById("pre-splash");
+    if(el)el.style.display="none";
+  },[]);
   const[user,setUser]=useState({name:"",country:""});
   const[profile,setProfile]=useState(null);
   const[category,setCategory]=useState(null);
