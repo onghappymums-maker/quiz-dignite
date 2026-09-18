@@ -99,17 +99,16 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { margin: 0; padding: 0; background: #E8003D; }
-      #root {
-        margin: 0; padding: 0;
+      #root { margin: 0; padding: 0; }
+      #pre-splash {
+        position: fixed; inset: 0; z-index: 99999;
         background: url('/splash.jpg') center center / cover no-repeat #E8003D;
-        width: 100vw;
-        height: 100dvh;
-        min-height: 100vh;
-        overflow: hidden;
+        pointer-events: none;
       }
     </style>
   </head>
   <body>
+    <div id="pre-splash"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
