@@ -3677,6 +3677,431 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
   );
 }
 
+// ── PROFIL DIGNITÉ ──────────────────────────────────────────────
+
+const PROFILS_FR={
+  D:{name:"La Découvreuse",emoji:"🌱",color:"#FF6B9D",bg:"linear-gradient(135deg,#FF9A9E,#FECFEF)",
+    desc:"Tu es dans une belle phase d'éveil. Tu commences à mieux comprendre ton corps, tes règles et les changements de la puberté — et c'est déjà une force.",
+    traits:["Curiosité naturelle","Ouverture d'esprit","Envie d'apprendre"],
+    phrase:"Chaque question que tu poses est un pas vers ta liberté.",
+    defi:"Cette semaine, lis une définition dans le Glossaire de Quiz Dignité et partage-la avec quelqu'un de confiance.",
+    badge:{id:"profil_decouvreuse",icon:"🌱",name:"La Découvreuse"}},
+  Cu:{name:"La Curieuse",emoji:"🔍",color:"#9B6BEA",bg:"linear-gradient(135deg,#A18CD1,#FBC2EB)",
+    desc:"Tu aimes comprendre, chercher et déconstruire les idées reçues. Ta soif de savoir est une arme contre les tabous et les mythes.",
+    traits:["Esprit critique","Amour du savoir","Capacité à déconstruire les mythes"],
+    phrase:"Celles qui posent les bonnes questions changent les règles du jeu.",
+    defi:"Cette semaine, identifie un mythe sur les règles autour de toi et prépare une réponse claire pour y répondre.",
+    badge:{id:"profil_curieuse",icon:"🔍",name:"La Curieuse"}},
+  S:{name:"La Sûre d'elle",emoji:"💗",color:"#F5A623",bg:"linear-gradient(135deg,#F5A623,#F7D794)",
+    desc:"Tu te connais et tu te respectes. Tu assumes ton corps, tes règles, et tu refuses que la honte prenne de la place dans ta vie.",
+    traits:["Confiance en soi","Acceptation du corps","Dignité assumée"],
+    phrase:"Ton corps est ta maison — tu en es la gardienne fière.",
+    defi:"Cette semaine, dis une chose positive sur ton corps, à voix haute ou dans ton journal.",
+    badge:{id:"profil_sure",icon:"💗",name:"La Sûre d'elle"}},
+  B:{name:"La Battante",emoji:"✊",color:"#E8003D",bg:"linear-gradient(135deg,#E8003D,#FF6B9D)",
+    desc:"Tu oses parler des sujets difficiles, défendre tes droits et briser les tabous. Ta voix compte et tu le sais.",
+    traits:["Courage","Prise de parole","Défense des droits"],
+    phrase:"Briser un tabou, c'est déjà un acte de dignité.",
+    defi:"Cette semaine, ose aborder un sujet lié aux règles que tu pensais encore difficile à mentionner.",
+    badge:{id:"profil_battante",icon:"✊",name:"La Battante"}},
+  A:{name:"L'Alliée",emoji:"🤝",color:"#3DBE82",bg:"linear-gradient(135deg,#3DBE82,#A8E6CF)",
+    desc:"Tu penses aux autres, tu partages ce que tu sais et tu contribues à créer un environnement plus bienveillant. Ton soutien fait une vraie différence.",
+    traits:["Empathie","Soutien aux autres","Générosité du savoir"],
+    phrase:"Une alliée, c'est quelqu'un qui fait monter tout le monde avec elle.",
+    defi:"Cette semaine, soutiens une amie qui traverse une période difficile liée à son corps ou à ses règles.",
+    badge:{id:"profil_alliee",icon:"🤝",name:"L'Alliée"}},
+  L:{name:"La Leader",emoji:"🌟",color:"#4FB3F6",bg:"linear-gradient(135deg,#4FB3F6,#B5EEFF)",
+    desc:"Tu transformes tes connaissances en actions. Tu inspires, tu mobilises et tu peux devenir une vraie actrice du changement autour de toi.",
+    traits:["Vision","Influence positive","Passage à l'action"],
+    phrase:"Le leadership commence par choisir de faire partie de la solution.",
+    defi:"Cette semaine, partage une ressource sur la santé menstruelle avec au moins deux personnes de ton entourage.",
+    badge:{id:"profil_leader",icon:"🌟",name:"La Leader"}},
+};
+
+const PROFILS_EN={
+  D:{name:"The Explorer",emoji:"🌱",color:"#FF6B9D",bg:"linear-gradient(135deg,#FF9A9E,#FECFEF)",
+    desc:"You're in a beautiful phase of awakening. You're beginning to understand your body, your period and puberty changes — and that's already a strength.",
+    traits:["Natural curiosity","Open-mindedness","Eagerness to learn"],
+    phrase:"Every question you ask is a step towards your freedom.",
+    defi:"This week, read one definition in the Quiz Dignité Glossary and share it with someone you trust.",
+    badge:{id:"profil_decouvreuse",icon:"🌱",name:"The Explorer"}},
+  Cu:{name:"The Curious One",emoji:"🔍",color:"#9B6BEA",bg:"linear-gradient(135deg,#A18CD1,#FBC2EB)",
+    desc:"You love to understand, search and break down misconceptions. Your thirst for knowledge is a weapon against taboos and myths.",
+    traits:["Critical thinking","Love of knowledge","Myth-busting ability"],
+    phrase:"Those who ask the right questions change the rules of the game.",
+    defi:"This week, identify one myth about periods around you and prepare a clear response to counter it.",
+    badge:{id:"profil_curieuse",icon:"🔍",name:"The Curious One"}},
+  S:{name:"The Confident One",emoji:"💗",color:"#F5A623",bg:"linear-gradient(135deg,#F5A623,#F7D794)",
+    desc:"You know yourself and you respect yourself. You embrace your body and your period, refusing to let shame take up space in your life.",
+    traits:["Self-confidence","Body acceptance","Owned dignity"],
+    phrase:"Your body is your home — and you are its proud guardian.",
+    defi:"This week, say one positive thing about your body, out loud or in your journal.",
+    badge:{id:"profil_sure",icon:"💗",name:"The Confident One"}},
+  B:{name:"The Fighter",emoji:"✊",color:"#E8003D",bg:"linear-gradient(135deg,#E8003D,#FF6B9D)",
+    desc:"You dare to speak about difficult topics, stand up for your rights and break taboos. Your voice matters and you know it.",
+    traits:["Courage","Speaking up","Rights advocacy"],
+    phrase:"Breaking a taboo is already an act of dignity.",
+    defi:"This week, dare to bring up a period-related topic you once thought was too hard to mention.",
+    badge:{id:"profil_battante",icon:"✊",name:"The Fighter"}},
+  A:{name:"The Ally",emoji:"🤝",color:"#3DBE82",bg:"linear-gradient(135deg,#3DBE82,#A8E6CF)",
+    desc:"You think of others, share what you know and help create a kinder environment. Your support makes a real difference.",
+    traits:["Empathy","Support for others","Generosity of knowledge"],
+    phrase:"An ally is someone who lifts everyone up alongside her.",
+    defi:"This week, support a friend going through a difficult time related to her body or period.",
+    badge:{id:"profil_alliee",icon:"🤝",name:"The Ally"}},
+  L:{name:"The Leader",emoji:"🌟",color:"#4FB3F6",bg:"linear-gradient(135deg,#4FB3F6,#B5EEFF)",
+    desc:"You turn knowledge into action. You inspire, mobilise and can become a true agent of change in your community.",
+    traits:["Vision","Positive influence","Taking action"],
+    phrase:"Leadership starts with choosing to be part of the solution.",
+    defi:"This week, share a menstrual health resource with at least two people around you.",
+    badge:{id:"profil_leader",icon:"🌟",name:"The Leader"}},
+};
+
+const PROFIL_QUESTIONS_FR=[
+  {q:"Quand tu as tes règles à l'école ou dehors, tu...",answers:[
+    {text:"Je fais profil bas et j'espère que ça ne se voit pas",scores:{D:3}},
+    {text:"Je me débrouille, j'ai toujours ce qu'il faut sur moi",scores:{S:3}},
+    {text:"J'en parle à ma meilleure amie si j'ai besoin d'aide",scores:{A:3}},
+    {text:"Je n'hésite pas à demander ce dont j'ai besoin",scores:{B:3}},
+  ]},
+  {q:"Tu entends quelqu'un dire que les règles c'est sale. Tu...",answers:[
+    {text:"Restes silencieuse, c'est compliqué à expliquer",scores:{D:3}},
+    {text:"Te demandes d'où vient cette idée et cherches à comprendre",scores:{Cu:3}},
+    {text:"Lui expliques calmement et avec assurance que c'est faux",scores:{B:2,S:1}},
+    {text:"Proposes d'en parler ensemble avec d'autres",scores:{A:3}},
+  ]},
+  {q:"Comment tu décrirais ta relation avec ton corps ?",answers:[
+    {text:"J'apprends encore à le découvrir et le comprendre",scores:{D:3}},
+    {text:"Je suis curieuse de tout ce qui se passe en moi",scores:{Cu:3}},
+    {text:"Je l'accepte et je le respecte tel qu'il est",scores:{S:3}},
+    {text:"Je le défends et refuse qu'on me fasse honte de lui",scores:{B:3}},
+  ]},
+  {q:"Une fausse information circule sur les règles. Tu...",answers:[
+    {text:"N'es pas sûre de la vraie réponse, tu écoutes",scores:{D:3}},
+    {text:"Vas vérifier l'information avant de dire quoi que ce soit",scores:{Cu:3}},
+    {text:"Corriges calmement — tu sais que c'est faux",scores:{S:2,B:1}},
+    {text:"Penses à comment aider les autres à ne plus y croire",scores:{A:2,L:1}},
+  ]},
+  {q:"Quand tu penses à tes droits en tant que fille...",answers:[
+    {text:"C'est un sujet que je commence tout juste à explorer",scores:{D:3}},
+    {text:"J'aime en apprendre davantage sur mes droits",scores:{Cu:3}},
+    {text:"Je sais qu'ils existent et je refuse de les laisser bafouer",scores:{S:2,B:1}},
+    {text:"Je pense que toutes les filles devraient les connaître",scores:{L:3}},
+  ]},
+  {q:"Une amie souffre de ses règles et ne sait pas quoi faire. Tu...",answers:[
+    {text:"Lui dis que ça va passer, tu ne sais pas trop quoi ajouter",scores:{D:3}},
+    {text:"Lui expliques ce que tu sais sur les douleurs menstruelles",scores:{Cu:2,A:1}},
+    {text:"Restes là pour elle, avec ta présence et ton écoute",scores:{A:3}},
+    {text:"Cherches des ressources fiables pour l'aider vraiment",scores:{L:3}},
+  ]},
+  {q:"Face à une injustice qui touche les filles de ton entourage...",answers:[
+    {text:"Tu te sens concernée mais tu ne sais pas encore quoi faire",scores:{D:3}},
+    {text:"Tu essaies de comprendre pourquoi et d'où ça vient",scores:{Cu:3}},
+    {text:"Tu refuses de la laisser t'atteindre et tu te protèges",scores:{S:3}},
+    {text:"Tu oses en parler, même si c'est inconfortable",scores:{B:3}},
+  ]},
+  {q:"Pour toi, parler des règles c'est...",answers:[
+    {text:"Encore un peu difficile — je préfère éviter le sujet",scores:{D:3}},
+    {text:"Intéressant — il y a tellement de choses à apprendre",scores:{Cu:3}},
+    {text:"Normal — c'est une réalité du corps comme une autre",scores:{S:3}},
+    {text:"Nécessaire — ça aide à briser les tabous",scores:{B:2,L:1}},
+  ]},
+  {q:"Si tu pouvais faire une chose pour les filles de ta communauté...",answers:[
+    {text:"Je voudrais qu'elles aient accès à des informations fiables",scores:{Cu:2,L:1}},
+    {text:"Je leur montrerais que les règles ne sont pas une honte",scores:{S:2,B:1}},
+    {text:"Je serais là pour les soutenir dans les moments difficiles",scores:{A:3}},
+    {text:"Je créerais quelque chose pour changer les mentalités",scores:{L:3}},
+  ]},
+  {q:"Quand tu réussis quelque chose de difficile...",answers:[
+    {text:"Je suis un peu surprise que ça ait marché",scores:{D:3}},
+    {text:"J'analyse ce qui a fonctionné pour recommencer",scores:{Cu:3}},
+    {text:"Je me dis que je l'ai mérité, j'en suis fière",scores:{S:3}},
+    {text:"Je pense à comment aider les autres à faire pareil",scores:{L:3}},
+  ]},
+  {q:"Ce qui te ressemble le plus naturellement...",answers:[
+    {text:"Poser des questions et chercher à comprendre",scores:{Cu:3}},
+    {text:"Défendre ce qui est juste, même si c'est dur",scores:{B:3}},
+    {text:"Soutenir et prendre soin de ceux qui m'entourent",scores:{A:3}},
+    {text:"Inspirer et mobiliser autour d'une cause",scores:{L:3}},
+  ]},
+  {q:"Ce qui te donne de l'énergie, c'est...",answers:[
+    {text:"Apprendre quelque chose de nouveau sur moi-même",scores:{D:2,Cu:1}},
+    {text:"Me dépasser et repousser mes propres limites",scores:{S:2,B:1}},
+    {text:"Aider quelqu'un qui traverse une période difficile",scores:{A:3}},
+    {text:"Avoir un impact positif sur les choses qui comptent",scores:{L:3}},
+  ]},
+];
+
+const PROFIL_QUESTIONS_EN=[
+  {q:"When you have your period at school or outside...",answers:[
+    {text:"I keep a low profile and hope no one notices",scores:{D:3}},
+    {text:"I manage — I always have what I need with me",scores:{S:3}},
+    {text:"I tell my best friend if I need help",scores:{A:3}},
+    {text:"I don't hesitate to ask for what I need",scores:{B:3}},
+  ]},
+  {q:"You hear someone say periods are dirty. You...",answers:[
+    {text:"Stay silent — it's hard to explain",scores:{D:3}},
+    {text:"Wonder where that idea comes from and try to understand",scores:{Cu:3}},
+    {text:"Calmly explain with confidence that it's false",scores:{B:2,S:1}},
+    {text:"Suggest talking about it together with others",scores:{A:3}},
+  ]},
+  {q:"How would you describe your relationship with your body?",answers:[
+    {text:"I'm still learning to discover and understand it",scores:{D:3}},
+    {text:"I'm curious about everything happening inside me",scores:{Cu:3}},
+    {text:"I accept and respect it as it is",scores:{S:3}},
+    {text:"I defend it and refuse to be shamed for it",scores:{B:3}},
+  ]},
+  {q:"False information about periods is spreading. You...",answers:[
+    {text:"Aren't sure of the right answer, you listen",scores:{D:3}},
+    {text:"Go check the information before saying anything",scores:{Cu:3}},
+    {text:"Correct it calmly — you know it's false",scores:{S:2,B:1}},
+    {text:"Think about how to help others stop believing it",scores:{A:2,L:1}},
+  ]},
+  {q:"When you think about your rights as a girl...",answers:[
+    {text:"It's a topic I'm just beginning to explore",scores:{D:3}},
+    {text:"I love learning more about my rights",scores:{Cu:3}},
+    {text:"I know they exist and won't let them be violated",scores:{S:2,B:1}},
+    {text:"I think all girls should know their rights",scores:{L:3}},
+  ]},
+  {q:"A friend is suffering from period pain and doesn't know what to do. You...",answers:[
+    {text:"Tell her it'll pass — you don't know much else to add",scores:{D:3}},
+    {text:"Explain what you know about menstrual pain",scores:{Cu:2,A:1}},
+    {text:"Stay with her, offering your presence and listening",scores:{A:3}},
+    {text:"Search for reliable resources to really help her",scores:{L:3}},
+  ]},
+  {q:"When faced with injustice affecting the girls around you...",answers:[
+    {text:"You feel concerned but don't yet know what to do",scores:{D:3}},
+    {text:"You try to understand why and where it comes from",scores:{Cu:3}},
+    {text:"You refuse to let it affect you and protect yourself",scores:{S:3}},
+    {text:"You dare to speak up, even if it's uncomfortable",scores:{B:3}},
+  ]},
+  {q:"For you, talking about periods is...",answers:[
+    {text:"Still a bit difficult — I prefer to avoid the topic",scores:{D:3}},
+    {text:"Interesting — there's so much to learn",scores:{Cu:3}},
+    {text:"Normal — it's a body reality like any other",scores:{S:3}},
+    {text:"Necessary — it helps break taboos",scores:{B:2,L:1}},
+  ]},
+  {q:"If you could do one thing for the girls in your community...",answers:[
+    {text:"I'd want them to have access to reliable information",scores:{Cu:2,L:1}},
+    {text:"I'd show them that periods are nothing to be ashamed of",scores:{S:2,B:1}},
+    {text:"I'd be there to support them through hard times",scores:{A:3}},
+    {text:"I'd create something to change mindsets",scores:{L:3}},
+  ]},
+  {q:"When you succeed at something difficult...",answers:[
+    {text:"I'm a bit surprised it worked",scores:{D:3}},
+    {text:"I analyse what worked to do it again",scores:{Cu:3}},
+    {text:"I tell myself I deserved it — I'm proud",scores:{S:3}},
+    {text:"I think about how to help others do the same",scores:{L:3}},
+  ]},
+  {q:"What comes most naturally to you...",answers:[
+    {text:"Asking questions and trying to understand",scores:{Cu:3}},
+    {text:"Standing up for what's right, even when it's hard",scores:{B:3}},
+    {text:"Supporting and caring for those around me",scores:{A:3}},
+    {text:"Inspiring and mobilising people around a cause",scores:{L:3}},
+  ]},
+  {q:"What gives you energy is...",answers:[
+    {text:"Learning something new about myself",scores:{D:2,Cu:1}},
+    {text:"Pushing myself and exceeding my own limits",scores:{S:2,B:1}},
+    {text:"Helping someone going through a tough time",scores:{A:3}},
+    {text:"Having a positive impact on things that matter",scores:{L:3}},
+  ]},
+];
+
+function calcProfil(answers){
+  const totals={D:0,Cu:0,S:0,B:0,A:0,L:0};
+  answers.forEach(a=>{if(!a)return;Object.entries(a.scores||{}).forEach(([k,v])=>{totals[k]=(totals[k]||0)+v;});});
+  const order=['L','A','B','S','Cu','D'];
+  let winner='D',maxScore=-1;
+  order.forEach(key=>{if(totals[key]>maxScore){maxScore=totals[key];winner=key;}});
+  return{key:winner,scores:totals};
+}
+
+function makeProfilCard(profil,lang){
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const lines=profil.desc.match(/.{1,38}(\s|$)/g)||[profil.desc];
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#1A0A15"/>
+        <stop offset="100%" stop-color="#3A0313"/>
+      </linearGradient>
+      <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#E8003D"/>
+        <stop offset="100%" stop-color="#FF6B9D"/>
+      </linearGradient>
+    </defs>
+    <rect width="400" height="600" fill="url(#bg)" rx="24"/>
+    <rect x="0" y="0" width="400" height="6" fill="url(#accent)" rx="3"/>
+    <text x="200" y="52" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="rgba(255,180,200,0.7)" letter-spacing="3">${esc(t("MON PROFIL DIGNITÉ","MY DIGNITY PROFILE"))}</text>
+    <text x="200" y="155" text-anchor="middle" font-size="72">${profil.emoji}</text>
+    <text x="200" y="210" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="bold" fill="white">${esc(profil.name.toUpperCase())}</text>
+    <line x1="120" y1="228" x2="280" y2="228" stroke="rgba(232,0,61,0.5)" stroke-width="1"/>
+    ${lines.slice(0,4).map((l,i)=>`<text x="200" y="${260+i*20}" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="rgba(255,200,210,0.85)">${esc(l.trim())}</text>`).join("")}
+    <text x="200" y="${260+Math.min(lines.length,4)*20+24}" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-style="italic" fill="#FF6B9D">« ${esc(profil.phrase)} »</text>
+    <rect x="40" y="480" width="320" height="1" fill="rgba(255,255,255,0.1)"/>
+    <text x="200" y="510" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,180,200,0.6)">🌸 Quiz Dignité · quizdignite.org</text>
+    <text x="200" y="535" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,180,200,0.4)">ONG Happy Mum's</text>
+  </svg>`;
+  return "data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(svg)));
+}
+
+function ProfilTest({lang,onBack,onResult}){
+  const[phase,setPhase]=useState("intro");
+  const[qi,setQi]=useState(0);
+  const[answers,setAnswers]=useState([]);
+  const questions=lang==="en"?PROFIL_QUESTIONS_EN:PROFIL_QUESTIONS_FR;
+  const t=(fr,en)=>lang==="en"?en:fr;
+
+  function selectAnswer(ans){
+    const na=[...answers];na[qi]=ans;setAnswers(na);
+  }
+  function goNext(){
+    if(!answers[qi])return;
+    if(qi<questions.length-1){setQi(q=>q+1);}
+    else{const{key}=calcProfil(answers);const profils=lang==="en"?PROFILS_EN:PROFILS_FR;onResult(key,profils[key]);}
+  }
+  function goPrev(){if(qi>0)setQi(q=>q-1);}
+
+  if(phase==="intro")return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 60%,#1A0A15 100%)",display:"flex",flexDirection:"column",padding:"0 0 40px",position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",width:240,height:240,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,0,61,.2),transparent)",top:-60,right:-40,pointerEvents:"none"}}/>
+      <div style={{position:"absolute",width:160,height:160,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,107,157,.15),transparent)",bottom:100,left:-30,pointerEvents:"none"}}/>
+      <div style={{padding:"52px 20px 0"}}>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.12)",border:"1.5px solid rgba(255,255,255,.2)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer"}}>← {t("Retour","Back")}</button>
+      </div>
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 28px",textAlign:"center"}}>
+        <div style={{fontSize:56,marginBottom:16}}>✨</div>
+        <div style={{fontSize:11,fontWeight:800,letterSpacing:3,color:"rgba(255,180,200,.6)",textTransform:"uppercase",marginBottom:14}}>{t("Quiz Dignité","Quiz Dignité")}</div>
+        <div className="T" style={{fontSize:30,fontWeight:900,color:"white",lineHeight:1.1,marginBottom:16}}>{t("Quel est ton Profil Dignité ?","What's your Dignity Profile?")}</div>
+        <p style={{fontSize:15,color:"rgba(255,180,200,.75)",lineHeight:1.7,marginBottom:40,maxWidth:320}}>{t("Réponds à quelques questions et découvre la facette de toi qui fait ta force.","Answer a few questions and discover the side of you that makes you strong.")}</p>
+        <button onClick={()=>setPhase("quiz")} style={{width:"100%",maxWidth:320,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"18px 24px",fontWeight:900,fontSize:"1.1rem",cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.4)",letterSpacing:.3}}>
+          {t("Commencer le test ✨","Start the test ✨")}
+        </button>
+        <div style={{display:"flex",gap:8,marginTop:16,flexWrap:"wrap",justifyContent:"center"}}>
+          {["🌱 Découvreuse","🔍 Curieuse","💗 Sûre d'elle","✊ Battante","🤝 Alliée","🌟 Leader"].map((p,i)=>(
+            <span key={i} style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.12)",borderRadius:20,padding:"5px 11px",fontSize:11,color:"rgba(255,180,200,.7)",fontWeight:700}}>{p}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const q=questions[qi];
+  const prog=(qi+1)/questions.length;
+  return(
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",padding:"48px 16px 20px"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+          <button onClick={goPrev} disabled={qi===0} style={{background:"rgba(255,255,255,.15)",border:"none",borderRadius:10,padding:"7px 12px",color:"white",fontWeight:800,fontSize:13,cursor:qi===0?"default":"pointer",opacity:qi===0?.3:1}}>←</button>
+          <div style={{flex:1,height:5,background:"rgba(255,255,255,.2)",borderRadius:5,overflow:"hidden"}}>
+            <div style={{height:"100%",background:"linear-gradient(90deg,#E8003D,#FF6B9D)",borderRadius:5,width:`${prog*100}%`,transition:"width .4s"}}/>
+          </div>
+          <span style={{fontSize:12,color:"rgba(255,255,255,.6)",fontWeight:700,minWidth:36,textAlign:"right"}}>{qi+1}/{questions.length}</span>
+        </div>
+        <div style={{fontSize:11,fontWeight:800,color:"rgba(255,180,200,.6)",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>{t("Question","Question")} {qi+1}</div>
+      </div>
+      <div style={{flex:1,padding:"20px 16px 100px",overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
+        <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:22}}>{q.q}</div>
+        <div style={{display:"flex",flexDirection:"column",gap:11}}>
+          {q.answers.map((a,i)=>{
+            const sel=answers[qi]===a;
+            return(
+              <button key={i} onClick={()=>selectAnswer(a)} style={{background:sel?"linear-gradient(135deg,rgba(232,0,61,.12),rgba(255,107,157,.08))":"white",border:sel?"2px solid #E8003D":"2px solid rgba(232,0,61,.12)",borderRadius:16,padding:"16px 16px",cursor:"pointer",fontSize:"1rem",fontWeight:700,textAlign:"left",color:sel?P.red:P.dark,display:"flex",alignItems:"center",gap:12,transition:"all .15s",width:"100%"}}>
+                <span style={{width:30,height:30,borderRadius:"50%",background:sel?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(232,0,61,.08)",color:sel?"white":P.muted,display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{String.fromCharCode(65+i)}</span>
+                {a.text}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,padding:"12px 16px 20px",background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1px solid rgba(232,0,61,.1)"}}>
+        <button onClick={goNext} disabled={!answers[qi]} style={{width:"100%",background:answers[qi]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"#D0D0D0",color:"white",border:"none",borderRadius:50,padding:"17px",fontWeight:900,fontSize:"1.05rem",cursor:answers[qi]?"pointer":"default",transition:"all .2s",boxShadow:answers[qi]?"0 6px 22px rgba(232,0,61,.35)":"none"}}>
+          {qi===questions.length-1?t("Voir mon profil ✨","See my profile ✨"):t("Question suivante →","Next question →")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const cardUrl=makeProfilCard(profil,lang);
+
+  useEffect(()=>{if(onBadge&&profil.badge)onBadge(profil.badge);},[]);
+
+  function share(){
+    const name=profil.name;
+    const text=t(
+      `✨ J'ai découvert mon Profil Dignité !\n\nJe suis ${name} ${profil.emoji}\n\nEt toi, quel est ton Profil Dignité ?\n\nDécouvre le tien sur Quiz Dignité 👇\nhttps://quizdignite.org`,
+      `✨ I discovered my Dignity Profile!\n\nI am ${name} ${profil.emoji}\n\nAnd you, what's your Dignity Profile?\n\nDiscover yours on Quiz Dignité 👇\nhttps://quizdignite.org`
+    );
+    if(navigator.share){navigator.share({title:t("Mon Profil Dignité","My Dignity Profile"),text,url:"https://quizdignite.org"}).catch(()=>{});}
+    else{window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank");}
+  }
+
+  function downloadCard(){
+    const a=document.createElement("a");a.href=cardUrl;a.download=`profil-dignite-${profilKey}.svg`;a.click();
+  }
+
+  return(
+    <div style={{paddingBottom:40,minHeight:"100vh",background:"#FFF4F7"}}>
+      {/* Hero */}
+      <div style={{background:"linear-gradient(160deg,#1A0A15,#3A0313)",padding:"52px 20px 32px",textAlign:"center",position:"relative"}}>
+        <button onClick={onBack} style={{position:"absolute",top:14,left:16,background:"rgba(255,255,255,.12)",border:"1.5px solid rgba(255,255,255,.2)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer"}}>← {t("Retour","Back")}</button>
+        <div style={{fontSize:11,fontWeight:800,letterSpacing:3,color:"rgba(255,180,200,.5)",textTransform:"uppercase",marginBottom:10}}>{t("Ton Profil Dignité","Your Dignity Profile")}</div>
+        <div style={{fontSize:64,marginBottom:8}}>{profil.emoji}</div>
+        <div className="T" style={{fontSize:"2rem",fontWeight:900,color:"white",letterSpacing:1,marginBottom:12}}>{profil.name.toUpperCase()}</div>
+        <p style={{fontSize:14,color:"rgba(255,180,200,.8)",lineHeight:1.65,maxWidth:320,margin:"0 auto 16px"}}>{profil.desc}</p>
+        <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+          {profil.traits.map((tr,i)=>(
+            <span key={i} style={{background:"rgba(232,0,61,.2)",border:"1px solid rgba(232,0,61,.3)",borderRadius:20,padding:"5px 12px",fontSize:12,fontWeight:700,color:"#FF8FA3"}}>{tr}</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{padding:"16px 16px 0"}}>
+        {/* Phrase */}
+        <div style={{background:"white",borderRadius:20,padding:"18px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>💬 {t("Ta phrase","Your phrase")}</div>
+          <p style={{fontSize:15,fontStyle:"italic",color:P.dark,lineHeight:1.6,margin:0}}>« {profil.phrase} »</p>
+        </div>
+
+        {/* Défi */}
+        <div style={{background:"linear-gradient(135deg,rgba(232,0,61,.06),rgba(255,107,157,.04))",borderRadius:20,padding:"18px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.12)"}}>
+          <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>🎯 {t("Ton défi de la semaine","Your weekly challenge")}</div>
+          <p style={{fontSize:14,color:P.dark,lineHeight:1.65,margin:0,fontWeight:600}}>{profil.defi}</p>
+        </div>
+
+        {/* Badge */}
+        <div style={{background:"linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,107,157,.1))",border:"2px solid rgba(255,215,0,.35)",borderRadius:20,padding:"16px",marginBottom:16,textAlign:"center"}}>
+          <div style={{fontSize:11,fontWeight:800,color:"#C89800",textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{t("🏅 Badge débloqué !","🏅 Badge unlocked!")}</div>
+          <div style={{fontSize:32}}>{profil.badge.icon}</div>
+          <div className="T" style={{fontSize:16,fontWeight:900,color:P.red,marginTop:4}}>{profil.badge.name}</div>
+        </div>
+
+        {/* Carte */}
+        <div style={{marginBottom:16,textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:700,color:P.muted,marginBottom:8}}>{t("Ta carte à partager","Your share card")}</div>
+          <img src={cardUrl} alt={profil.name} style={{width:"60%",maxWidth:220,borderRadius:16,boxShadow:"0 8px 24px rgba(0,0,0,.15)",display:"block",margin:"0 auto"}}/>
+        </div>
+
+        {/* Actions */}
+        <button onClick={share} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"16px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",marginBottom:10,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+          <span>💬</span> {t("Partager mon profil","Share my profile")}
+        </button>
+        <button onClick={downloadCard} style={{width:"100%",background:"white",color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer",marginBottom:10}}>
+          📸 {t("Télécharger ma carte","Download my card")}
+        </button>
+        <div style={{display:"flex",gap:10}}>
+          <button onClick={onRetry} style={{flex:1,background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🔄 {t("Refaire","Retry")}</button>
+          <button onClick={onExplore} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── SETTINGS ────────────────────────────────────────────────────
 function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,setDarkMode,user,setUser,onResetProgress,onBack,onNav}){
   const[confirmReset,setConfirmReset]=useState(false);
@@ -4102,7 +4527,7 @@ function Explorer({lang,onTheme,onNav,navActive}){
 }
 
 // ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onCelebrate,onEscape,onNav,navActive,defiText}){
+function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onNav,navActive,defiText}){
   const t=(fr,en)=>lang==="en"?en:fr;
   const quickItems=[
     {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),color:"#4FB3F6",action:onGames},
@@ -4154,6 +4579,15 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
             <p style={{fontSize:14,color:P.dark,fontWeight:700,lineHeight:1.5,margin:0,flex:1}}>{defiText}</p>
           </div>
         </div>}
+        {/* Profil Dignité — featured */}
+        <div onClick={onProfil} style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:20,padding:"16px 18px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,boxShadow:"0 6px 22px rgba(0,0,0,.2)",border:"1px solid rgba(232,0,61,.3)"}}>
+          <div style={{width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>✨</div>
+          <div style={{flex:1}}>
+            <div className="T" style={{fontSize:16,fontWeight:900,color:"white",marginBottom:3}}>{t("Quel est ton Profil Dignité ?","What's your Dignity Profile?")}</div>
+            <div style={{fontSize:12,color:"rgba(255,180,200,.7)",fontWeight:600}}>{t("🌱 Découvreuse · ✊ Battante · 🌟 Leader...","🌱 Explorer · ✊ Fighter · 🌟 Leader...")}</div>
+          </div>
+          <span style={{fontSize:20,color:"#FF6B9D",fontWeight:900}}>›</span>
+        </div>
         {/* Quick access grid */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {quickItems.map((it,i)=>(
@@ -4292,6 +4726,7 @@ export default function App(){
   const[sessions,setSessions]=useState(0);
   const[streak,setStreak]=useState(()=>parseInt(localStorage.getItem('hm_streak')||'0',10));
   const[newBadges,setNewBadges]=useState([]);
+  const[profilResult,setProfilResult]=useState(null);
   const[soundOn,setSoundOn]=useState(true);
   const[audioOn,setAudioOn]=useState(true);
   const[darkMode,setDarkMode]=useState(()=>localStorage.getItem("hm_dark")==="1");
@@ -4592,7 +5027,7 @@ export default function App(){
   }
 
   const lvl=getLevel(totalPts,lang);
-  const showNav=!["quiz_game","game_play","welcome","onboarding"].includes(screen);
+  const showNav=!["quiz_game","game_play","welcome","onboarding","profil_test","profil_result"].includes(screen);
   const gDef=(lang==="en"?GAME_DEF_EN:GAME_DEF_FR).find(g=>g.id===gameId)||GAME_DEF_FR.find(g=>g.id===gameId);
 
   // Défi du jour text for Hub
@@ -4616,7 +5051,13 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onProfil={()=>setScreen("profil_test")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+
+        {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
+
+        {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
+
+        {screen==="profil_result"&&profilResult&&<ProfilResult profilKey={profilResult.key} profil={profilResult.profil} lang={lang} onBack={()=>setScreen("profil_test")} onRetry={()=>{setProfilResult(null);setScreen("profil_test");}} onExplore={()=>{setScreen("explore");setNavActive("explore");}} onBadge={badge=>{if(!badges.includes(badge.id)){const nb=[...badges,badge.id];setBadges(nb);persist(totalPts,nb,sessions,unlocked,streak);}}}/>}
 
         {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav} onModuleFinish={(pts,badge)=>{
           const newTotal=totalPts+pts;
