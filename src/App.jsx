@@ -137,9 +137,11 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
   const anim=AK_ANIM[state]||AK_ANIM.neutre;
   return(
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"ak-in .4s ease-out",...style}}>
-      <img src={src} alt="A-Kissi"
+      <img src={src} alt={`A-Kissi — ${state}`}
         style={{width:size,height:"auto",objectFit:"contain",objectPosition:"top",animation:anim,filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}
         onError={e=>{e.target.style.display="none";}}
+        role="img"
+        aria-label={message||`A-Kissi mascotte Quiz Dignité`}
       />
       {message&&(
         <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"9px 13px",maxWidth:200,textAlign:"center",fontSize:12,fontWeight:700,color:P.dark,lineHeight:1.45,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
@@ -157,7 +159,7 @@ const FC = ["#3DBE82","#9B5DE5","#F59E0B","#14B8A6","#4FB3F6","#FF8C69","#C8102E
 const STYLE = `
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
 *,*::before,*::after{box-sizing:border-box;}
-body{margin:0;overflow-x:hidden;font-family:'Nunito',sans-serif;}
+body{margin:0;overflow-x:hidden;font-family:'Nunito',sans-serif;background:#1A0A15;}
 .app{font-family:'Nunito',sans-serif;}
 .T{font-family:'Baloo 2',sans-serif;}
 .F{font-family:'Fredoka',sans-serif;}
@@ -174,6 +176,25 @@ button{font-family:'Nunito',sans-serif;cursor:pointer;}
 .FL{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
 .fl{position:absolute;bottom:-60px;animation:floatUp linear infinite;}
 .SH{position:relative;z-index:2;min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;}
+@media(min-width:520px){
+  body{background:linear-gradient(135deg,#FFE8EF 0%,#FFF0F5 40%,#FFD4E8 100%) !important;min-height:100vh;}
+  .BG{opacity:0.3;}
+  .SH{box-shadow:0 0 0 1px rgba(232,0,61,.1),0 20px 80px rgba(232,0,61,.15),0 0 120px rgba(255,180,200,.2);background:white;border-radius:0;}
+  .FL{display:none;}
+}
+
+/* ── DESKTOP LAYOUT ─────────────────────────────────── */
+@media(min-width:700px){
+  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;}
+  .desktop-shell{display:flex;align-items:flex-start;justify-content:center;width:100%;min-height:100vh;gap:0;}
+  .desktop-side{display:flex;flex-direction:column;justify-content:center;align-items:center;width:200px;min-height:100vh;padding:40px 20px;flex-shrink:0;}
+  .desktop-side-r{display:flex;flex-direction:column;justify-content:center;align-items:center;width:200px;min-height:100vh;padding:40px 20px;flex-shrink:0;}
+  .SH{box-shadow:0 0 60px rgba(0,0,0,.35);min-height:100vh;}
+  .BG{display:none;}
+}
+@media(max-width:699px){
+  .desktop-side,.desktop-side-r{display:none;}
+}
 @keyframes splashFadeOut{0%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1.02)}100%{opacity:0;transform:scale(1.04)}}
 .splash-screen{position:fixed;inset:0;z-index:9999;margin:0;padding:0;background:#E8003D;overflow:hidden;}
 .splash-screen img{display:block;width:100%;height:100%;width:100vw;height:100dvh;object-fit:cover;object-position:center;margin:0;padding:0;border:none;}
@@ -3677,6 +3698,487 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
   );
 }
 
+// ── SITUATIONS INTERACTIVES ──────────────────────────────────────
+const SITUATIONS_LEVELS=[
+  {level:1,emoji:"🌸",color:P.rose,title:"Je découvre mon corps",desc:"Corps, règles et hygiène"},
+  {level:2,emoji:"📅",color:P.blue,title:"Je comprends mon cycle",desc:"Cycle, douleurs et quotidien"},
+  {level:3,emoji:"🧭",color:P.purple,title:"Je connais mes limites",desc:"Consentement et respect"},
+  {level:4,emoji:"🛡️",color:P.red,title:"Je me protège et je protège les autres",desc:"Violences et recherche d'aide"},
+  {level:5,emoji:"👑",color:P.amber,title:"Dignité, droits & leadership",desc:"Droits, solidarité et leadership"},
+];
+
+const SITUATIONS_DATA=[
+  {id:1,level:1,title:"Mes premières règles à l'école",
+   context:"Aïcha vient d'avoir ses premières règles. Elle est à l'école et remarque une tache de sang sur sa jupe. Elle est surprise, ne sait pas vraiment quoi faire et a peur que ses camarades se moquent d'elle.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Garder le secret et essayer de gérer seule.",feedbackType:"acceptable",feedback:"C'est possible, mais tu n'as pas à tout gérer seule. Demander de l'aide n'a rien de honteux."},
+     {id:"B",text:"Demander discrètement une protection et en parler à une personne de confiance si elle en a besoin.",feedbackType:"recommended",feedback:"Bonne piste 💗 Avoir ses premières règles peut susciter des questions ou de l'inquiétude. Demander de l'aide est normal. Une personne de confiance peut l'aider à trouver une protection et à se sentir plus à l'aise."},
+     {id:"C",text:"Ne plus retourner en classe pendant ses règles.",feedbackType:"risky",feedback:"À éviter. Manquer les cours à cause de ses règles n'est pas nécessaire quand on a la bonne protection et du soutien."},
+   ],
+   takeaway:"Les premières règles sont une étape naturelle de la puberté. Tu peux poser des questions et demander de l'aide.",source:null},
+
+  {id:2,level:1,title:"Comprendre mes règles",
+   context:"Mariam vient d'avoir ses premières règles. Elle entend plusieurs personnes parler des menstruations et reçoit des informations contradictoires. Elle ne sait plus ce qui est vrai.",
+   question:"Que devrait-elle faire lorsqu'elle entend une information qui lui paraît étrange ?",
+   choices:[
+     {id:"A",text:"La croire parce qu'un adulte l'a dit.",feedbackType:"risky",feedback:"Un adulte peut se tromper aussi. Il vaut mieux vérifier une information avant d'y croire complètement."},
+     {id:"B",text:"Vérifier l'information auprès d'une source fiable.",feedbackType:"recommended",feedback:"Bonne piste. Certaines croyances sur les règles sont très répandues sans être exactes. Pour les questions concernant ton corps, il est préférable de vérifier auprès d'une source fiable ou d'un professionnel compétent."},
+     {id:"C",text:"La partager à ses amies pour savoir ce qu'elles en pensent.",feedbackType:"acceptable",feedback:"En parler entre amies peut aider, mais leurs réponses ne remplacent pas une information vérifiée."},
+   ],
+   takeaway:"Une information souvent répétée n'est pas forcément vraie.",source:null},
+
+  {id:3,level:1,title:"Choisir une protection",
+   context:"Fatou doit choisir une protection menstruelle. Ses amies utilisent des produits différents et chacune lui dit que sa méthode est la meilleure.",
+   question:"Que devrait faire Fatou ?",
+   choices:[
+     {id:"A",text:"Utiliser obligatoirement la même protection que ses amies.",feedbackType:"risky",feedback:"Chaque corps est différent. Ce qui convient à une amie ne te conviendra pas forcément."},
+     {id:"B",text:"Choisir une protection adaptée à ses besoins, à son confort et à ce qui lui est accessible.",feedbackType:"recommended",feedback:"Bonne piste. Il existe plusieurs types de protections menstruelles. Le choix peut dépendre des préférences personnelles, du confort, de l'accessibilité et de la situation de chacune."},
+     {id:"C",text:"Ne rien utiliser puisqu'elle ne sait pas laquelle choisir.",feedbackType:"risky",feedback:"Ne pas se protéger peut être inconfortable et stressant. Il vaut mieux essayer une protection, même simple, en attendant de trouver la bonne."},
+   ],
+   takeaway:"Il n'existe pas une seule protection adaptée à toutes les personnes.",source:null},
+
+  {id:4,level:1,title:"La tache sur ma jupe",
+   context:"Nadia remarque qu'une camarade a une tache de sang sur son uniforme. Quelques élèves commencent à rire.",
+   question:"Que peux-tu faire ?",
+   choices:[
+     {id:"A",text:"Rire aussi pour ne pas attirer l'attention sur toi.",feedbackType:"risky",feedback:"Rire avec le groupe peut sembler plus simple, mais cela blesse la personne concernée."},
+     {id:"B",text:"Lui signaler discrètement la tache et lui proposer ton aide.",feedbackType:"recommended",feedback:"Bonne piste. Une tache de règles peut arriver à n'importe qui. Prévenir discrètement la personne et lui proposer de l'aide permet de préserver sa dignité."},
+     {id:"C",text:"Prendre une photo et l'envoyer au groupe de classe.",feedbackType:"risky",feedback:"Cela peut gravement humilier la personne et lui faire du tort. Une tache de règles ne mérite jamais d'être exposée ainsi."},
+   ],
+   takeaway:"Une personne qui a ses règles mérite du respect, pas des moqueries.",source:null},
+
+  {id:5,level:1,title:"L'hygiène pendant les règles",
+   context:"Une cousine dit à Sarah qu'elle devrait éviter de se laver pendant ses règles parce que cela pourrait provoquer un problème. Sarah ne sait pas si cette information est vraie.",
+   question:"Quelle est la meilleure réaction ?",
+   choices:[
+     {id:"A",text:"Suivre le conseil sans se poser de question.",feedbackType:"risky",feedback:"Suivre un conseil sans vérifier peut te faire croire des choses fausses sur ton propre corps."},
+     {id:"B",text:"Vérifier l'information auprès d'une source fiable.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une information sur la santé mérite toujours d'être vérifiée avant d'être suivie."},
+     {id:"C",text:"Dire à toutes ses amies de faire la même chose.",feedbackType:"risky",feedback:"Propager une information non vérifiée peut faire circuler une fausse idée à beaucoup de monde."},
+   ],
+   takeaway:"Les règles ne rendent pas le corps sale. Une bonne hygiène menstruelle contribue au confort et au bien-être.",source:null},
+
+  {id:6,level:1,title:"Le mythe de mon quartier",
+   context:"Des camarades affirment qu'une fille ne devrait pas faire certaines activités simplement parce qu'elle a ses règles. Plusieurs personnes autour d'elle disent la même chose.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Croire automatiquement ce que dit la majorité.",feedbackType:"risky",feedback:"Le nombre de personnes qui répètent une idée ne la rend pas vraie."},
+     {id:"B",text:"Vérifier l'information et écouter également les besoins de son propre corps.",feedbackType:"recommended",feedback:"Bonne piste 💗 Ton corps et une information fiable sont de meilleurs guides que les croyances populaires."},
+     {id:"C",text:"Dire que toutes les croyances sur les règles sont forcément fausses.",feedbackType:"acceptable",feedback:"Rejeter en bloc toutes les croyances n'est pas non plus la solution. Mieux vaut vérifier chaque idée une par une."},
+   ],
+   takeaway:"Il est possible de respecter les habitudes de sa communauté tout en vérifiant les informations concernant sa santé.",source:null},
+
+  {id:7,level:2,title:"Mon cycle n'est pas toujours pareil",
+   context:"Grâce remarque que ses règles ne commencent pas exactement le même jour chaque mois. Elle commence à s'inquiéter parce qu'elle pensait que son cycle devait toujours être identique.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Paniquer immédiatement.",feedbackType:"risky",feedback:"La panique n'aide pas à comprendre ce qui se passe. Elle peut même rendre les choses plus stressantes."},
+     {id:"B",text:"Observer son cycle et demander conseil si quelque chose l'inquiète.",feedbackType:"recommended",feedback:"Bonne piste 💗 Observer son cycle permet de mieux le comprendre, et demander conseil rassure en cas de doute."},
+     {id:"C",text:"Prendre un produit conseillé par une amie pour régulariser ses règles.",feedbackType:"risky",feedback:"Prendre un produit sans avis médical peut être risqué. Mieux vaut consulter un professionnel avant."},
+   ],
+   takeaway:"Les cycles peuvent varier. En cas d'inquiétude importante ou de symptômes inhabituels, demander conseil à un professionnel de santé est préférable.",source:null},
+
+  {id:8,level:2,title:"Mes règles sont en retard",
+   context:"Awa attend ses règles mais elles ne sont pas arrivées au moment où elle les attendait. Elle commence à chercher des solutions sur les réseaux sociaux.",
+   question:"Quelle est la meilleure réaction ?",
+   choices:[
+     {id:"A",text:"Prendre n'importe quel produit recommandé en ligne.",feedbackType:"risky",feedback:"Un produit trouvé en ligne peut être inefficace ou risqué sans avis médical."},
+     {id:"B",text:"Chercher une information fiable et demander conseil si nécessaire.",feedbackType:"recommended",feedback:"Bonne piste. Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée."},
+     {id:"C",text:"Ignorer complètement la situation.",feedbackType:"acceptable",feedback:"Ignorer peut sembler simple, mais si le retard inquiète, il vaut mieux en parler à quelqu'un de confiance."},
+   ],
+   takeaway:"Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",source:null},
+
+  {id:9,level:2,title:"Des règles très douloureuses",
+   context:"Mariam a régulièrement des douleurs menstruelles tellement fortes qu'elles l'empêchent parfois d'aller en cours.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Tout supporter en silence.",feedbackType:"risky",feedback:"Souffrir en silence n'est pas nécessaire. Une douleur forte mérite d'être prise au sérieux."},
+     {id:"B",text:"En parler à une personne de confiance et, si nécessaire, consulter un professionnel de santé.",feedbackType:"recommended",feedback:"Bonne piste. Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux."},
+     {id:"C",text:"Prendre n'importe quel médicament conseillé sur Internet.",feedbackType:"risky",feedback:"L'automédication sans avis médical peut être dangereuse."},
+   ],
+   takeaway:"Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",source:null},
+
+  {id:10,level:2,title:"Les règles et le sport",
+   context:"Aminata a ses règles le jour d'un entraînement important. Elle se sent bien mais une camarade lui dit qu'elle ne devrait absolument pas faire de sport pendant ses règles.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Arrêter automatiquement toute activité.",feedbackType:"acceptable",feedback:"Se reposer est possible si le corps en a besoin, mais ce n'est pas obligatoire pour tout le monde."},
+     {id:"B",text:"Écouter son corps et décider selon son état et son confort.",feedbackType:"recommended",feedback:"Bonne piste. Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important."},
+     {id:"C",text:"Se forcer à participer même si elle se sent mal.",feedbackType:"risky",feedback:"Se forcer à continuer alors que le corps souffre peut aggraver l'inconfort."},
+   ],
+   takeaway:"Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important.",source:null},
+
+  {id:11,level:2,title:"Je prépare un voyage",
+   context:"Esther doit passer toute la journée loin de chez elle et pense avoir bientôt ses règles.",
+   question:"Quelle précaution peut-elle prendre ?",
+   choices:[
+     {id:"A",text:"Prévoir quelques protections dans son sac.",feedbackType:"recommended",feedback:"Bonne piste 💗 Anticiper permet d'être tranquille, peu importe le moment où les règles arrivent."},
+     {id:"B",text:"Annuler sa sortie.",feedbackType:"risky",feedback:"Annuler n'est pas nécessaire. Une bonne anticipation permet de vivre sa journée normalement."},
+     {id:"C",text:"Ne rien prévoir parce qu'elle ne peut pas connaître exactement la date.",feedbackType:"risky",feedback:"Ne rien prévoir augmente le risque de stress si les règles arrivent au mauvais moment."},
+   ],
+   takeaway:"Anticiper ses besoins peut éviter beaucoup de stress.",source:null},
+
+  {id:12,level:2,title:"Mon amie vient d'avoir ses premières règles",
+   context:"Ta meilleure amie vient te voir après ses premières règles. Elle semble inquiète et dit qu'elle ne sait pas à qui poser ses questions.",
+   question:"Que peux-tu faire ?",
+   choices:[
+     {id:"A",text:"Lui dire de chercher seule sur Internet.",feedbackType:"risky",feedback:"La laisser seule face à des informations parfois fausses n'est pas idéal."},
+     {id:"B",text:"L'écouter, la rassurer et l'aider à trouver une information fiable ou une personne de confiance.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une personne qui découvre son corps a le droit de poser des questions."},
+     {id:"C",text:"Lui dire de ne parler de ses règles à personne.",feedbackType:"risky",feedback:"Cacher un sujet aussi naturel peut renforcer un sentiment de honte qui n'a pas lieu d'être."},
+   ],
+   takeaway:"Une personne qui découvre son corps a le droit de poser des questions.",source:null},
+
+  {id:13,level:3,title:"« Envoie-moi une photo »",
+   context:"Inès discute avec un garçon qui lui demande une photo intime. Elle lui dit qu'elle ne veut pas, mais il insiste et lui dit que si elle l'aimait vraiment, elle accepterait.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Envoyer la photo pour éviter qu'il se fâche.",feedbackType:"risky",feedback:"Céder à la pression ne garantit rien et peut t'exposer à des risques importants."},
+     {id:"B",text:"Refuser et chercher de l'aide si la pression continue.",feedbackType:"recommended",feedback:"Bonne piste 💗 Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement."},
+     {id:"C",text:"Envoyer une photo de quelqu'un d'autre.",feedbackType:"risky",feedback:"Utiliser la photo d'une autre personne sans son accord lui ferait du tort à elle aussi."},
+   ],
+   takeaway:"Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",source:null},
+
+  {id:14,level:3,title:"Mon corps, mes limites",
+   context:"Lors d'une sortie, quelqu'un essaie de prendre Mariam dans ses bras alors qu'elle ne veut pas.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Ne rien dire pour ne pas vexer la personne.",feedbackType:"risky",feedback:"Se taire alors qu'un contact ne te convient pas peut te mettre mal à l'aise plus longtemps."},
+     {id:"B",text:"Dire clairement qu'elle ne souhaite pas ce contact.",feedbackType:"recommended",feedback:"Bonne piste 💗 Tu as le droit de poser des limites concernant ton propre corps."},
+     {id:"C",text:"Accepter parce qu'elle connaît cette personne.",feedbackType:"risky",feedback:"Connaître quelqu'un ne veut pas dire qu'on doit accepter tout ce qu'il ou elle propose."},
+   ],
+   takeaway:"Tu as le droit de poser des limites concernant ton propre corps.",source:null},
+
+  {id:15,level:3,title:"La pression du groupe",
+   context:"Ses camarades veulent convaincre Sarah de participer à un défi qu'elle trouve gênant. Ils lui disent qu'elle est « trop coincée » si elle refuse.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Participer pour être acceptée.",feedbackType:"risky",feedback:"Se forcer à participer pour plaire peut te mettre dans une situation gênante."},
+     {id:"B",text:"Dire qu'elle ne souhaite pas participer.",feedbackType:"recommended",feedback:"Bonne piste 💗 Dire non à une pression de groupe est une façon de protéger ses limites."},
+     {id:"C",text:"Insulter ses camarades.",feedbackType:"acceptable",feedback:"Répondre par des insultes peut envenimer la situation. Un refus calme est tout aussi efficace."},
+   ],
+   takeaway:"Dire non à une pression de groupe est une façon de protéger ses limites.",source:null},
+
+  {id:16,level:3,title:"Les moqueries sur les règles",
+   context:"Dans la cour, plusieurs élèves se moquent d'une fille parce qu'elle a taché son uniforme.",
+   question:"Que peux-tu faire ?",
+   choices:[
+     {id:"A",text:"Participer aux moqueries.",feedbackType:"risky",feedback:"Participer aggrave l'humiliation d'une personne qui n'a rien fait de mal."},
+     {id:"B",text:"Ne pas encourager les moqueries et soutenir discrètement la fille.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une situation embarrassante ne donne à personne le droit d'humilier une autre personne."},
+     {id:"C",text:"Filmer la scène.",feedbackType:"risky",feedback:"Filmer une personne en difficulté sans son accord aggrave son humiliation."},
+   ],
+   takeaway:"Une situation embarrassante ne donne à personne le droit d'humilier une autre personne.",source:null},
+
+  {id:17,level:3,title:"Une confidence",
+   context:"Une amie te raconte quelque chose de très personnel et te demande de ne pas le répéter.",
+   question:"Que fais-tu ?",
+   choices:[
+     {id:"A",text:"Envoyer immédiatement l'information à ton groupe d'amies.",feedbackType:"risky",feedback:"Partager une confidence sans accord trahit la confiance de la personne."},
+     {id:"B",text:"Respecter sa confidence, tout en cherchant de l'aide si elle est en danger.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important."},
+     {id:"C",text:"Publier son histoire anonymement sur les réseaux sociaux.",feedbackType:"risky",feedback:"Même anonyme, publier l'histoire de quelqu'un sans son accord est une trahison de sa confiance."},
+   ],
+   takeaway:"Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important.",source:null},
+
+  {id:18,level:3,title:"Je ne sais pas quoi faire",
+   context:"Une amie te raconte une situation qui la met mal à l'aise. Tu ne sais pas exactement comment l'aider.",
+   question:"Que peux-tu faire ?",
+   choices:[
+     {id:"A",text:"Lui dire de régler le problème toute seule.",feedbackType:"risky",feedback:"La laisser seule face à une situation difficile peut la faire se sentir abandonnée."},
+     {id:"B",text:"L'écouter sans la juger et l'aider à trouver une personne de confiance.",feedbackType:"recommended",feedback:"Bonne piste 💗 Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important."},
+     {id:"C",text:"Confronter immédiatement la personne concernée.",feedbackType:"risky",feedback:"Agir seule et dans la précipitation peut aggraver la situation au lieu de l'aider."},
+   ],
+   takeaway:"Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important.",source:null},
+
+  {id:19,level:4,title:"Le harcèlement",
+   context:"Depuis plusieurs semaines, des élèves se moquent régulièrement de Fatou et publient des commentaires humiliants sur elle.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Garder tout pour elle.",feedbackType:"risky",feedback:"Garder le silence face au harcèlement laisse la situation continuer."},
+     {id:"B",text:"Conserver les éléments utiles et en parler à une personne de confiance ou à un responsable.",feedbackType:"recommended",feedback:"Bonne piste 💗 Face au harcèlement, demander de l'aide est important."},
+     {id:"C",text:"Répondre avec les mêmes insultes.",feedbackType:"acceptable",feedback:"Répondre par des insultes peut aggraver le conflit au lieu de le résoudre."},
+   ],
+   takeaway:"Face au harcèlement, demander de l'aide est important.",source:null},
+
+  {id:20,level:4,title:"Une relation qui fait peur",
+   context:"Une fille raconte que son partenaire se met régulièrement en colère, la menace et veut contrôler avec qui elle parle.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Penser que c'est simplement de la jalousie.",feedbackType:"risky",feedback:"Minimiser un comportement contrôlant peut empêcher de voir un vrai danger."},
+     {id:"B",text:"En parler à une personne de confiance et chercher une aide adaptée.",feedbackType:"recommended",feedback:"Bonne piste 💗 Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur."},
+     {id:"C",text:"Garder le silence pour protéger la relation.",feedbackType:"risky",feedback:"Se taire pour protéger une relation qui fait peur peut aggraver la situation."},
+   ],
+   takeaway:"Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",source:null},
+
+  {id:21,level:4,title:"Une photo déjà envoyée",
+   context:"Une adolescente a envoyé une photo personnelle à quelqu'un qui lui avait promis de garder le secret. Maintenant, cette personne lui demande d'en envoyer d'autres et menace de partager la première.",
+   question:"Que peut-elle faire ?",
+   choices:[
+     {id:"A",text:"Envoyer d'autres photos pour éviter les problèmes.",feedbackType:"risky",feedback:"Céder au chantage ne l'arrête généralement pas, il peut même s'aggraver."},
+     {id:"B",text:"Ne pas céder à la pression et chercher rapidement l'aide d'un adulte de confiance ou d'un service compétent.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée."},
+     {id:"C",text:"Menacer de publier une photo de l'autre personne.",feedbackType:"risky",feedback:"Répondre par une autre menace ne résout rien et peut créer davantage de tort."},
+   ],
+   takeaway:"Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",source:null},
+
+  {id:22,level:4,title:"Mon amie me parle d'une violence",
+   context:"Une amie te dit qu'une personne lui a fait du mal. Elle a peur que personne ne la croie.",
+   question:"Comment peux-tu réagir ?",
+   choices:[
+     {id:"A",text:"Lui demander pourquoi elle n'a pas réagi.",feedbackType:"risky",feedback:"Cette question peut sembler accuser la victime, alors qu'elle n'est jamais responsable de ce qu'elle a subi."},
+     {id:"B",text:"L'écouter, éviter de la culpabiliser et l'aider à trouver une personne compétente et de confiance.",feedbackType:"recommended",feedback:"Bonne piste 💗 Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul."},
+     {id:"C",text:"Aller immédiatement confronter la personne accusée.",feedbackType:"risky",feedback:"Confronter seule une personne dangereuse peut être risqué. Mieux vaut chercher une aide compétente d'abord."},
+   ],
+   takeaway:"Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",source:null},
+
+  {id:23,level:4,title:"« Pourquoi elle n'est pas partie ? »",
+   context:"Des élèves parlent d'une fille victime de violence. Quelqu'un dit : « Si elle n'était pas contente, elle n'avait qu'à partir. »",
+   question:"Quelle réponse est la plus juste ?",
+   choices:[
+     {id:"A",text:"« C'est vrai. »",feedbackType:"risky",feedback:"Cette réponse fait porter la responsabilité à la victime, alors que ce n'est jamais elle qui est en faute."},
+     {id:"B",text:"« La personne victime n'est pas responsable de la violence qu'elle subit. »",feedbackType:"recommended",feedback:"Bonne piste 💗 La responsabilité de la violence revient à la personne qui la commet, pas à la victime."},
+     {id:"C",text:"« Il ne faut jamais parler de violence. »",feedbackType:"acceptable",feedback:"Éviter le sujet n'aide pas à faire changer les mentalités ni à protéger les victimes."},
+   ],
+   takeaway:"La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",source:null},
+
+  {id:24,level:4,title:"Trouver la bonne aide",
+   context:"Une adolescente est confrontée à une situation qui la met en danger. Elle ne sait pas vers qui se tourner.",
+   question:"Quelle peut être une première étape ?",
+   choices:[
+     {id:"A",text:"Gérer seule la situation, même si elle se sent en danger.",feedbackType:"risky",feedback:"Gérer seule une situation dangereuse peut aggraver les risques encourus."},
+     {id:"B",text:"Identifier un adulte ou un service fiable pouvant l'aider.",feedbackType:"recommended",feedback:"Bonne piste 💗 Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante."},
+     {id:"C",text:"Publier toute son histoire sur les réseaux sociaux.",feedbackType:"risky",feedback:"Publier publiquement peut exposer la personne à plus de danger ou de jugement, sans forcément l'aider concrètement."},
+   ],
+   takeaway:"Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",source:null},
+
+  {id:25,level:5,title:"Le mariage de ma petite sœur",
+   context:"Mariam a 15 ans. Sa famille parle de la marier prochainement. Elle ne se sent pas prête et veut continuer son école. Sa grande sœur pense qu'elle devrait pouvoir être entendue mais ne sait pas comment l'aider.",
+   question:"Que peut faire sa grande sœur ?",
+   choices:[
+     {id:"A",text:"Lui dire d'accepter parce que la décision appartient uniquement aux adultes.",feedbackType:"risky",feedback:"Cette réponse ignore les émotions et les besoins de la jeune fille concernée."},
+     {id:"B",text:"L'écouter, prendre ses inquiétudes au sérieux et chercher l'aide d'une personne ou d'un service compétent.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une situation de mariage concernant une mineure peut soulever des questions importantes de sécurité et de droits. Il est important de ne pas laisser la jeune fille seule et de chercher un accompagnement fiable."},
+     {id:"C",text:"Publier immédiatement son histoire sur les réseaux sociaux.",feedbackType:"risky",feedback:"Publier sans réfléchir pourrait mettre la jeune fille encore plus en danger."},
+   ],
+   takeaway:"Écouter une jeune fille et chercher une aide adaptée peut contribuer à sa protection.",source:null},
+
+  {id:26,level:5,title:"Ma petite sœur me demande de garder un secret",
+   context:"Ta petite sœur de 12 ans vient te voir. Elle te dit qu'un adulte lui envoie régulièrement des messages qui la mettent mal à l'aise et lui demande de garder cela secret. Elle te demande de ne rien dire.",
+   question:"Que peux-tu faire ?",
+   choices:[
+     {id:"A",text:"Promettre de garder le secret quoi qu'il arrive.",feedbackType:"risky",feedback:"Certains secrets doivent être partagés avec un adulte de confiance, surtout quand un enfant est en danger."},
+     {id:"B",text:"L'écouter, la rassurer et chercher rapidement l'aide d'un adulte de confiance ou d'un service adapté.",feedbackType:"recommended",feedback:"Bonne piste 💗 Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important."},
+     {id:"C",text:"Aller seule confronter immédiatement l'adulte.",feedbackType:"risky",feedback:"Confronter seule un adulte peut être dangereux. Il vaut mieux passer par un adulte de confiance ou un service compétent."},
+   ],
+   takeaway:"Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",source:null},
+
+  {id:27,level:5,title:"Défendre une camarade",
+   context:"Une fille est ridiculisée parce qu'elle parle ouvertement de ses règles. Plusieurs élèves rient d'elle.",
+   question:"Quelle réaction peut aider ?",
+   choices:[
+     {id:"A",text:"La laisser seule pour éviter les problèmes.",feedbackType:"risky",feedback:"La laisser seule ne l'aide pas et peut renforcer son sentiment d'isolement."},
+     {id:"B",text:"Lui montrer son soutien et rappeler que parler de santé menstruelle n'est pas honteux.",feedbackType:"recommended",feedback:"Bonne piste 💗 Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence."},
+     {id:"C",text:"Insulter les élèves qui se moquent d'elle.",feedbackType:"acceptable",feedback:"Répondre par des insultes peut envenimer la situation au lieu de la calmer."},
+   ],
+   takeaway:"Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence.",source:null},
+
+  {id:28,level:5,title:"Une information sur mes droits",
+   context:"Une publication sur les réseaux sociaux affirme qu'une fille n'a pas le droit de parler de ses règles à l'école. La publication est très partagée et plusieurs personnes la présentent comme une « règle officielle ».",
+   question:"Que fais-tu ?",
+   choices:[
+     {id:"A",text:"La partager parce qu'elle a beaucoup de likes.",feedbackType:"risky",feedback:"Le nombre de likes ne garantit jamais qu'une information est vraie."},
+     {id:"B",text:"Vérifier l'information auprès d'une source fiable.",feedbackType:"recommended",feedback:"Bonne piste 💗 Le nombre de likes, de partages ou de commentaires ne garantit pas qu'une information est vraie. Lorsqu'une information concerne tes droits, ta santé ou une règle officielle, il est préférable de vérifier auprès d'une source fiable."},
+     {id:"C",text:"Demander à une seule amie si elle pense que c'est vrai.",feedbackType:"acceptable",feedback:"L'avis d'une amie peut aider, mais il ne remplace pas une vérification auprès d'une source fiable."},
+   ],
+   takeaway:"Une information populaire n'est pas forcément une information fiable. Vérifie avant de partager.",source:null},
+
+  {id:29,level:5,title:"Prendre la parole pour changer les choses",
+   context:"Dans ton établissement, plusieurs filles rencontrent des difficultés lorsqu'elles ont leurs règles. Certaines n'ont pas toujours de protection avec elles et certaines évitent même de participer à certaines activités par peur d'avoir une fuite. Tu penses qu'il serait utile d'en parler, mais tu ne sais pas par où commencer.",
+   question:"Quelle serait une bonne première étape ?",
+   choices:[
+     {id:"A",text:"Publier immédiatement une vidéo pour dénoncer l'établissement.",feedbackType:"risky",feedback:"Dénoncer publiquement peut attirer l'attention, mais ce n'est pas toujours la première étape la plus constructive. Il peut être utile de comprendre le problème et d'identifier les personnes capables d'agir."},
+     {id:"B",text:"Écouter les filles concernées, comprendre leurs besoins et présenter une proposition aux personnes responsables.",feedbackType:"recommended",feedback:"Bonne piste 💗 Avant de vouloir changer une situation, il est important de comprendre ce que vivent réellement les personnes concernées. Écouter, recueillir les besoins et proposer une solution réaliste est déjà une forme de leadership."},
+     {id:"C",text:"Décider seule de la solution et demander ensuite aux autres de l'appliquer.",feedbackType:"acceptable",feedback:"Vouloir aider est positif, mais décider à la place des personnes concernées peut conduire à une solution qui ne répond pas réellement à leurs besoins. Le leadership commence aussi par l'écoute."},
+   ],
+   takeaway:"Être leader, ce n'est pas décider pour les autres. C'est écouter, comprendre et contribuer à construire des solutions.",source:null},
+
+  {id:30,level:5,title:"Devenir une personne ressource",
+   context:"Une fille plus jeune vient te voir parce qu'elle vient d'avoir ses premières règles. Elle est inquiète, a beaucoup de questions et te demande de lui expliquer ce qui lui arrive. Tu connais certaines choses, mais tu n'as pas toutes les réponses.",
+   question:"Quelle est la meilleure façon de l'aider ?",
+   choices:[
+     {id:"A",text:"Lui donner une réponse même lorsque tu n'es pas sûre, pour ne pas lui montrer que tu ne sais pas.",feedbackType:"risky",feedback:"Vouloir aider est positif, mais inventer une réponse ou donner une information dont tu n'es pas sûre peut induire quelqu'un en erreur. Il est préférable de dire que tu ne sais pas et de chercher une information fiable."},
+     {id:"B",text:"L'écouter, la rassurer, partager les informations fiables que tu connais et l'orienter vers une personne compétente lorsque tu ne sais pas.",feedbackType:"recommended",feedback:"Bonne piste 💗 Être une personne ressource ne signifie pas avoir réponse à toutes les questions. Tu peux écouter, rassurer, partager une information fiable et reconnaître lorsque tu as besoin de demander conseil à quelqu'un de plus compétent."},
+     {id:"C",text:"Lui raconter les expériences personnelles d'autres filles pour lui montrer que tout le monde vit la même chose.",feedbackType:"acceptable",feedback:"Les expériences personnelles peuvent être différentes d'une personne à l'autre. Elles ne remplacent pas une information fiable et il est important de respecter la vie privée des autres filles."},
+   ],
+   takeaway:"Le leadership, c'est aussi savoir écouter, transmettre une information fiable et reconnaître quand il faut demander de l'aide.",source:null},
+];
+
+const SITUATIONS_FEEDBACK_LABEL={recommended:"💗 Bonne piste",acceptable:"💛 Possible, mais…",risky:"🧡 À éviter"};
+const SITUATIONS_FEEDBACK_COLOR={recommended:P.green,acceptable:P.amber,risky:P.coral};
+
+function InteractiveSituation({situation,index,total,onNext,isLast}){
+  const[sel,setSel]=useState(null);
+  const choice=sel?situation.choices.find(c=>c.id===sel):null;
+  return(
+    <div style={{background:"white",borderRadius:20,padding:"18px 16px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
+      <div style={{fontSize:11,fontWeight:800,color:P.muted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Situation {String(index+1).padStart(2,"0")} / {total}</div>
+      <div className="T" style={{fontSize:17,fontWeight:900,color:P.text,marginBottom:10,lineHeight:1.3}}>{situation.title}</div>
+      <p style={{fontSize:14,color:P.text,lineHeight:1.6,margin:"0 0 14px"}}>{situation.context}</p>
+      <div style={{fontSize:14,fontWeight:800,color:P.text,marginBottom:10}}>{situation.question}</div>
+      <div style={{display:"flex",flexDirection:"column",gap:9}}>
+        {situation.choices.map(c=>{
+          const active=sel===c.id;
+          const disabled=sel&&!active;
+          return(
+            <button key={c.id} disabled={!!sel} onClick={()=>setSel(c.id)} style={{textAlign:"left",padding:"12px 14px",borderRadius:14,border:`1.8px solid ${active?SITUATIONS_FEEDBACK_COLOR[c.feedbackType]:"rgba(0,0,0,.1)"}`,background:active?`${SITUATIONS_FEEDBACK_COLOR[c.feedbackType]}14`:"white",cursor:sel?"default":"pointer",opacity:disabled?.45:1,fontSize:13.5,color:P.text,fontWeight:600,lineHeight:1.45,transition:"all .15s"}}>
+              <span style={{fontWeight:900,marginRight:7}}>{c.id}.</span>{c.text}
+            </button>
+          );
+        })}
+      </div>
+      {choice&&(
+        <div className="up" style={{marginTop:16}}>
+          <div style={{background:`${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}14`,border:`1.5px solid ${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}55`,borderRadius:14,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:12,fontWeight:900,color:SITUATIONS_FEEDBACK_COLOR[choice.feedbackType],marginBottom:5}}>{SITUATIONS_FEEDBACK_LABEL[choice.feedbackType]}</div>
+            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{choice.feedback}</div>
+          </div>
+          <div style={{background:P.roseSoft,borderRadius:14,padding:"12px 14px",marginBottom:14}}>
+            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:5}}>✨ À retenir</div>
+            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55,fontWeight:600}}>{situation.takeaway}</div>
+          </div>
+          <button onClick={()=>{setSel(null);onNext();}} style={{width:"100%",background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:900,fontSize:14.5,cursor:"pointer"}}>
+            {isLast?"Terminer →":"Continuer →"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Situations({lang,onBack,navActive,onNav}){
+  const[view,setView]=useState("paliers"); // paliers | list | situation | final
+  const[selPalier,setSelPalier]=useState(null);
+  const[curId,setCurId]=useState(null);
+  const[seen,setSeen]=useState(()=>new Set());
+
+  const situationsOf=lv=>SITUATIONS_DATA.filter(s=>s.level===lv);
+
+  function openPalier(lv){setSelPalier(lv);setView("list");}
+  function openSituation(id){setCurId(id);setView("situation");}
+  function markSeen(id){setSeen(prev=>{const n=new Set(prev);n.add(id);return n;});}
+
+  function handleNext(){
+    const cur=SITUATIONS_DATA.find(s=>s.id===curId);
+    markSeen(cur.id);
+    if(cur.id===30){setView("final");return;}
+    const listLv=situationsOf(cur.level);
+    const idxInLv=listLv.findIndex(s=>s.id===cur.id);
+    if(idxInLv<listLv.length-1){
+      setCurId(listLv[idxInLv+1].id);
+    }else{
+      setView("list");
+    }
+  }
+
+  const NAV=(
+    <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
+      {[{id:"home",icon:"🏠",fr:"Accueil"},{id:"explore",icon:"🎮",fr:"Explorer"},{id:"glossaire",icon:"📖",fr:"Glossaire"},{id:"progress",icon:"🏆",fr:"Progrès"},{id:"settings",icon:"⚙️",fr:"Réglages"}].map(n=>(
+        <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
+          <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{n.fr}
+        </button>
+      ))}
+    </nav>
+  );
+
+  if(view==="situation"&&curId){
+    const cur=SITUATIONS_DATA.find(s=>s.id===curId);
+    const listLv=situationsOf(cur.level);
+    const idxInLv=listLv.findIndex(s=>s.id===cur.id);
+    return(
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+        <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
+          <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← Retour</button>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>Palier {cur.level} · {SITUATIONS_LEVELS[cur.level-1].title}</div>
+        </div>
+        <div style={{flex:1,padding:"16px 14px 24px"}}>
+          <InteractiveSituation situation={cur} index={idxInLv} total={listLv.length} isLast={cur.id===30} onNext={handleNext}/>
+        </div>
+        {NAV}
+      </div>
+    );
+  }
+
+  if(view==="final"){
+    return(
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)"}}>
+        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+          <div style={{fontSize:56,marginBottom:16}}>✨</div>
+          <div className="T" style={{fontSize:21,fontWeight:900,color:"white",marginBottom:14}}>Tu viens de parcourir 30 situations.</div>
+          <p style={{fontSize:14.5,color:"rgba(255,200,215,.85)",lineHeight:1.7,maxWidth:340}}>Connaître ses droits, respecter ses limites, demander de l'aide et soutenir les autres sont aussi des formes de dignité. 💗</p>
+          <div style={{display:"flex",gap:10,marginTop:26,width:"100%",maxWidth:340}}>
+            <button onClick={()=>{setSeen(new Set());setCurId(SITUATIONS_DATA[0].id);setSelPalier(1);setView("situation");}} style={{flex:1,background:"rgba(255,255,255,.15)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>🔁 Rejouer</button>
+            <button onClick={()=>setView("paliers")} style={{flex:1,background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>Retour aux situations</button>
+          </div>
+        </div>
+        {NAV}
+      </div>
+    );
+  }
+
+  if(view==="list"&&selPalier){
+    const lvMeta=SITUATIONS_LEVELS[selPalier-1];
+    const list=situationsOf(selPalier);
+    return(
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+        <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
+          <button onClick={()=>setView("paliers")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← Retour</button>
+          <div style={{fontSize:22}}>{lvMeta.emoji}</div>
+          <div className="T" style={{fontSize:19,fontWeight:900,color:"white",marginTop:4}}>{lvMeta.title}</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:600,marginTop:3}}>{list.length} situations</div>
+        </div>
+        <div style={{flex:1,padding:"14px 14px 24px",display:"flex",flexDirection:"column",gap:9}}>
+          {list.map((s,i)=>(
+            <button key={s.id} onClick={()=>openSituation(s.id)} style={{textAlign:"left",background:"white",borderRadius:16,padding:"13px 14px",display:"flex",alignItems:"center",gap:12,border:`1.5px solid ${lvMeta.color}22`,boxShadow:`0 2px 10px ${lvMeta.color}12`,cursor:"pointer"}}>
+              <div style={{width:36,height:36,borderRadius:11,background:`${lvMeta.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:900,color:lvMeta.color,flexShrink:0}}>{i+1}</div>
+              <div style={{flex:1,fontSize:13.5,fontWeight:700,color:P.text}}>{s.title}</div>
+              {seen.has(s.id)&&<span style={{fontSize:15}}>✅</span>}
+              <span style={{fontSize:18,color:lvMeta.color,fontWeight:900}}>›</span>
+            </button>
+          ))}
+        </div>
+        {NAV}
+      </div>
+    );
+  }
+
+  return(
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      <div style={{background:HERO,padding:"50px 20px 24px",borderRadius:"0 0 32px 32px"}}>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← Retour</button>
+        <div className="T" style={{fontSize:24,fontWeight:900,color:"white",marginBottom:6}}>🤔 Situations</div>
+        <div style={{fontSize:14,color:"rgba(255,255,255,.82)",fontWeight:600}}>Et toi, tu ferais quoi ?</div>
+        <p style={{fontSize:12.5,color:"rgba(255,255,255,.7)",marginTop:6,lineHeight:1.5}}>Découvre des situations de la vraie vie et choisis comment tu réagirais.</p>
+      </div>
+      <div style={{flex:1,padding:"16px 14px 24px",display:"flex",flexDirection:"column",gap:11}}>
+        {SITUATIONS_LEVELS.map(lv=>{
+          const list=situationsOf(lv.level);
+          const doneCount=list.filter(s=>seen.has(s.id)).length;
+          return(
+            <button key={lv.level} onClick={()=>openPalier(lv.level)} style={{textAlign:"left",background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,border:`1.5px solid ${lv.color}22`,boxShadow:`0 2px 12px ${lv.color}14`,cursor:"pointer"}}>
+              <div style={{width:52,height:52,borderRadius:16,background:`${lv.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{lv.emoji}</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:11,fontWeight:900,color:lv.color,textTransform:"uppercase",letterSpacing:.5,marginBottom:2}}>Palier {lv.level}</div>
+                <div className="T" style={{fontSize:15.5,fontWeight:800,color:P.text,marginBottom:3}}>{lv.title}</div>
+                <div style={{fontSize:11.5,color:P.muted,fontWeight:600}}>{lv.desc} · {list.length} situations{doneCount>0?` · ${doneCount} vues`:""}</div>
+              </div>
+              <span style={{fontSize:20,color:lv.color,fontWeight:900}}>›</span>
+            </button>
+          );
+        })}
+      </div>
+      {NAV}
+    </div>
+  );
+}
+
+
+
 // ── PROFIL DIGNITÉ ──────────────────────────────────────────────
 
 const PROFILS_FR={
@@ -4220,6 +4722,7 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
       <Section title={lang==="en"?"App":"Application"}>
         <Row icon="📲" label={lang==="en"?"Download Android app":"Télécharger l'app Android"} right={<span style={{color:P.red,fontSize:18}}>↗</span>} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")} border/>
+        <Row icon="📚" label={lang==="en"?"Sources & References":"Sources & Références"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("sources")} border/>
         <Row icon="ℹ️" label={lang==="en"?"About Quiz Dignité":"À propos de Quiz Dignité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("about")} border/>
         <Row icon="🔐" label={lang==="en"?"Privacy policy":"Politique de confidentialité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("privacy")} border/>
         <Row icon="📋" label={`Quiz Dignité v2.0 · ONG Happy Mum's`} right={null} border={false}/>
@@ -4555,12 +5058,13 @@ function Explorer({lang,onTheme,onNav,navActive}){
 }
 
 // ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onNav,navActive,defiText}){
+function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onSituations,onNav,navActive,defiText}){
   const t=(fr,en)=>lang==="en"?en:fr;
   const quickItems=[
     {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),color:"#4FB3F6",action:onGames},
     {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),color:"#E8003D",action:onDroits},
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
+    {icon:"🤔",label:t("Situations","Situations"),color:"#14B8A6",action:onSituations},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
     {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
     {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
@@ -5049,6 +5553,7 @@ export default function App(){
     else if(id==="glossaire")setScreen("glossaire");
     else if(id==="about")setScreen("about");
     else if(id==="sos")setScreen("sos");
+    else if(id==="sources")setScreen("sources");
     else if(id==="defi"){setShowDefiModal(true);}
     else if(id==="settings")setScreen("settings");
     else setScreen(id);
@@ -5079,7 +5584,9 @@ export default function App(){
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onProfil={()=>setScreen("profil_test")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onProfil={()=>setScreen("profil_test")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onSituations={()=>{setScreen("situations");setNavActive("home");}} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+
+        {screen==="situations"&&<Situations lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav}/>}
 
         {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
 
@@ -5114,7 +5621,7 @@ export default function App(){
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
-        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
+        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"||dest==="sources"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
         {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onBack={()=>setScreen("hub")}/>}
 
@@ -5229,23 +5736,106 @@ export default function App(){
 
         {screen==="sos"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
-            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:14}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
-            <p style={{fontSize:".84rem",color:P.muted,marginBottom:16,lineHeight:1.6,fontWeight:600}}>{lang==="en"?<><strong>Free</strong> helplines available <strong>24 hours a day</strong>:</>:<>Numéros <strong>gratuits</strong> disponibles <strong>24h/24</strong> :</>}</p>
-            {(lang==="en"?[{n:"1308",l:"Violence Support Line",i:"🆘"},{n:"116",l:"Child Protection Line",i:"👶"},{n:"110",l:"Police",i:"👮"}]:[{n:"1308",l:"SOS Violences & Aide aux femmes",i:"🆘"},{n:"116",l:"Allô Enfant en Danger",i:"👶"},{n:"110",l:"Police Secours",i:"👮"}]).map(n=>(
-              <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:17,padding:"15px 18px",marginBottom:11,display:"flex",alignItems:"center",gap:13,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left",boxShadow:"0 5px 18px rgba(232,0,61,.26)"}}>
-                <span style={{fontSize:"1.7rem"}}>{n.i}</span>
-                <div><div className="T" style={{fontSize:"1.9rem",fontWeight:800}}>{n.n}</div><div style={{fontSize:".78rem",opacity:.9}}>{n.l}</div></div>
-                <span style={{marginLeft:"auto",fontSize:"1.4rem"}}>📞</span>
+            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <div className="T" style={{fontSize:"1.3rem",fontWeight:800,color:P.red,marginBottom:6}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
+
+            {/* Disclaimer */}
+            <div style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.2)",borderRadius:16,padding:"12px 14px",marginBottom:18}}>
+              <p style={{fontSize:12,color:P.dark,margin:0,lineHeight:1.65,fontWeight:600}}>
+                {lang==="en"
+                  ?"⚠️ Quiz Dignité is an educational tool. It does not replace a health professional, emergency services or a specialist organisation. In case of emergency, call the appropriate number immediately."
+                  :"⚠️ Quiz Dignité est un outil éducatif. Il ne remplace pas un professionnel de santé, les services d'urgence ou une structure spécialisée. En cas d'urgence, appelle immédiatement le numéro adapté."}
+              </p>
+            </div>
+
+            {/* Urgence immédiate — numéros ivoiriens */}
+            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>🆘 {lang==="en"?"Immediate emergency — Côte d'Ivoire":"Urgence immédiate — Côte d'Ivoire"}</div>
+            {[
+              {n:"111",l:lang==="en"?"Police Secours":"Police Secours",i:"👮"},
+              {n:"110",l:lang==="en"?"National Police":"Police Nationale",i:"🚔"},
+              {n:"180",l:lang==="en"?"Fire Brigade":"Sapeurs-Pompiers",i:"🚒"},
+              {n:"185",l:lang==="en"?"Emergency Medical (SAMU)":"SAMU — Urgences médicales",i:"🏥"},
+            ].map(n=>(
+              <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:"linear-gradient(135deg,#E74C3C,#C0392B)",borderRadius:16,padding:"13px 16px",marginBottom:8,display:"flex",alignItems:"center",gap:12,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left"}}>
+                <span style={{fontSize:"1.4rem"}} role="img" aria-label={n.l}>{n.i}</span>
+                <div><div style={{fontSize:"1.6rem",fontWeight:900,fontFamily:"'Baloo 2',sans-serif"}}>{n.n}</div><div style={{fontSize:".78rem",opacity:.9}}>{n.l}</div></div>
+                <span style={{marginLeft:"auto",fontSize:"1.2rem"}}>📞</span>
               </button>
             ))}
-            <div style={{background:"rgba(255,255,255,.85)",border:"2px solid rgba(255,107,157,.22)",borderRadius:17,padding:17,textAlign:"center",marginTop:10}}>
-              <img src={HM_LOGO} alt="" style={{width:48,height:48,objectFit:"contain",marginBottom:8}}/>
-              <div className="T" style={{color:P.red,fontWeight:800,fontSize:".98rem",marginBottom:10}}>{lang==="en"?"ONG Happy Mum's is here for you 🌸":"ONG Happy Mum's est là pour toi 🌸"}</div>
-              <a href="tel:+2250713512698" style={{display:"block",color:P.rose,fontWeight:800,marginBottom:5,textDecoration:"none"}}>📱 +225 07 13 51 26 98</a>
+
+            {/* Violence & protection */}
+            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"16px 0 8px"}}>💜 {lang==="en"?"Violence & Child Protection":"Violence & Protection de l'enfant"}</div>
+            {[
+              {n:"1308",l:lang==="en"?"SOS Violence — free, 24/7":"SOS Violences — gratuit, 24h/24",i:"🆘"},
+              {n:"116",l:lang==="en"?"Allô Enfant — Child Protection":"Allô Enfant en Danger",i:"👶"},
+              {n:"115",l:lang==="en"?"Gendarmerie Nationale":"Gendarmerie Nationale",i:"🪖"},
+            ].map(n=>(
+              <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:16,padding:"13px 16px",marginBottom:8,display:"flex",alignItems:"center",gap:12,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left",boxShadow:"0 4px 16px rgba(232,0,61,.2)"}}>
+                <span style={{fontSize:"1.4rem"}} role="img" aria-label={n.l}>{n.i}</span>
+                <div><div style={{fontSize:"1.6rem",fontWeight:900,fontFamily:"'Baloo 2',sans-serif"}}>{n.n}</div><div style={{fontSize:".78rem",opacity:.9}}>{n.l}</div></div>
+                <span style={{marginLeft:"auto",fontSize:"1.2rem"}}>📞</span>
+              </button>
+            ))}
+
+            {/* Soutien */}
+            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"16px 0 8px"}}>💗 {lang==="en"?"Psychological support":"Soutien psychologique"}</div>
+            <div style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:8,border:"1.5px solid rgba(232,0,61,.12)"}}>
+              <p style={{fontSize:13,color:P.dark,margin:0,lineHeight:1.65,fontWeight:600}}>
+                {lang==="en"
+                  ?"If you are experiencing emotional distress, talk to a trusted adult (teacher, doctor, social worker) or contact a local listening centre."
+                  :"Si tu traverses une période difficile, parle à un adulte de confiance (enseignant·e, médecin, assistant·e social·e) ou contacte un centre d'écoute local."}
+              </p>
+            </div>
+
+            {/* Note numéros */}
+            <div style={{background:"rgba(245,166,35,.08)",border:"1px solid rgba(245,166,35,.3)",borderRadius:12,padding:"10px 14px",marginBottom:12}}>
+              <p style={{fontSize:11,color:"#996600",margin:0,lineHeight:1.6,fontWeight:600}}>
+                {lang==="en"
+                  ?"📍 Numbers verified for Côte d'Ivoire. If you are in another country, call your local emergency services."
+                  :"📍 Numéros vérifiés pour la Côte d'Ivoire. Si tu es dans un autre pays, contacte les services d'urgence locaux."}
+              </p>
+            </div>
+
+            {/* Happy Mum's */}
+            <div style={{background:"rgba(255,255,255,.9)",border:"2px solid rgba(255,107,157,.22)",borderRadius:16,padding:"14px 16px",textAlign:"center",marginTop:8}}>
+              <div className="T" style={{color:P.red,fontWeight:800,fontSize:".95rem",marginBottom:10}}>{lang==="en"?"ONG Happy Mum's is here for you 🌸":"ONG Happy Mum's est là pour toi 🌸"}</div>
+              <a href="tel:+2250713512698" style={{display:"block",color:P.red,fontWeight:800,marginBottom:5,textDecoration:"none",fontSize:14}}>📱 +225 07 13 51 26 98</a>
               <a href="mailto:onghappymums@gmail.com" style={{display:"block",color:P.muted,fontSize:".83rem",textDecoration:"none"}}>📧 onghappymums@gmail.com</a>
             </div>
-            <p style={{fontSize:".66rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.65}}>© 2026 ONG Happy Mum's – {lang==="en"?"All rights reserved":"Tous droits réservés"}</p>
+
+            {/* Sources */}
+            <button onClick={()=>setScreen("sources")} style={{width:"100%",background:"transparent",border:"1px solid rgba(232,0,61,.15)",borderRadius:12,padding:"10px",fontSize:12,color:P.muted,fontWeight:600,cursor:"pointer",marginTop:12}}>
+              📚 {lang==="en"?"Sources & references →":"Sources & références →"}
+            </button>
+          </div>
+        )}
+
+        {screen==="sources"&&(
+          <div style={{padding:"16px 16px 88px"}}>
+            <button onClick={()=>setScreen(navActive==="settings"?"settings":"sos")} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:6}}>📚 {lang==="en"?"Sources & References":"Sources & Références"}</div>
+            <p style={{fontSize:13,color:P.muted,marginBottom:16,lineHeight:1.65}}>{lang==="en"?"Quiz Dignité's content is based on the following recognised sources:":"Le contenu de Quiz Dignité s'appuie sur les sources reconnues suivantes :"}</p>
+            {[
+              {org:"OMS / WHO",desc:lang==="en"?"World Health Organization — menstrual health, sexual and reproductive health":"Organisation Mondiale de la Santé — santé menstruelle, santé sexuelle et reproductive",url:"https://www.who.int"},
+              {org:"UNICEF",desc:lang==="en"?"Children's rights, girls' education, child protection":"Droits de l'enfant, éducation des filles, protection de l'enfance",url:"https://www.unicef.org"},
+              {org:"UNFPA",desc:lang==="en"?"United Nations Population Fund — reproductive rights, gender-based violence":"Fonds des Nations Unies pour la Population — droits reproductifs, violences basées sur le genre",url:"https://www.unfpa.org"},
+              {org:"Protocole de Maputo (2003)",desc:lang==="en"?"African Union — Protocol on the Rights of Women in Africa":"Union africaine — Protocole sur les droits des femmes en Afrique",url:"https://au.int"},
+              {org:"ONU Femmes",desc:lang==="en"?"United Nations Entity for Gender Equality and Women's Empowerment":"Entité des Nations Unies pour l'égalité des sexes",url:"https://www.unwomen.org"},
+              {org:"ONUSIDA",desc:lang==="en"?"Joint United Nations Programme on HIV/AIDS — sexual health":"Programme commun des Nations Unies sur le VIH/SIDA",url:"https://www.unaids.org"},
+            ].map((s,i)=>(
+              <div key={i} style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
+                <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
+                <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
+                <a href={s.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:P.red,fontWeight:700,textDecoration:"none"}}>{s.url} ↗</a>
+              </div>
+            ))}
+            <div style={{background:"rgba(232,0,61,.05)",borderRadius:16,padding:"14px",marginTop:8}}>
+              <p style={{fontSize:12,color:P.muted,margin:0,lineHeight:1.65,fontStyle:"italic"}}>
+                {lang==="en"
+                  ?"Quiz Dignité is an educational tool produced by ONG Happy Mum's. It does not claim to be exhaustive and does not replace professional medical or legal advice."
+                  :"Quiz Dignité est un outil éducatif produit par ONG Happy Mum's. Il ne prétend pas être exhaustif et ne remplace pas un avis médical ou juridique professionnel."}
+              </p>
+            </div>
           </div>
         )}
 
@@ -5254,8 +5844,8 @@ export default function App(){
       {showNav&&(
         <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(255,255,255,.93)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(255,107,157,.18)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.09)"}}>
           {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
-            <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3,transition:"color .2s"}}>
-              <span style={{fontSize:"1.18rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
+            <button key={n.id} onClick={()=>goNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3,transition:"color .2s"}} aria-label={lang==="en"?n.en:n.fr} aria-current={navActive===n.id?"page":undefined}>
+              <span style={{fontSize:"1.18rem"}} role="img" aria-hidden="true">{n.icon}</span>{lang==="en"?n.en:n.fr}
             </button>
           ))}
         </nav>
