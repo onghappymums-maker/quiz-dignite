@@ -5608,8 +5608,6 @@ export default function App(){
 
         {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
 
-        {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
-
         {screen==="profil_result"&&profilResult&&<ProfilResult profilKey={profilResult.key} profil={profilResult.profil} lang={lang} onBack={()=>setScreen("profil_test")} onRetry={()=>{setProfilResult(null);setScreen("profil_test");}} onExplore={()=>{setScreen("explore");setNavActive("explore");}} onBadge={badge=>{if(!badges.includes(badge.id)){const nb=[...badges,badge.id];setBadges(nb);persist(totalPts,nb,sessions,unlocked,streak);}}}/>}
 
         {screen==="droits_femmes"&&<DroitsFemmes lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav} onModuleFinish={(pts,badge)=>{
