@@ -3918,32 +3918,58 @@ function calcProfil(answers){
 
 function makeProfilCard(profil,lang){
   const t=(fr,en)=>lang==="en"?en:fr;
-  const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  const lines=profil.desc.match(/.{1,38}(\s|$)/g)||[profil.desc];
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const lines=(profil.desc||"").match(/.{1,38}(\s|$)/g)||[profil.desc||""];
+  const pLines=(profil.phrase||"").match(/.{1,34}(\s|$)/g)||[profil.phrase||""];
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 640" width="400" height="640">
     <defs>
       <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="#1A0A15"/>
         <stop offset="100%" stop-color="#3A0313"/>
       </linearGradient>
-      <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#E8003D"/>
+      <linearGradient id="acc" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${profil.color}"/>
         <stop offset="100%" stop-color="#FF6B9D"/>
       </linearGradient>
     </defs>
-    <rect width="400" height="600" fill="url(#bg)" rx="24"/>
-    <rect x="0" y="0" width="400" height="6" fill="url(#accent)" rx="3"/>
-    <text x="200" y="52" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="rgba(255,180,200,0.7)" letter-spacing="3">${esc(t("MON PROFIL DIGNITÉ","MY DIGNITY PROFILE"))}</text>
-    <text x="200" y="155" text-anchor="middle" font-size="72">${profil.emoji}</text>
-    <text x="200" y="210" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="bold" fill="white">${esc(profil.name.toUpperCase())}</text>
-    <line x1="120" y1="228" x2="280" y2="228" stroke="rgba(232,0,61,0.5)" stroke-width="1"/>
-    ${lines.slice(0,4).map((l,i)=>`<text x="200" y="${260+i*20}" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="rgba(255,200,210,0.85)">${esc(l.trim())}</text>`).join("")}
-    <text x="200" y="${260+Math.min(lines.length,4)*20+24}" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-style="italic" fill="#FF6B9D">« ${esc(profil.phrase)} »</text>
-    <rect x="40" y="480" width="320" height="1" fill="rgba(255,255,255,0.1)"/>
-    <text x="200" y="510" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,180,200,0.6)">🌸 Quiz Dignité · quizdignite.org</text>
-    <text x="200" y="535" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,180,200,0.4)">ONG Happy Mum's</text>
+    <rect width="400" height="640" fill="url(#bg)" rx="24"/>
+    <rect x="0" y="0" width="400" height="6" fill="url(#acc)"/>
+    <circle cx="350" cy="80" r="90" fill="${profil.color}18"/>
+    <circle cx="50" cy="560" r="80" fill="${profil.color}12"/>
+    <text x="200" y="44" text-anchor="middle" font-family="Arial" font-size="11" fill="rgba(255,180,200,0.6)" font-weight="bold">✦  ${esc(t("MON PROFIL DIGNITÉ","MY DIGNITY PROFILE"))}  ✦</text>
+    <text x="200" y="130" text-anchor="middle" font-size="76">${profil.emoji}</text>
+    <circle cx="200" cy="112" r="64" fill="none" stroke="${profil.color}" stroke-width="2" opacity="0.6"/>
+    <text x="200" y="220" text-anchor="middle" font-family="Georgia,serif" font-size="28" font-weight="bold" fill="white">${esc((profil.name||"").toUpperCase())}</text>
+    <rect x="150" y="230" width="100" height="2" fill="${profil.color}" opacity="0.7"/>
+    <text x="200" y="254" text-anchor="middle" font-family="Arial" font-size="11" fill="${profil.color}" font-weight="bold" opacity="0.9">${esc((profil.traits||[]).join("  ·  "))}</text>
+    ${lines.slice(0,4).map((l,i)=>`<text x="200" y="${280+i*19}" text-anchor="middle" font-family="Arial" font-size="13" fill="rgba(255,190,210,0.82)">${esc(l.trim())}</text>`).join("")}
+    <rect x="26" y="${298+Math.min(lines.length,4)*19}" width="348" height="${pLines.length*22+36}" fill="${profil.color}18" rx="14" stroke="${profil.color}" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="44" y="${314+Math.min(lines.length,4)*19}" font-family="Arial" font-size="10" fill="${profil.color}" font-weight="bold">✦  ${esc(t("TA PHRASE","YOUR PHRASE"))}</text>
+    ${pLines.map((l,i)=>`<text x="200" y="${330+Math.min(lines.length,4)*19+i*22}" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="white" font-style="italic" font-weight="bold">${esc(l.trim())}</text>`).join("")}
+    <rect x="0" y="580" width="400" height="60" fill="rgba(0,0,0,0.3)"/>
+    <text x="200" y="606" text-anchor="middle" font-family="Arial" font-size="11" fill="rgba(255,180,200,0.55)">Quiz Dignité  ·  ONG Happy Mum's</text>
+    <text x="200" y="628" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="white" font-weight="bold">quizdignite.org</text>
+    <rect x="0" y="634" width="400" height="6" fill="url(#acc)"/>
   </svg>`;
   return "data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(svg)));
+}
+
+// Conversion SVG → PNG pour le téléchargement WhatsApp
+function downloadProfilCardAsPNG(svgUrl,profilKey){
+  const img=new Image();
+  img.onload=()=>{
+    try{
+      const cv=document.createElement("canvas");cv.width=400;cv.height=640;
+      const ctx=cv.getContext("2d");ctx.drawImage(img,0,0,400,640);
+      const a=document.createElement("a");a.href=cv.toDataURL("image/png");
+      a.download=`profil-dignite-${profilKey}.png`;a.click();
+    }catch(e){
+      // fallback SVG
+      const a=document.createElement("a");a.href=svgUrl;a.download=`profil-dignite-${profilKey}.svg`;a.click();
+    }
+  };
+  img.onerror=()=>{const a=document.createElement("a");a.href=svgUrl;a.download=`profil-dignite-${profilKey}.svg`;a.click();};
+  img.src=svgUrl;
 }
 
 function ProfilTest({lang,onBack,onResult}){
@@ -3965,6 +3991,7 @@ function ProfilTest({lang,onBack,onResult}){
 
   if(phase==="intro")return(
     <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 60%,#1A0A15 100%)",display:"flex",flexDirection:"column",padding:"0 0 40px",position:"relative",overflow:"hidden"}}>
+      <FloatingBg/>
       <div style={{position:"absolute",width:240,height:240,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,0,61,.2),transparent)",top:-60,right:-40,pointerEvents:"none"}}/>
       <div style={{position:"absolute",width:160,height:160,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,107,157,.15),transparent)",bottom:100,left:-30,pointerEvents:"none"}}/>
       <div style={{padding:"52px 20px 0"}}>
@@ -3990,7 +4017,8 @@ function ProfilTest({lang,onBack,onResult}){
   const q=questions[qi];
   const prog=(qi+1)/questions.length;
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}>
+      <FloatingBg/>
       <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",padding:"48px 16px 20px"}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
           <button onClick={goPrev} disabled={qi===0} style={{background:"rgba(255,255,255,.15)",border:"none",borderRadius:10,padding:"7px 12px",color:"white",fontWeight:800,fontSize:13,cursor:qi===0?"default":"pointer",opacity:qi===0?.3:1}}>←</button>
@@ -4031,71 +4059,71 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
   useEffect(()=>{if(onBadge&&profil.badge)onBadge(profil.badge);},[]);
 
   function share(){
-    const name=profil.name;
     const text=t(
-      `✨ J'ai découvert mon Profil Dignité !\n\nJe suis ${name} ${profil.emoji}\n\nEt toi, quel est ton Profil Dignité ?\n\nDécouvre le tien sur Quiz Dignité 👇\nhttps://quizdignite.org`,
-      `✨ I discovered my Dignity Profile!\n\nI am ${name} ${profil.emoji}\n\nAnd you, what's your Dignity Profile?\n\nDiscover yours on Quiz Dignité 👇\nhttps://quizdignite.org`
+      `✨ J'ai découvert mon Profil Dignité !\n\nJe suis ${profil.name} ${profil.emoji}\n\nEt toi, quel est ton Profil Dignité ?\n\nDécouvre le tien sur Quiz Dignité 👇\nhttps://quizdignite.org`,
+      `✨ I discovered my Dignity Profile!\n\nI am ${profil.name} ${profil.emoji}\n\nDiscover yours on Quiz Dignité 👇\nhttps://quizdignite.org`
     );
     if(navigator.share){navigator.share({title:t("Mon Profil Dignité","My Dignity Profile"),text,url:"https://quizdignite.org"}).catch(()=>{});}
     else{window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank");}
   }
 
-  function downloadCard(){
-    const a=document.createElement("a");a.href=cardUrl;a.download=`profil-dignite-${profilKey}.svg`;a.click();
-  }
-
   return(
-    <div style={{paddingBottom:40,minHeight:"100vh",background:"#FFF4F7"}}>
-      {/* Hero */}
-      <div style={{background:"linear-gradient(160deg,#1A0A15,#3A0313)",padding:"52px 20px 32px",textAlign:"center",position:"relative"}}>
-        <button onClick={onBack} style={{position:"absolute",top:14,left:16,background:"rgba(255,255,255,.12)",border:"1.5px solid rgba(255,255,255,.2)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer"}}>← {t("Retour","Back")}</button>
-        <div style={{fontSize:11,fontWeight:800,letterSpacing:3,color:"rgba(255,180,200,.5)",textTransform:"uppercase",marginBottom:10}}>{t("Ton Profil Dignité","Your Dignity Profile")}</div>
-        <div style={{fontSize:64,marginBottom:8}}>{profil.emoji}</div>
-        <div className="T" style={{fontSize:"2rem",fontWeight:900,color:"white",letterSpacing:1,marginBottom:12}}>{profil.name.toUpperCase()}</div>
-        <p style={{fontSize:14,color:"rgba(255,180,200,.8)",lineHeight:1.65,maxWidth:320,margin:"0 auto 16px"}}>{profil.desc}</p>
-        <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-          {profil.traits.map((tr,i)=>(
-            <span key={i} style={{background:"rgba(232,0,61,.2)",border:"1px solid rgba(232,0,61,.3)",borderRadius:20,padding:"5px 12px",fontSize:12,fontWeight:700,color:"#FF8FA3"}}>{tr}</span>
-          ))}
+    <div style={{minHeight:"100vh",background:"#FFF4F7",paddingBottom:40}}>
+
+      {/* ── CARTE PLEINE PAGE avec A-Kissi ── */}
+      <div style={{position:"relative",width:"100%"}}>
+        {/* Bouton retour flottant */}
+        <button onClick={onBack} style={{position:"absolute",top:14,left:14,zIndex:10,background:"rgba(26,10,21,.7)",border:"1.5px solid rgba(255,255,255,.2)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer"}}>← {t("Retour","Back")}</button>
+
+        {/* Carte SVG pleine largeur */}
+        <img
+          src={cardUrl}
+          alt={profil.name}
+          style={{width:"100%",display:"block",borderRadius:0}}
+        />
+
+        {/* A-Kissi en overlay bas droite */}
+        <div style={{position:"absolute",bottom:-30,right:10,zIndex:5,filter:"drop-shadow(0 8px 20px rgba(0,0,0,.3))"}}>
+          <AKissi state="celebration" lang={lang} size={110} msg={null} style={{}}/>
         </div>
       </div>
 
-      <div style={{padding:"16px 16px 0"}}>
-        {/* Phrase */}
-        <div style={{background:"white",borderRadius:20,padding:"18px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
-          <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>💬 {t("Ta phrase","Your phrase")}</div>
-          <p style={{fontSize:15,fontStyle:"italic",color:P.dark,lineHeight:1.6,margin:0}}>« {profil.phrase} »</p>
-        </div>
+      {/* Espace pour A-Kissi qui déborde */}
+      <div style={{height:55}}/>
 
-        {/* Défi */}
-        <div style={{background:"linear-gradient(135deg,rgba(232,0,61,.06),rgba(255,107,157,.04))",borderRadius:20,padding:"18px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.12)"}}>
-          <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>🎯 {t("Ton défi de la semaine","Your weekly challenge")}</div>
-          <p style={{fontSize:14,color:P.dark,lineHeight:1.65,margin:0,fontWeight:600}}>{profil.defi}</p>
-        </div>
-
-        {/* Badge */}
-        <div style={{background:"linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,107,157,.1))",border:"2px solid rgba(255,215,0,.35)",borderRadius:20,padding:"16px",marginBottom:16,textAlign:"center"}}>
-          <div style={{fontSize:11,fontWeight:800,color:"#C89800",textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{t("🏅 Badge débloqué !","🏅 Badge unlocked!")}</div>
-          <div style={{fontSize:32}}>{profil.badge.icon}</div>
-          <div className="T" style={{fontSize:16,fontWeight:900,color:P.red,marginTop:4}}>{profil.badge.name}</div>
-        </div>
-
-        {/* Carte */}
-        <div style={{marginBottom:16,textAlign:"center"}}>
-          <div style={{fontSize:12,fontWeight:700,color:P.muted,marginBottom:8}}>{t("Ta carte à partager","Your share card")}</div>
-          <img src={cardUrl} alt={profil.name} style={{width:"60%",maxWidth:220,borderRadius:16,boxShadow:"0 8px 24px rgba(0,0,0,.15)",display:"block",margin:"0 auto"}}/>
-        </div>
-
-        {/* Actions */}
-        <button onClick={share} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"16px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",marginBottom:10,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+      {/* ── ACTIONS ── */}
+      <div style={{padding:"0 16px",display:"flex",flexDirection:"column",gap:10}}>
+        <button onClick={share} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"16px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           <span>💬</span> {t("Partager mon profil","Share my profile")}
         </button>
-        <button onClick={downloadCard} style={{width:"100%",background:"white",color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer",marginBottom:10}}>
+        <button onClick={()=>downloadProfilCardAsPNG(cardUrl,profilKey)} style={{width:"100%",background:"white",color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>
           📸 {t("Télécharger ma carte","Download my card")}
         </button>
         <div style={{display:"flex",gap:10}}>
           <button onClick={onRetry} style={{flex:1,background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🔄 {t("Refaire","Retry")}</button>
           <button onClick={onExplore} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
+        </div>
+      </div>
+
+      {/* ── INFOS : phrase + défi + badge ── */}
+      <div style={{padding:"16px 16px 0"}}>
+        {/* Badge */}
+        <div style={{background:"linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,107,157,.1))",border:"2px solid rgba(255,215,0,.35)",borderRadius:20,padding:"14px 16px",marginBottom:12,display:"flex",alignItems:"center",gap:12}}>
+          <div style={{fontSize:32,flexShrink:0}}>{profil.badge.icon}</div>
+          <div>
+            <div style={{fontSize:11,fontWeight:800,color:"#C89800",textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{t("🏅 Badge débloqué !","🏅 Badge unlocked!")}</div>
+            <div className="T" style={{fontSize:15,fontWeight:900,color:P.red}}>{profil.badge.name}</div>
+          </div>
+        </div>
+        {/* Phrase */}
+        <div style={{background:"white",borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
+          <div style={{fontSize:11,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>💬 {t("Ta phrase","Your phrase")}</div>
+          <p style={{fontSize:15,fontStyle:"italic",color:P.dark,lineHeight:1.6,margin:0}}>« {profil.phrase} »</p>
+        </div>
+        {/* Défi */}
+        <div style={{background:"linear-gradient(135deg,rgba(232,0,61,.06),rgba(255,107,157,.04))",borderRadius:20,padding:"16px",border:"1.5px solid rgba(232,0,61,.12)"}}>
+          <div style={{fontSize:11,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>🎯 {t("Ton défi de la semaine","Your weekly challenge")}</div>
+          <p style={{fontSize:14,color:P.dark,lineHeight:1.65,margin:0,fontWeight:600}}>{profil.defi}</p>
         </div>
       </div>
     </div>
