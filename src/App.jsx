@@ -69,13 +69,25 @@ function SpeechBtn({text,lang,style={}}){
   );
 }
 
+const THEME_LIGHT = {
+  bg:"#FFF4F7", card:"white", text:"#2D0A14", muted:"#8B5A6A", dark:"#2D0A14",
+  border:"rgba(0,0,0,.1)", navBg:"rgba(255,255,255,.95)",
+};
+const THEME_DARK = {
+  bg:"#180810", card:"#2A1620", text:"#F7E7EE", muted:"#C79AAA", dark:"#F7E7EE",
+  border:"rgba(255,255,255,.14)", navBg:"rgba(24,8,16,.92)",
+};
+// P is intentionally mutated in place (not re-created) so every already-declared
+// `P.xxx` reference across the app picks up the current theme on each render —
+// see applyTheme() below, called synchronously at the top of App().
 const P = {
   red:"#C8102E", redSoft:"#FFE8EC", rose:"#FF6B9D", roseSoft:"#FFE4EE",
   coral:"#FF8C69", coralSoft:"#FFF0E8", amber:"#F59E0B", amberSoft:"#FEF9C3",
   green:"#3DBE82", greenSoft:"#E8FFF4", blue:"#4FB3F6", blueSoft:"#EBF7FF",
   purple:"#9B5DE5", purpleSoft:"#F0E8FF", teal:"#14B8A6", tealSoft:"#E6FFFA",
-  text:"#2D0A14", muted:"#8B5A6A",
+  ...THEME_LIGHT,
 };
+function applyTheme(isDark){ Object.assign(P, isDark?THEME_DARK:THEME_LIGHT); }
 const G    = "linear-gradient(135deg,#C8102E 0%,#E8426A 42%,#FF6B9D 75%,#FF8C69 100%)";
 const AKISSI_IMG = "/akissi.png";
 const AKISSI_IMGS = {
@@ -144,7 +156,7 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
         aria-label={message||`A-Kissi mascotte Quiz Dignité`}
       />
       {message&&(
-        <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"9px 13px",maxWidth:200,textAlign:"center",fontSize:12,fontWeight:700,color:P.dark,lineHeight:1.45,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
+        <div style={{background:P.card,border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"9px 13px",maxWidth:200,textAlign:"center",fontSize:12,fontWeight:700,color:P.dark,lineHeight:1.45,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
           {message}
         </div>
       )}
@@ -1708,7 +1720,7 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,on
   const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>{catIcons[category]||"📚"}</div>
         <div className="T" style={{color:"white",fontSize:"1.1rem",fontWeight:800,margin:"0 0 3px"}}>{getCatLabel(category)}</div>
@@ -1750,7 +1762,7 @@ function GHdr({title,onBack,score,prog=0,lang}){
   return(
     <div style={{marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-        <button onClick={onBack} style={{background:"white",border:`2px solid rgba(232,0,61,.25)`,borderRadius:12,padding:"8px 14px",fontSize:13,color:P.red,fontWeight:800,display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
+        <button onClick={onBack} style={{background:P.card,border:`2px solid rgba(232,0,61,.25)`,borderRadius:12,padding:"8px 14px",fontSize:13,color:P.red,fontWeight:800,display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
           ← {lang==="en"?"Back":"Retour"}
         </button>
         <h2 className="F" style={{flex:1,margin:0,fontSize:16,fontWeight:700,color:P.text,textAlign:"center"}}>{title}</h2>
@@ -1782,7 +1794,7 @@ function GWin({title,score,max,badge,msg,lang,onHome,onNext,hasNext}){
       </div>
       <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
         {hasNext&&<button onClick={onNext} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"Next level →":"Niveau suivant →"}</button>}
-        <button onClick={onHome} style={{background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"🏠 Home":"🏠 Menu"}</button>
+        <button onClick={onHome} style={{background:P.card,color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"🏠 Home":"🏠 Menu"}</button>
       </div>
     </div>
   );
@@ -1799,7 +1811,7 @@ function TRing({secs,onExpire,tkey}){
   const pct=left/secs,r=18,circ=2*Math.PI*r;
   const col=pct>.55?P.green:pct>.28?P.amber:"#FF4444";
   return(
-    <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:8,padding:"7px 11px",background:"white",borderRadius:14,border:`1.5px solid ${col}22`}}>
+    <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:8,padding:"7px 11px",background:P.card,borderRadius:14,border:`1.5px solid ${col}22`}}>
       <svg width="42" height="42" viewBox="0 0 42 42">
         <circle cx="21" cy="21" r={r} fill="none" stroke="#F0E8F8" strokeWidth="3.5"/>
         <circle cx="21" cy="21" r={r} fill="none" stroke={col} strokeWidth="3.5" strokeDasharray={circ} strokeDashoffset={circ*(1-pct)} strokeLinecap="round" transform="rotate(-90 21 21)" style={{transition:"stroke-dashoffset 1s linear,stroke .4s"}}/>
@@ -1815,7 +1827,7 @@ function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
   const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Foundation",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Deepening",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Mastery",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
   return(
     <div style={{padding:"14px 18px 40px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← {lang==="en"?"Menu":"Menu"}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← {lang==="en"?"Menu":"Menu"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:48,marginBottom:6}}>{gDef.e}</div>
         <h2 className="T" style={{color:"white",fontSize:22,fontWeight:700,margin:"0 0 4px"}}>{gDef.t}</h2>
@@ -1946,7 +1958,7 @@ function JeuCorps({level,lang,onBack,onBadge,onComplete}){
           {disc.has("jambes")&&<text x="56" y="192" textAnchor="middle" fontSize="12" fill="white" style={{pointerEvents:"none"}}>✓</text>}
         </g>
       </svg>
-      {ap&&<div key={ap.id} className="up" style={{background:"white",borderRadius:18,padding:"12px 14px",border:`2px solid ${ap.color}`,boxShadow:`0 4px 18px ${ap.color}28`,margin:"8px 0 10px"}}><div style={{fontWeight:800,fontSize:14,color:ap.color,marginBottom:3}}>{ap.icon} {ap.label}</div><div style={{fontSize:12,color:P.text,lineHeight:1.6,fontWeight:600}}>{ap.info}</div></div>}
+      {ap&&<div key={ap.id} className="up" style={{background:P.card,borderRadius:18,padding:"12px 14px",border:`2px solid ${ap.color}`,boxShadow:`0 4px 18px ${ap.color}28`,margin:"8px 0 10px"}}><div style={{fontWeight:800,fontSize:14,color:ap.color,marginBottom:3}}>{ap.icon} {ap.label}</div><div style={{fontSize:12,color:P.text,lineHeight:1.6,fontWeight:600}}>{ap.info}</div></div>}
       <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
         {parts.map(p=><button key={p.id} onClick={()=>tap(p.id)} style={{background:disc.has(p.id)?p.color:"white",color:disc.has(p.id)?"white":P.muted,border:`1.5px solid ${disc.has(p.id)?p.color:"#FFD4E8"}`,borderRadius:18,padding:"5px 12px",fontSize:11,fontWeight:700,transition:"all .2s"}}>{disc.has(p.id)?"✓ ":""}{p.label}</button>)}
       </div>
@@ -1999,7 +2011,7 @@ function JeuChef({level,lang,onBack,onBadge,onComplete}){
       <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length} lang={lang}/>
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 8px",fontWeight:600}}>{lang==="en"?<>Food <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Good or bad for your period?</>:<>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</>}</p>
       {!ans&&<TRing key={`c-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
-      <div style={{background:"white",borderRadius:26,padding:"22px 18px",textAlign:"center",border:`2.5px solid ${ans?(ok?P.green:"#FF6B6B"):"#FFD4E8"}`,boxShadow:`0 6px 22px ${P.red}12`,marginBottom:14,transition:"border .3s"}}>
+      <div style={{background:P.card,borderRadius:26,padding:"22px 18px",textAlign:"center",border:`2.5px solid ${ans?(ok?P.green:"#FF6B6B"):"#FFD4E8"}`,boxShadow:`0 6px 22px ${P.red}12`,marginBottom:14,transition:"border .3s"}}>
         <div style={{fontSize:62,marginBottom:6}}>{food.e}</div>
         <div className="F" style={{fontSize:20,fontWeight:600,color:P.text}}>{food.l}</div>
       </div>
@@ -2039,7 +2051,7 @@ function JeuCycle({level,lang,onBack,onBadge,onComplete}){
       <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?"Match each symptom to its phase!":"Associe chaque symptôme à sa phase !"}</p>
       <div style={{display:"flex",flexDirection:"column",gap:10}}>
         {sympShuffle.map((s,si)=>{const ans2=sympAns[si];const correct=ans2!==undefined&&ans2===s.phaseId;return(
-          <div key={si} style={{background:"white",borderRadius:16,padding:"12px 14px",border:`1.5px solid ${ans2?(correct?P.green:"#FF6B6B"):"#FFD4E8"}`}}>
+          <div key={si} style={{background:P.card,borderRadius:16,padding:"12px 14px",border:`1.5px solid ${ans2?(correct?P.green:"#FF6B6B"):"#FFD4E8"}`}}>
             <div style={{fontWeight:800,fontSize:13,color:P.text,marginBottom:8}}>{s.e} {s.symptom}</div>
             <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
               {phaseData.map(ph=>(
@@ -2073,7 +2085,7 @@ function JeuCycle({level,lang,onBack,onBadge,onComplete}){
           </button>
         );})}
       </div>
-      {info&&!done&&<div key={info.id} className="up" style={{background:"white",borderRadius:18,padding:"12px 14px",border:`2px solid ${info.c}`,boxShadow:`0 4px 14px ${info.c}28`}}><div style={{fontWeight:800,fontSize:13,color:info.c,marginBottom:2}}>{info.e} {info.t}</div><div style={{fontSize:12,color:P.text,lineHeight:1.55,fontWeight:600}}>{info.info}</div></div>}
+      {info&&!done&&<div key={info.id} className="up" style={{background:P.card,borderRadius:18,padding:"12px 14px",border:`2px solid ${info.c}`,boxShadow:`0 4px 14px ${info.c}28`}}><div style={{fontWeight:800,fontSize:13,color:info.c,marginBottom:2}}>{info.e} {info.t}</div><div style={{fontSize:12,color:P.text,lineHeight:1.55,fontWeight:600}}>{info.info}</div></div>}
       {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontWeight:900,fontSize:14,marginTop:7}}>💛 Cherche la phase {nextExp}...</div>}
     </div>
   );
@@ -2094,7 +2106,7 @@ function JeuSOS({level,lang,onBack,onBadge,onComplete}){
       <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length} lang={lang}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 7px",fontWeight:600}}>{lang==="en"?"Situation ":"Situation "}<strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
       {ans===null&&<TRing key={`s-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
-      <div style={{background:"white",borderRadius:22,padding:"16px 14px",border:"2px solid #FFD4E8",boxShadow:"0 4px 18px #C8102E10",marginBottom:12}}>
+      <div style={{background:P.card,borderRadius:22,padding:"16px 14px",border:"2px solid #FFD4E8",boxShadow:"0 4px 18px #C8102E10",marginBottom:12}}>
         <div style={{fontSize:38,textAlign:"center",marginBottom:8}}>{s.ctx}</div>
         <p className="F" style={{fontSize:15,fontWeight:600,color:P.text,margin:0,textAlign:"center",lineHeight:1.45}}>{s.q}</p>
       </div>
@@ -2163,7 +2175,7 @@ function JeuImages({level,lang,onBack,onBadge,onComplete}){
       <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length} lang={lang}/>
       <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 10px",fontWeight:700}}>{ri+1}/{rounds.length} — <em>{rounds[ri].hint}</em></div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:12}}>
-        {rounds[ri].emojis.map((e,i)=><div key={i} style={{background:"white",borderRadius:16,border:`2px solid ${correct?P.green:"#FFD4E8"}`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",fontSize:46,transition:"border .3s"}}>{e}</div>)}
+        {rounds[ri].emojis.map((e,i)=><div key={i} style={{background:P.card,borderRadius:16,border:`2px solid ${correct?P.green:"#FFD4E8"}`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",fontSize:46,transition:"border .3s"}}>{e}</div>)}
       </div>
       <div className={wrong?"shake":correct?"pop":""} style={{display:"flex",justifyContent:"center",gap:5,marginBottom:12,flexWrap:"wrap"}}>
         {Array.from({length:word.length},(_,i)=>{const g=guess[i];return(<div key={i} onClick={()=>g&&remL(i)} style={{width:32,height:36,borderRadius:8,background:correct?P.greenSoft:g?"white":"#FFF0F8",border:`2.5px solid ${correct?P.green:g?P.rose:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:900,color:correct?P.green:P.text,cursor:g?"pointer":"default",transition:"all .2s"}}>{g?g.l:""}</div>);})}
@@ -2315,7 +2327,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   return(
     <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-        <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
+        <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
           <button onClick={()=>{SND.on=!SND.on;}} style={{background:"rgba(255,255,255,.8)",border:"none",borderRadius:"50%",width:32,height:32,cursor:"pointer",fontSize:".95rem"}}>🔊</button>
           <div style={{background:G,color:"white",borderRadius:12,padding:"5px 14px",fontSize:13,fontWeight:800}}>⭐ {dispScore}</div>
@@ -2329,7 +2341,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:10,lineHeight:1.4}}>{q.q}</div>
             <div style={{textAlign:"center",marginBottom:12}}><SpeechBtn text={q.q} lang={lang}/></div>
             {!showDA?<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"12px 24px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={()=>setShowDA(true)}>Voir la réponse 👀</button>
-            :<div style={{background:"white",borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
+            :<div style={{background:P.card,borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
           </div>
           {showDA&&<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next challenge →":"Défi suivant →")}</button>}
         </div>
@@ -2464,12 +2476,12 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
 
         {/* Actions */}
         <div style={{display:"flex",gap:10,marginBottom:12}}>
-          <button onClick={onReplay} style={{flex:1,background:"white",color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
+          <button onClick={onReplay} style={{flex:1,background:P.card,color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
           <button onClick={onHome} style={{flex:1,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
         </div>
 
         {/* Partage */}
-        <div style={{background:"white",borderRadius:20,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
+        <div style={{background:P.card,borderRadius:20,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
           <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:10}}>📲 {t("Partager mon score","Share my score")}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
             <button onClick={onShareWA} style={{background:"#25D366",color:"white",border:"none",borderRadius:12,padding:"11px 6px",fontWeight:700,fontSize:11,cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
@@ -2727,7 +2739,7 @@ function DefiModal({onClose,lang}){
 
   return(
     <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(45,10,31,.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div style={{width:"100%",maxWidth:480,background:"#FFF4F7",borderRadius:"28px 28px 0 0",padding:"28px 22px 42px",maxHeight:"92vh",overflowY:"auto"}}>
+      <div style={{width:"100%",maxWidth:480,background:P.bg,borderRadius:"28px 28px 0 0",padding:"28px 22px 42px",maxHeight:"92vh",overflowY:"auto"}}>
         <div style={{width:40,height:4,background:"#E8003D33",borderRadius:99,margin:"0 auto 20px"}}/>
         {special&&<div style={{textAlign:"center",marginBottom:14}}>
           <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>{lang==="en"?"🎉 Special Day":"🎉 Jour Spécial"}</div>
@@ -2751,7 +2763,7 @@ function DefiModal({onClose,lang}){
           </div>
         </div>}
         <div style={{display:"flex",gap:10}}>
-          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:"white",color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>{lang==="en"?"Later":"Plus tard"}</button>
+          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:P.card,color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>{lang==="en"?"Later":"Plus tard"}</button>
           <button onClick={handleDone} disabled={done} style={{flex:2,padding:14,borderRadius:14,border:"none",background:done?"linear-gradient(135deg,#7FB069,#52A35D)":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",fontSize:".92rem",fontWeight:800,cursor:done?"default":"pointer",boxShadow:"0 5px 18px rgba(232,0,61,.32)"}}>
             {done?(lang==="en"?"✅ Challenge done today":"✅ Défi fait aujourd'hui"):(lang==="en"?"Challenge done 🌸":"Défi accompli 🌸")}
           </button>
@@ -2843,7 +2855,7 @@ function PrivacyPage({onBack,lang}){
   ];
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{t("← Retour","← Back")}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{t("← Retour","← Back")}</button>
       <div style={{textAlign:"center",marginBottom:22}}>
         <div style={{fontSize:"2rem",marginBottom:6}}>🔐</div>
         <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red}}>{t("Politique de confidentialité","Privacy Policy")}</div>
@@ -3038,7 +3050,7 @@ function Glossaire({onBack,lang}){
   const cats=data.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>📚</div>
         <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
@@ -3148,7 +3160,7 @@ function JeMeCelebre({lang,onBack}){
   return showJournal?(
     <div style={{padding:"16px 16px 88px"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:18}}>
-        <button onClick={()=>setShowJournal(false)} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
+        <button onClick={()=>setShowJournal(false)} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
         <div>
           <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:P.red}}>🌸 {lang==="en"?"My Journal":"Mon Journal"}</div>
           <div style={{fontSize:".72rem",color:P.muted,fontWeight:600}}>{journal.length} {lang==="en"?`entr${journal.length>1?"ies":"y"}`:`entrée${journal.length>1?"s":""}`}</div>
@@ -3161,7 +3173,7 @@ function JeMeCelebre({lang,onBack}){
         </div>
       ):(
         <div>{journal.map((entry,idx)=>(
-          <div key={entry.date} style={{background:"white",border:`1.5px solid rgba(232,0,61,${idx===0?.2:.1})`,borderRadius:20,padding:"16px 18px",marginBottom:12,boxShadow:idx===0?"0 4px 16px rgba(232,0,61,.08)":"none",position:"relative"}}>
+          <div key={entry.date} style={{background:P.card,border:`1.5px solid rgba(232,0,61,${idx===0?.2:.1})`,borderRadius:20,padding:"16px 18px",marginBottom:12,boxShadow:idx===0?"0 4px 16px rgba(232,0,61,.08)":"none",position:"relative"}}>
             {idx===0&&<div style={{position:"absolute",top:12,left:18,fontSize:".65rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8}}>{lang==="en"?"Today":"Aujourd'hui"}</div>}
             <div style={{fontSize:".7rem",fontWeight:800,color:P.red,marginBottom:5,opacity:.8,marginTop:idx===0?14:0}}>🌸 {fmtDate(entry.date)}</div>
             <div style={{fontSize:".75rem",color:P.muted,marginBottom:8,fontStyle:"italic",lineHeight:1.4}}>{entry.prompt}</div>
@@ -3173,7 +3185,7 @@ function JeMeCelebre({lang,onBack}){
     </div>
   ):(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.25)"}}>
         <div style={{fontSize:42,marginBottom:6}}>🌸</div>
         <div className="T" style={{color:"white",fontSize:"1.4rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
@@ -3181,7 +3193,7 @@ function JeMeCelebre({lang,onBack}){
       </div>
 
       {showIntro?(
-        <div style={{background:"white",border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+        <div style={{background:P.card,border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
           <div style={{fontSize:".7rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>✨ {lang==="en"?"What is this?":"C'est quoi ?"}</div>
           <p style={{fontSize:".88rem",color:P.text,lineHeight:1.75,margin:"0 0 16px",whiteSpace:"pre-line"}}>{lang==="en"?INTRO_EN:INTRO_FR}</p>
           <button onClick={()=>setShowIntro(false)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer"}}>
@@ -3194,7 +3206,7 @@ function JeMeCelebre({lang,onBack}){
         </button>
       )}
 
-      <div style={{background:"rgba(255,255,255,.95)",border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:16,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+      <div style={{background:P.navBg,border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:16,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
         <div style={{fontSize:".72rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>{lang==="en"?"Today":"Aujourd'hui"} · {fmtDate(todayKey())}</div>
         <div style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:12}}>
           <div style={{fontSize:".9rem",color:P.muted,fontWeight:700,lineHeight:1.4,flex:1}}>{todayPrompt}</div>
@@ -3221,7 +3233,7 @@ function JeMeCelebre({lang,onBack}){
       </div>
 
       {journal.length>0&&(
-        <button onClick={()=>setShowJournal(true)} style={{width:"100%",background:"white",border:`2px solid rgba(232,0,61,.2)`,borderRadius:18,padding:"14px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+        <button onClick={()=>setShowJournal(true)} style={{width:"100%",background:P.card,border:`2px solid rgba(232,0,61,.2)`,borderRadius:18,padding:"14px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <span style={{fontSize:28}}>📖</span>
             <div style={{textAlign:"left"}}>
@@ -3534,7 +3546,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
           </div>
         )}
         <div style={{display:"flex",gap:10}}>
-          <button onClick={()=>{setQi(0);setSel(null);setShowFb(false);setScore(0);setDone(false);}} style={{flex:1,background:"white",color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
+          <button onClick={()=>{setQi(0);setSel(null);setShowFb(false);setScore(0);setDone(false);}} style={{flex:1,background:P.card,color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
           <button onClick={onBack} style={{flex:1,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>← {t("Modules","Modules")}</button>
         </div>
       </div>
@@ -3547,13 +3559,13 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
         <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:12}}>← {t("Retour","Back")}</button>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
           <div style={{flex:1,height:6,background:"rgba(255,255,255,.2)",borderRadius:3,overflow:"hidden"}}>
-            <div style={{height:"100%",background:"white",borderRadius:3,width:`${((qi)/qs.length)*100}%`,transition:"width .4s"}}/>
+            <div style={{height:"100%",background:P.card,borderRadius:3,width:`${((qi)/qs.length)*100}%`,transition:"width .4s"}}/>
           </div>
           <span style={{fontSize:12,color:"white",fontWeight:800}}>{qi+1}/{qs.length}</span>
         </div>
       </div>
       <div style={{padding:"14px 14px 0"}}>
-        <div style={{background:"white",borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
+        <div style={{background:P.card,borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
           <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:16}}>{q.q}</div>
           <div style={{display:"flex",flexDirection:"column",gap:9}}>
             {q.answers.map((a,i)=>{
@@ -3597,7 +3609,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
   if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={(pts,badge)=>{onModuleFinish&&onModuleFinish(pts,badge);setActiveModule(null);}}/>;
 
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg}}>
       {/* Header riche */}
       <div style={{background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)",padding:"52px 20px 28px",position:"relative",overflow:"hidden"}}>
         {/* Cercles déco */}
@@ -3628,7 +3640,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
       </div>
       <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
         {modules.map((m,i)=>(
-          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,.06)",border:`1.5px solid ${m.color}22`}}>
+          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:P.card,borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,.06)",border:`1.5px solid ${m.color}22`}}>
             <div style={{width:54,height:54,borderRadius:16,background:`${m.color}18`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <span style={{fontSize:22}}>{m.emoji}</span>
               <span style={{fontSize:9,fontWeight:900,color:m.color}}>{t(`M${m.num}`,`M${m.num}`)}</span>
@@ -3643,7 +3655,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
         ))}
         <div style={{height:16}}/>
       </div>
-      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
+      <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
         {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
@@ -4007,7 +4019,7 @@ function InteractiveSituation({situation,index,total,onNext,isLast,lang}){
   const choice=sel?situation.choices.find(c=>c.id===sel):null;
   const L=obj=>lang==="en"?obj.en:obj.fr;
   return(
-    <div style={{background:"white",borderRadius:20,padding:"18px 16px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
+    <div style={{background:P.card,borderRadius:20,padding:"18px 16px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
       <div style={{fontSize:11,fontWeight:800,color:P.muted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Scenario":"Situation"} {String(index+1).padStart(2,"0")} / {total}</div>
       <div className="T" style={{fontSize:17,fontWeight:900,color:P.text,marginBottom:10,lineHeight:1.3}}>{L(situation.title)}</div>
       <p style={{fontSize:14,color:P.text,lineHeight:1.6,margin:"0 0 14px"}}>{L(situation.context)}</p>
@@ -4070,7 +4082,7 @@ function Situations({lang,onBack,navActive,onNav}){
   }
 
   const NAV=(
-    <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
+    <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
       {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
         <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
           <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
@@ -4084,7 +4096,7 @@ function Situations({lang,onBack,navActive,onNav}){
     const listLv=situationsOf(cur.level);
     const idxInLv=listLv.findIndex(s=>s.id===cur.id);
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
         <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
           <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>{t("Palier","Level")} {cur.level} · {L(SITUATIONS_LEVELS[cur.level-1].title)}</div>
@@ -4118,7 +4130,7 @@ function Situations({lang,onBack,navActive,onNav}){
     const lvMeta=SITUATIONS_LEVELS[selPalier-1];
     const list=situationsOf(selPalier);
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
         <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
           <button onClick={()=>setView("paliers")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:22}}>{lvMeta.emoji}</div>
@@ -4127,7 +4139,7 @@ function Situations({lang,onBack,navActive,onNav}){
         </div>
         <div style={{flex:1,padding:"14px 14px 24px",display:"flex",flexDirection:"column",gap:9}}>
           {list.map((s,i)=>(
-            <button key={s.id} onClick={()=>openSituation(s.id)} style={{textAlign:"left",background:"white",borderRadius:16,padding:"13px 14px",display:"flex",alignItems:"center",gap:12,border:`1.5px solid ${lvMeta.color}22`,boxShadow:`0 2px 10px ${lvMeta.color}12`,cursor:"pointer"}}>
+            <button key={s.id} onClick={()=>openSituation(s.id)} style={{textAlign:"left",background:P.card,borderRadius:16,padding:"13px 14px",display:"flex",alignItems:"center",gap:12,border:`1.5px solid ${lvMeta.color}22`,boxShadow:`0 2px 10px ${lvMeta.color}12`,cursor:"pointer"}}>
               <div style={{width:36,height:36,borderRadius:11,background:`${lvMeta.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:900,color:lvMeta.color,flexShrink:0}}>{i+1}</div>
               <div style={{flex:1,fontSize:13.5,fontWeight:700,color:P.text}}>{L(s.title)}</div>
               {seen.has(s.id)&&<span style={{fontSize:15}}>✅</span>}
@@ -4141,7 +4153,7 @@ function Situations({lang,onBack,navActive,onNav}){
   }
 
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
       <div style={{background:HERO,padding:"50px 20px 24px",borderRadius:"0 0 32px 32px"}}>
         <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
         <div className="T" style={{fontSize:24,fontWeight:900,color:"white",marginBottom:6}}>🤔 Situations</div>
@@ -4153,7 +4165,7 @@ function Situations({lang,onBack,navActive,onNav}){
           const list=situationsOf(lv.level);
           const doneCount=list.filter(s=>seen.has(s.id)).length;
           return(
-            <button key={lv.level} onClick={()=>openPalier(lv.level)} style={{textAlign:"left",background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,border:`1.5px solid ${lv.color}22`,boxShadow:`0 2px 12px ${lv.color}14`,cursor:"pointer"}}>
+            <button key={lv.level} onClick={()=>openPalier(lv.level)} style={{textAlign:"left",background:P.card,borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,border:`1.5px solid ${lv.color}22`,boxShadow:`0 2px 12px ${lv.color}14`,cursor:"pointer"}}>
               <div style={{width:52,height:52,borderRadius:16,background:`${lv.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{lv.emoji}</div>
               <div style={{flex:1}}>
                 <div style={{fontSize:11,fontWeight:900,color:lv.color,textTransform:"uppercase",letterSpacing:.5,marginBottom:2}}>{t("Palier","Level")} {lv.level}</div>
@@ -4510,7 +4522,7 @@ function ProfilTest({lang,onBack,onResult}){
   const q=questions[qi];
   const prog=(qi+1)/questions.length;
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}>
       <FloatingBg/>
       <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",padding:"48px 16px 20px"}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
@@ -4536,7 +4548,7 @@ function ProfilTest({lang,onBack,onResult}){
           })}
         </div>
       </div>
-      <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,padding:"12px 16px 20px",background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1px solid rgba(232,0,61,.1)"}}>
+      <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,padding:"12px 16px 20px",background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1px solid rgba(232,0,61,.1)"}}>
         <button onClick={goNext} disabled={!answers[qi]} style={{width:"100%",background:answers[qi]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"#D0D0D0",color:"white",border:"none",borderRadius:50,padding:"17px",fontWeight:900,fontSize:"1.05rem",cursor:answers[qi]?"pointer":"default",transition:"all .2s",boxShadow:answers[qi]?"0 6px 22px rgba(232,0,61,.35)":"none"}}>
           {qi===questions.length-1?t("Voir mon profil ✨","See my profile ✨"):t("Question suivante →","Next question →")}
         </button>
@@ -4561,7 +4573,7 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
   }
 
   return(
-    <div style={{minHeight:"100vh",background:"#FFF4F7",paddingBottom:40}}>
+    <div style={{minHeight:"100vh",background:P.bg,paddingBottom:40}}>
 
       {/* ── CARTE PLEINE PAGE avec A-Kissi ── */}
       <div style={{position:"relative",width:"100%"}}>
@@ -4589,11 +4601,11 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
         <button onClick={share} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"16px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           <span>💬</span> {t("Partager mon profil","Share my profile")}
         </button>
-        <button onClick={()=>downloadProfilCardAsPNG(cardUrl,profilKey)} style={{width:"100%",background:"white",color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>
+        <button onClick={()=>downloadProfilCardAsPNG(cardUrl,profilKey)} style={{width:"100%",background:P.card,color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>
           📸 {t("Télécharger ma carte","Download my card")}
         </button>
         <div style={{display:"flex",gap:10}}>
-          <button onClick={onRetry} style={{flex:1,background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🔄 {t("Refaire","Retry")}</button>
+          <button onClick={onRetry} style={{flex:1,background:P.card,color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🔄 {t("Refaire","Retry")}</button>
           <button onClick={onExplore} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
         </div>
       </div>
@@ -4609,7 +4621,7 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
           </div>
         </div>
         {/* Phrase */}
-        <div style={{background:"white",borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
+        <div style={{background:P.card,borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
           <div style={{fontSize:11,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>💬 {t("Ta phrase","Your phrase")}</div>
           <p style={{fontSize:15,fontStyle:"italic",color:P.dark,lineHeight:1.6,margin:0}}>« {profil.phrase} »</p>
         </div>
@@ -4645,7 +4657,7 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
   const Section=({title,children})=>(
     <div style={{marginBottom:20}}>
       <div style={{fontSize:".68rem",fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:1.2,marginBottom:8,paddingLeft:4}}>{title}</div>
-      <div style={{background:"white",borderRadius:18,overflow:"hidden",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>{children}</div>
+      <div style={{background:P.card,borderRadius:18,overflow:"hidden",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>{children}</div>
     </div>
   );
 
@@ -4659,13 +4671,13 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
   const Toggle=({on,onToggle})=>(
     <div onClick={onToggle} style={{width:46,height:26,borderRadius:13,background:on?P.red:"#D4C0CC",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
-      <div style={{width:20,height:20,borderRadius:"50%",background:"white",position:"absolute",top:3,left:on?23:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
+      <div style={{width:20,height:20,borderRadius:"50%",background:P.card,position:"absolute",top:3,left:on?23:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
     </div>
   );
 
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={()=>onBack()} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={()=>onBack()} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:P.red,marginBottom:20}}>⚙️ {lang==="en"?"Settings":"Réglages"}</div>
 
       <Section title={lang==="en"?"Appearance":"Apparence"}>
@@ -4880,7 +4892,7 @@ function EscapeGame({lang,onBack}){
 
   if(view==="menu")return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"20px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
         <div style={{fontSize:36,marginBottom:4}}>🔐</div>
         <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
@@ -5016,7 +5028,7 @@ function Explorer({lang,onTheme,onNav,navActive}){
   const themes=lang==="en"?THEMES_EN:THEMES_FR;
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",padding:"52px 20px 22px"}}>
         <div className="T" style={{fontSize:26,fontWeight:900,color:"white",marginBottom:5}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</div>
@@ -5025,7 +5037,7 @@ function Explorer({lang,onTheme,onNav,navActive}){
       {/* Themes */}
       <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
         {themes.map(th=>(
-          <div key={th.id} onClick={()=>onTheme(th)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
+          <div key={th.id} onClick={()=>onTheme(th)} style={{background:P.card,borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
             <div style={{width:52,height:52,borderRadius:16,background:th.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{th.emoji}</div>
             <div style={{flex:1}}>
               <div className="T" style={{fontSize:17,fontWeight:800,color:P.dark,marginBottom:3}}>{th.name}</div>
@@ -5037,7 +5049,7 @@ function Explorer({lang,onTheme,onNav,navActive}){
         <div style={{height:16}}/>
       </div>
       {/* Nav */}
-      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
+      <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
         {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
@@ -5061,7 +5073,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
     {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
   ];
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:HERO,padding:"50px 20px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px rgba(232,0,61,.22)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
@@ -5080,7 +5092,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
         </div>
         {/* Progress bar */}
         <div style={{height:6,background:"rgba(255,255,255,.2)",borderRadius:6,overflow:"hidden"}}>
-          <div style={{height:"100%",background:"white",borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
+          <div style={{height:"100%",background:P.card,borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
         </div>
         {badges.length>0&&<div style={{fontSize:11,color:"rgba(255,255,255,.75)",fontWeight:700,marginTop:6}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""} débloqué${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""} unlocked`)}</div>}
       </div>
@@ -5095,7 +5107,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
         </button>
         {/* Défi du jour */}
-        {defiText&&<div style={{background:"white",borderRadius:18,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+        {defiText&&<div style={{background:P.card,borderRadius:18,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
           <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:6}}>🔥 {t("Défi du jour","Daily challenge")}</div>
           <div style={{display:"flex",alignItems:"flex-end",gap:10}}>
             <AKissi state="encouragement" lang={lang} size={64} msg={null} style={{flexShrink:0,marginBottom:-6}}/>
@@ -5114,7 +5126,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
         {/* Quick access grid */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {quickItems.map((it,i)=>(
-            <button key={i} onClick={it.action} style={{background:"white",border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
+            <button key={i} onClick={it.action} style={{background:P.card,border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
               <div style={{width:40,height:40,borderRadius:12,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{it.icon}</div>
               <div style={{fontSize:12,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
             </button>
@@ -5122,7 +5134,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
         </div>
       </div>
       {/* Nav */}
-      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
+      <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
         {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
@@ -5152,7 +5164,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
         <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎮 {lang==="en"?"Main Games":"Jeux Principaux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
           {gameDef.filter(g=>g.main).map(g=>(
-            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:"white",border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
+            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:P.card,border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
               <div style={{width:44,height:44,borderRadius:13,background:`linear-gradient(135deg,${g.col}22,${g.col}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0,position:"relative"}}>
                 {g.e}
                 {g.timer&&<div style={{position:"absolute",top:-4,right:-4,fontSize:8,background:P.amber,borderRadius:"50%",width:14,height:14,display:"flex",alignItems:"center",justifyContent:"center",border:"1.5px solid white"}}>⏱</div>}
@@ -5171,7 +5183,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
         <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎲 {lang==="en"?"Mini-Games":"Mini-Jeux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {gameDef.filter(g=>!g.main).map(g=>(
-            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:"white",border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
+            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:P.card,border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
               <div style={{width:44,height:44,borderRadius:13,background:`linear-gradient(135deg,${g.col}22,${g.col}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0}}>{g.e}</div>
               <div style={{flex:1}}>
                 <div className="F" style={{fontWeight:600,fontSize:14,color:P.text}}>{g.t}</div>
@@ -5201,7 +5213,7 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
   ];
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"20px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:42,marginBottom:6}}>📖</div>
         <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:800,margin:"0 0 4px"}}>{lang==="en"?"Learn & Understand":"Comprendre & Apprendre"}</div>
@@ -5290,10 +5302,11 @@ export default function App(){
 
   SND.on=soundOn;
   AUDIO_ON=audioOn;
+  applyTheme(darkMode);
 
   useEffect(()=>{
     const s=document.getElementById("hm-dark")||(()=>{const el=document.createElement("style");el.id="hm-dark";document.head.appendChild(el);return el;})();
-    s.textContent=darkMode?`body,#root{background:#1A0A15!important;}.app-root{background:linear-gradient(160deg,#2A0A20,#1A0A15)!important;}`:"";
+    s.textContent=`body,#root{background:${darkMode?THEME_DARK.bg:THEME_LIGHT.bg}!important;}`;
   },[darkMode]);
 
   function persist(pts,bdg,sess,unl,str){Store.save("qd-data",{pts,bdg,sess,unl,snd:soundOn,streak:str??streak});}
@@ -5651,7 +5664,7 @@ export default function App(){
 
             <div style={{padding:"14px 14px 0"}}>
               {/* Streak */}
-              <div style={{background:"white",borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(255,120,0,.2)",boxShadow:"0 2px 12px rgba(255,120,0,.08)"}}>
+              <div style={{background:P.card,borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(255,120,0,.2)",boxShadow:"0 2px 12px rgba(255,120,0,.08)"}}>
                 <div style={{display:"flex",alignItems:"center",gap:14}}>
                   <div style={{width:56,height:56,borderRadius:16,background:"linear-gradient(135deg,#FF6B00,#FF9A00)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🔥</div>
                   <div style={{flex:1}}>
@@ -5683,7 +5696,7 @@ export default function App(){
                   {icon:"⭐",val:totalPts,label:lang==="en"?"Total points":"Points totaux",color:"#9B6BEA"},
                   {icon:"🔥",val:streak,label:lang==="en"?"Day streak":"Jours de suite",color:"#FF6B00"},
                 ].map((s,i)=>(
-                  <div key={i} style={{background:"white",borderRadius:18,padding:"14px 12px",textAlign:"center",border:`1.5px solid ${s.color}22`,boxShadow:`0 2px 10px ${s.color}11`}}>
+                  <div key={i} style={{background:P.card,borderRadius:18,padding:"14px 12px",textAlign:"center",border:`1.5px solid ${s.color}22`,boxShadow:`0 2px 10px ${s.color}11`}}>
                     <div style={{fontSize:24,marginBottom:4}}>{s.icon}</div>
                     <div className="T" style={{fontSize:22,fontWeight:900,color:s.color}}>{s.val}</div>
                     <div style={{fontSize:11,color:P.muted,fontWeight:700,marginTop:2}}>{s.label}</div>
@@ -5692,7 +5705,7 @@ export default function App(){
               </div>
 
               {/* Badges */}
-              <div style={{background:"white",borderRadius:20,padding:"16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
+              <div style={{background:P.card,borderRadius:20,padding:"16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
                 <div className="T" style={{fontSize:15,fontWeight:900,color:P.red,marginBottom:12}}>🏅 {lang==="en"?"My Badges":"Mes Badges"} ({badges.length})</div>
                 {badges.length===0?(
                   <div style={{textAlign:"center",padding:"20px 0"}}>
@@ -5716,7 +5729,7 @@ export default function App(){
 
         {screen==="about"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>setScreen("settings")} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <button onClick={()=>setScreen("settings")} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div style={{textAlign:"center",marginBottom:18}}>
               <img src={HM_LOGO} alt="" style={{width:65,height:65,objectFit:"contain"}}/>
               <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginTop:8}}>Qui est Happy Mum's ?</div>
@@ -5741,7 +5754,7 @@ export default function App(){
 
         {screen==="sos"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:P.card,border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div className="T" style={{fontSize:"1.3rem",fontWeight:800,color:P.red,marginBottom:6}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
 
             {/* Disclaimer */}
@@ -5783,7 +5796,7 @@ export default function App(){
 
             {/* Soutien */}
             <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"16px 0 8px"}}>💗 {lang==="en"?"Psychological support":"Soutien psychologique"}</div>
-            <div style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:8,border:"1.5px solid rgba(232,0,61,.12)"}}>
+            <div style={{background:P.card,borderRadius:16,padding:"14px 16px",marginBottom:8,border:"1.5px solid rgba(232,0,61,.12)"}}>
               <p style={{fontSize:13,color:P.dark,margin:0,lineHeight:1.65,fontWeight:600}}>
                 {lang==="en"
                   ?"If you are experiencing emotional distress, talk to a trusted adult (teacher, doctor, social worker) or contact a local listening centre."
@@ -5816,7 +5829,7 @@ export default function App(){
 
         {screen==="sources"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>setScreen(navActive==="settings"?"settings":"sos")} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <button onClick={()=>setScreen(navActive==="settings"?"settings":"sos")} style={{background:P.card,border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:6}}>📚 {lang==="en"?"Sources & References":"Sources & Références"}</div>
             <p style={{fontSize:13,color:P.muted,marginBottom:16,lineHeight:1.65}}>{lang==="en"?"Quiz Dignité's content is based on the following recognised sources:":"Le contenu de Quiz Dignité s'appuie sur les sources reconnues suivantes :"}</p>
             {[
@@ -5827,7 +5840,7 @@ export default function App(){
               {org:"ONU Femmes",desc:lang==="en"?"United Nations Entity for Gender Equality and Women's Empowerment":"Entité des Nations Unies pour l'égalité des sexes",url:"https://www.unwomen.org"},
               {org:"ONUSIDA",desc:lang==="en"?"Joint United Nations Programme on HIV/AIDS — sexual health":"Programme commun des Nations Unies sur le VIH/SIDA",url:"https://www.unaids.org"},
             ].map((s,i)=>(
-              <div key={i} style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
+              <div key={i} style={{background:P.card,borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
                 <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
                 <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
                 <a href={s.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:P.red,fontWeight:700,textDecoration:"none"}}>{s.url} ↗</a>
@@ -5844,7 +5857,7 @@ export default function App(){
               {topic:"Protocole de Maputo",org:"Union africaine",desc:lang==="en"?"Official treaty text":"Texte officiel du traité",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"},
               {topic:"Contraception",org:"OMS / WHO",desc:lang==="en"?"Family planning / contraception methods — updated fact sheet":"Planification familiale / méthodes contraceptives — fiche mise à jour",url:"https://www.who.int/news-room/fact-sheets/detail/family-planning-contraception"},
             ].map((s,i)=>(
-              <div key={i} style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
+              <div key={i} style={{background:P.card,borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
                 <div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.5,marginBottom:3}}>{s.topic}</div>
                 <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
                 <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
