@@ -195,10 +195,6 @@ button{font-family:'Nunito',sans-serif;cursor:pointer;}
 @media(max-width:699px){
   .desktop-side,.desktop-side-r{display:none;}
 }
-@keyframes splashFadeOut{0%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1.02)}100%{opacity:0;transform:scale(1.04)}}
-.splash-screen{position:fixed;inset:0;z-index:9999;margin:0;padding:0;background:#E8003D;overflow:hidden;}
-.splash-screen img{display:block;width:100%;height:100%;width:100vw;height:100dvh;object-fit:cover;object-position:center;margin:0;padding:0;border:none;}
-.splash-screen.fading{animation:splashFadeOut .4s ease-in forwards;}
 ${AKISSI_STYLE}
 `;
 
@@ -2783,46 +2779,6 @@ function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
 }
 
 
-// ── SPLASH SCREEN ───────────────────────────────────────────────
-function SplashScreen({onDone,isReady}){
-  const[fading,setFading]=useState(false);
-  const startRef=useRef(Date.now());
-  const MIN_SHOW=900;   // minimum visible : 900ms
-  const FADE_DUR=400;   // fondu : 400ms
-  const MAX_TOTAL=1800; // jamais plus de 1.8s
-
-  // Déclencheur unique : ferme dès que l'app est prête ET min atteint, ou au bout de MAX_TOTAL
-  useEffect(()=>{
-    const hardStop=setTimeout(()=>{setFading(true);setTimeout(onDone,FADE_DUR);},MAX_TOTAL-FADE_DUR);
-    return()=>clearTimeout(hardStop);
-  },[]);
-
-  useEffect(()=>{
-    if(!isReady)return;
-    const elapsed=Date.now()-startRef.current;
-    const wait=Math.max(0,MIN_SHOW-elapsed);
-    const t=setTimeout(()=>{
-      setFading(true);
-      setTimeout(onDone,FADE_DUR);
-    },wait);
-    return()=>clearTimeout(t);
-  },[isReady]);
-
-  return(
-    <div
-      className={`splash-screen${fading?" fading":""}`}
-      style={{position:"fixed",inset:0,zIndex:9999,margin:0,padding:0,background:"#E8003D",overflow:"hidden",WebkitTapHighlightColor:"transparent"}}
-    >
-      <img
-        src="/splash.jpg"
-        alt="Quiz Dignité"
-        style={{display:"block",width:"100vw",height:"100dvh",minHeight:"100vh",objectFit:"cover",objectPosition:"center center",margin:0,padding:0,border:"none",maxWidth:"none",maxHeight:"none",WebkitUserSelect:"none",userSelect:"none"}}
-        draggable={false}
-      />
-    </div>
-  );
-}
-
 function WelcomeScreen({onStart,lang,setLang}){
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
@@ -3700,334 +3656,369 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
 
 // ── SITUATIONS INTERACTIVES ──────────────────────────────────────
 const SITUATIONS_LEVELS=[
-  {level:1,emoji:"🌸",color:P.rose,title:"Je découvre mon corps",desc:"Corps, règles et hygiène"},
-  {level:2,emoji:"📅",color:P.blue,title:"Je comprends mon cycle",desc:"Cycle, douleurs et quotidien"},
-  {level:3,emoji:"🧭",color:P.purple,title:"Je connais mes limites",desc:"Consentement et respect"},
-  {level:4,emoji:"🛡️",color:P.red,title:"Je me protège et je protège les autres",desc:"Violences et recherche d'aide"},
-  {level:5,emoji:"👑",color:P.amber,title:"Dignité, droits & leadership",desc:"Droits, solidarité et leadership"},
+  {level:1,emoji:"🌸",color:P.rose,title:{fr:"Je découvre mon corps",en:"Discovering my body"},desc:{fr:"Corps, règles et hygiène",en:"Body, periods, and hygiene"}},
+  {level:2,emoji:"📅",color:P.blue,title:{fr:"Je comprends mon cycle",en:"Understanding my cycle"},desc:{fr:"Cycle, douleurs et quotidien",en:"Cycle, pain, and daily life"}},
+  {level:3,emoji:"🧭",color:P.purple,title:{fr:"Je connais mes limites",en:"Knowing my limits"},desc:{fr:"Consentement et respect",en:"Consent and respect"}},
+  {level:4,emoji:"🛡️",color:P.red,title:{fr:"Je me protège et je protège les autres",en:"Protecting myself and others"},desc:{fr:"Violences et recherche d'aide",en:"Abuse and seeking help"}},
+  {level:5,emoji:"👑",color:P.amber,title:{fr:"Dignité, droits & leadership",en:"Dignity, rights & leadership"},desc:{fr:"Droits, solidarité et leadership",en:"Rights, solidarity, and leadership"}},
 ];
 
-const SITUATIONS_DATA=[
-  {id:1,level:1,title:"Mes premières règles à l'école",
-   context:"Aïcha vient d'avoir ses premières règles. Elle est à l'école et remarque une tache de sang sur sa jupe. Elle est surprise, ne sait pas vraiment quoi faire et a peur que ses camarades se moquent d'elle.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Garder le secret et essayer de gérer seule.",feedbackType:"acceptable",feedback:"C'est possible, mais tu n'as pas à tout gérer seule. Demander de l'aide n'a rien de honteux."},
-     {id:"B",text:"Demander discrètement une protection et en parler à une personne de confiance si elle en a besoin.",feedbackType:"recommended",feedback:"Bonne piste 💗 Avoir ses premières règles peut susciter des questions ou de l'inquiétude. Demander de l'aide est normal. Une personne de confiance peut l'aider à trouver une protection et à se sentir plus à l'aise."},
-     {id:"C",text:"Ne plus retourner en classe pendant ses règles.",feedbackType:"risky",feedback:"À éviter. Manquer les cours à cause de ses règles n'est pas nécessaire quand on a la bonne protection et du soutien."},
-   ],
-   takeaway:"Les premières règles sont une étape naturelle de la puberté. Tu peux poser des questions et demander de l'aide.",source:null},
-
-  {id:2,level:1,title:"Comprendre mes règles",
-   context:"Mariam vient d'avoir ses premières règles. Elle entend plusieurs personnes parler des menstruations et reçoit des informations contradictoires. Elle ne sait plus ce qui est vrai.",
-   question:"Que devrait-elle faire lorsqu'elle entend une information qui lui paraît étrange ?",
-   choices:[
-     {id:"A",text:"La croire parce qu'un adulte l'a dit.",feedbackType:"risky",feedback:"Un adulte peut se tromper aussi. Il vaut mieux vérifier une information avant d'y croire complètement."},
-     {id:"B",text:"Vérifier l'information auprès d'une source fiable.",feedbackType:"recommended",feedback:"Bonne piste. Certaines croyances sur les règles sont très répandues sans être exactes. Pour les questions concernant ton corps, il est préférable de vérifier auprès d'une source fiable ou d'un professionnel compétent."},
-     {id:"C",text:"La partager à ses amies pour savoir ce qu'elles en pensent.",feedbackType:"acceptable",feedback:"En parler entre amies peut aider, mais leurs réponses ne remplacent pas une information vérifiée."},
-   ],
-   takeaway:"Une information souvent répétée n'est pas forcément vraie.",source:null},
-
-  {id:3,level:1,title:"Choisir une protection",
-   context:"Fatou doit choisir une protection menstruelle. Ses amies utilisent des produits différents et chacune lui dit que sa méthode est la meilleure.",
-   question:"Que devrait faire Fatou ?",
-   choices:[
-     {id:"A",text:"Utiliser obligatoirement la même protection que ses amies.",feedbackType:"risky",feedback:"Chaque corps est différent. Ce qui convient à une amie ne te conviendra pas forcément."},
-     {id:"B",text:"Choisir une protection adaptée à ses besoins, à son confort et à ce qui lui est accessible.",feedbackType:"recommended",feedback:"Bonne piste. Il existe plusieurs types de protections menstruelles. Le choix peut dépendre des préférences personnelles, du confort, de l'accessibilité et de la situation de chacune."},
-     {id:"C",text:"Ne rien utiliser puisqu'elle ne sait pas laquelle choisir.",feedbackType:"risky",feedback:"Ne pas se protéger peut être inconfortable et stressant. Il vaut mieux essayer une protection, même simple, en attendant de trouver la bonne."},
-   ],
-   takeaway:"Il n'existe pas une seule protection adaptée à toutes les personnes.",source:null},
-
-  {id:4,level:1,title:"La tache sur ma jupe",
-   context:"Nadia remarque qu'une camarade a une tache de sang sur son uniforme. Quelques élèves commencent à rire.",
-   question:"Que peux-tu faire ?",
-   choices:[
-     {id:"A",text:"Rire aussi pour ne pas attirer l'attention sur toi.",feedbackType:"risky",feedback:"Rire avec le groupe peut sembler plus simple, mais cela blesse la personne concernée."},
-     {id:"B",text:"Lui signaler discrètement la tache et lui proposer ton aide.",feedbackType:"recommended",feedback:"Bonne piste. Une tache de règles peut arriver à n'importe qui. Prévenir discrètement la personne et lui proposer de l'aide permet de préserver sa dignité."},
-     {id:"C",text:"Prendre une photo et l'envoyer au groupe de classe.",feedbackType:"risky",feedback:"Cela peut gravement humilier la personne et lui faire du tort. Une tache de règles ne mérite jamais d'être exposée ainsi."},
-   ],
-   takeaway:"Une personne qui a ses règles mérite du respect, pas des moqueries.",source:null},
-
-  {id:5,level:1,title:"L'hygiène pendant les règles",
-   context:"Une cousine dit à Sarah qu'elle devrait éviter de se laver pendant ses règles parce que cela pourrait provoquer un problème. Sarah ne sait pas si cette information est vraie.",
-   question:"Quelle est la meilleure réaction ?",
-   choices:[
-     {id:"A",text:"Suivre le conseil sans se poser de question.",feedbackType:"risky",feedback:"Suivre un conseil sans vérifier peut te faire croire des choses fausses sur ton propre corps."},
-     {id:"B",text:"Vérifier l'information auprès d'une source fiable.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une information sur la santé mérite toujours d'être vérifiée avant d'être suivie."},
-     {id:"C",text:"Dire à toutes ses amies de faire la même chose.",feedbackType:"risky",feedback:"Propager une information non vérifiée peut faire circuler une fausse idée à beaucoup de monde."},
-   ],
-   takeaway:"Les règles ne rendent pas le corps sale. Une bonne hygiène menstruelle contribue au confort et au bien-être.",source:null},
-
-  {id:6,level:1,title:"Le mythe de mon quartier",
-   context:"Des camarades affirment qu'une fille ne devrait pas faire certaines activités simplement parce qu'elle a ses règles. Plusieurs personnes autour d'elle disent la même chose.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Croire automatiquement ce que dit la majorité.",feedbackType:"risky",feedback:"Le nombre de personnes qui répètent une idée ne la rend pas vraie."},
-     {id:"B",text:"Vérifier l'information et écouter également les besoins de son propre corps.",feedbackType:"recommended",feedback:"Bonne piste 💗 Ton corps et une information fiable sont de meilleurs guides que les croyances populaires."},
-     {id:"C",text:"Dire que toutes les croyances sur les règles sont forcément fausses.",feedbackType:"acceptable",feedback:"Rejeter en bloc toutes les croyances n'est pas non plus la solution. Mieux vaut vérifier chaque idée une par une."},
-   ],
-   takeaway:"Il est possible de respecter les habitudes de sa communauté tout en vérifiant les informations concernant sa santé.",source:null},
-
-  {id:7,level:2,title:"Mon cycle n'est pas toujours pareil",
-   context:"Grâce remarque que ses règles ne commencent pas exactement le même jour chaque mois. Elle commence à s'inquiéter parce qu'elle pensait que son cycle devait toujours être identique.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Paniquer immédiatement.",feedbackType:"risky",feedback:"La panique n'aide pas à comprendre ce qui se passe. Elle peut même rendre les choses plus stressantes."},
-     {id:"B",text:"Observer son cycle et demander conseil si quelque chose l'inquiète.",feedbackType:"recommended",feedback:"Bonne piste 💗 Observer son cycle permet de mieux le comprendre, et demander conseil rassure en cas de doute."},
-     {id:"C",text:"Prendre un produit conseillé par une amie pour régulariser ses règles.",feedbackType:"risky",feedback:"Prendre un produit sans avis médical peut être risqué. Mieux vaut consulter un professionnel avant."},
-   ],
-   takeaway:"Les cycles peuvent varier. En cas d'inquiétude importante ou de symptômes inhabituels, demander conseil à un professionnel de santé est préférable.",source:null},
-
-  {id:8,level:2,title:"Mes règles sont en retard",
-   context:"Awa attend ses règles mais elles ne sont pas arrivées au moment où elle les attendait. Elle commence à chercher des solutions sur les réseaux sociaux.",
-   question:"Quelle est la meilleure réaction ?",
-   choices:[
-     {id:"A",text:"Prendre n'importe quel produit recommandé en ligne.",feedbackType:"risky",feedback:"Un produit trouvé en ligne peut être inefficace ou risqué sans avis médical."},
-     {id:"B",text:"Chercher une information fiable et demander conseil si nécessaire.",feedbackType:"recommended",feedback:"Bonne piste. Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée."},
-     {id:"C",text:"Ignorer complètement la situation.",feedbackType:"acceptable",feedback:"Ignorer peut sembler simple, mais si le retard inquiète, il vaut mieux en parler à quelqu'un de confiance."},
-   ],
-   takeaway:"Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",source:null},
-
-  {id:9,level:2,title:"Des règles très douloureuses",
-   context:"Mariam a régulièrement des douleurs menstruelles tellement fortes qu'elles l'empêchent parfois d'aller en cours.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Tout supporter en silence.",feedbackType:"risky",feedback:"Souffrir en silence n'est pas nécessaire. Une douleur forte mérite d'être prise au sérieux."},
-     {id:"B",text:"En parler à une personne de confiance et, si nécessaire, consulter un professionnel de santé.",feedbackType:"recommended",feedback:"Bonne piste. Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux."},
-     {id:"C",text:"Prendre n'importe quel médicament conseillé sur Internet.",feedbackType:"risky",feedback:"L'automédication sans avis médical peut être dangereuse."},
-   ],
-   takeaway:"Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",source:null},
-
-  {id:10,level:2,title:"Les règles et le sport",
-   context:"Aminata a ses règles le jour d'un entraînement important. Elle se sent bien mais une camarade lui dit qu'elle ne devrait absolument pas faire de sport pendant ses règles.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Arrêter automatiquement toute activité.",feedbackType:"acceptable",feedback:"Se reposer est possible si le corps en a besoin, mais ce n'est pas obligatoire pour tout le monde."},
-     {id:"B",text:"Écouter son corps et décider selon son état et son confort.",feedbackType:"recommended",feedback:"Bonne piste. Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important."},
-     {id:"C",text:"Se forcer à participer même si elle se sent mal.",feedbackType:"risky",feedback:"Se forcer à continuer alors que le corps souffre peut aggraver l'inconfort."},
-   ],
-   takeaway:"Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important.",source:null},
-
-  {id:11,level:2,title:"Je prépare un voyage",
-   context:"Esther doit passer toute la journée loin de chez elle et pense avoir bientôt ses règles.",
-   question:"Quelle précaution peut-elle prendre ?",
-   choices:[
-     {id:"A",text:"Prévoir quelques protections dans son sac.",feedbackType:"recommended",feedback:"Bonne piste 💗 Anticiper permet d'être tranquille, peu importe le moment où les règles arrivent."},
-     {id:"B",text:"Annuler sa sortie.",feedbackType:"risky",feedback:"Annuler n'est pas nécessaire. Une bonne anticipation permet de vivre sa journée normalement."},
-     {id:"C",text:"Ne rien prévoir parce qu'elle ne peut pas connaître exactement la date.",feedbackType:"risky",feedback:"Ne rien prévoir augmente le risque de stress si les règles arrivent au mauvais moment."},
-   ],
-   takeaway:"Anticiper ses besoins peut éviter beaucoup de stress.",source:null},
-
-  {id:12,level:2,title:"Mon amie vient d'avoir ses premières règles",
-   context:"Ta meilleure amie vient te voir après ses premières règles. Elle semble inquiète et dit qu'elle ne sait pas à qui poser ses questions.",
-   question:"Que peux-tu faire ?",
-   choices:[
-     {id:"A",text:"Lui dire de chercher seule sur Internet.",feedbackType:"risky",feedback:"La laisser seule face à des informations parfois fausses n'est pas idéal."},
-     {id:"B",text:"L'écouter, la rassurer et l'aider à trouver une information fiable ou une personne de confiance.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une personne qui découvre son corps a le droit de poser des questions."},
-     {id:"C",text:"Lui dire de ne parler de ses règles à personne.",feedbackType:"risky",feedback:"Cacher un sujet aussi naturel peut renforcer un sentiment de honte qui n'a pas lieu d'être."},
-   ],
-   takeaway:"Une personne qui découvre son corps a le droit de poser des questions.",source:null},
-
-  {id:13,level:3,title:"« Envoie-moi une photo »",
-   context:"Inès discute avec un garçon qui lui demande une photo intime. Elle lui dit qu'elle ne veut pas, mais il insiste et lui dit que si elle l'aimait vraiment, elle accepterait.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Envoyer la photo pour éviter qu'il se fâche.",feedbackType:"risky",feedback:"Céder à la pression ne garantit rien et peut t'exposer à des risques importants."},
-     {id:"B",text:"Refuser et chercher de l'aide si la pression continue.",feedbackType:"recommended",feedback:"Bonne piste 💗 Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement."},
-     {id:"C",text:"Envoyer une photo de quelqu'un d'autre.",feedbackType:"risky",feedback:"Utiliser la photo d'une autre personne sans son accord lui ferait du tort à elle aussi."},
-   ],
-   takeaway:"Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",source:null},
-
-  {id:14,level:3,title:"Mon corps, mes limites",
-   context:"Lors d'une sortie, quelqu'un essaie de prendre Mariam dans ses bras alors qu'elle ne veut pas.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Ne rien dire pour ne pas vexer la personne.",feedbackType:"risky",feedback:"Se taire alors qu'un contact ne te convient pas peut te mettre mal à l'aise plus longtemps."},
-     {id:"B",text:"Dire clairement qu'elle ne souhaite pas ce contact.",feedbackType:"recommended",feedback:"Bonne piste 💗 Tu as le droit de poser des limites concernant ton propre corps."},
-     {id:"C",text:"Accepter parce qu'elle connaît cette personne.",feedbackType:"risky",feedback:"Connaître quelqu'un ne veut pas dire qu'on doit accepter tout ce qu'il ou elle propose."},
-   ],
-   takeaway:"Tu as le droit de poser des limites concernant ton propre corps.",source:null},
-
-  {id:15,level:3,title:"La pression du groupe",
-   context:"Ses camarades veulent convaincre Sarah de participer à un défi qu'elle trouve gênant. Ils lui disent qu'elle est « trop coincée » si elle refuse.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Participer pour être acceptée.",feedbackType:"risky",feedback:"Se forcer à participer pour plaire peut te mettre dans une situation gênante."},
-     {id:"B",text:"Dire qu'elle ne souhaite pas participer.",feedbackType:"recommended",feedback:"Bonne piste 💗 Dire non à une pression de groupe est une façon de protéger ses limites."},
-     {id:"C",text:"Insulter ses camarades.",feedbackType:"acceptable",feedback:"Répondre par des insultes peut envenimer la situation. Un refus calme est tout aussi efficace."},
-   ],
-   takeaway:"Dire non à une pression de groupe est une façon de protéger ses limites.",source:null},
-
-  {id:16,level:3,title:"Les moqueries sur les règles",
-   context:"Dans la cour, plusieurs élèves se moquent d'une fille parce qu'elle a taché son uniforme.",
-   question:"Que peux-tu faire ?",
-   choices:[
-     {id:"A",text:"Participer aux moqueries.",feedbackType:"risky",feedback:"Participer aggrave l'humiliation d'une personne qui n'a rien fait de mal."},
-     {id:"B",text:"Ne pas encourager les moqueries et soutenir discrètement la fille.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une situation embarrassante ne donne à personne le droit d'humilier une autre personne."},
-     {id:"C",text:"Filmer la scène.",feedbackType:"risky",feedback:"Filmer une personne en difficulté sans son accord aggrave son humiliation."},
-   ],
-   takeaway:"Une situation embarrassante ne donne à personne le droit d'humilier une autre personne.",source:null},
-
-  {id:17,level:3,title:"Une confidence",
-   context:"Une amie te raconte quelque chose de très personnel et te demande de ne pas le répéter.",
-   question:"Que fais-tu ?",
-   choices:[
-     {id:"A",text:"Envoyer immédiatement l'information à ton groupe d'amies.",feedbackType:"risky",feedback:"Partager une confidence sans accord trahit la confiance de la personne."},
-     {id:"B",text:"Respecter sa confidence, tout en cherchant de l'aide si elle est en danger.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important."},
-     {id:"C",text:"Publier son histoire anonymement sur les réseaux sociaux.",feedbackType:"risky",feedback:"Même anonyme, publier l'histoire de quelqu'un sans son accord est une trahison de sa confiance."},
-   ],
-   takeaway:"Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important.",source:null},
-
-  {id:18,level:3,title:"Je ne sais pas quoi faire",
-   context:"Une amie te raconte une situation qui la met mal à l'aise. Tu ne sais pas exactement comment l'aider.",
-   question:"Que peux-tu faire ?",
-   choices:[
-     {id:"A",text:"Lui dire de régler le problème toute seule.",feedbackType:"risky",feedback:"La laisser seule face à une situation difficile peut la faire se sentir abandonnée."},
-     {id:"B",text:"L'écouter sans la juger et l'aider à trouver une personne de confiance.",feedbackType:"recommended",feedback:"Bonne piste 💗 Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important."},
-     {id:"C",text:"Confronter immédiatement la personne concernée.",feedbackType:"risky",feedback:"Agir seule et dans la précipitation peut aggraver la situation au lieu de l'aider."},
-   ],
-   takeaway:"Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important.",source:null},
-
-  {id:19,level:4,title:"Le harcèlement",
-   context:"Depuis plusieurs semaines, des élèves se moquent régulièrement de Fatou et publient des commentaires humiliants sur elle.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Garder tout pour elle.",feedbackType:"risky",feedback:"Garder le silence face au harcèlement laisse la situation continuer."},
-     {id:"B",text:"Conserver les éléments utiles et en parler à une personne de confiance ou à un responsable.",feedbackType:"recommended",feedback:"Bonne piste 💗 Face au harcèlement, demander de l'aide est important."},
-     {id:"C",text:"Répondre avec les mêmes insultes.",feedbackType:"acceptable",feedback:"Répondre par des insultes peut aggraver le conflit au lieu de le résoudre."},
-   ],
-   takeaway:"Face au harcèlement, demander de l'aide est important.",source:null},
-
-  {id:20,level:4,title:"Une relation qui fait peur",
-   context:"Une fille raconte que son partenaire se met régulièrement en colère, la menace et veut contrôler avec qui elle parle.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Penser que c'est simplement de la jalousie.",feedbackType:"risky",feedback:"Minimiser un comportement contrôlant peut empêcher de voir un vrai danger."},
-     {id:"B",text:"En parler à une personne de confiance et chercher une aide adaptée.",feedbackType:"recommended",feedback:"Bonne piste 💗 Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur."},
-     {id:"C",text:"Garder le silence pour protéger la relation.",feedbackType:"risky",feedback:"Se taire pour protéger une relation qui fait peur peut aggraver la situation."},
-   ],
-   takeaway:"Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",source:null},
-
-  {id:21,level:4,title:"Une photo déjà envoyée",
-   context:"Une adolescente a envoyé une photo personnelle à quelqu'un qui lui avait promis de garder le secret. Maintenant, cette personne lui demande d'en envoyer d'autres et menace de partager la première.",
-   question:"Que peut-elle faire ?",
-   choices:[
-     {id:"A",text:"Envoyer d'autres photos pour éviter les problèmes.",feedbackType:"risky",feedback:"Céder au chantage ne l'arrête généralement pas, il peut même s'aggraver."},
-     {id:"B",text:"Ne pas céder à la pression et chercher rapidement l'aide d'un adulte de confiance ou d'un service compétent.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée."},
-     {id:"C",text:"Menacer de publier une photo de l'autre personne.",feedbackType:"risky",feedback:"Répondre par une autre menace ne résout rien et peut créer davantage de tort."},
-   ],
-   takeaway:"Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",source:null},
-
-  {id:22,level:4,title:"Mon amie me parle d'une violence",
-   context:"Une amie te dit qu'une personne lui a fait du mal. Elle a peur que personne ne la croie.",
-   question:"Comment peux-tu réagir ?",
-   choices:[
-     {id:"A",text:"Lui demander pourquoi elle n'a pas réagi.",feedbackType:"risky",feedback:"Cette question peut sembler accuser la victime, alors qu'elle n'est jamais responsable de ce qu'elle a subi."},
-     {id:"B",text:"L'écouter, éviter de la culpabiliser et l'aider à trouver une personne compétente et de confiance.",feedbackType:"recommended",feedback:"Bonne piste 💗 Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul."},
-     {id:"C",text:"Aller immédiatement confronter la personne accusée.",feedbackType:"risky",feedback:"Confronter seule une personne dangereuse peut être risqué. Mieux vaut chercher une aide compétente d'abord."},
-   ],
-   takeaway:"Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",source:null},
-
-  {id:23,level:4,title:"« Pourquoi elle n'est pas partie ? »",
-   context:"Des élèves parlent d'une fille victime de violence. Quelqu'un dit : « Si elle n'était pas contente, elle n'avait qu'à partir. »",
-   question:"Quelle réponse est la plus juste ?",
-   choices:[
-     {id:"A",text:"« C'est vrai. »",feedbackType:"risky",feedback:"Cette réponse fait porter la responsabilité à la victime, alors que ce n'est jamais elle qui est en faute."},
-     {id:"B",text:"« La personne victime n'est pas responsable de la violence qu'elle subit. »",feedbackType:"recommended",feedback:"Bonne piste 💗 La responsabilité de la violence revient à la personne qui la commet, pas à la victime."},
-     {id:"C",text:"« Il ne faut jamais parler de violence. »",feedbackType:"acceptable",feedback:"Éviter le sujet n'aide pas à faire changer les mentalités ni à protéger les victimes."},
-   ],
-   takeaway:"La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",source:null},
-
-  {id:24,level:4,title:"Trouver la bonne aide",
-   context:"Une adolescente est confrontée à une situation qui la met en danger. Elle ne sait pas vers qui se tourner.",
-   question:"Quelle peut être une première étape ?",
-   choices:[
-     {id:"A",text:"Gérer seule la situation, même si elle se sent en danger.",feedbackType:"risky",feedback:"Gérer seule une situation dangereuse peut aggraver les risques encourus."},
-     {id:"B",text:"Identifier un adulte ou un service fiable pouvant l'aider.",feedbackType:"recommended",feedback:"Bonne piste 💗 Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante."},
-     {id:"C",text:"Publier toute son histoire sur les réseaux sociaux.",feedbackType:"risky",feedback:"Publier publiquement peut exposer la personne à plus de danger ou de jugement, sans forcément l'aider concrètement."},
-   ],
-   takeaway:"Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",source:null},
-
-  {id:25,level:5,title:"Le mariage de ma petite sœur",
-   context:"Mariam a 15 ans. Sa famille parle de la marier prochainement. Elle ne se sent pas prête et veut continuer son école. Sa grande sœur pense qu'elle devrait pouvoir être entendue mais ne sait pas comment l'aider.",
-   question:"Que peut faire sa grande sœur ?",
-   choices:[
-     {id:"A",text:"Lui dire d'accepter parce que la décision appartient uniquement aux adultes.",feedbackType:"risky",feedback:"Cette réponse ignore les émotions et les besoins de la jeune fille concernée."},
-     {id:"B",text:"L'écouter, prendre ses inquiétudes au sérieux et chercher l'aide d'une personne ou d'un service compétent.",feedbackType:"recommended",feedback:"Bonne piste 💗 Une situation de mariage concernant une mineure peut soulever des questions importantes de sécurité et de droits. Il est important de ne pas laisser la jeune fille seule et de chercher un accompagnement fiable."},
-     {id:"C",text:"Publier immédiatement son histoire sur les réseaux sociaux.",feedbackType:"risky",feedback:"Publier sans réfléchir pourrait mettre la jeune fille encore plus en danger."},
-   ],
-   takeaway:"Écouter une jeune fille et chercher une aide adaptée peut contribuer à sa protection.",source:null},
-
-  {id:26,level:5,title:"Ma petite sœur me demande de garder un secret",
-   context:"Ta petite sœur de 12 ans vient te voir. Elle te dit qu'un adulte lui envoie régulièrement des messages qui la mettent mal à l'aise et lui demande de garder cela secret. Elle te demande de ne rien dire.",
-   question:"Que peux-tu faire ?",
-   choices:[
-     {id:"A",text:"Promettre de garder le secret quoi qu'il arrive.",feedbackType:"risky",feedback:"Certains secrets doivent être partagés avec un adulte de confiance, surtout quand un enfant est en danger."},
-     {id:"B",text:"L'écouter, la rassurer et chercher rapidement l'aide d'un adulte de confiance ou d'un service adapté.",feedbackType:"recommended",feedback:"Bonne piste 💗 Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important."},
-     {id:"C",text:"Aller seule confronter immédiatement l'adulte.",feedbackType:"risky",feedback:"Confronter seule un adulte peut être dangereux. Il vaut mieux passer par un adulte de confiance ou un service compétent."},
-   ],
-   takeaway:"Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",source:null},
-
-  {id:27,level:5,title:"Défendre une camarade",
-   context:"Une fille est ridiculisée parce qu'elle parle ouvertement de ses règles. Plusieurs élèves rient d'elle.",
-   question:"Quelle réaction peut aider ?",
-   choices:[
-     {id:"A",text:"La laisser seule pour éviter les problèmes.",feedbackType:"risky",feedback:"La laisser seule ne l'aide pas et peut renforcer son sentiment d'isolement."},
-     {id:"B",text:"Lui montrer son soutien et rappeler que parler de santé menstruelle n'est pas honteux.",feedbackType:"recommended",feedback:"Bonne piste 💗 Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence."},
-     {id:"C",text:"Insulter les élèves qui se moquent d'elle.",feedbackType:"acceptable",feedback:"Répondre par des insultes peut envenimer la situation au lieu de la calmer."},
-   ],
-   takeaway:"Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence.",source:null},
-
-  {id:28,level:5,title:"Une information sur mes droits",
-   context:"Une publication sur les réseaux sociaux affirme qu'une fille n'a pas le droit de parler de ses règles à l'école. La publication est très partagée et plusieurs personnes la présentent comme une « règle officielle ».",
-   question:"Que fais-tu ?",
-   choices:[
-     {id:"A",text:"La partager parce qu'elle a beaucoup de likes.",feedbackType:"risky",feedback:"Le nombre de likes ne garantit jamais qu'une information est vraie."},
-     {id:"B",text:"Vérifier l'information auprès d'une source fiable.",feedbackType:"recommended",feedback:"Bonne piste 💗 Le nombre de likes, de partages ou de commentaires ne garantit pas qu'une information est vraie. Lorsqu'une information concerne tes droits, ta santé ou une règle officielle, il est préférable de vérifier auprès d'une source fiable."},
-     {id:"C",text:"Demander à une seule amie si elle pense que c'est vrai.",feedbackType:"acceptable",feedback:"L'avis d'une amie peut aider, mais il ne remplace pas une vérification auprès d'une source fiable."},
-   ],
-   takeaway:"Une information populaire n'est pas forcément une information fiable. Vérifie avant de partager.",source:null},
-
-  {id:29,level:5,title:"Prendre la parole pour changer les choses",
-   context:"Dans ton établissement, plusieurs filles rencontrent des difficultés lorsqu'elles ont leurs règles. Certaines n'ont pas toujours de protection avec elles et certaines évitent même de participer à certaines activités par peur d'avoir une fuite. Tu penses qu'il serait utile d'en parler, mais tu ne sais pas par où commencer.",
-   question:"Quelle serait une bonne première étape ?",
-   choices:[
-     {id:"A",text:"Publier immédiatement une vidéo pour dénoncer l'établissement.",feedbackType:"risky",feedback:"Dénoncer publiquement peut attirer l'attention, mais ce n'est pas toujours la première étape la plus constructive. Il peut être utile de comprendre le problème et d'identifier les personnes capables d'agir."},
-     {id:"B",text:"Écouter les filles concernées, comprendre leurs besoins et présenter une proposition aux personnes responsables.",feedbackType:"recommended",feedback:"Bonne piste 💗 Avant de vouloir changer une situation, il est important de comprendre ce que vivent réellement les personnes concernées. Écouter, recueillir les besoins et proposer une solution réaliste est déjà une forme de leadership."},
-     {id:"C",text:"Décider seule de la solution et demander ensuite aux autres de l'appliquer.",feedbackType:"acceptable",feedback:"Vouloir aider est positif, mais décider à la place des personnes concernées peut conduire à une solution qui ne répond pas réellement à leurs besoins. Le leadership commence aussi par l'écoute."},
-   ],
-   takeaway:"Être leader, ce n'est pas décider pour les autres. C'est écouter, comprendre et contribuer à construire des solutions.",source:null},
-
-  {id:30,level:5,title:"Devenir une personne ressource",
-   context:"Une fille plus jeune vient te voir parce qu'elle vient d'avoir ses premières règles. Elle est inquiète, a beaucoup de questions et te demande de lui expliquer ce qui lui arrive. Tu connais certaines choses, mais tu n'as pas toutes les réponses.",
-   question:"Quelle est la meilleure façon de l'aider ?",
-   choices:[
-     {id:"A",text:"Lui donner une réponse même lorsque tu n'es pas sûre, pour ne pas lui montrer que tu ne sais pas.",feedbackType:"risky",feedback:"Vouloir aider est positif, mais inventer une réponse ou donner une information dont tu n'es pas sûre peut induire quelqu'un en erreur. Il est préférable de dire que tu ne sais pas et de chercher une information fiable."},
-     {id:"B",text:"L'écouter, la rassurer, partager les informations fiables que tu connais et l'orienter vers une personne compétente lorsque tu ne sais pas.",feedbackType:"recommended",feedback:"Bonne piste 💗 Être une personne ressource ne signifie pas avoir réponse à toutes les questions. Tu peux écouter, rassurer, partager une information fiable et reconnaître lorsque tu as besoin de demander conseil à quelqu'un de plus compétent."},
-     {id:"C",text:"Lui raconter les expériences personnelles d'autres filles pour lui montrer que tout le monde vit la même chose.",feedbackType:"acceptable",feedback:"Les expériences personnelles peuvent être différentes d'une personne à l'autre. Elles ne remplacent pas une information fiable et il est important de respecter la vie privée des autres filles."},
-   ],
-   takeaway:"Le leadership, c'est aussi savoir écouter, transmettre une information fiable et reconnaître quand il faut demander de l'aide.",source:null},
-];
-
-const SITUATIONS_FEEDBACK_LABEL={recommended:"💗 Bonne piste",acceptable:"💛 Possible, mais…",risky:"🧡 À éviter"};
+const SITUATIONS_FEEDBACK_LABEL={
+  recommended:{fr:"💗 Bonne piste",en:"💗 Good move"},
+  acceptable:{fr:"💛 Possible, mais…",en:"💛 Okay, but…"},
+  risky:{fr:"🧡 À éviter",en:"🧡 Better avoided"},
+};
 const SITUATIONS_FEEDBACK_COLOR={recommended:P.green,acceptable:P.amber,risky:P.coral};
 
-function InteractiveSituation({situation,index,total,onNext,isLast}){
+const SITUATIONS_DATA=[
+  {id:1,level:1,
+   title:{fr:"Mes premières règles à l'école",en:"My first period at school"},
+   context:{fr:"Aïcha vient d'avoir ses premières règles. Elle est à l'école et remarque une tache de sang sur sa jupe. Elle est surprise, ne sait pas vraiment quoi faire et a peur que ses camarades se moquent d'elle.",en:"Aïcha has just had her first period. She's at school and notices a blood stain on her skirt. She's surprised, doesn't really know what to do, and is afraid her classmates will make fun of her."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Garder le secret et essayer de gérer seule.",en:"Keep it secret and try to handle it alone."},feedbackType:"acceptable",feedback:{fr:"C'est possible, mais tu n'as pas à tout gérer seule. Demander de l'aide n'a rien de honteux.",en:"That's possible, but you don't have to handle everything alone. Asking for help is nothing to be ashamed of."}},
+     {id:"B",text:{fr:"Demander discrètement une protection et en parler à une personne de confiance si elle en a besoin.",en:"Quietly ask for a period product, and talk to a trusted person if she needs to."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Avoir ses premières règles peut susciter des questions ou de l'inquiétude. Demander de l'aide est normal. Une personne de confiance peut l'aider à trouver une protection et à se sentir plus à l'aise.",en:"Good move 💗 Having your first period can raise questions or worries. Asking for help is completely normal. A trusted person can help her find protection and feel more comfortable."}},
+     {id:"C",text:{fr:"Ne plus retourner en classe pendant ses règles.",en:"Stop going to class while she has her period."},feedbackType:"risky",feedback:{fr:"À éviter. Manquer les cours à cause de ses règles n'est pas nécessaire quand on a la bonne protection et du soutien.",en:"Better avoided. Missing class because of your period isn't necessary when you have the right protection and support."}},
+   ],
+   takeaway:{fr:"Les premières règles sont une étape naturelle de la puberté. Tu peux poser des questions et demander de l'aide.",en:"Your first period is a natural stage of puberty. You can ask questions and ask for help."},source:null},
+
+  {id:2,level:1,
+   title:{fr:"Comprendre mes règles",en:"Understanding my period"},
+   context:{fr:"Mariam vient d'avoir ses premières règles. Elle entend plusieurs personnes parler des menstruations et reçoit des informations contradictoires. Elle ne sait plus ce qui est vrai.",en:"Mariam has just had her first period. She hears several people talking about menstruation and gets conflicting information. She no longer knows what's true."},
+   question:{fr:"Que devrait-elle faire lorsqu'elle entend une information qui lui paraît étrange ?",en:"What should she do when she hears information that seems strange to her?"},
+   choices:[
+     {id:"A",text:{fr:"La croire parce qu'un adulte l'a dit.",en:"Believe it because an adult said it."},feedbackType:"risky",feedback:{fr:"Un adulte peut se tromper aussi. Il vaut mieux vérifier une information avant d'y croire complètement.",en:"An adult can be wrong too. It's better to check information before fully believing it."}},
+     {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Certaines croyances sur les règles sont très répandues sans être exactes. Pour les questions concernant ton corps, il est préférable de vérifier auprès d'une source fiable ou d'un professionnel compétent.",en:"Good move. Some beliefs about periods are widespread without being accurate. For questions about your body, it's best to check with a reliable source or a qualified professional."}},
+     {id:"C",text:{fr:"La partager à ses amies pour savoir ce qu'elles en pensent.",en:"Share it with her friends to see what they think."},feedbackType:"acceptable",feedback:{fr:"En parler entre amies peut aider, mais leurs réponses ne remplacent pas une information vérifiée.",en:"Talking about it with friends can help, but their answers don't replace verified information."}},
+   ],
+   takeaway:{fr:"Une information souvent répétée n'est pas forcément vraie.",en:"Information that's often repeated isn't necessarily true."},source:null},
+
+  {id:3,level:1,
+   title:{fr:"Choisir une protection",en:"Choosing a period product"},
+   context:{fr:"Fatou doit choisir une protection menstruelle. Ses amies utilisent des produits différents et chacune lui dit que sa méthode est la meilleure.",en:"Fatou needs to choose a menstrual product. Her friends use different products, and each one tells her that her method is the best."},
+   question:{fr:"Que devrait faire Fatou ?",en:"What should Fatou do?"},
+   choices:[
+     {id:"A",text:{fr:"Utiliser obligatoirement la même protection que ses amies.",en:"Use the exact same product as her friends."},feedbackType:"risky",feedback:{fr:"Chaque corps est différent. Ce qui convient à une amie ne te conviendra pas forcément.",en:"Every body is different. What works for a friend won't necessarily work for you."}},
+     {id:"B",text:{fr:"Choisir une protection adaptée à ses besoins, à son confort et à ce qui lui est accessible.",en:"Choose a product suited to her needs, her comfort, and what's accessible to her."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Il existe plusieurs types de protections menstruelles. Le choix peut dépendre des préférences personnelles, du confort, de l'accessibilité et de la situation de chacune.",en:"Good move. There are several types of menstrual products. The choice can depend on personal preference, comfort, accessibility, and each person's situation."}},
+     {id:"C",text:{fr:"Ne rien utiliser puisqu'elle ne sait pas laquelle choisir.",en:"Use nothing since she doesn't know which one to choose."},feedbackType:"risky",feedback:{fr:"Ne pas se protéger peut être inconfortable et stressant. Il vaut mieux essayer une protection, même simple, en attendant de trouver la bonne.",en:"Not using any protection can be uncomfortable and stressful. It's better to try a product, even a simple one, while looking for the right fit."}},
+   ],
+   takeaway:{fr:"Il n'existe pas une seule protection adaptée à toutes les personnes.",en:"There is no single product that suits everyone."},source:null},
+
+  {id:4,level:1,
+   title:{fr:"La tache sur ma jupe",en:"The stain on my skirt"},
+   context:{fr:"Nadia remarque qu'une camarade a une tache de sang sur son uniforme. Quelques élèves commencent à rire.",en:"Nadia notices that a classmate has a blood stain on her uniform. A few students start laughing."},
+   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
+   choices:[
+     {id:"A",text:{fr:"Rire aussi pour ne pas attirer l'attention sur toi.",en:"Laugh along too, so you don't draw attention to yourself."},feedbackType:"risky",feedback:{fr:"Rire avec le groupe peut sembler plus simple, mais cela blesse la personne concernée.",en:"Laughing along with the group might feel easier, but it hurts the person involved."}},
+     {id:"B",text:{fr:"Lui signaler discrètement la tache et lui proposer ton aide.",en:"Quietly point out the stain to her and offer to help."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Une tache de règles peut arriver à n'importe qui. Prévenir discrètement la personne et lui proposer de l'aide permet de préserver sa dignité.",en:"Good move. A period stain can happen to anyone. Quietly letting her know and offering help protects her dignity."}},
+     {id:"C",text:{fr:"Prendre une photo et l'envoyer au groupe de classe.",en:"Take a photo and send it to the class group chat."},feedbackType:"risky",feedback:{fr:"Cela peut gravement humilier la personne et lui faire du tort. Une tache de règles ne mérite jamais d'être exposée ainsi.",en:"This can seriously humiliate the person and cause real harm. A period stain never deserves to be exposed like that."}},
+   ],
+   takeaway:{fr:"Une personne qui a ses règles mérite du respect, pas des moqueries.",en:"A person who has their period deserves respect, not mockery."},source:null},
+
+  {id:5,level:1,
+   title:{fr:"L'hygiène pendant les règles",en:"Hygiene during your period"},
+   context:{fr:"Une cousine dit à Sarah qu'elle devrait éviter de se laver pendant ses règles parce que cela pourrait provoquer un problème. Sarah ne sait pas si cette information est vraie.",en:"A cousin tells Sarah she should avoid washing while on her period because it could cause a problem. Sarah doesn't know if this is true."},
+   question:{fr:"Quelle est la meilleure réaction ?",en:"What's the best response?"},
+   choices:[
+     {id:"A",text:{fr:"Suivre le conseil sans se poser de question.",en:"Follow the advice without questioning it."},feedbackType:"risky",feedback:{fr:"Suivre un conseil sans vérifier peut te faire croire des choses fausses sur ton propre corps.",en:"Following advice without checking it can make you believe false things about your own body."}},
+     {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une information sur la santé mérite toujours d'être vérifiée avant d'être suivie.",en:"Good move 💗 Health information always deserves to be checked before you follow it."}},
+     {id:"C",text:{fr:"Dire à toutes ses amies de faire la même chose.",en:"Tell all her friends to do the same."},feedbackType:"risky",feedback:{fr:"Propager une information non vérifiée peut faire circuler une fausse idée à beaucoup de monde.",en:"Spreading unverified information can pass a false idea on to many people."}},
+   ],
+   takeaway:{fr:"Les règles ne rendent pas le corps sale. Une bonne hygiène menstruelle contribue au confort et au bien-être.",en:"Periods don't make the body dirty. Good menstrual hygiene contributes to comfort and wellbeing."},source:null},
+
+  {id:6,level:1,
+   title:{fr:"Le mythe de mon quartier",en:"The myth from my neighborhood"},
+   context:{fr:"Des camarades affirment qu'une fille ne devrait pas faire certaines activités simplement parce qu'elle a ses règles. Plusieurs personnes autour d'elle disent la même chose.",en:"Classmates claim that a girl shouldn't do certain activities just because she has her period. Several people around her say the same thing."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Croire automatiquement ce que dit la majorité.",en:"Automatically believe what the majority says."},feedbackType:"risky",feedback:{fr:"Le nombre de personnes qui répètent une idée ne la rend pas vraie.",en:"The number of people repeating an idea doesn't make it true."}},
+     {id:"B",text:{fr:"Vérifier l'information et écouter également les besoins de son propre corps.",en:"Check the information and also listen to what her own body needs."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Ton corps et une information fiable sont de meilleurs guides que les croyances populaires.",en:"Good move 💗 Your body and reliable information are better guides than popular beliefs."}},
+     {id:"C",text:{fr:"Dire que toutes les croyances sur les règles sont forcément fausses.",en:"Say that all beliefs about periods must be false."},feedbackType:"acceptable",feedback:{fr:"Rejeter en bloc toutes les croyances n'est pas non plus la solution. Mieux vaut vérifier chaque idée une par une.",en:"Rejecting every belief outright isn't the solution either. It's better to check each idea one by one."}},
+   ],
+   takeaway:{fr:"Il est possible de respecter les habitudes de sa communauté tout en vérifiant les informations concernant sa santé.",en:"It's possible to respect your community's habits while still checking information about your health."},source:null},
+
+  {id:7,level:2,
+   title:{fr:"Mon cycle n'est pas toujours pareil",en:"My cycle isn't always the same"},
+   context:{fr:"Grâce remarque que ses règles ne commencent pas exactement le même jour chaque mois. Elle commence à s'inquiéter parce qu'elle pensait que son cycle devait toujours être identique.",en:"Grâce notices that her period doesn't start on exactly the same day every month. She starts to worry because she thought her cycle should always be identical."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Paniquer immédiatement.",en:"Panic immediately."},feedbackType:"risky",feedback:{fr:"La panique n'aide pas à comprendre ce qui se passe. Elle peut même rendre les choses plus stressantes.",en:"Panicking doesn't help you understand what's happening. It can even make things more stressful."}},
+     {id:"B",text:{fr:"Observer son cycle et demander conseil si quelque chose l'inquiète.",en:"Track her cycle and ask for advice if something worries her."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Observer son cycle permet de mieux le comprendre, et demander conseil rassure en cas de doute.",en:"Good move 💗 Tracking your cycle helps you understand it better, and asking for advice is reassuring when in doubt."}},
+     {id:"C",text:{fr:"Prendre un produit conseillé par une amie pour régulariser ses règles.",en:"Take a product recommended by a friend to regulate her period."},feedbackType:"risky",feedback:{fr:"Prendre un produit sans avis médical peut être risqué. Mieux vaut consulter un professionnel avant.",en:"Taking a product without medical advice can be risky. It's better to consult a professional first."}},
+   ],
+   takeaway:{fr:"Les cycles peuvent varier. En cas d'inquiétude importante ou de symptômes inhabituels, demander conseil à un professionnel de santé est préférable.",en:"Cycles can vary. If you're seriously worried or notice unusual symptoms, it's best to ask a health professional for advice."},source:null},
+
+  {id:8,level:2,
+   title:{fr:"Mes règles sont en retard",en:"My period is late"},
+   context:{fr:"Awa attend ses règles mais elles ne sont pas arrivées au moment où elle les attendait. Elle commence à chercher des solutions sur les réseaux sociaux.",en:"Awa is waiting for her period, but it hasn't arrived when she expected. She starts looking for solutions on social media."},
+   question:{fr:"Quelle est la meilleure réaction ?",en:"What's the best response?"},
+   choices:[
+     {id:"A",text:{fr:"Prendre n'importe quel produit recommandé en ligne.",en:"Take any product recommended online."},feedbackType:"risky",feedback:{fr:"Un produit trouvé en ligne peut être inefficace ou risqué sans avis médical.",en:"A product found online can be ineffective or risky without medical advice."}},
+     {id:"B",text:{fr:"Chercher une information fiable et demander conseil si nécessaire.",en:"Look for reliable information and ask for advice if needed."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"Good move. A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."}},
+     {id:"C",text:{fr:"Ignorer complètement la situation.",en:"Completely ignore the situation."},feedbackType:"acceptable",feedback:{fr:"Ignorer peut sembler simple, mais si le retard inquiète, il vaut mieux en parler à quelqu'un de confiance.",en:"Ignoring it might seem simple, but if the delay is worrying, it's better to talk to someone you trust."}},
+   ],
+   takeaway:{fr:"Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."},source:null},
+
+  {id:9,level:2,
+   title:{fr:"Des règles très douloureuses",en:"Very painful periods"},
+   context:{fr:"Mariam a régulièrement des douleurs menstruelles tellement fortes qu'elles l'empêchent parfois d'aller en cours.",en:"Mariam regularly has menstrual pain so intense that it sometimes keeps her from going to class."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Tout supporter en silence.",en:"Endure it all in silence."},feedbackType:"risky",feedback:{fr:"Souffrir en silence n'est pas nécessaire. Une douleur forte mérite d'être prise au sérieux.",en:"Suffering in silence isn't necessary. Strong pain deserves to be taken seriously."}},
+     {id:"B",text:{fr:"En parler à une personne de confiance et, si nécessaire, consulter un professionnel de santé.",en:"Talk to a trusted person and, if needed, see a health professional."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Good move. Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."}},
+     {id:"C",text:{fr:"Prendre n'importe quel médicament conseillé sur Internet.",en:"Take any medication recommended on the internet."},feedbackType:"risky",feedback:{fr:"L'automédication sans avis médical peut être dangereuse.",en:"Self-medicating without medical advice can be dangerous."}},
+   ],
+   takeaway:{fr:"Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."},source:null},
+
+  {id:10,level:2,
+   title:{fr:"Les règles et le sport",en:"Periods and sport"},
+   context:{fr:"Aminata a ses règles le jour d'un entraînement important. Elle se sent bien mais une camarade lui dit qu'elle ne devrait absolument pas faire de sport pendant ses règles.",en:"Aminata has her period on the day of an important training session. She feels fine, but a classmate tells her she absolutely shouldn't exercise during her period."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Arrêter automatiquement toute activité.",en:"Automatically stop all activity."},feedbackType:"acceptable",feedback:{fr:"Se reposer est possible si le corps en a besoin, mais ce n'est pas obligatoire pour tout le monde.",en:"Resting is fine if your body needs it, but it isn't mandatory for everyone."}},
+     {id:"B",text:{fr:"Écouter son corps et décider selon son état et son confort.",en:"Listen to her body and decide based on how she feels and her comfort."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important.",en:"Good move. Some people continue their activities during their period, while others need rest. Listening to your body matters."}},
+     {id:"C",text:{fr:"Se forcer à participer même si elle se sent mal.",en:"Force herself to take part even if she feels unwell."},feedbackType:"risky",feedback:{fr:"Se forcer à continuer alors que le corps souffre peut aggraver l'inconfort.",en:"Forcing yourself to continue when your body is struggling can make the discomfort worse."}},
+   ],
+   takeaway:{fr:"Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important.",en:"Some people continue their activities during their period, while others need rest. Listening to your body matters."},source:null},
+
+  {id:11,level:2,
+   title:{fr:"Je prépare un voyage",en:"Planning a trip"},
+   context:{fr:"Esther doit passer toute la journée loin de chez elle et pense avoir bientôt ses règles.",en:"Esther will be away from home all day and thinks her period might start soon."},
+   question:{fr:"Quelle précaution peut-elle prendre ?",en:"What precaution can she take?"},
+   choices:[
+     {id:"A",text:{fr:"Prévoir quelques protections dans son sac.",en:"Pack a few period products in her bag."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Anticiper permet d'être tranquille, peu importe le moment où les règles arrivent.",en:"Good move 💗 Planning ahead lets you relax, whenever your period actually arrives."}},
+     {id:"B",text:{fr:"Annuler sa sortie.",en:"Cancel her outing."},feedbackType:"risky",feedback:{fr:"Annuler n'est pas nécessaire. Une bonne anticipation permet de vivre sa journée normalement.",en:"Cancelling isn't necessary. Planning ahead lets you carry on with your day as normal."}},
+     {id:"C",text:{fr:"Ne rien prévoir parce qu'elle ne peut pas connaître exactement la date.",en:"Not plan anything because she can't know the exact date."},feedbackType:"risky",feedback:{fr:"Ne rien prévoir augmente le risque de stress si les règles arrivent au mauvais moment.",en:"Not planning ahead increases the risk of stress if your period arrives at an inconvenient moment."}},
+   ],
+   takeaway:{fr:"Anticiper ses besoins peut éviter beaucoup de stress.",en:"Planning ahead for your needs can avoid a lot of stress."},source:null},
+
+  {id:12,level:2,
+   title:{fr:"Mon amie vient d'avoir ses premières règles",en:"My friend just had her first period"},
+   context:{fr:"Ta meilleure amie vient te voir après ses premières règles. Elle semble inquiète et dit qu'elle ne sait pas à qui poser ses questions.",en:"Your best friend comes to see you after her first period. She seems worried and says she doesn't know who to ask her questions to."},
+   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
+   choices:[
+     {id:"A",text:{fr:"Lui dire de chercher seule sur Internet.",en:"Tell her to search for answers online by herself."},feedbackType:"risky",feedback:{fr:"La laisser seule face à des informations parfois fausses n'est pas idéal.",en:"Leaving her alone with information that's sometimes false isn't ideal."}},
+     {id:"B",text:{fr:"L'écouter, la rassurer et l'aider à trouver une information fiable ou une personne de confiance.",en:"Listen to her, reassure her, and help her find reliable information or a trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une personne qui découvre son corps a le droit de poser des questions.",en:"Good move 💗 Someone discovering their body has every right to ask questions."}},
+     {id:"C",text:{fr:"Lui dire de ne parler de ses règles à personne.",en:"Tell her not to talk about her period to anyone."},feedbackType:"risky",feedback:{fr:"Cacher un sujet aussi naturel peut renforcer un sentiment de honte qui n'a pas lieu d'être.",en:"Hiding such a natural topic can reinforce a shame that has no reason to exist."}},
+   ],
+   takeaway:{fr:"Une personne qui découvre son corps a le droit de poser des questions.",en:"Someone discovering their body has every right to ask questions."},source:null},
+
+  {id:13,level:3,
+   title:{fr:"« Envoie-moi une photo »",en:"\"Send me a photo\""},
+   context:{fr:"Inès discute avec un garçon qui lui demande une photo intime. Elle lui dit qu'elle ne veut pas, mais il insiste et lui dit que si elle l'aimait vraiment, elle accepterait.",en:"Inès is chatting with a boy who asks her for an intimate photo. She tells him she doesn't want to, but he insists and tells her that if she really loved him, she'd agree."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Envoyer la photo pour éviter qu'il se fâche.",en:"Send the photo to avoid making him angry."},feedbackType:"risky",feedback:{fr:"Céder à la pression ne garantit rien et peut t'exposer à des risques importants.",en:"Giving in to pressure guarantees nothing and can expose you to serious risks."}},
+     {id:"B",text:{fr:"Refuser et chercher de l'aide si la pression continue.",en:"Refuse and seek help if the pressure continues."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"Good move 💗 No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."}},
+     {id:"C",text:{fr:"Envoyer une photo de quelqu'un d'autre.",en:"Send a photo of someone else instead."},feedbackType:"risky",feedback:{fr:"Utiliser la photo d'une autre personne sans son accord lui ferait du tort à elle aussi.",en:"Using another person's photo without their consent would harm them too."}},
+   ],
+   takeaway:{fr:"Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."},source:null},
+
+  {id:14,level:3,
+   title:{fr:"Mon corps, mes limites",en:"My body, my limits"},
+   context:{fr:"Lors d'une sortie, quelqu'un essaie de prendre Mariam dans ses bras alors qu'elle ne veut pas.",en:"During an outing, someone tries to hug Mariam even though she doesn't want them to."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Ne rien dire pour ne pas vexer la personne.",en:"Say nothing so as not to upset the person."},feedbackType:"risky",feedback:{fr:"Se taire alors qu'un contact ne te convient pas peut te mettre mal à l'aise plus longtemps.",en:"Staying silent when contact makes you uncomfortable can leave you feeling uneasy for longer."}},
+     {id:"B",text:{fr:"Dire clairement qu'elle ne souhaite pas ce contact.",en:"Clearly say that she doesn't want this contact."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Tu as le droit de poser des limites concernant ton propre corps.",en:"Good move 💗 You have every right to set limits about your own body."}},
+     {id:"C",text:{fr:"Accepter parce qu'elle connaît cette personne.",en:"Accept it because she knows this person."},feedbackType:"risky",feedback:{fr:"Connaître quelqu'un ne veut pas dire qu'on doit accepter tout ce qu'il ou elle propose.",en:"Knowing someone doesn't mean you have to accept everything they offer or ask."}},
+   ],
+   takeaway:{fr:"Tu as le droit de poser des limites concernant ton propre corps.",en:"You have every right to set limits about your own body."},source:null},
+
+  {id:15,level:3,
+   title:{fr:"La pression du groupe",en:"Peer pressure"},
+   context:{fr:"Ses camarades veulent convaincre Sarah de participer à un défi qu'elle trouve gênant. Ils lui disent qu'elle est « trop coincée » si elle refuse.",en:"Sarah's classmates want to convince her to take part in a challenge she finds embarrassing. They tell her she's \"too uptight\" if she refuses."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Participer pour être acceptée.",en:"Take part just to be accepted."},feedbackType:"risky",feedback:{fr:"Se forcer à participer pour plaire peut te mettre dans une situation gênante.",en:"Forcing yourself to take part just to fit in can put you in an uncomfortable position."}},
+     {id:"B",text:{fr:"Dire qu'elle ne souhaite pas participer.",en:"Say that she doesn't want to take part."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Dire non à une pression de groupe est une façon de protéger ses limites.",en:"Good move 💗 Saying no to peer pressure is a way of protecting your own limits."}},
+     {id:"C",text:{fr:"Insulter ses camarades.",en:"Insult her classmates."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut envenimer la situation. Un refus calme est tout aussi efficace.",en:"Responding with insults can make the situation worse. A calm refusal works just as well."}},
+   ],
+   takeaway:{fr:"Dire non à une pression de groupe est une façon de protéger ses limites.",en:"Saying no to peer pressure is a way of protecting your own limits."},source:null},
+
+  {id:16,level:3,
+   title:{fr:"Les moqueries sur les règles",en:"Mockery about periods"},
+   context:{fr:"Dans la cour, plusieurs élèves se moquent d'une fille parce qu'elle a taché son uniforme.",en:"In the schoolyard, several students are mocking a girl because she stained her uniform."},
+   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
+   choices:[
+     {id:"A",text:{fr:"Participer aux moqueries.",en:"Join in the mockery."},feedbackType:"risky",feedback:{fr:"Participer aggrave l'humiliation d'une personne qui n'a rien fait de mal.",en:"Joining in worsens the humiliation of someone who has done nothing wrong."}},
+     {id:"B",text:{fr:"Ne pas encourager les moqueries et soutenir discrètement la fille.",en:"Don't encourage the mockery and quietly support the girl."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une situation embarrassante ne donne à personne le droit d'humilier une autre personne.",en:"Good move 💗 An embarrassing situation never gives anyone the right to humiliate someone else."}},
+     {id:"C",text:{fr:"Filmer la scène.",en:"Film the scene."},feedbackType:"risky",feedback:{fr:"Filmer une personne en difficulté sans son accord aggrave son humiliation.",en:"Filming someone in a difficult moment without their consent makes their humiliation worse."}},
+   ],
+   takeaway:{fr:"Une situation embarrassante ne donne à personne le droit d'humilier une autre personne.",en:"An embarrassing situation never gives anyone the right to humiliate someone else."},source:null},
+
+  {id:17,level:3,
+   title:{fr:"Une confidence",en:"A secret shared"},
+   context:{fr:"Une amie te raconte quelque chose de très personnel et te demande de ne pas le répéter.",en:"A friend tells you something very personal and asks you not to repeat it."},
+   question:{fr:"Que fais-tu ?",en:"What do you do?"},
+   choices:[
+     {id:"A",text:{fr:"Envoyer immédiatement l'information à ton groupe d'amies.",en:"Immediately send the information to your friend group chat."},feedbackType:"risky",feedback:{fr:"Partager une confidence sans accord trahit la confiance de la personne.",en:"Sharing a confidence without consent betrays that person's trust."}},
+     {id:"B",text:{fr:"Respecter sa confidence, tout en cherchant de l'aide si elle est en danger.",en:"Respect her confidence, while seeking help if she's in danger."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important.",en:"Good move 💗 A confidence deserves to be respected. But when someone is in danger, asking for help matters."}},
+     {id:"C",text:{fr:"Publier son histoire anonymement sur les réseaux sociaux.",en:"Post her story anonymously on social media."},feedbackType:"risky",feedback:{fr:"Même anonyme, publier l'histoire de quelqu'un sans son accord est une trahison de sa confiance.",en:"Even anonymously, posting someone's story without their consent is a betrayal of their trust."}},
+   ],
+   takeaway:{fr:"Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important.",en:"A confidence deserves to be respected. But when someone is in danger, asking for help matters."},source:null},
+
+  {id:18,level:3,
+   title:{fr:"Je ne sais pas quoi faire",en:"I don't know what to do"},
+   context:{fr:"Une amie te raconte une situation qui la met mal à l'aise. Tu ne sais pas exactement comment l'aider.",en:"A friend tells you about a situation that makes her uncomfortable. You're not sure exactly how to help her."},
+   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
+   choices:[
+     {id:"A",text:{fr:"Lui dire de régler le problème toute seule.",en:"Tell her to sort out the problem by herself."},feedbackType:"risky",feedback:{fr:"La laisser seule face à une situation difficile peut la faire se sentir abandonnée.",en:"Leaving her alone with a difficult situation can make her feel abandoned."}},
+     {id:"B",text:{fr:"L'écouter sans la juger et l'aider à trouver une personne de confiance.",en:"Listen to her without judging and help her find a trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important.",en:"Good move 💗 Helping someone doesn't necessarily mean solving their problem yourself. Knowing how to point them toward the right help matters too."}},
+     {id:"C",text:{fr:"Confronter immédiatement la personne concernée.",en:"Immediately confront the person involved."},feedbackType:"risky",feedback:{fr:"Agir seule et dans la précipitation peut aggraver la situation au lieu de l'aider.",en:"Acting alone and hastily can make the situation worse instead of helping."}},
+   ],
+   takeaway:{fr:"Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important.",en:"Helping someone doesn't necessarily mean solving their problem yourself. Knowing how to point them toward the right help matters too."},source:null},
+
+  {id:19,level:4,
+   title:{fr:"Le harcèlement",en:"Bullying"},
+   context:{fr:"Depuis plusieurs semaines, des élèves se moquent régulièrement de Fatou et publient des commentaires humiliants sur elle.",en:"For several weeks, some students have been regularly mocking Fatou and posting humiliating comments about her."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Garder tout pour elle.",en:"Keep it all to herself."},feedbackType:"risky",feedback:{fr:"Garder le silence face au harcèlement laisse la situation continuer.",en:"Staying silent about bullying lets the situation continue."}},
+     {id:"B",text:{fr:"Conserver les éléments utiles et en parler à une personne de confiance ou à un responsable.",en:"Keep evidence that could help and talk to a trusted person or someone in authority."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Face au harcèlement, demander de l'aide est important.",en:"Good move 💗 When facing bullying, asking for help matters."}},
+     {id:"C",text:{fr:"Répondre avec les mêmes insultes.",en:"Respond with the same insults."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut aggraver le conflit au lieu de le résoudre.",en:"Responding with insults can worsen the conflict instead of resolving it."}},
+   ],
+   takeaway:{fr:"Face au harcèlement, demander de l'aide est important.",en:"When facing bullying, asking for help matters."},source:null},
+
+  {id:20,level:4,
+   title:{fr:"Une relation qui fait peur",en:"A frightening relationship"},
+   context:{fr:"Une fille raconte que son partenaire se met régulièrement en colère, la menace et veut contrôler avec qui elle parle.",en:"A girl says her partner regularly gets angry, threatens her, and wants to control who she talks to."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Penser que c'est simplement de la jalousie.",en:"Think it's simply jealousy."},feedbackType:"risky",feedback:{fr:"Minimiser un comportement contrôlant peut empêcher de voir un vrai danger.",en:"Minimizing controlling behavior can prevent you from seeing a real danger."}},
+     {id:"B",text:{fr:"En parler à une personne de confiance et chercher une aide adaptée.",en:"Talk to a trusted person and seek appropriate help."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Good move 💗 Threats and control can be signs of abuse. No one should have to live in fear."}},
+     {id:"C",text:{fr:"Garder le silence pour protéger la relation.",en:"Stay silent to protect the relationship."},feedbackType:"risky",feedback:{fr:"Se taire pour protéger une relation qui fait peur peut aggraver la situation.",en:"Staying silent to protect a frightening relationship can make the situation worse."}},
+   ],
+   takeaway:{fr:"Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Threats and control can be signs of abuse. No one should have to live in fear."},source:null},
+
+  {id:21,level:4,
+   title:{fr:"Une photo déjà envoyée",en:"A photo already sent"},
+   context:{fr:"Une adolescente a envoyé une photo personnelle à quelqu'un qui lui avait promis de garder le secret. Maintenant, cette personne lui demande d'en envoyer d'autres et menace de partager la première.",en:"A teenage girl sent a personal photo to someone who promised to keep it secret. Now, this person is asking her to send more and threatens to share the first one."},
+   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
+   choices:[
+     {id:"A",text:{fr:"Envoyer d'autres photos pour éviter les problèmes.",en:"Send more photos to avoid trouble."},feedbackType:"risky",feedback:{fr:"Céder au chantage ne l'arrête généralement pas, il peut même s'aggraver.",en:"Giving in to blackmail usually doesn't stop it — it can even get worse."}},
+     {id:"B",text:{fr:"Ne pas céder à la pression et chercher rapidement l'aide d'un adulte de confiance ou d'un service compétent.",en:"Not give in to the pressure and quickly seek help from a trusted adult or a competent service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Good move 💗 Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."}},
+     {id:"C",text:{fr:"Menacer de publier une photo de l'autre personne.",en:"Threaten to post a photo of the other person."},feedbackType:"risky",feedback:{fr:"Répondre par une autre menace ne résout rien et peut créer davantage de tort.",en:"Responding with another threat solves nothing and can cause more harm."}},
+   ],
+   takeaway:{fr:"Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."},source:null},
+
+  {id:22,level:4,
+   title:{fr:"Mon amie me parle d'une violence",en:"My friend tells me about abuse"},
+   context:{fr:"Une amie te dit qu'une personne lui a fait du mal. Elle a peur que personne ne la croie.",en:"A friend tells you that someone hurt her. She's afraid no one will believe her."},
+   question:{fr:"Comment peux-tu réagir ?",en:"How can you react?"},
+   choices:[
+     {id:"A",text:{fr:"Lui demander pourquoi elle n'a pas réagi.",en:"Ask her why she didn't react."},feedbackType:"risky",feedback:{fr:"Cette question peut sembler accuser la victime, alors qu'elle n'est jamais responsable de ce qu'elle a subi.",en:"This question can sound like blaming the victim, when she is never responsible for what happened to her."}},
+     {id:"B",text:{fr:"L'écouter, éviter de la culpabiliser et l'aider à trouver une personne compétente et de confiance.",en:"Listen to her, avoid making her feel guilty, and help her find a competent, trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Good move 💗 Listening without blaming and seeking appropriate help can be far more useful than acting alone."}},
+     {id:"C",text:{fr:"Aller immédiatement confronter la personne accusée.",en:"Immediately go confront the accused person."},feedbackType:"risky",feedback:{fr:"Confronter seule une personne dangereuse peut être risqué. Mieux vaut chercher une aide compétente d'abord.",en:"Confronting a dangerous person alone can be risky. It's better to seek competent help first."}},
+   ],
+   takeaway:{fr:"Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Listening without blaming and seeking appropriate help can be far more useful than acting alone."},source:null},
+
+  {id:23,level:4,
+   title:{fr:"« Pourquoi elle n'est pas partie ? »",en:"\"Why didn't she just leave?\""},
+   context:{fr:"Des élèves parlent d'une fille victime de violence. Quelqu'un dit : « Si elle n'était pas contente, elle n'avait qu'à partir. »",en:"Some students are talking about a girl who was a victim of abuse. Someone says: \"If she wasn't happy, she should have just left.\""},
+   question:{fr:"Quelle réponse est la plus juste ?",en:"Which response is the most accurate?"},
+   choices:[
+     {id:"A",text:{fr:"« C'est vrai. »",en:"\"That's true.\""},feedbackType:"risky",feedback:{fr:"Cette réponse fait porter la responsabilité à la victime, alors que ce n'est jamais elle qui est en faute.",en:"This response puts the responsibility on the victim, when it's never her fault."}},
+     {id:"B",text:{fr:"« La personne victime n'est pas responsable de la violence qu'elle subit. »",en:"\"The victim is never responsible for the abuse she suffers.\""},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Good move 💗 Responsibility for abuse lies with the person who commits it, never with the victim."}},
+     {id:"C",text:{fr:"« Il ne faut jamais parler de violence. »",en:"\"We should never talk about abuse.\""},feedbackType:"acceptable",feedback:{fr:"Éviter le sujet n'aide pas à faire changer les mentalités ni à protéger les victimes.",en:"Avoiding the subject doesn't help change attitudes or protect victims."}},
+   ],
+   takeaway:{fr:"La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Responsibility for abuse lies with the person who commits it, never with the victim."},source:null},
+
+  {id:24,level:4,
+   title:{fr:"Trouver la bonne aide",en:"Finding the right help"},
+   context:{fr:"Une adolescente est confrontée à une situation qui la met en danger. Elle ne sait pas vers qui se tourner.",en:"A teenage girl is facing a situation that puts her in danger. She doesn't know who to turn to."},
+   question:{fr:"Quelle peut être une première étape ?",en:"What could be a first step?"},
+   choices:[
+     {id:"A",text:{fr:"Gérer seule la situation, même si elle se sent en danger.",en:"Handle the situation alone, even though she feels in danger."},feedbackType:"risky",feedback:{fr:"Gérer seule une situation dangereuse peut aggraver les risques encourus.",en:"Handling a dangerous situation alone can increase the risks involved."}},
+     {id:"B",text:{fr:"Identifier un adulte ou un service fiable pouvant l'aider.",en:"Identify a trusted adult or reliable service that can help."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"Good move 💗 You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."}},
+     {id:"C",text:{fr:"Publier toute son histoire sur les réseaux sociaux.",en:"Post her entire story on social media."},feedbackType:"risky",feedback:{fr:"Publier publiquement peut exposer la personne à plus de danger ou de jugement, sans forcément l'aider concrètement.",en:"Posting publicly can expose the person to more danger or judgment, without necessarily helping her concretely."}},
+   ],
+   takeaway:{fr:"Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."},source:null},
+
+  {id:25,level:5,
+   title:{fr:"Le mariage de ma petite sœur",en:"My little sister's marriage"},
+   context:{fr:"Mariam a 15 ans. Sa famille parle de la marier prochainement. Elle ne se sent pas prête et veut continuer son école. Sa grande sœur pense qu'elle devrait pouvoir être entendue mais ne sait pas comment l'aider.",en:"Mariam is 15. Her family is talking about marrying her off soon. She doesn't feel ready and wants to continue school. Her older sister thinks she should be heard, but doesn't know how to help her."},
+   question:{fr:"Que peut faire sa grande sœur ?",en:"What can her older sister do?"},
+   choices:[
+     {id:"A",text:{fr:"Lui dire d'accepter parce que la décision appartient uniquement aux adultes.",en:"Tell her to accept it because the decision belongs only to the adults."},feedbackType:"risky",feedback:{fr:"Cette réponse ignore les émotions et les besoins de la jeune fille concernée.",en:"This response ignores the feelings and needs of the girl involved."}},
+     {id:"B",text:{fr:"L'écouter, prendre ses inquiétudes au sérieux et chercher l'aide d'une personne ou d'un service compétent.",en:"Listen to her, take her worries seriously, and seek help from a competent person or service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une situation de mariage concernant une mineure peut soulever des questions importantes de sécurité et de droits. Il est important de ne pas laisser la jeune fille seule et de chercher un accompagnement fiable.",en:"Good move 💗 A marriage involving a minor can raise serious safety and rights concerns. It's important not to leave the girl alone and to seek reliable support."}},
+     {id:"C",text:{fr:"Publier immédiatement son histoire sur les réseaux sociaux.",en:"Immediately post her story on social media."},feedbackType:"risky",feedback:{fr:"Publier sans réfléchir pourrait mettre la jeune fille encore plus en danger.",en:"Posting without thinking could put the girl in even more danger."}},
+   ],
+   takeaway:{fr:"Écouter une jeune fille et chercher une aide adaptée peut contribuer à sa protection.",en:"Listening to a girl and seeking appropriate help can contribute to her protection."},source:null},
+
+  {id:26,level:5,
+   title:{fr:"Ma petite sœur me demande de garder un secret",en:"My little sister asks me to keep a secret"},
+   context:{fr:"Ta petite sœur de 12 ans vient te voir. Elle te dit qu'un adulte lui envoie régulièrement des messages qui la mettent mal à l'aise et lui demande de garder cela secret. Elle te demande de ne rien dire.",en:"Your 12-year-old little sister comes to see you. She tells you an adult regularly sends her messages that make her uncomfortable and asks her to keep it secret. She asks you not to say anything."},
+   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
+   choices:[
+     {id:"A",text:{fr:"Promettre de garder le secret quoi qu'il arrive.",en:"Promise to keep the secret no matter what."},feedbackType:"risky",feedback:{fr:"Certains secrets doivent être partagés avec un adulte de confiance, surtout quand un enfant est en danger.",en:"Some secrets must be shared with a trusted adult, especially when a child is in danger."}},
+     {id:"B",text:{fr:"L'écouter, la rassurer et chercher rapidement l'aide d'un adulte de confiance ou d'un service adapté.",en:"Listen to her, reassure her, and quickly seek help from a trusted adult or an appropriate service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Good move 💗 Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."}},
+     {id:"C",text:{fr:"Aller seule confronter immédiatement l'adulte.",en:"Go confront the adult alone right away."},feedbackType:"risky",feedback:{fr:"Confronter seule un adulte peut être dangereux. Il vaut mieux passer par un adulte de confiance ou un service compétent.",en:"Confronting an adult alone can be dangerous. It's better to go through a trusted adult or a competent service."}},
+   ],
+   takeaway:{fr:"Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."},source:null},
+
+  {id:27,level:5,
+   title:{fr:"Défendre une camarade",en:"Standing up for a classmate"},
+   context:{fr:"Une fille est ridiculisée parce qu'elle parle ouvertement de ses règles. Plusieurs élèves rient d'elle.",en:"A girl is being ridiculed because she talks openly about her period. Several students are laughing at her."},
+   question:{fr:"Quelle réaction peut aider ?",en:"What response can help?"},
+   choices:[
+     {id:"A",text:{fr:"La laisser seule pour éviter les problèmes.",en:"Leave her alone to avoid trouble."},feedbackType:"risky",feedback:{fr:"La laisser seule ne l'aide pas et peut renforcer son sentiment d'isolement.",en:"Leaving her alone doesn't help and can reinforce her feeling of isolation."}},
+     {id:"B",text:{fr:"Lui montrer son soutien et rappeler que parler de santé menstruelle n'est pas honteux.",en:"Show her support and remind others that talking about menstrual health is nothing to be ashamed of."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence.",en:"Good move 💗 Standing up for someone's dignity doesn't require reproducing the same aggression."}},
+     {id:"C",text:{fr:"Insulter les élèves qui se moquent d'elle.",en:"Insult the students who are mocking her."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut envenimer la situation au lieu de la calmer.",en:"Responding with insults can escalate the situation instead of calming it."}},
+   ],
+   takeaway:{fr:"Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence.",en:"Standing up for someone's dignity doesn't require reproducing the same aggression."},source:null},
+
+  {id:28,level:5,
+   title:{fr:"Une information sur mes droits",en:"Information about my rights"},
+   context:{fr:"Une publication sur les réseaux sociaux affirme qu'une fille n'a pas le droit de parler de ses règles à l'école. La publication est très partagée et plusieurs personnes la présentent comme une « règle officielle ».",en:"A social media post claims that a girl isn't allowed to talk about her period at school. The post is widely shared and several people present it as an \"official rule.\""},
+   question:{fr:"Que fais-tu ?",en:"What do you do?"},
+   choices:[
+     {id:"A",text:{fr:"La partager parce qu'elle a beaucoup de likes.",en:"Share it because it has a lot of likes."},feedbackType:"risky",feedback:{fr:"Le nombre de likes ne garantit jamais qu'une information est vraie.",en:"The number of likes never guarantees that information is true."}},
+     {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Le nombre de likes, de partages ou de commentaires ne garantit pas qu'une information est vraie. Lorsqu'une information concerne tes droits, ta santé ou une règle officielle, il est préférable de vérifier auprès d'une source fiable.",en:"Good move 💗 Likes, shares, or comments never guarantee that information is true. When information concerns your rights, your health, or an official rule, it's best to check with a reliable source."}},
+     {id:"C",text:{fr:"Demander à une seule amie si elle pense que c'est vrai.",en:"Ask just one friend if she thinks it's true."},feedbackType:"acceptable",feedback:{fr:"L'avis d'une amie peut aider, mais il ne remplace pas une vérification auprès d'une source fiable.",en:"A friend's opinion can help, but it doesn't replace checking with a reliable source."}},
+   ],
+   takeaway:{fr:"Une information populaire n'est pas forcément une information fiable. Vérifie avant de partager.",en:"Popular information isn't necessarily reliable information. Check before you share."},source:null},
+
+  {id:29,level:5,
+   title:{fr:"Prendre la parole pour changer les choses",en:"Speaking up to change things"},
+   context:{fr:"Dans ton établissement, plusieurs filles rencontrent des difficultés lorsqu'elles ont leurs règles. Certaines n'ont pas toujours de protection avec elles et certaines évitent même de participer à certaines activités par peur d'avoir une fuite. Tu penses qu'il serait utile d'en parler, mais tu ne sais pas par où commencer.",en:"At your school, several girls struggle when they have their period. Some don't always have period products with them, and some even avoid certain activities for fear of leaking. You think it would help to speak up, but you don't know where to start."},
+   question:{fr:"Quelle serait une bonne première étape ?",en:"What would be a good first step?"},
+   choices:[
+     {id:"A",text:{fr:"Publier immédiatement une vidéo pour dénoncer l'établissement.",en:"Immediately post a video calling out the school."},feedbackType:"risky",feedback:{fr:"Dénoncer publiquement peut attirer l'attention, mais ce n'est pas toujours la première étape la plus constructive. Il peut être utile de comprendre le problème et d'identifier les personnes capables d'agir.",en:"Calling something out publicly can draw attention, but it's not always the most constructive first step. It can help to understand the problem and identify the people who can act on it."}},
+     {id:"B",text:{fr:"Écouter les filles concernées, comprendre leurs besoins et présenter une proposition aux personnes responsables.",en:"Listen to the girls affected, understand their needs, and present a proposal to those in charge."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Avant de vouloir changer une situation, il est important de comprendre ce que vivent réellement les personnes concernées. Écouter, recueillir les besoins et proposer une solution réaliste est déjà une forme de leadership.",en:"Good move 💗 Before trying to change a situation, it's important to understand what those affected are really experiencing. Listening, gathering needs, and proposing a realistic solution is already a form of leadership."}},
+     {id:"C",text:{fr:"Décider seule de la solution et demander ensuite aux autres de l'appliquer.",en:"Decide on the solution alone and then ask others to apply it."},feedbackType:"acceptable",feedback:{fr:"Vouloir aider est positif, mais décider à la place des personnes concernées peut conduire à une solution qui ne répond pas réellement à leurs besoins. Le leadership commence aussi par l'écoute.",en:"Wanting to help is positive, but deciding on behalf of the people affected can lead to a solution that doesn't actually meet their needs. Leadership also starts with listening."}},
+   ],
+   takeaway:{fr:"Être leader, ce n'est pas décider pour les autres. C'est écouter, comprendre et contribuer à construire des solutions.",en:"Being a leader isn't about deciding for others. It's about listening, understanding, and helping build solutions."},source:null},
+
+  {id:30,level:5,
+   title:{fr:"Devenir une personne ressource",en:"Becoming a resource person"},
+   context:{fr:"Une fille plus jeune vient te voir parce qu'elle vient d'avoir ses premières règles. Elle est inquiète, a beaucoup de questions et te demande de lui expliquer ce qui lui arrive. Tu connais certaines choses, mais tu n'as pas toutes les réponses.",en:"A younger girl comes to see you because she just had her first period. She's worried, has a lot of questions, and asks you to explain what's happening to her. You know some things, but you don't have all the answers."},
+   question:{fr:"Quelle est la meilleure façon de l'aider ?",en:"What's the best way to help her?"},
+   choices:[
+     {id:"A",text:{fr:"Lui donner une réponse même lorsque tu n'es pas sûre, pour ne pas lui montrer que tu ne sais pas.",en:"Give her an answer even when you're not sure, so she doesn't see that you don't know."},feedbackType:"risky",feedback:{fr:"Vouloir aider est positif, mais inventer une réponse ou donner une information dont tu n'es pas sûre peut induire quelqu'un en erreur. Il est préférable de dire que tu ne sais pas et de chercher une information fiable.",en:"Wanting to help is positive, but making up an answer or giving information you're unsure about can mislead someone. It's better to say you don't know and look for reliable information."}},
+     {id:"B",text:{fr:"L'écouter, la rassurer, partager les informations fiables que tu connais et l'orienter vers une personne compétente lorsque tu ne sais pas.",en:"Listen to her, reassure her, share the reliable information you know, and point her toward a qualified person when you don't."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Être une personne ressource ne signifie pas avoir réponse à toutes les questions. Tu peux écouter, rassurer, partager une information fiable et reconnaître lorsque tu as besoin de demander conseil à quelqu'un de plus compétent.",en:"Good move 💗 Being a resource person doesn't mean having an answer to every question. You can listen, reassure, share reliable information, and recognize when you need to ask someone more qualified for advice."}},
+     {id:"C",text:{fr:"Lui raconter les expériences personnelles d'autres filles pour lui montrer que tout le monde vit la même chose.",en:"Tell her about other girls' personal experiences to show her that everyone goes through the same thing."},feedbackType:"acceptable",feedback:{fr:"Les expériences personnelles peuvent être différentes d'une personne à l'autre. Elles ne remplacent pas une information fiable et il est important de respecter la vie privée des autres filles.",en:"Personal experiences can differ from one person to another. They don't replace reliable information, and it's important to respect other girls' privacy."}},
+   ],
+   takeaway:{fr:"Le leadership, c'est aussi savoir écouter, transmettre une information fiable et reconnaître quand il faut demander de l'aide.",en:"Leadership also means knowing how to listen, share reliable information, and recognize when to ask for help."},source:null},
+];
+
+function InteractiveSituation({situation,index,total,onNext,isLast,lang}){
   const[sel,setSel]=useState(null);
   const choice=sel?situation.choices.find(c=>c.id===sel):null;
+  const L=obj=>lang==="en"?obj.en:obj.fr;
   return(
     <div style={{background:"white",borderRadius:20,padding:"18px 16px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
-      <div style={{fontSize:11,fontWeight:800,color:P.muted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Situation {String(index+1).padStart(2,"0")} / {total}</div>
-      <div className="T" style={{fontSize:17,fontWeight:900,color:P.text,marginBottom:10,lineHeight:1.3}}>{situation.title}</div>
-      <p style={{fontSize:14,color:P.text,lineHeight:1.6,margin:"0 0 14px"}}>{situation.context}</p>
-      <div style={{fontSize:14,fontWeight:800,color:P.text,marginBottom:10}}>{situation.question}</div>
+      <div style={{fontSize:11,fontWeight:800,color:P.muted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Scenario":"Situation"} {String(index+1).padStart(2,"0")} / {total}</div>
+      <div className="T" style={{fontSize:17,fontWeight:900,color:P.text,marginBottom:10,lineHeight:1.3}}>{L(situation.title)}</div>
+      <p style={{fontSize:14,color:P.text,lineHeight:1.6,margin:"0 0 14px"}}>{L(situation.context)}</p>
+      <div style={{fontSize:14,fontWeight:800,color:P.text,marginBottom:10}}>{L(situation.question)}</div>
       <div style={{display:"flex",flexDirection:"column",gap:9}}>
         {situation.choices.map(c=>{
           const active=sel===c.id;
           const disabled=sel&&!active;
           return(
             <button key={c.id} disabled={!!sel} onClick={()=>setSel(c.id)} style={{textAlign:"left",padding:"12px 14px",borderRadius:14,border:`1.8px solid ${active?SITUATIONS_FEEDBACK_COLOR[c.feedbackType]:"rgba(0,0,0,.1)"}`,background:active?`${SITUATIONS_FEEDBACK_COLOR[c.feedbackType]}14`:"white",cursor:sel?"default":"pointer",opacity:disabled?.45:1,fontSize:13.5,color:P.text,fontWeight:600,lineHeight:1.45,transition:"all .15s"}}>
-              <span style={{fontWeight:900,marginRight:7}}>{c.id}.</span>{c.text}
+              <span style={{fontWeight:900,marginRight:7}}>{c.id}.</span>{L(c.text)}
             </button>
           );
         })}
@@ -4035,15 +4026,15 @@ function InteractiveSituation({situation,index,total,onNext,isLast}){
       {choice&&(
         <div className="up" style={{marginTop:16}}>
           <div style={{background:`${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}14`,border:`1.5px solid ${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}55`,borderRadius:14,padding:"12px 14px",marginBottom:12}}>
-            <div style={{fontSize:12,fontWeight:900,color:SITUATIONS_FEEDBACK_COLOR[choice.feedbackType],marginBottom:5}}>{SITUATIONS_FEEDBACK_LABEL[choice.feedbackType]}</div>
-            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{choice.feedback}</div>
+            <div style={{fontSize:12,fontWeight:900,color:SITUATIONS_FEEDBACK_COLOR[choice.feedbackType],marginBottom:5}}>{L(SITUATIONS_FEEDBACK_LABEL[choice.feedbackType])}</div>
+            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(choice.feedback)}</div>
           </div>
           <div style={{background:P.roseSoft,borderRadius:14,padding:"12px 14px",marginBottom:14}}>
-            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:5}}>✨ À retenir</div>
-            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55,fontWeight:600}}>{situation.takeaway}</div>
+            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:5}}>✨ {lang==="en"?"Key takeaway":"À retenir"}</div>
+            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55,fontWeight:600}}>{L(situation.takeaway)}</div>
           </div>
           <button onClick={()=>{setSel(null);onNext();}} style={{width:"100%",background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:900,fontSize:14.5,cursor:"pointer"}}>
-            {isLast?"Terminer →":"Continuer →"}
+            {isLast?(lang==="en"?"Finish →":"Terminer →"):(lang==="en"?"Continue →":"Continuer →")}
           </button>
         </div>
       )}
@@ -4056,6 +4047,8 @@ function Situations({lang,onBack,navActive,onNav}){
   const[selPalier,setSelPalier]=useState(null);
   const[curId,setCurId]=useState(null);
   const[seen,setSeen]=useState(()=>new Set());
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const L=obj=>lang==="en"?obj.en:obj.fr;
 
   const situationsOf=lv=>SITUATIONS_DATA.filter(s=>s.level===lv);
 
@@ -4078,9 +4071,9 @@ function Situations({lang,onBack,navActive,onNav}){
 
   const NAV=(
     <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
-      {[{id:"home",icon:"🏠",fr:"Accueil"},{id:"explore",icon:"🎮",fr:"Explorer"},{id:"glossaire",icon:"📖",fr:"Glossaire"},{id:"progress",icon:"🏆",fr:"Progrès"},{id:"settings",icon:"⚙️",fr:"Réglages"}].map(n=>(
+      {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
         <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
-          <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{n.fr}
+          <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
         </button>
       ))}
     </nav>
@@ -4091,13 +4084,13 @@ function Situations({lang,onBack,navActive,onNav}){
     const listLv=situationsOf(cur.level);
     const idxInLv=listLv.findIndex(s=>s.id===cur.id);
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
         <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
-          <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← Retour</button>
-          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>Palier {cur.level} · {SITUATIONS_LEVELS[cur.level-1].title}</div>
+          <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>{t("Palier","Level")} {cur.level} · {L(SITUATIONS_LEVELS[cur.level-1].title)}</div>
         </div>
         <div style={{flex:1,padding:"16px 14px 24px"}}>
-          <InteractiveSituation situation={cur} index={idxInLv} total={listLv.length} isLast={cur.id===30} onNext={handleNext}/>
+          <InteractiveSituation situation={cur} index={idxInLv} total={listLv.length} isLast={cur.id===30} onNext={handleNext} lang={lang}/>
         </div>
         {NAV}
       </div>
@@ -4106,14 +4099,14 @@ function Situations({lang,onBack,navActive,onNav}){
 
   if(view==="final"){
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)"}}>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)",position:"relative"}}><FloatingBg/>
         <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
           <div style={{fontSize:56,marginBottom:16}}>✨</div>
-          <div className="T" style={{fontSize:21,fontWeight:900,color:"white",marginBottom:14}}>Tu viens de parcourir 30 situations.</div>
-          <p style={{fontSize:14.5,color:"rgba(255,200,215,.85)",lineHeight:1.7,maxWidth:340}}>Connaître ses droits, respecter ses limites, demander de l'aide et soutenir les autres sont aussi des formes de dignité. 💗</p>
+          <div className="T" style={{fontSize:21,fontWeight:900,color:"white",marginBottom:14}}>{t("Tu viens de parcourir 30 situations.","You've just gone through 30 scenarios.")}</div>
+          <p style={{fontSize:14.5,color:"rgba(255,200,215,.85)",lineHeight:1.7,maxWidth:340}}>{t("Connaître ses droits, respecter ses limites, demander de l'aide et soutenir les autres sont aussi des formes de dignité. 💗","Knowing your rights, respecting your limits, asking for help, and supporting others are also forms of dignity. 💗")}</p>
           <div style={{display:"flex",gap:10,marginTop:26,width:"100%",maxWidth:340}}>
-            <button onClick={()=>{setSeen(new Set());setCurId(SITUATIONS_DATA[0].id);setSelPalier(1);setView("situation");}} style={{flex:1,background:"rgba(255,255,255,.15)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>🔁 Rejouer</button>
-            <button onClick={()=>setView("paliers")} style={{flex:1,background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>Retour aux situations</button>
+            <button onClick={()=>{setSeen(new Set());setCurId(SITUATIONS_DATA[0].id);setSelPalier(1);setView("situation");}} style={{flex:1,background:"rgba(255,255,255,.15)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>🔁 {t("Rejouer","Play again")}</button>
+            <button onClick={()=>setView("paliers")} style={{flex:1,background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>{t("Retour aux situations","Back to scenarios")}</button>
           </div>
         </div>
         {NAV}
@@ -4125,18 +4118,18 @@ function Situations({lang,onBack,navActive,onNav}){
     const lvMeta=SITUATIONS_LEVELS[selPalier-1];
     const list=situationsOf(selPalier);
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
         <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
-          <button onClick={()=>setView("paliers")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← Retour</button>
+          <button onClick={()=>setView("paliers")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:22}}>{lvMeta.emoji}</div>
-          <div className="T" style={{fontSize:19,fontWeight:900,color:"white",marginTop:4}}>{lvMeta.title}</div>
-          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:600,marginTop:3}}>{list.length} situations</div>
+          <div className="T" style={{fontSize:19,fontWeight:900,color:"white",marginTop:4}}>{L(lvMeta.title)}</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:600,marginTop:3}}>{list.length} {t("situations","scenarios")}</div>
         </div>
         <div style={{flex:1,padding:"14px 14px 24px",display:"flex",flexDirection:"column",gap:9}}>
           {list.map((s,i)=>(
             <button key={s.id} onClick={()=>openSituation(s.id)} style={{textAlign:"left",background:"white",borderRadius:16,padding:"13px 14px",display:"flex",alignItems:"center",gap:12,border:`1.5px solid ${lvMeta.color}22`,boxShadow:`0 2px 10px ${lvMeta.color}12`,cursor:"pointer"}}>
               <div style={{width:36,height:36,borderRadius:11,background:`${lvMeta.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:900,color:lvMeta.color,flexShrink:0}}>{i+1}</div>
-              <div style={{flex:1,fontSize:13.5,fontWeight:700,color:P.text}}>{s.title}</div>
+              <div style={{flex:1,fontSize:13.5,fontWeight:700,color:P.text}}>{L(s.title)}</div>
               {seen.has(s.id)&&<span style={{fontSize:15}}>✅</span>}
               <span style={{fontSize:18,color:lvMeta.color,fontWeight:900}}>›</span>
             </button>
@@ -4148,12 +4141,12 @@ function Situations({lang,onBack,navActive,onNav}){
   }
 
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       <div style={{background:HERO,padding:"50px 20px 24px",borderRadius:"0 0 32px 32px"}}>
-        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← Retour</button>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
         <div className="T" style={{fontSize:24,fontWeight:900,color:"white",marginBottom:6}}>🤔 Situations</div>
-        <div style={{fontSize:14,color:"rgba(255,255,255,.82)",fontWeight:600}}>Et toi, tu ferais quoi ?</div>
-        <p style={{fontSize:12.5,color:"rgba(255,255,255,.7)",marginTop:6,lineHeight:1.5}}>Découvre des situations de la vraie vie et choisis comment tu réagirais.</p>
+        <div style={{fontSize:14,color:"rgba(255,255,255,.82)",fontWeight:600}}>{t("Et toi, tu ferais quoi ?","What would you do?")}</div>
+        <p style={{fontSize:12.5,color:"rgba(255,255,255,.7)",marginTop:6,lineHeight:1.5}}>{t("Découvre des situations de la vraie vie et choisis comment tu réagirais.","Discover real-life scenarios and choose how you'd react.")}</p>
       </div>
       <div style={{flex:1,padding:"16px 14px 24px",display:"flex",flexDirection:"column",gap:11}}>
         {SITUATIONS_LEVELS.map(lv=>{
@@ -4163,9 +4156,9 @@ function Situations({lang,onBack,navActive,onNav}){
             <button key={lv.level} onClick={()=>openPalier(lv.level)} style={{textAlign:"left",background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,border:`1.5px solid ${lv.color}22`,boxShadow:`0 2px 12px ${lv.color}14`,cursor:"pointer"}}>
               <div style={{width:52,height:52,borderRadius:16,background:`${lv.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{lv.emoji}</div>
               <div style={{flex:1}}>
-                <div style={{fontSize:11,fontWeight:900,color:lv.color,textTransform:"uppercase",letterSpacing:.5,marginBottom:2}}>Palier {lv.level}</div>
-                <div className="T" style={{fontSize:15.5,fontWeight:800,color:P.text,marginBottom:3}}>{lv.title}</div>
-                <div style={{fontSize:11.5,color:P.muted,fontWeight:600}}>{lv.desc} · {list.length} situations{doneCount>0?` · ${doneCount} vues`:""}</div>
+                <div style={{fontSize:11,fontWeight:900,color:lv.color,textTransform:"uppercase",letterSpacing:.5,marginBottom:2}}>{t("Palier","Level")} {lv.level}</div>
+                <div className="T" style={{fontSize:15.5,fontWeight:800,color:P.text,marginBottom:3}}>{L(lv.title)}</div>
+                <div style={{fontSize:11.5,color:P.muted,fontWeight:600}}>{L(lv.desc)} · {list.length} {t("situations","scenarios")}{doneCount>0?` · ${doneCount} ${t("vues","viewed")}`:""}</div>
               </div>
               <span style={{fontSize:20,color:lv.color,fontWeight:900}}>›</span>
             </button>
@@ -4176,8 +4169,6 @@ function Situations({lang,onBack,navActive,onNav}){
     </div>
   );
 }
-
-
 
 // ── PROFIL DIGNITÉ ──────────────────────────────────────────────
 
@@ -5063,8 +5054,8 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
   const quickItems=[
     {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),color:"#4FB3F6",action:onGames},
     {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),color:"#E8003D",action:onDroits},
-    {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🤔",label:t("Situations","Situations"),color:"#14B8A6",action:onSituations},
+    {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
     {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
     {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
@@ -5099,7 +5090,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("7 thèmes · 3 niveaux · bilingue","7 themes · 3 levels · bilingual")}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("5 thèmes · 3 niveaux · bilingue","5 themes · 3 levels · bilingual")}</div>
           </div>
           <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
         </button>
@@ -5238,13 +5229,31 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
 
 export default function App(){
   const[screen,setScreen]=useState("boot");
-  const[showSplash,setShowSplash]=useState(true);
 
-  // Masque le pré-splash CSS dès que React monte
+  // Fait fondre le logo plein page (pre-splash CSS) une fois l'app prête —
+  // un seul écran de démarrage, pas de relais vers un second composant.
+  const splashStartRef=useRef(Date.now());
   useEffect(()=>{
-    const el=document.getElementById("pre-splash");
-    if(el)el.style.display="none";
-  },[]);
+    const MIN_SHOW=900;   // durée minimale visible : 900ms
+    const FADE_DUR=400;   // durée du fondu : 400ms
+    const MAX_TOTAL=1800; // jamais plus de 1.8s au total
+    const isReady=screen!=="boot";
+    const finish=()=>{
+      const el=document.getElementById("pre-splash");
+      if(el){
+        el.classList.add("pre-splash-fading");
+        setTimeout(()=>{el.style.display="none";},FADE_DUR);
+      }
+    };
+    if(isReady){
+      const elapsed=Date.now()-splashStartRef.current;
+      const wait=Math.max(0,MIN_SHOW-elapsed);
+      const t=setTimeout(finish,wait);
+      return()=>clearTimeout(t);
+    }
+    const hardStop=setTimeout(finish,MAX_TOTAL);
+    return()=>clearTimeout(hardStop);
+  },[screen]);
   const[user,setUser]=useState({name:"",country:""});
   const[profile,setProfile]=useState(null);
   const[category,setCategory]=useState(null);
@@ -5316,7 +5325,7 @@ export default function App(){
   function submitOnboarding(name,country){
     const u={name:name.trim(),country:country.trim()};
     setUser(u);Store.save("qd-user",u);persist(0,[],0,{});
-    ga("onboarding",{name:u.name,country:u.country});SND.play("start");
+    ga("onboarding",{country:u.country});SND.play("start");
     scheduleDefiNotif();setScreen("hub");
   }
 
@@ -5571,13 +5580,9 @@ export default function App(){
   return(
     <div>
       <style>{STYLE}</style>
-      {showSplash?(
-        <SplashScreen onDone={()=>setShowSplash(false)} isReady={screen!=="boot"}/>
-      ):(
-        <>
-          <div className="BG"/>
-          <FloatingBg/>
-          <div className="SH">
+      <div className="BG"/>
+      <FloatingBg/>
+      <div className="SH">
 
         {screen==="boot"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}><div style={{fontSize:64}} className="pulse">🌸</div></div>}
 
@@ -5768,7 +5773,6 @@ export default function App(){
             {[
               {n:"1308",l:lang==="en"?"SOS Violence — free, 24/7":"SOS Violences — gratuit, 24h/24",i:"🆘"},
               {n:"116",l:lang==="en"?"Allô Enfant — Child Protection":"Allô Enfant en Danger",i:"👶"},
-              {n:"115",l:lang==="en"?"Gendarmerie Nationale":"Gendarmerie Nationale",i:"🪖"},
             ].map(n=>(
               <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:16,padding:"13px 16px",marginBottom:8,display:"flex",alignItems:"center",gap:12,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left",boxShadow:"0 4px 16px rgba(232,0,61,.2)"}}>
                 <span style={{fontSize:"1.4rem"}} role="img" aria-label={n.l}>{n.i}</span>
@@ -5819,7 +5823,7 @@ export default function App(){
               {org:"OMS / WHO",desc:lang==="en"?"World Health Organization — menstrual health, sexual and reproductive health":"Organisation Mondiale de la Santé — santé menstruelle, santé sexuelle et reproductive",url:"https://www.who.int"},
               {org:"UNICEF",desc:lang==="en"?"Children's rights, girls' education, child protection":"Droits de l'enfant, éducation des filles, protection de l'enfance",url:"https://www.unicef.org"},
               {org:"UNFPA",desc:lang==="en"?"United Nations Population Fund — reproductive rights, gender-based violence":"Fonds des Nations Unies pour la Population — droits reproductifs, violences basées sur le genre",url:"https://www.unfpa.org"},
-              {org:"Protocole de Maputo (2003)",desc:lang==="en"?"African Union — Protocol on the Rights of Women in Africa":"Union africaine — Protocole sur les droits des femmes en Afrique",url:"https://au.int"},
+              {org:"Protocole de Maputo (2003)",desc:lang==="en"?"African Union — Protocol on the Rights of Women in Africa":"Union africaine — Protocole sur les droits des femmes en Afrique",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"},
               {org:"ONU Femmes",desc:lang==="en"?"United Nations Entity for Gender Equality and Women's Empowerment":"Entité des Nations Unies pour l'égalité des sexes",url:"https://www.unwomen.org"},
               {org:"ONUSIDA",desc:lang==="en"?"Joint United Nations Programme on HIV/AIDS — sexual health":"Programme commun des Nations Unies sur le VIH/SIDA",url:"https://www.unaids.org"},
             ].map((s,i)=>(
@@ -5827,6 +5831,24 @@ export default function App(){
                 <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
                 <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
                 <a href={s.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:P.red,fontWeight:700,textDecoration:"none"}}>{s.url} ↗</a>
+              </div>
+            ))}
+
+            {/* Références précises par sujet */}
+            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"20px 0 8px"}}>🎯 {lang==="en"?"Precise references by topic":"Références précises par sujet"}</div>
+            {[
+              {topic:lang==="en"?"Menstrual cycle":"Cycle menstruel",org:"OMS / WHO",desc:lang==="en"?"Menstrual health — official fact sheet":"Santé menstruelle — fiche officielle",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"},
+              {topic:lang==="en"?"Menstrual pain":"Douleurs menstruelles",org:"ACOG",desc:lang==="en"?"American College of Obstetricians and Gynecologists — dysmenorrhea":"American College of Obstetricians and Gynecologists — dysménorrhée",url:"https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods"},
+              {topic:lang==="en"?"Consent":"Consentement",org:"UNFPA",desc:lang==="en"?"Human rights — reproductive rights and free consent":"Droits humains — droits reproductifs et consentement libre",url:"https://www.unfpa.org/human-rights"},
+              {topic:lang==="en"?"Violence":"Violences",org:"UNFPA",desc:lang==="en"?"Gender-based violence — dedicated resource":"Violences basées sur le genre — ressource dédiée",url:"https://www.unfpa.org/gender-based-violence"},
+              {topic:"Protocole de Maputo",org:"Union africaine",desc:lang==="en"?"Official treaty text":"Texte officiel du traité",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"},
+              {topic:"Contraception",org:"OMS / WHO",desc:lang==="en"?"Family planning / contraception methods — updated fact sheet":"Planification familiale / méthodes contraceptives — fiche mise à jour",url:"https://www.who.int/news-room/fact-sheets/detail/family-planning-contraception"},
+            ].map((s,i)=>(
+              <div key={i} style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
+                <div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.5,marginBottom:3}}>{s.topic}</div>
+                <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
+                <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
+                <a href={s.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:P.red,fontWeight:700,textDecoration:"none",wordBreak:"break-all"}}>{s.url} ↗</a>
               </div>
             ))}
             <div style={{background:"rgba(232,0,61,.05)",borderRadius:16,padding:"14px",marginTop:8}}>
@@ -5849,8 +5871,6 @@ export default function App(){
             </button>
           ))}
         </nav>
-      )}
-        </>
       )}
     </div>
   );
