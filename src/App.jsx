@@ -1761,6 +1761,25 @@ function FloatingBg(){
   return(<div className="FL">{el.map(e=><span key={e.id} className="fl" style={{left:`${e.left}%`,fontSize:e.sz,animationDuration:`${e.dur}s`,animationDelay:`${e.delay}s`}}>{e.type}</span>)}</div>);
 }
 
+// ── CONTENEUR PARTAGÉ POUR LES ÉCRANS QUIZ / SITUATION / ÉNIGME ──
+// Corrige une fois pour toutes le défaut structurel : un petit bloc de contenu
+// collé en haut d'un écran 100vh, avec un grand vide avant la nav du bas.
+// `top` (barre retour/score/progression) reste ancré en haut, non centré.
+// `children` (la carte question/situation/énigme/feedback) occupe l'espace
+// disponible et s'y centre verticalement, sans jamais dépasser l'écran :
+// au-delà d'une certaine hauteur de contenu, le conteneur défile normalement
+// plutôt que de forcer un centrage qui pousserait le haut hors champ.
+function ScreenFill({top,children,navSpace=88,padding}){
+  return(
+    <div style={{minHeight:"100vh",boxSizing:"border-box",display:"flex",flexDirection:"column",padding:padding??`14px 16px ${navSpace}px`}}>
+      {top}
+      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function GHdr({title,onBack,score,prog=0,lang}){
   return(
     <div style={{marginBottom:10}}>
@@ -2309,7 +2328,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
     }
     return ql;
   });
-  const[qi,setQi]=useState(0);const[sel,setSel]=useState(null);const[showFb,setShowFb]=useState(false);const[timerV,setTimerV]=useState(15);const[dispScore,setDispScore]=useState(0);const[showDA,setShowDA]=useState(false);
+  const[qi,setQi]=useState(0);const[sel,setSel]=useState(null);const[showFb,setShowFb]=useState(false);const[timerV,setTimerV]=useState(15);const[dispScore,setDispScore]=useState(0);const[showDA,setShowDA]=useState(false);const[showGloss,setShowGloss]=useState(false);
   const q=qs[qi];const L=["A","B","C","D"];
   useEffect(()=>{
     if(showFb||sel!==null||category==="defi")return;
@@ -2328,7 +2347,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   const tClr=timerV>7?"linear-gradient(90deg,#FF9A9E,#FF6B9D)":"linear-gradient(90deg,#E8003D,#FF5555)";
   const catLabel=lang==="en"?{qcm:"Multiple Choice",vf:"True or False",mr:"Myth or Reality",defi:"Daily Challenge",urgence:"Emergency",violence:"Violence & Safety",ca_1:"Learn & Understand — L1",ca_2:"Learn & Understand — L2",ca_3:"Learn & Understand — L3",qsj:"Who Am I?"}:{qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
   return(
-    <div style={{padding:"14px 16px 36px"}}>
+    <ScreenFill top={
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
         <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -2336,6 +2355,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
           <div style={{background:G,color:"white",borderRadius:12,padding:"5px 14px",fontSize:13,fontWeight:800}}>⭐ {dispScore}</div>
         </div>
       </div>
+    }>
       {category==="defi"?(
         <div>
           <div style={{fontSize:".7rem",textTransform:"uppercase",letterSpacing:2,color:P.muted,marginBottom:11,fontWeight:700}}>Défi {qi+1}/{qs.length}</div>
@@ -2380,10 +2400,14 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
                   </div>
                   <SpeechBtn text={q.ex} lang={lang} style={{marginTop:1,flexShrink:0}}/>
                 </div>
-                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:"1rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:6}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
+                {sel!==q.correct&&(
+                  <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${P.red}33`,color:P.red,borderRadius:50,padding:"9px 16px",fontSize:".82rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:8,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {lang==="en"?"Look it up in the glossary":"Consulter le glossaire"}</button>
+                )}
+                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:"1rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:8}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
               </div>
             )}
           </div>
+          {showGloss&&<GlossaryModal onClose={()=>setShowGloss(false)} lang={lang}/>}
           {showFb&&category==="violence"&&[1,5,8].includes(qi)&&(
             <div className="up" style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.18)",borderRadius:15,padding:13,textAlign:"center",marginTop:12}}>
               <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>💬 {lang==="en"?"Need help?":"Besoin d'aide ?"}</div>
@@ -2392,7 +2416,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
           )}
         </div>
       )}
-    </div>
+    </ScreenFill>
   );
 }
 
@@ -2714,6 +2738,20 @@ const SPECIAL_DEFIS_REACT={
   '7-31':{icon:"👩🏾‍🤝‍👩🏾",title:"Journée de la Femme Africaine",text:"Pense à une femme africaine qui t'a montré ce que la force veut dire. Écris son nom. Garde-le précieusement."},
   '11-20':{icon:"🧒🏾",title:"Journée Mondiale des Droits de l'Enfant",text:"Écris un droit que tu veux exercer pleinement cette année. Pas pour quelqu'un d'autre — pour toi."},
 };
+
+// Glossaire affiché en overlay par-dessus l'écran courant (quiz, etc.) — permet de
+// consulter un terme sans perdre sa progression, contrairement à une navigation
+// vers l'écran Glossaire à part entière.
+function GlossaryModal({onClose,lang}){
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(45,10,31,.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div style={{width:"100%",maxWidth:480,background:P.bg,borderRadius:"28px 28px 0 0",maxHeight:"88vh",overflowY:"auto"}}>
+        <div style={{width:40,height:4,background:"#E8003D33",borderRadius:99,margin:"14px auto 0"}}/>
+        <Glossaire onBack={onClose} lang={lang}/>
+      </div>
+    </div>
+  );
+}
 
 function DefiModal({onClose,lang}){
   const[done,setDone]=useState(()=>localStorage.getItem('hm_defi_last_done')===getTodayKeyR());
@@ -3085,9 +3123,9 @@ function HowItWorks({lang,onBack}){
 }
 
 function Glossaire({onBack,lang}){
-  const[search,setSearch]=useState("");const[open,setOpen]=useState(null);
+  const[open,setOpen]=useState(null);
   const data=lang==="en"?GLOSSAIRE_DATA_EN:GLOSSAIRE_DATA;
-  const cats=data.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
+  const cats=data;
   return(
     <div style={{padding:"16px 16px 88px"}}>
       <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
@@ -3096,8 +3134,6 @@ function Glossaire({onBack,lang}){
         <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
         <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"30 key terms to understand your body and your rights":"30 mots clés pour comprendre ton corps et tes droits"}</div>
       </div>
-      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={lang==="en"?"🔍 Search for a term...":"🔍 Rechercher un mot..."}
-        style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:14,padding:"12px 16px",fontSize:".9rem",outline:"none",marginBottom:14,boxSizing:"border-box",fontFamily:"'Nunito',sans-serif",color:P.text}}/>
       {cats.map((c,ci)=>(
         <div key={ci} style={{marginBottom:14}}>
           <div className="T" style={{fontSize:".78rem",fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>{c.cat}</div>
@@ -3119,7 +3155,6 @@ function Glossaire({onBack,lang}){
           })}
         </div>
       ))}
-      {cats.length===0&&<div style={{textAlign:"center",color:P.muted,fontSize:".88rem",marginTop:20}}>Aucun résultat pour "{search}"</div>}
     </div>
   );
 }
@@ -3533,6 +3568,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   const[showFb,setShowFb]=useState(false);
   const[score,setScore]=useState(0);
   const[done,setDone]=useState(false);
+  const[showGloss,setShowGloss]=useState(false);
 
   // Shuffle answers so correct is not always B
   const[qs]=useState(()=>{
@@ -3594,7 +3630,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   }
 
   return(
-    <div style={{paddingBottom:24}}>
+    <ScreenFill padding="0 0 24px" top={
       <div style={{background:`linear-gradient(135deg,${module.color},${module.color}99)`,padding:"48px 16px 16px"}}>
         <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:12}}>← {t("Retour","Back")}</button>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
@@ -3604,6 +3640,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
           <span style={{fontSize:12,color:"white",fontWeight:800}}>{qi+1}/{qs.length}</span>
         </div>
       </div>
+    }>
       <div style={{padding:"14px 14px 0"}}>
         <div style={{background:P.card,borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
           <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:16}}>{q.q}</div>
@@ -3630,14 +3667,18 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
                   <div style={{fontSize:13,color:P.muted,lineHeight:1.55}}>{q.ex}</div>
                 </div>
               </div>
-              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"12px",fontSize:14,fontWeight:800,cursor:"pointer",width:"100%",marginTop:12}}>
+              {sel!==q.correct&&(
+                <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${module.color}55`,color:module.color,borderRadius:50,padding:"9px 16px",fontSize:".8rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:10,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {t("Consulter le glossaire","Look it up in the glossary")}</button>
+              )}
+              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"12px",fontSize:14,fontWeight:800,cursor:"pointer",width:"100%",marginTop:8}}>
                 {qi+1>=qs.length?t("Voir mes résultats 🏆","See results 🏆"):t("Question suivante →","Next question →")}
               </button>
             </div>
           )}
         </div>
       </div>
-    </div>
+      {showGloss&&<GlossaryModal onClose={()=>setShowGloss(false)} lang={lang}/>}
+    </ScreenFill>
   );
 }
 
@@ -4145,7 +4186,7 @@ function Situations({lang,onBack,navActive,onNav}){
           <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>{t("Palier","Level")} {cur.level} · {L(SITUATIONS_LEVELS[cur.level-1].title)}</div>
         </div>
-        <div style={{flex:1,padding:"16px 14px 24px"}}>
+        <div style={{flex:1,padding:"16px 14px 24px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
           <InteractiveSituation situation={cur} index={idxInLv} total={listLv.length} isLast={cur.id===30} onNext={handleNext} lang={lang}/>
         </div>
         {NAV}
@@ -4963,8 +5004,9 @@ function EscapeGame({lang,onBack}){
   );
 
   if(view==="intro")return(
-    <div style={{padding:"16px 16px 88px"}}>
+    <ScreenFill top={
       <button onClick={()=>setView("menu")} style={{background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:12,padding:"6px 14px",fontSize:13,color:"white",fontWeight:700,marginBottom:14}}>{lang==="en"?"← Menu":"← Menu"}</button>
+    }>
       <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"24px 18px",textAlign:"center",boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
         <div style={{fontSize:48,marginBottom:6}}>{lv.emoji}</div>
         <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:900,marginBottom:6}}>{lv.name}</div>
@@ -4972,13 +5014,13 @@ function EscapeGame({lang,onBack}){
         <button onClick={beginRiddles} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>🚀 {lang==="en"?"Start":"Commencer"}</button>
         <button onClick={()=>setView("menu")} style={{background:"transparent",color:"rgba(255,210,220,.7)",border:"1px solid rgba(255,210,220,.3)",borderRadius:50,padding:"9px 18px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
       </div>
-    </div>
+    </ScreenFill>
   );
 
   if(view==="riddle"){
     const r=lv.riddles[step];
     return(
-      <div style={{padding:"16px 16px 88px"}}>
+      <ScreenFill top={
         <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap",justifyContent:"center"}}>
           {lv.riddles.map((_,i)=>(
             <div key={i} style={{width:28,height:28,borderRadius:8,border:"2px solid rgba(255,255,255,.25)",background:i<letters.length?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,color:"white"}}>
@@ -4986,6 +5028,7 @@ function EscapeGame({lang,onBack}){
             </div>
           ))}
         </div>
+      }>
         <div style={{background:"rgba(255,255,255,.96)",backdropFilter:"blur(14px)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
           <div style={{fontSize:".68rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{r.tag}</div>
           <p style={{fontSize:".95rem",fontWeight:700,color:P.text,lineHeight:1.5,marginBottom:16}}>{r.q}</p>
@@ -5002,14 +5045,14 @@ function EscapeGame({lang,onBack}){
           </div>
           {showFb&&<div style={{marginTop:12,padding:"10px 12px",background:"rgba(232,0,61,.06)",borderLeft:`3px solid ${P.red}`,borderRadius:8,fontSize:".78rem",color:P.muted,lineHeight:1.55}}>{r.fb}</div>}
         </div>
-      </div>
+      </ScreenFill>
     );
   }
 
   if(view==="scramble"){
     return(
-      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
-        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
+      <ScreenFill padding="16px 16px 88px">
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)",textAlign:"center"}}>
           <div className="T" style={{fontSize:"1.1rem",fontWeight:900,color:P.red,marginBottom:4}}>{lang==="en"?"Rearrange the letters":"Réorganise les lettres"}</div>
           <p style={{fontSize:".78rem",color:P.muted,marginBottom:14,lineHeight:1.5}}>{lang==="en"?`You collected ${letters.length} letters — in scrambled order. Put them in the right order to reveal the keyword.`:`Tu as recueilli ${letters.length} lettres dans le désordre. Remets-les dans le bon ordre pour révéler le mot-clé.`}</p>
           <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:12,minHeight:46,flexWrap:"wrap"}}>
@@ -5029,7 +5072,7 @@ function EscapeGame({lang,onBack}){
           <button onClick={()=>{setScramble(scramble.map(s=>({...s,used:false})));setAnswer([]);}} style={{background:"transparent",border:"none",color:P.muted,fontSize:".75rem",textDecoration:"underline",cursor:"pointer",marginBottom:10}}>{lang==="en"?"Clear and try again":"Effacer et recommencer"}</button>
           <div style={{background:"rgba(232,0,61,.06)",borderRadius:10,padding:"9px 12px",fontSize:".75rem",color:P.muted,border:"1px dashed rgba(232,0,61,.2)"}}>💡 {lv.hint}</div>
         </div>
-      </div>
+      </ScreenFill>
     );
   }
 
@@ -5037,8 +5080,8 @@ function EscapeGame({lang,onBack}){
     const nextIdx=lvIdx+1;
     const hasNext=nextIdx<levels.length;
     return(
-      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
-        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"24px 18px",boxShadow:"0 8px 28px rgba(232,0,61,.15)"}}>
+      <ScreenFill padding="16px 16px 88px">
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"24px 18px",boxShadow:"0 8px 28px rgba(232,0,61,.15)",textAlign:"center"}}>
           <div style={{fontSize:56,marginBottom:8}}>🏆</div>
           <div className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.red,marginBottom:4}}>{lv.badge}</div>
           <div style={{fontSize:".82rem",color:P.muted,marginBottom:16}}>{lang==="en"?"Code unlocked:":"Code débloqué :"} <strong>{lv.display}</strong></div>
@@ -5047,7 +5090,7 @@ function EscapeGame({lang,onBack}){
           {hasNext&&<button onClick={()=>startLevel(nextIdx)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>▶️ {lang==="en"?"Next level":"Niveau suivant"}</button>}
           <button onClick={()=>setView("menu")} style={{width:"100%",background:"transparent",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"11px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
         </div>
-      </div>
+      </ScreenFill>
     );
   }
 
@@ -5181,9 +5224,9 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
         <div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.8,marginTop:6}}>{t("Pour aller plus loin","More to explore")}</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {quickItems.map((it,i)=>(
-            <button key={i} onClick={it.action} style={{background:P.card,border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
-              <div style={{width:40,height:40,borderRadius:12,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{it.icon}</div>
-              <div style={{fontSize:12,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
+            <button key={i} onClick={it.action} style={{background:P.card,border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"16px 14px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:10,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
+              <div style={{width:48,height:48,borderRadius:14,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>{it.icon}</div>
+              <div style={{fontSize:14.5,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
             </button>
           ))}
         </div>
