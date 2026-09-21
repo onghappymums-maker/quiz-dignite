@@ -165,6 +165,9 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
 }
 
 const HERO = "linear-gradient(155deg,#C8102E 0%,#E8426A 28%,#FF6B9D 62%,#FFD4E8 100%)";
+// Traitement plus sobre pour les sujets graves (consentement, violences) — pas de
+// dégradé pastel ludique en sortie, pour ne pas "mignoniser" des contenus sensibles.
+const HERO_GRAVE = "linear-gradient(155deg,#1A0A15 0%,#3A0313 55%,#5C1020 100%)";
 const ALPHA = "ABCDEFGHIJKLMNOPRSTUVWYZ";
 const FC = ["#3DBE82","#9B5DE5","#F59E0B","#14B8A6","#4FB3F6","#FF8C69","#C8102E","#FF6B9D"];
 
@@ -197,11 +200,11 @@ button{font-family:'Nunito',sans-serif;cursor:pointer;}
 
 /* ── DESKTOP LAYOUT ─────────────────────────────────── */
 @media(min-width:700px){
-  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;}
-  .desktop-shell{display:flex;align-items:flex-start;justify-content:center;width:100%;min-height:100vh;gap:0;}
-  .desktop-side{display:flex;flex-direction:column;justify-content:center;align-items:center;width:200px;min-height:100vh;padding:40px 20px;flex-shrink:0;}
-  .desktop-side-r{display:flex;flex-direction:column;justify-content:center;align-items:center;width:200px;min-height:100vh;padding:40px 20px;flex-shrink:0;}
-  .SH{box-shadow:0 0 60px rgba(0,0,0,.35);min-height:100vh;}
+  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;background:linear-gradient(160deg,#3A0313 0%,#1A0A15 100%) !important;}
+  .desktop-shell{display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;gap:0;}
+  .desktop-side{display:flex;flex-direction:column;justify-content:center;align-items:center;width:260px;min-height:100vh;padding:40px 24px;flex-shrink:0;text-align:center;}
+  .desktop-side-r{display:flex;flex-direction:column;justify-content:center;align-items:center;width:260px;min-height:100vh;padding:40px 24px;flex-shrink:0;text-align:center;}
+  .SH{box-shadow:0 0 0 10px #1a1a1a,0 0 0 13px #3a3a3a,0 30px 90px rgba(0,0,0,.55);min-height:700px;max-height:900px;height:92vh;border-radius:38px !important;overflow-y:auto;overflow-x:hidden;}
   .BG{display:none;}
 }
 @media(max-width:699px){
@@ -2808,7 +2811,10 @@ function WelcomeScreen({onStart,lang,setLang}){
           <AKissi state="salut" lang={lang} size={100} msg={lang==="en"?"Hi! I'm A-Kissi 🌸":"Salut ! Je suis A-Kissi 🌸"}/>
         </div>
         <div className="T" style={{fontSize:"3.4rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:10}}>Quiz Dignité</div>
-        <div style={{fontSize:".8rem",fontWeight:800,letterSpacing:"2.5px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:32}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
+        <div style={{fontSize:".8rem",fontWeight:800,letterSpacing:"2.5px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:14}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
+        <div style={{display:"inline-block",background:"rgba(232,0,61,.09)",border:"1px solid rgba(232,0,61,.18)",borderRadius:20,padding:"5px 14px",fontSize:11.5,fontWeight:700,color:P.red,marginBottom:18}}>
+          {t("👨‍👩‍👧 Dès 12 ans · avec un adulte pour les plus jeunes","👨‍👩‍👧 Ages 12+ · with an adult for younger kids")}
+        </div>
         <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"22px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:32}}>
           <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:"0 0 10px"}}>
             {t(<><strong>Apprends les règles sans tabou, sans honte, avec confiance.</strong></>,<><strong>Learn about periods — no taboo, no shame, just confidence.</strong></>)}
@@ -3043,6 +3049,40 @@ const GLOSSAIRE_DATA=[
     {w:"Périnée",d:"Ensemble des muscles qui soutiennent les organes pelviens (utérus, vessie, rectum). Le renforcement du périnée aide à prévenir les fuites urinaires."},
   ]},
 ];
+
+// ── COMMENT ÇA MARCHE ────────────────────────────────────────────
+function HowItWorks({lang,onBack}){
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const items=[
+    {icon:"🌱",title:t("Thèmes","Themes"),text:t("5 catégories pour apprendre les bases : Mon corps, Mes règles, Mythes & vérités, Dignité & confiance, Droits & dignité.","5 categories to learn the basics: My body, My period, Myths & truths, Dignity & confidence, Rights & dignity.")},
+    {icon:"🥇",title:t("Niveaux","Levels"),text:t("Dans chaque thème, 3 niveaux de quiz (10 questions chacun). Un score d'au moins 8/10 débloque le niveau suivant.","In each theme, 3 quiz levels (10 questions each). A score of at least 8/10 unlocks the next level.")},
+    {icon:"⭐",title:t("Points","Points"),text:t("Chaque bonne réponse aux quiz rapporte des points. Ils font monter ton niveau de progression global, affiché en haut de l'accueil.","Each correct quiz answer earns points. They raise your overall progress level, shown at the top of the home screen.")},
+    {icon:"🏅",title:t("Badges","Badges"),text:t("Des récompenses que tu débloques en terminant un module (quiz, Escape Game, Profil Dignité...). Ils sont visibles dans Progrès.","Rewards you unlock by finishing a module (quiz, Escape Game, Dignity Profile...). You can see them under Progress.")},
+    {icon:"🧭",title:t("Paliers de Situations","Situation tiers"),text:t("5 groupes de 6 situations réelles à vivre. Indépendants des thèmes et des niveaux : pas de score, juste pour t'entraîner à réagir.","5 groups of 6 real-life scenarios. Separate from themes and levels: no score, just practice reacting to real situations.")},
+    {icon:"✨",title:t("Profil Dignité","Dignity Profile"),text:t("Un test à part (6 questions rapides) qui te révèle ta facette dominante (Découvreuse, Battante, Leader...). Tu peux le refaire à volonté.","A separate test (6 quick questions) revealing your dominant trait (Explorer, Fighter, Leader...). You can retake it anytime.")},
+    {icon:"🔁",title:t("Peut-on rejouer ?","Can I replay?"),text:t("Oui, à tout moment — les quiz, les situations et le test de profil peuvent être refaits sans perdre ta progression déjà acquise.","Yes, anytime — quizzes, situations, and the profile test can all be redone without losing progress you've already earned.")},
+  ];
+  return(
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
+      <div style={{background:HERO,padding:"50px 20px 24px",borderRadius:"0 0 32px 32px"}}>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
+        <div className="T" style={{fontSize:24,fontWeight:900,color:"white",marginBottom:6}}>🧩 {t("Comment ça marche ?","How it works")}</div>
+        <p style={{fontSize:13,color:"rgba(255,255,255,.82)",fontWeight:600}}>{t("Thèmes, niveaux, points, paliers, badges, profil… un petit guide pour s'y retrouver.","Themes, levels, points, tiers, badges, profile… a quick guide to make sense of it all.")}</p>
+      </div>
+      <div style={{flex:1,padding:"16px 14px 32px",display:"flex",flexDirection:"column",gap:11}}>
+        {items.map((it,i)=>(
+          <div key={i} style={{background:P.card,borderRadius:18,padding:"14px 16px",display:"flex",gap:12,border:"1.5px solid rgba(232,0,61,.08)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+            <div style={{fontSize:24,flexShrink:0}}>{it.icon}</div>
+            <div>
+              <div className="T" style={{fontSize:14.5,fontWeight:800,color:P.text,marginBottom:3}}>{it.title}</div>
+              <div style={{fontSize:12.5,color:P.muted,lineHeight:1.55,fontWeight:600}}>{it.text}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Glossaire({onBack,lang}){
   const[search,setSearch]=useState("");const[open,setOpen]=useState(null);
@@ -3670,8 +3710,8 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
 const SITUATIONS_LEVELS=[
   {level:1,emoji:"🌸",color:P.rose,title:{fr:"Je découvre mon corps",en:"Discovering my body"},desc:{fr:"Corps, règles et hygiène",en:"Body, periods, and hygiene"}},
   {level:2,emoji:"📅",color:P.blue,title:{fr:"Je comprends mon cycle",en:"Understanding my cycle"},desc:{fr:"Cycle, douleurs et quotidien",en:"Cycle, pain, and daily life"}},
-  {level:3,emoji:"🧭",color:P.purple,title:{fr:"Je connais mes limites",en:"Knowing my limits"},desc:{fr:"Consentement et respect",en:"Consent and respect"}},
-  {level:4,emoji:"🛡️",color:P.red,title:{fr:"Je me protège et je protège les autres",en:"Protecting myself and others"},desc:{fr:"Violences et recherche d'aide",en:"Abuse and seeking help"}},
+  {level:3,emoji:"🧭",color:P.purple,title:{fr:"Je connais mes limites",en:"Knowing my limits"},desc:{fr:"Consentement et respect",en:"Consent and respect"},grave:true},
+  {level:4,emoji:"🛡️",color:P.red,title:{fr:"Je me protège et je protège les autres",en:"Protecting myself and others"},desc:{fr:"Violences et recherche d'aide",en:"Abuse and seeking help"},grave:true},
   {level:5,emoji:"👑",color:P.amber,title:{fr:"Dignité, droits & leadership",en:"Dignity, rights & leadership"},desc:{fr:"Droits, solidarité et leadership",en:"Rights, solidarity, and leadership"}},
 ];
 
@@ -3692,7 +3732,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Demander discrètement une protection et en parler à une personne de confiance si elle en a besoin.",en:"Quietly ask for a period product, and talk to a trusted person if she needs to."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Avoir ses premières règles peut susciter des questions ou de l'inquiétude. Demander de l'aide est normal. Une personne de confiance peut l'aider à trouver une protection et à se sentir plus à l'aise.",en:"Good move 💗 Having your first period can raise questions or worries. Asking for help is completely normal. A trusted person can help her find protection and feel more comfortable."}},
      {id:"C",text:{fr:"Ne plus retourner en classe pendant ses règles.",en:"Stop going to class while she has her period."},feedbackType:"risky",feedback:{fr:"À éviter. Manquer les cours à cause de ses règles n'est pas nécessaire quand on a la bonne protection et du soutien.",en:"Better avoided. Missing class because of your period isn't necessary when you have the right protection and support."}},
    ],
-   takeaway:{fr:"Les premières règles sont une étape naturelle de la puberté. Tu peux poser des questions et demander de l'aide.",en:"Your first period is a natural stage of puberty. You can ask questions and ask for help."},source:null},
+   takeaway:{fr:"Les premières règles sont une étape naturelle de la puberté. Tu peux poser des questions et demander de l'aide.",en:"Your first period is a natural stage of puberty. You can ask questions and ask for help."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:2,level:1,
    title:{fr:"Comprendre mes règles",en:"Understanding my period"},
@@ -3703,7 +3743,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Certaines croyances sur les règles sont très répandues sans être exactes. Pour les questions concernant ton corps, il est préférable de vérifier auprès d'une source fiable ou d'un professionnel compétent.",en:"Good move. Some beliefs about periods are widespread without being accurate. For questions about your body, it's best to check with a reliable source or a qualified professional."}},
      {id:"C",text:{fr:"La partager à ses amies pour savoir ce qu'elles en pensent.",en:"Share it with her friends to see what they think."},feedbackType:"acceptable",feedback:{fr:"En parler entre amies peut aider, mais leurs réponses ne remplacent pas une information vérifiée.",en:"Talking about it with friends can help, but their answers don't replace verified information."}},
    ],
-   takeaway:{fr:"Une information souvent répétée n'est pas forcément vraie.",en:"Information that's often repeated isn't necessarily true."},source:null},
+   takeaway:{fr:"Une information souvent répétée n'est pas forcément vraie.",en:"Information that's often repeated isn't necessarily true."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:3,level:1,
    title:{fr:"Choisir une protection",en:"Choosing a period product"},
@@ -3714,7 +3754,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Choisir une protection adaptée à ses besoins, à son confort et à ce qui lui est accessible.",en:"Choose a product suited to her needs, her comfort, and what's accessible to her."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Il existe plusieurs types de protections menstruelles. Le choix peut dépendre des préférences personnelles, du confort, de l'accessibilité et de la situation de chacune.",en:"Good move. There are several types of menstrual products. The choice can depend on personal preference, comfort, accessibility, and each person's situation."}},
      {id:"C",text:{fr:"Ne rien utiliser puisqu'elle ne sait pas laquelle choisir.",en:"Use nothing since she doesn't know which one to choose."},feedbackType:"risky",feedback:{fr:"Ne pas se protéger peut être inconfortable et stressant. Il vaut mieux essayer une protection, même simple, en attendant de trouver la bonne.",en:"Not using any protection can be uncomfortable and stressful. It's better to try a product, even a simple one, while looking for the right fit."}},
    ],
-   takeaway:{fr:"Il n'existe pas une seule protection adaptée à toutes les personnes.",en:"There is no single product that suits everyone."},source:null},
+   takeaway:{fr:"Il n'existe pas une seule protection adaptée à toutes les personnes.",en:"There is no single product that suits everyone."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:4,level:1,
    title:{fr:"La tache sur ma jupe",en:"The stain on my skirt"},
@@ -3736,7 +3776,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une information sur la santé mérite toujours d'être vérifiée avant d'être suivie.",en:"Good move 💗 Health information always deserves to be checked before you follow it."}},
      {id:"C",text:{fr:"Dire à toutes ses amies de faire la même chose.",en:"Tell all her friends to do the same."},feedbackType:"risky",feedback:{fr:"Propager une information non vérifiée peut faire circuler une fausse idée à beaucoup de monde.",en:"Spreading unverified information can pass a false idea on to many people."}},
    ],
-   takeaway:{fr:"Les règles ne rendent pas le corps sale. Une bonne hygiène menstruelle contribue au confort et au bien-être.",en:"Periods don't make the body dirty. Good menstrual hygiene contributes to comfort and wellbeing."},source:null},
+   takeaway:{fr:"Les règles ne rendent pas le corps sale. Une bonne hygiène menstruelle contribue au confort et au bien-être.",en:"Periods don't make the body dirty. Good menstrual hygiene contributes to comfort and wellbeing."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:6,level:1,
    title:{fr:"Le mythe de mon quartier",en:"The myth from my neighborhood"},
@@ -3747,7 +3787,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Vérifier l'information et écouter également les besoins de son propre corps.",en:"Check the information and also listen to what her own body needs."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Ton corps et une information fiable sont de meilleurs guides que les croyances populaires.",en:"Good move 💗 Your body and reliable information are better guides than popular beliefs."}},
      {id:"C",text:{fr:"Dire que toutes les croyances sur les règles sont forcément fausses.",en:"Say that all beliefs about periods must be false."},feedbackType:"acceptable",feedback:{fr:"Rejeter en bloc toutes les croyances n'est pas non plus la solution. Mieux vaut vérifier chaque idée une par une.",en:"Rejecting every belief outright isn't the solution either. It's better to check each idea one by one."}},
    ],
-   takeaway:{fr:"Il est possible de respecter les habitudes de sa communauté tout en vérifiant les informations concernant sa santé.",en:"It's possible to respect your community's habits while still checking information about your health."},source:null},
+   takeaway:{fr:"Il est possible de respecter les habitudes de sa communauté tout en vérifiant les informations concernant sa santé.",en:"It's possible to respect your community's habits while still checking information about your health."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:7,level:2,
    title:{fr:"Mon cycle n'est pas toujours pareil",en:"My cycle isn't always the same"},
@@ -3758,7 +3798,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Observer son cycle et demander conseil si quelque chose l'inquiète.",en:"Track her cycle and ask for advice if something worries her."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Observer son cycle permet de mieux le comprendre, et demander conseil rassure en cas de doute.",en:"Good move 💗 Tracking your cycle helps you understand it better, and asking for advice is reassuring when in doubt."}},
      {id:"C",text:{fr:"Prendre un produit conseillé par une amie pour régulariser ses règles.",en:"Take a product recommended by a friend to regulate her period."},feedbackType:"risky",feedback:{fr:"Prendre un produit sans avis médical peut être risqué. Mieux vaut consulter un professionnel avant.",en:"Taking a product without medical advice can be risky. It's better to consult a professional first."}},
    ],
-   takeaway:{fr:"Les cycles peuvent varier. En cas d'inquiétude importante ou de symptômes inhabituels, demander conseil à un professionnel de santé est préférable.",en:"Cycles can vary. If you're seriously worried or notice unusual symptoms, it's best to ask a health professional for advice."},source:null},
+   takeaway:{fr:"Les cycles peuvent varier. En cas d'inquiétude importante ou de symptômes inhabituels, demander conseil à un professionnel de santé est préférable.",en:"Cycles can vary. If you're seriously worried or notice unusual symptoms, it's best to ask a health professional for advice."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:8,level:2,
    title:{fr:"Mes règles sont en retard",en:"My period is late"},
@@ -3769,7 +3809,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Chercher une information fiable et demander conseil si nécessaire.",en:"Look for reliable information and ask for advice if needed."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"Good move. A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."}},
      {id:"C",text:{fr:"Ignorer complètement la situation.",en:"Completely ignore the situation."},feedbackType:"acceptable",feedback:{fr:"Ignorer peut sembler simple, mais si le retard inquiète, il vaut mieux en parler à quelqu'un de confiance.",en:"Ignoring it might seem simple, but if the delay is worrying, it's better to talk to someone you trust."}},
    ],
-   takeaway:{fr:"Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."},source:null},
+   takeaway:{fr:"Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:9,level:2,
    title:{fr:"Des règles très douloureuses",en:"Very painful periods"},
@@ -3780,7 +3820,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"En parler à une personne de confiance et, si nécessaire, consulter un professionnel de santé.",en:"Talk to a trusted person and, if needed, see a health professional."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Good move. Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."}},
      {id:"C",text:{fr:"Prendre n'importe quel médicament conseillé sur Internet.",en:"Take any medication recommended on the internet."},feedbackType:"risky",feedback:{fr:"L'automédication sans avis médical peut être dangereuse.",en:"Self-medicating without medical advice can be dangerous."}},
    ],
-   takeaway:{fr:"Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."},source:null},
+   takeaway:{fr:"Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."},source:{fr:"ACOG — Dysménorrhée",en:"ACOG — Dysmenorrhea",url:"https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods"}},
 
   {id:10,level:2,
    title:{fr:"Les règles et le sport",en:"Periods and sport"},
@@ -3824,7 +3864,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Refuser et chercher de l'aide si la pression continue.",en:"Refuse and seek help if the pressure continues."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"Good move 💗 No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."}},
      {id:"C",text:{fr:"Envoyer une photo de quelqu'un d'autre.",en:"Send a photo of someone else instead."},feedbackType:"risky",feedback:{fr:"Utiliser la photo d'une autre personne sans son accord lui ferait du tort à elle aussi.",en:"Using another person's photo without their consent would harm them too."}},
    ],
-   takeaway:{fr:"Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."},source:null},
+   takeaway:{fr:"Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."},source:{fr:"UNFPA — Droits reproductifs & consentement",en:"UNFPA — Reproductive rights & consent",url:"https://www.unfpa.org/human-rights"}},
 
   {id:14,level:3,
    title:{fr:"Mon corps, mes limites",en:"My body, my limits"},
@@ -3835,7 +3875,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Dire clairement qu'elle ne souhaite pas ce contact.",en:"Clearly say that she doesn't want this contact."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Tu as le droit de poser des limites concernant ton propre corps.",en:"Good move 💗 You have every right to set limits about your own body."}},
      {id:"C",text:{fr:"Accepter parce qu'elle connaît cette personne.",en:"Accept it because she knows this person."},feedbackType:"risky",feedback:{fr:"Connaître quelqu'un ne veut pas dire qu'on doit accepter tout ce qu'il ou elle propose.",en:"Knowing someone doesn't mean you have to accept everything they offer or ask."}},
    ],
-   takeaway:{fr:"Tu as le droit de poser des limites concernant ton propre corps.",en:"You have every right to set limits about your own body."},source:null},
+   takeaway:{fr:"Tu as le droit de poser des limites concernant ton propre corps.",en:"You have every right to set limits about your own body."},source:{fr:"UNFPA — Droits reproductifs & consentement",en:"UNFPA — Reproductive rights & consent",url:"https://www.unfpa.org/human-rights"}},
 
   {id:15,level:3,
    title:{fr:"La pression du groupe",en:"Peer pressure"},
@@ -3890,7 +3930,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Conserver les éléments utiles et en parler à une personne de confiance ou à un responsable.",en:"Keep evidence that could help and talk to a trusted person or someone in authority."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Face au harcèlement, demander de l'aide est important.",en:"Good move 💗 When facing bullying, asking for help matters."}},
      {id:"C",text:{fr:"Répondre avec les mêmes insultes.",en:"Respond with the same insults."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut aggraver le conflit au lieu de le résoudre.",en:"Responding with insults can worsen the conflict instead of resolving it."}},
    ],
-   takeaway:{fr:"Face au harcèlement, demander de l'aide est important.",en:"When facing bullying, asking for help matters."},source:null},
+   takeaway:{fr:"Face au harcèlement, demander de l'aide est important.",en:"When facing bullying, asking for help matters."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:20,level:4,
    title:{fr:"Une relation qui fait peur",en:"A frightening relationship"},
@@ -3901,7 +3941,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"En parler à une personne de confiance et chercher une aide adaptée.",en:"Talk to a trusted person and seek appropriate help."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Good move 💗 Threats and control can be signs of abuse. No one should have to live in fear."}},
      {id:"C",text:{fr:"Garder le silence pour protéger la relation.",en:"Stay silent to protect the relationship."},feedbackType:"risky",feedback:{fr:"Se taire pour protéger une relation qui fait peur peut aggraver la situation.",en:"Staying silent to protect a frightening relationship can make the situation worse."}},
    ],
-   takeaway:{fr:"Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Threats and control can be signs of abuse. No one should have to live in fear."},source:null},
+   takeaway:{fr:"Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Threats and control can be signs of abuse. No one should have to live in fear."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:21,level:4,
    title:{fr:"Une photo déjà envoyée",en:"A photo already sent"},
@@ -3912,7 +3952,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Ne pas céder à la pression et chercher rapidement l'aide d'un adulte de confiance ou d'un service compétent.",en:"Not give in to the pressure and quickly seek help from a trusted adult or a competent service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Good move 💗 Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."}},
      {id:"C",text:{fr:"Menacer de publier une photo de l'autre personne.",en:"Threaten to post a photo of the other person."},feedbackType:"risky",feedback:{fr:"Répondre par une autre menace ne résout rien et peut créer davantage de tort.",en:"Responding with another threat solves nothing and can cause more harm."}},
    ],
-   takeaway:{fr:"Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."},source:null},
+   takeaway:{fr:"Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:22,level:4,
    title:{fr:"Mon amie me parle d'une violence",en:"My friend tells me about abuse"},
@@ -3923,7 +3963,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"L'écouter, éviter de la culpabiliser et l'aider à trouver une personne compétente et de confiance.",en:"Listen to her, avoid making her feel guilty, and help her find a competent, trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Good move 💗 Listening without blaming and seeking appropriate help can be far more useful than acting alone."}},
      {id:"C",text:{fr:"Aller immédiatement confronter la personne accusée.",en:"Immediately go confront the accused person."},feedbackType:"risky",feedback:{fr:"Confronter seule une personne dangereuse peut être risqué. Mieux vaut chercher une aide compétente d'abord.",en:"Confronting a dangerous person alone can be risky. It's better to seek competent help first."}},
    ],
-   takeaway:{fr:"Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Listening without blaming and seeking appropriate help can be far more useful than acting alone."},source:null},
+   takeaway:{fr:"Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Listening without blaming and seeking appropriate help can be far more useful than acting alone."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:23,level:4,
    title:{fr:"« Pourquoi elle n'est pas partie ? »",en:"\"Why didn't she just leave?\""},
@@ -3934,7 +3974,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"« La personne victime n'est pas responsable de la violence qu'elle subit. »",en:"\"The victim is never responsible for the abuse she suffers.\""},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Good move 💗 Responsibility for abuse lies with the person who commits it, never with the victim."}},
      {id:"C",text:{fr:"« Il ne faut jamais parler de violence. »",en:"\"We should never talk about abuse.\""},feedbackType:"acceptable",feedback:{fr:"Éviter le sujet n'aide pas à faire changer les mentalités ni à protéger les victimes.",en:"Avoiding the subject doesn't help change attitudes or protect victims."}},
    ],
-   takeaway:{fr:"La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Responsibility for abuse lies with the person who commits it, never with the victim."},source:null},
+   takeaway:{fr:"La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Responsibility for abuse lies with the person who commits it, never with the victim."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:24,level:4,
    title:{fr:"Trouver la bonne aide",en:"Finding the right help"},
@@ -3945,7 +3985,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Identifier un adulte ou un service fiable pouvant l'aider.",en:"Identify a trusted adult or reliable service that can help."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"Good move 💗 You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."}},
      {id:"C",text:{fr:"Publier toute son histoire sur les réseaux sociaux.",en:"Post her entire story on social media."},feedbackType:"risky",feedback:{fr:"Publier publiquement peut exposer la personne à plus de danger ou de jugement, sans forcément l'aider concrètement.",en:"Posting publicly can expose the person to more danger or judgment, without necessarily helping her concretely."}},
    ],
-   takeaway:{fr:"Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."},source:null},
+   takeaway:{fr:"Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:25,level:5,
    title:{fr:"Le mariage de ma petite sœur",en:"My little sister's marriage"},
@@ -3956,7 +3996,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"L'écouter, prendre ses inquiétudes au sérieux et chercher l'aide d'une personne ou d'un service compétent.",en:"Listen to her, take her worries seriously, and seek help from a competent person or service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une situation de mariage concernant une mineure peut soulever des questions importantes de sécurité et de droits. Il est important de ne pas laisser la jeune fille seule et de chercher un accompagnement fiable.",en:"Good move 💗 A marriage involving a minor can raise serious safety and rights concerns. It's important not to leave the girl alone and to seek reliable support."}},
      {id:"C",text:{fr:"Publier immédiatement son histoire sur les réseaux sociaux.",en:"Immediately post her story on social media."},feedbackType:"risky",feedback:{fr:"Publier sans réfléchir pourrait mettre la jeune fille encore plus en danger.",en:"Posting without thinking could put the girl in even more danger."}},
    ],
-   takeaway:{fr:"Écouter une jeune fille et chercher une aide adaptée peut contribuer à sa protection.",en:"Listening to a girl and seeking appropriate help can contribute to her protection."},source:null},
+   takeaway:{fr:"Écouter une jeune fille et chercher une aide adaptée peut contribuer à sa protection.",en:"Listening to a girl and seeking appropriate help can contribute to her protection."},source:{fr:"Union africaine — Protocole de Maputo",en:"African Union — Maputo Protocol",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"}},
 
   {id:26,level:5,
    title:{fr:"Ma petite sœur me demande de garder un secret",en:"My little sister asks me to keep a secret"},
@@ -3967,7 +4007,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"L'écouter, la rassurer et chercher rapidement l'aide d'un adulte de confiance ou d'un service adapté.",en:"Listen to her, reassure her, and quickly seek help from a trusted adult or an appropriate service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Good move 💗 Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."}},
      {id:"C",text:{fr:"Aller seule confronter immédiatement l'adulte.",en:"Go confront the adult alone right away."},feedbackType:"risky",feedback:{fr:"Confronter seule un adulte peut être dangereux. Il vaut mieux passer par un adulte de confiance ou un service compétent.",en:"Confronting an adult alone can be dangerous. It's better to go through a trusted adult or a competent service."}},
    ],
-   takeaway:{fr:"Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."},source:null},
+   takeaway:{fr:"Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
 
   {id:27,level:5,
    title:{fr:"Défendre une camarade",en:"Standing up for a classmate"},
@@ -3989,7 +4029,7 @@ const SITUATIONS_DATA=[
      {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Le nombre de likes, de partages ou de commentaires ne garantit pas qu'une information est vraie. Lorsqu'une information concerne tes droits, ta santé ou une règle officielle, il est préférable de vérifier auprès d'une source fiable.",en:"Good move 💗 Likes, shares, or comments never guarantee that information is true. When information concerns your rights, your health, or an official rule, it's best to check with a reliable source."}},
      {id:"C",text:{fr:"Demander à une seule amie si elle pense que c'est vrai.",en:"Ask just one friend if she thinks it's true."},feedbackType:"acceptable",feedback:{fr:"L'avis d'une amie peut aider, mais il ne remplace pas une vérification auprès d'une source fiable.",en:"A friend's opinion can help, but it doesn't replace checking with a reliable source."}},
    ],
-   takeaway:{fr:"Une information populaire n'est pas forcément une information fiable. Vérifie avant de partager.",en:"Popular information isn't necessarily reliable information. Check before you share."},source:null},
+   takeaway:{fr:"Une information populaire n'est pas forcément une information fiable. Vérifie avant de partager.",en:"Popular information isn't necessarily reliable information. Check before you share."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
 
   {id:29,level:5,
    title:{fr:"Prendre la parole pour changer les choses",en:"Speaking up to change things"},
@@ -4044,6 +4084,9 @@ function InteractiveSituation({situation,index,total,onNext,isLast,lang}){
           <div style={{background:P.roseSoft,borderRadius:14,padding:"12px 14px",marginBottom:14}}>
             <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:5}}>✨ {lang==="en"?"Key takeaway":"À retenir"}</div>
             <div style={{fontSize:13.5,color:P.text,lineHeight:1.55,fontWeight:600}}>{L(situation.takeaway)}</div>
+            {situation.source&&(
+              <a href={situation.source.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:8,fontSize:11,color:P.red,fontWeight:700,textDecoration:"none"}}>📚 {L(situation.source)} ↗</a>
+            )}
           </div>
           <button onClick={()=>{setSel(null);onNext();}} style={{width:"100%",background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:900,fontSize:14.5,cursor:"pointer"}}>
             {isLast?(lang==="en"?"Finish →":"Terminer →"):(lang==="en"?"Continue →":"Continuer →")}
@@ -4095,9 +4138,10 @@ function Situations({lang,onBack,navActive,onNav}){
     const cur=SITUATIONS_DATA.find(s=>s.id===curId);
     const listLv=situationsOf(cur.level);
     const idxInLv=listLv.findIndex(s=>s.id===cur.id);
+    const isGrave=SITUATIONS_LEVELS[cur.level-1].grave;
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
-        <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}>{!isGrave&&<FloatingBg/>}
+        <div style={{background:isGrave?HERO_GRAVE:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
           <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>{t("Palier","Level")} {cur.level} · {L(SITUATIONS_LEVELS[cur.level-1].title)}</div>
         </div>
@@ -4129,9 +4173,10 @@ function Situations({lang,onBack,navActive,onNav}){
   if(view==="list"&&selPalier){
     const lvMeta=SITUATIONS_LEVELS[selPalier-1];
     const list=situationsOf(selPalier);
+    const isGrave=lvMeta.grave;
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
-        <div style={{background:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}>{!isGrave&&<FloatingBg/>}
+        <div style={{background:isGrave?HERO_GRAVE:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
           <button onClick={()=>setView("paliers")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:22}}>{lvMeta.emoji}</div>
           <div className="T" style={{fontSize:19,fontWeight:900,color:"white",marginTop:4}}>{L(lvMeta.title)}</div>
@@ -4585,6 +4630,7 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
           src={cardUrl}
           alt={profil.name}
           style={{width:"100%",display:"block",borderRadius:0}}
+          onError={e=>{e.target.style.display="none";}}
         />
 
         {/* A-Kissi en overlay bas droite */}
@@ -4725,6 +4771,7 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
       <Section title={lang==="en"?"App":"Application"}>
         <Row icon="📲" label={lang==="en"?"Download Android app":"Télécharger l'app Android"} right={<span style={{color:P.red,fontSize:18}}>↗</span>} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")} border/>
+        <Row icon="🧩" label={lang==="en"?"How it works":"Comment ça marche ?"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("how_it_works")} border/>
         <Row icon="📚" label={lang==="en"?"Sources & References":"Sources & Références"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("sources")} border/>
         <Row icon="ℹ️" label={lang==="en"?"About Quiz Dignité":"À propos de Quiz Dignité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("about")} border/>
         <Row icon="🔐" label={lang==="en"?"Privacy policy":"Politique de confidentialité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("privacy")} border/>
@@ -5024,13 +5071,14 @@ const THEMES_EN=[
 ];
 
 // ── EXPLORER ─────────────────────────────────────────────────────
-function Explorer({lang,onTheme,onNav,navActive}){
+function Explorer({lang,onTheme,onNav,navActive,onBack}){
   const themes=lang==="en"?THEMES_EN:THEMES_FR;
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",padding:"52px 20px 22px"}}>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
         <div className="T" style={{fontSize:26,fontWeight:900,color:"white",marginBottom:5}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</div>
         <p style={{fontSize:14,color:"rgba(255,255,255,.8)",fontWeight:600}}>{t("Choisis un thème pour commencer","Choose a theme to start")}</p>
       </div>
@@ -5069,7 +5117,6 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
     {icon:"🤔",label:t("Situations","Situations"),color:"#14B8A6",action:onSituations},
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
-    {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
     {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
   ];
   return(
@@ -5086,6 +5133,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
             </div>
           </div>
           <div style={{textAlign:"right"}}>
+            <button onClick={()=>onNav("how_it_works")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:"50%",width:26,height:26,color:"white",fontWeight:900,fontSize:13,cursor:"pointer",marginBottom:4}} aria-label={t("Comment ça marche ?","How it works")}>?</button>
             <div style={{fontSize:22,fontWeight:900,color:"white"}}>{totalPts}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,.7)",fontWeight:700}}>pts</div>
           </div>
@@ -5102,7 +5150,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("5 thèmes · 3 niveaux · bilingue","5 themes · 3 levels · bilingual")}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("5 thèmes · 3 niveaux · quiz interactifs","5 themes · 3 levels · interactive quizzes")}</div>
           </div>
           <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
         </button>
@@ -5123,7 +5171,14 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           </div>
           <span style={{fontSize:20,color:"#FF6B9D",fontWeight:900}}>›</span>
         </div>
+        {/* SOS — toujours accessible, jamais présenté comme une activité parmi d'autres */}
+        <button onClick={()=>onNav("sos")} style={{width:"100%",background:"rgba(231,76,60,.08)",border:"1.5px solid rgba(231,76,60,.25)",borderRadius:16,padding:"11px 14px",display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
+          <span style={{fontSize:18}}>🚨</span>
+          <span style={{flex:1,textAlign:"left",fontSize:13,fontWeight:800,color:"#E74C3C"}}>{t("Besoin d'aide maintenant ? SOS","Need help right now? SOS")}</span>
+          <span style={{fontSize:16,color:"#E74C3C",fontWeight:900}}>›</span>
+        </button>
         {/* Quick access grid */}
+        <div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.8,marginTop:6}}>{t("Pour aller plus loin","More to explore")}</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {quickItems.map((it,i)=>(
             <button key={i} onClick={it.action} style={{background:P.card,border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
@@ -5241,6 +5296,10 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
 
 export default function App(){
   const[screen,setScreen]=useState("boot");
+
+  // Annule le message "chargement lent" côté index.html : la présence même de
+  // ce composant prouve que le bundle a chargé et que React a bien monté.
+  useEffect(()=>{ window.__QD_READY=true; },[]);
 
   // Fait fondre le logo plein page (pre-splash CSS) une fois l'app prête —
   // un seul écran de démarrage, pas de relais vers un second composant.
@@ -5595,7 +5654,13 @@ export default function App(){
       <style>{STYLE}</style>
       <div className="BG"/>
       <FloatingBg/>
-      <div className="SH">
+      <div className="desktop-shell">
+        <div className="desktop-side">
+          <img src={HM_LOGO} alt="" style={{width:72,height:72,objectFit:"contain",marginBottom:14}} onError={e=>{e.target.style.display="none";}}/>
+          <div style={{fontSize:26,fontWeight:900,color:"white",lineHeight:1.15,marginBottom:10}}>Quiz Dignité</div>
+          <div style={{fontSize:13,color:"rgba(255,180,200,.75)",lineHeight:1.6,maxWidth:200}}>{lang==="en"?"An educational app by ONG Happy Mum's on menstrual health, women's rights and dignity.":"Une app éducative de l'ONG Happy Mum's sur la santé menstruelle, les droits des femmes et la dignité."}</div>
+        </div>
+        <div className="SH">
 
         {screen==="boot"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}><div style={{fontSize:64}} className="pulse">🌸</div></div>}
 
@@ -5619,7 +5684,7 @@ export default function App(){
           updateStreak();
         }}/>}
 
-        {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
+        {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onBack={()=>{setScreen("hub");setNavActive("home");}} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
@@ -5627,6 +5692,8 @@ export default function App(){
         {screen==="privacy"&&<PrivacyPage onBack={()=>setScreen("settings")} lang={lang}/>}
 
         {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")} lang={lang}/>}
+
+        {screen==="how_it_works"&&<HowItWorks lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
 
         {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} lang={lang} onBack={()=>setScreen("explore")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
 
@@ -5637,7 +5704,7 @@ export default function App(){
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
-        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"||dest==="sources"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
+        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"||dest==="sources"||dest==="how_it_works"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
         {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onBack={()=>setScreen("hub")}/>}
 
@@ -5729,7 +5796,7 @@ export default function App(){
           <div style={{padding:"16px 16px 88px"}}>
             <button onClick={()=>setScreen("settings")} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div style={{textAlign:"center",marginBottom:18}}>
-              <img src={HM_LOGO} alt="" style={{width:65,height:65,objectFit:"contain"}}/>
+              <img src={HM_LOGO} alt="" style={{width:65,height:65,objectFit:"contain"}} onError={e=>{e.target.style.display="none";}}/>
               <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginTop:8}}>Qui est Happy Mum's ?</div>
             </div>
             {[
@@ -5806,8 +5873,8 @@ export default function App(){
             <div style={{background:"rgba(245,166,35,.08)",border:"1px solid rgba(245,166,35,.3)",borderRadius:12,padding:"10px 14px",marginBottom:12}}>
               <p style={{fontSize:11,color:"#996600",margin:0,lineHeight:1.6,fontWeight:600}}>
                 {lang==="en"
-                  ?"📍 Numbers verified for Côte d'Ivoire. If you are in another country, call your local emergency services."
-                  :"📍 Numéros vérifiés pour la Côte d'Ivoire. Si tu es dans un autre pays, contacte les services d'urgence locaux."}
+                  ?"📍 Numbers verified for Côte d'Ivoire (last checked: September 2026). If you are in another country, call your local emergency services."
+                  :"📍 Numéros vérifiés pour la Côte d'Ivoire (dernière vérification : septembre 2026). Si tu es dans un autre pays, contacte les services d'urgence locaux."}
               </p>
             </div>
 
@@ -5883,6 +5950,11 @@ export default function App(){
           ))}
         </nav>
       )}
+        <div className="desktop-side-r">
+          <div style={{fontSize:13,color:"rgba(255,180,200,.6)",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:10}}>{lang==="en"?"Optimized for mobile":"Optimisé pour mobile"}</div>
+          <div style={{fontSize:12,color:"rgba(255,180,200,.5)",lineHeight:1.6,maxWidth:200}}>{lang==="en"?"Try it on your phone for the full experience.":"Essayez-la sur votre téléphone pour l'expérience complète."}</div>
+        </div>
+      </div>
     </div>
   );
 }
