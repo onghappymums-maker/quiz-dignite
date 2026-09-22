@@ -669,11 +669,13 @@ const QUIZ_BADGES = {
   fille:  [{id:"f1",icon:"🌸",name:"Fleur de Dignité"},{id:"f2",icon:"🩸",name:"Experte du Cycle"},{id:"f3",icon:"💬",name:"Briseuse de Tabous"},{id:"f4",icon:"🔦",name:"Lumière du Savoir"},{id:"f5",icon:"💪",name:"Fille Invincible"},{id:"f6",icon:"🌍",name:"Ambassadrice"},{id:"f7",icon:"🤝",name:"Voix des Filles"}],
   garcon: [{id:"g1",icon:"🦁",name:"Gardien du Respect"},{id:"g2",icon:"🤝",name:"Allié de la Dignité"},{id:"g3",icon:"👊",name:"Briseur de Préjugés"},{id:"g4",icon:"💡",name:"Éclaireur du Savoir"},{id:"g5",icon:"⚽",name:"Champion Empathie"},{id:"g6",icon:"🌍",name:"Ambassadeur"},{id:"g7",icon:"🛡️",name:"Protecteur Bienveillant"}],
   parent: [{id:"p1",icon:"❤️",name:"Cœur de Famille"},{id:"p2",icon:"📖",name:"Guide Bienveillant"},{id:"p3",icon:"🌱",name:"Semeur de Confiance"},{id:"p4",icon:"🏫",name:"Éducateur Engagé"},{id:"p5",icon:"🔑",name:"Clé du Dialogue"},{id:"p6",icon:"🌍",name:"Leader Changement"},{id:"p7",icon:"✨",name:"Source Inspiration"}],
+  situations: [{id:"situations_all",icon:"🌟",name:"Ambassadrice des Situations"}],
 };
 const QUIZ_BADGES_EN={
   fille:[{id:"f1",icon:"🌸",name:"Flower of Dignity"},{id:"f2",icon:"🩸",name:"Cycle Expert"},{id:"f3",icon:"💬",name:"Taboo Breaker"},{id:"f4",icon:"🔦",name:"Light of Knowledge"},{id:"f5",icon:"💪",name:"Invincible Girl"},{id:"f6",icon:"🌍",name:"Ambassador"},{id:"f7",icon:"🤝",name:"Voice of Girls"}],
   garcon:[{id:"g1",icon:"🦁",name:"Guardian of Respect"},{id:"g2",icon:"🤝",name:"Dignity Ally"},{id:"g3",icon:"👊",name:"Prejudice Breaker"},{id:"g4",icon:"💡",name:"Knowledge Scout"},{id:"g5",icon:"⚽",name:"Empathy Champion"},{id:"g6",icon:"🌍",name:"Ambassador"},{id:"g7",icon:"🛡️",name:"Caring Protector"}],
   parent:[{id:"p1",icon:"❤️",name:"Heart of Family"},{id:"p2",icon:"📖",name:"Caring Guide"},{id:"p3",icon:"🌱",name:"Sower of Trust"},{id:"p4",icon:"🏫",name:"Committed Educator"},{id:"p5",icon:"🔑",name:"Key to Dialogue"},{id:"p6",icon:"🌍",name:"Change Leader"},{id:"p7",icon:"✨",name:"Source of Inspiration"}],
+  situations:[{id:"situations_all",icon:"🌟",name:"Situations Ambassador"}],
 };
 const QUIZ_LEVELS_FR=[{icon:"🌱",label:"Débutant(e)",min:0},{icon:"📚",label:"Intermédiaire",min:150},{icon:"🌟",label:"Expert(e)",min:400},{icon:"🏆",label:"Champion(ne)",min:800}];
 const QUIZ_LEVELS_EN=[{icon:"🌱",label:"Beginner",min:0},{icon:"📚",label:"Intermediate",min:150},{icon:"🌟",label:"Expert",min:400},{icon:"🏆",label:"Champion",min:800}];
@@ -1773,9 +1775,7 @@ function ScreenFill({top,children,navSpace=88,padding}){
   return(
     <div style={{minHeight:"100vh",boxSizing:"border-box",display:"flex",flexDirection:"column",padding:padding??`14px 16px ${navSpace}px`}}>
       {top}
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
@@ -2378,32 +2378,32 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
               <div style={{height:"100%",borderRadius:4,transition:"width 1s linear,background .5s",width:`${tPct}%`,background:tClr}}/>
             </div>
           </div>
-            <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:22,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
-            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:18}}><div className="T" style={{fontSize:"1.25rem",fontWeight:800,lineHeight:1.45,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
-            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:26,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:22}}><div className="T" style={{fontSize:"1.42rem",fontWeight:800,lineHeight:1.4,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
               {q.answers.map((a,i)=>{
                 let bg="rgba(255,255,255,.9)",border=`2.5px solid rgba(232,0,61,.13)`;
                 if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border=`2.5px solid ${P.green}`;}else if(i===sel){bg="rgba(231,76,60,.1)";border="2.5px solid #E74C3C";}}
-                return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"14px 16px",cursor:showFb?"default":"pointer",fontSize:"1.05rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
-                  <span style={{width:30,height:30,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".75rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
+                return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"17px 18px",cursor:showFb?"default":"pointer",fontSize:"1.18rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
+                  <span style={{width:32,height:32,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".8rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
                   {lang==="en"?(a==="Vrai"?"True":a==="Faux"?"False":a==="Mythe"?"Myth":a==="Réalité"?"Reality":a):a}
                 </button>);
               })}
             </div>
             {showFb&&(
-              <div style={{marginTop:15,padding:"15px 17px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
-                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
+              <div style={{marginTop:18,padding:"18px 19px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
+                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
                   <AKissi state={sel===-1?"encouragement":sel===q.correct?"joie":"erreur"} lang={lang} size={60} msg={null} style={{flexShrink:0}}/>
                   <div style={{flex:1}}>
-                    <div className="T" style={{fontSize:"1rem",fontWeight:800,marginBottom:4,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
-                    <div style={{fontSize:".9rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
+                    <div className="T" style={{fontSize:"1.12rem",fontWeight:800,marginBottom:5,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
+                    <div style={{fontSize:"1.02rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
                   </div>
                   <SpeechBtn text={q.ex} lang={lang} style={{marginTop:1,flexShrink:0}}/>
                 </div>
                 {sel!==q.correct&&(
-                  <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${P.red}33`,color:P.red,borderRadius:50,padding:"9px 16px",fontSize:".82rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:8,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {lang==="en"?"Look it up in the glossary":"Consulter le glossaire"}</button>
+                  <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${P.red}33`,color:P.red,borderRadius:50,padding:"10px 16px",fontSize:".92rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:9,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {lang==="en"?"Look it up in the glossary":"Consulter le glossaire"}</button>
                 )}
-                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:"1rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:8}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
+                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"15px 22px",fontSize:"1.12rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:9}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
               </div>
             )}
           </div>
@@ -3642,35 +3642,35 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
       </div>
     }>
       <div style={{padding:"14px 14px 0"}}>
-        <div style={{background:P.card,borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
-          <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:16}}>{q.q}</div>
-          <div style={{display:"flex",flexDirection:"column",gap:9}}>
+        <div style={{background:P.card,borderRadius:22,padding:"22px 19px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
+          <div className="T" style={{fontSize:"1.38rem",fontWeight:800,color:P.dark,lineHeight:1.4,marginBottom:20}}>{q.q}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:11}}>
             {q.answers.map((a,i)=>{
               let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.dark;
               if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#18a044";}else if(i===sel){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
               return(
-                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"13px 14px",cursor:showFb?"default":"pointer",fontSize:"1.02rem",fontWeight:700,display:"flex",alignItems:"center",gap:10,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
-                  <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?"#3DBE82":showFb&&i===sel?"#E74C3C":`${module.color}`,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{q.answers.length===2?(i===0?(lang==="en"?"T":"V"):(lang==="en"?"F":"F")):L[i]}</span>
+                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"16px 17px",cursor:showFb?"default":"pointer",fontSize:"1.14rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
+                  <span style={{width:30,height:30,borderRadius:"50%",background:showFb&&i===q.correct?"#3DBE82":showFb&&i===sel?"#E74C3C":`${module.color}`,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".78rem",fontWeight:800,flexShrink:0}}>{q.answers.length===2?(i===0?(lang==="en"?"T":"V"):(lang==="en"?"F":"F")):L[i]}</span>
                   {a}
                 </button>
               );
             })}
           </div>
           {showFb&&(
-            <div style={{marginTop:14,padding:"14px",borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
+            <div style={{marginTop:17,padding:"17px",borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
               <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
                 <AKissi state={sel===q.correct?"joie":"erreur"} lang={lang} size={50} msg={null} style={{flexShrink:0}}/>
                 <div>
-                  <div className="T" style={{fontSize:14,fontWeight:800,color:sel===q.correct?"#18a044":"#E74C3C",marginBottom:4}}>
+                  <div className="T" style={{fontSize:16,fontWeight:800,color:sel===q.correct?"#18a044":"#E74C3C",marginBottom:5}}>
                     {sel===q.correct?t("✅ Bonne réponse !","✅ Correct!"):`❌ ${t("Pas tout à fait...","Not quite...")}`}
                   </div>
-                  <div style={{fontSize:13,color:P.muted,lineHeight:1.55}}>{q.ex}</div>
+                  <div style={{fontSize:15,color:P.muted,lineHeight:1.6}}>{q.ex}</div>
                 </div>
               </div>
               {sel!==q.correct&&(
-                <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${module.color}55`,color:module.color,borderRadius:50,padding:"9px 16px",fontSize:".8rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:10,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {t("Consulter le glossaire","Look it up in the glossary")}</button>
+                <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${module.color}55`,color:module.color,borderRadius:50,padding:"10px 16px",fontSize:".9rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:11,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {t("Consulter le glossaire","Look it up in the glossary")}</button>
               )}
-              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"12px",fontSize:14,fontWeight:800,cursor:"pointer",width:"100%",marginTop:8}}>
+              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"15px",fontSize:16,fontWeight:800,cursor:"pointer",width:"100%",marginTop:9}}>
                 {qi+1>=qs.length?t("Voir mes résultats 🏆","See results 🏆"):t("Question suivante →","Next question →")}
               </button>
             </div>
@@ -4100,36 +4100,36 @@ function InteractiveSituation({situation,index,total,onNext,isLast,lang}){
   const choice=sel?situation.choices.find(c=>c.id===sel):null;
   const L=obj=>lang==="en"?obj.en:obj.fr;
   return(
-    <div style={{background:P.card,borderRadius:20,padding:"18px 16px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
-      <div style={{fontSize:11,fontWeight:800,color:P.muted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Scenario":"Situation"} {String(index+1).padStart(2,"0")} / {total}</div>
-      <div className="T" style={{fontSize:17,fontWeight:900,color:P.text,marginBottom:10,lineHeight:1.3}}>{L(situation.title)}</div>
-      <p style={{fontSize:14,color:P.text,lineHeight:1.6,margin:"0 0 14px"}}>{L(situation.context)}</p>
-      <div style={{fontSize:14,fontWeight:800,color:P.text,marginBottom:10}}>{L(situation.question)}</div>
-      <div style={{display:"flex",flexDirection:"column",gap:9}}>
+    <div style={{background:P.card,borderRadius:22,padding:"22px 20px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
+      <div style={{fontSize:13,fontWeight:800,color:P.muted,marginBottom:10,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Scenario":"Situation"} {String(index+1).padStart(2,"0")} / {total}</div>
+      <div className="T" style={{fontSize:21,fontWeight:900,color:P.text,marginBottom:13,lineHeight:1.3}}>{L(situation.title)}</div>
+      <p style={{fontSize:16.5,color:P.text,lineHeight:1.65,margin:"0 0 18px"}}>{L(situation.context)}</p>
+      <div style={{fontSize:17,fontWeight:800,color:P.text,marginBottom:13}}>{L(situation.question)}</div>
+      <div style={{display:"flex",flexDirection:"column",gap:11}}>
         {situation.choices.map(c=>{
           const active=sel===c.id;
           const disabled=sel&&!active;
           return(
-            <button key={c.id} disabled={!!sel} onClick={()=>setSel(c.id)} style={{textAlign:"left",padding:"12px 14px",borderRadius:14,border:`1.8px solid ${active?SITUATIONS_FEEDBACK_COLOR[c.feedbackType]:"rgba(0,0,0,.1)"}`,background:active?`${SITUATIONS_FEEDBACK_COLOR[c.feedbackType]}14`:"white",cursor:sel?"default":"pointer",opacity:disabled?.45:1,fontSize:13.5,color:P.text,fontWeight:600,lineHeight:1.45,transition:"all .15s"}}>
-              <span style={{fontWeight:900,marginRight:7}}>{c.id}.</span>{L(c.text)}
+            <button key={c.id} disabled={!!sel} onClick={()=>setSel(c.id)} style={{textAlign:"left",padding:"15px 17px",borderRadius:16,border:`1.8px solid ${active?SITUATIONS_FEEDBACK_COLOR[c.feedbackType]:"rgba(0,0,0,.1)"}`,background:active?`${SITUATIONS_FEEDBACK_COLOR[c.feedbackType]}14`:"white",cursor:sel?"default":"pointer",opacity:disabled?.45:1,fontSize:16,color:P.text,fontWeight:600,lineHeight:1.5,transition:"all .15s"}}>
+              <span style={{fontWeight:900,marginRight:8}}>{c.id}.</span>{L(c.text)}
             </button>
           );
         })}
       </div>
       {choice&&(
-        <div className="up" style={{marginTop:16}}>
-          <div style={{background:`${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}14`,border:`1.5px solid ${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}55`,borderRadius:14,padding:"12px 14px",marginBottom:12}}>
-            <div style={{fontSize:12,fontWeight:900,color:SITUATIONS_FEEDBACK_COLOR[choice.feedbackType],marginBottom:5}}>{L(SITUATIONS_FEEDBACK_LABEL[choice.feedbackType])}</div>
-            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(choice.feedback)}</div>
+        <div className="up" style={{marginTop:20}}>
+          <div style={{background:`${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}14`,border:`1.5px solid ${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}55`,borderRadius:16,padding:"15px 17px",marginBottom:14}}>
+            <div style={{fontSize:14,fontWeight:900,color:SITUATIONS_FEEDBACK_COLOR[choice.feedbackType],marginBottom:6}}>{L(SITUATIONS_FEEDBACK_LABEL[choice.feedbackType])}</div>
+            <div style={{fontSize:16,color:P.text,lineHeight:1.6}}>{L(choice.feedback)}</div>
           </div>
-          <div style={{background:P.roseSoft,borderRadius:14,padding:"12px 14px",marginBottom:14}}>
-            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:5}}>✨ {lang==="en"?"Key takeaway":"À retenir"}</div>
-            <div style={{fontSize:13.5,color:P.text,lineHeight:1.55,fontWeight:600}}>{L(situation.takeaway)}</div>
+          <div style={{background:P.roseSoft,borderRadius:16,padding:"15px 17px",marginBottom:18}}>
+            <div style={{fontSize:12.5,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>✨ {lang==="en"?"Key takeaway":"À retenir"}</div>
+            <div style={{fontSize:16,color:P.text,lineHeight:1.6,fontWeight:600}}>{L(situation.takeaway)}</div>
             {situation.source&&(
-              <a href={situation.source.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:8,fontSize:11,color:P.red,fontWeight:700,textDecoration:"none"}}>📚 {L(situation.source)} ↗</a>
+              <a href={situation.source.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:10,fontSize:13,color:P.red,fontWeight:700,textDecoration:"none"}}>📚 {L(situation.source)} ↗</a>
             )}
           </div>
-          <button onClick={()=>{setSel(null);onNext();}} style={{width:"100%",background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:900,fontSize:14.5,cursor:"pointer"}}>
+          <button onClick={()=>{setSel(null);onNext();}} style={{width:"100%",background:G,border:"none",borderRadius:16,padding:"16px",color:"white",fontWeight:900,fontSize:17,cursor:"pointer"}}>
             {isLast?(lang==="en"?"Finish →":"Terminer →"):(lang==="en"?"Continue →":"Continuer →")}
           </button>
         </div>
@@ -4138,11 +4138,12 @@ function InteractiveSituation({situation,index,total,onNext,isLast,lang}){
   );
 }
 
-function Situations({lang,onBack,navActive,onNav}){
-  const[view,setView]=useState("paliers"); // paliers | list | situation | final
+function Situations({lang,onBack,navActive,onNav,onBadge}){
+  const[view,setView]=useState("paliers"); // paliers | list | situation | recap
   const[selPalier,setSelPalier]=useState(null);
   const[curId,setCurId]=useState(null);
   const[seen,setSeen]=useState(()=>new Set());
+  const[recapLevel,setRecapLevel]=useState(null);
   const t=(fr,en)=>lang==="en"?en:fr;
   const L=obj=>lang==="en"?obj.en:obj.fr;
 
@@ -4155,13 +4156,16 @@ function Situations({lang,onBack,navActive,onNav}){
   function handleNext(){
     const cur=SITUATIONS_DATA.find(s=>s.id===curId);
     markSeen(cur.id);
-    if(cur.id===30){setView("final");return;}
     const listLv=situationsOf(cur.level);
     const idxInLv=listLv.findIndex(s=>s.id===cur.id);
     if(idxInLv<listLv.length-1){
       setCurId(listLv[idxInLv+1].id);
     }else{
-      setView("list");
+      if(cur.level===5){
+        onBadge&&onBadge({id:"situations_all",icon:"🌟",name:lang==="en"?"Situations Ambassador":"Ambassadrice des Situations"});
+      }
+      setRecapLevel(cur.level);
+      setView("recap");
     }
   }
 
@@ -4186,7 +4190,7 @@ function Situations({lang,onBack,navActive,onNav}){
           <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
           <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>{t("Palier","Level")} {cur.level} · {L(SITUATIONS_LEVELS[cur.level-1].title)}</div>
         </div>
-        <div style={{flex:1,padding:"16px 14px 24px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
+        <div style={{flex:1,padding:"16px 14px 24px"}}>
           <InteractiveSituation situation={cur} index={idxInLv} total={listLv.length} isLast={cur.id===30} onNext={handleNext} lang={lang}/>
         </div>
         {NAV}
@@ -4194,15 +4198,49 @@ function Situations({lang,onBack,navActive,onNav}){
     );
   }
 
-  if(view==="final"){
+  if(view==="recap"&&recapLevel){
+    const lvMeta=SITUATIONS_LEVELS[recapLevel-1];
+    const list=situationsOf(recapLevel);
+    const isLastTier=recapLevel===5;
     return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)",position:"relative"}}><FloatingBg/>
-        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
-          <div style={{fontSize:56,marginBottom:16}}>✨</div>
-          <div className="T" style={{fontSize:21,fontWeight:900,color:"white",marginBottom:14}}>{t("Tu viens de parcourir 30 situations.","You've just gone through 30 scenarios.")}</div>
-          <p style={{fontSize:14.5,color:"rgba(255,200,215,.85)",lineHeight:1.7,maxWidth:340}}>{t("Connaître ses droits, respecter ses limites, demander de l'aide et soutenir les autres sont aussi des formes de dignité. 💗","Knowing your rights, respecting your limits, asking for help, and supporting others are also forms of dignity. 💗")}</p>
-          <div style={{display:"flex",gap:10,marginTop:26,width:"100%",maxWidth:340}}>
-            <button onClick={()=>{setSeen(new Set());setCurId(SITUATIONS_DATA[0].id);setSelPalier(1);setView("situation");}} style={{flex:1,background:"rgba(255,255,255,.15)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>🔁 {t("Rejouer","Play again")}</button>
+      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:isLastTier?"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)":P.bg,position:"relative"}}><FloatingBg/>
+        <div style={{flex:1,padding:"36px 18px 24px",display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{background:P.card,borderRadius:24,padding:"24px 20px",boxShadow:"0 10px 34px rgba(232,0,61,.18)",width:"100%",maxWidth:400}}>
+            {isLastTier?(
+              <>
+                <div style={{textAlign:"center",marginBottom:18}}>
+                  <div style={{fontSize:56,marginBottom:6}}>🌟</div>
+                  <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>{t("Badge débloqué","Badge unlocked")}</div>
+                  <div className="T" style={{fontSize:"1.25rem",fontWeight:900,color:P.text}}>{t("Ambassadrice des Situations","Situations Ambassador")}</div>
+                </div>
+              </>
+            ):(
+              <div style={{textAlign:"center",marginBottom:16}}>
+                <div style={{fontSize:40,marginBottom:6}}>{lvMeta.emoji}</div>
+                <div style={{fontSize:11,fontWeight:900,color:lvMeta.color,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>{t("Palier terminé","Tier completed")} {recapLevel}/5</div>
+                <div className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.text}}>{L(lvMeta.title)}</div>
+              </div>
+            )}
+            <div style={{fontSize:12.5,fontWeight:800,color:P.muted,textTransform:"uppercase",letterSpacing:.5,marginBottom:10}}>✨ {t("Ce qu'il faut retenir","Key takeaways")}</div>
+            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:isLastTier?18:6}}>
+              {list.map((s,i)=>(
+                <div key={s.id} style={{background:`${lvMeta.color}0F`,borderRadius:14,padding:"12px 14px"}}>
+                  <div style={{fontSize:12,fontWeight:800,color:lvMeta.color,marginBottom:4}}>{i+1}. {L(s.title)}</div>
+                  <div style={{fontSize:13,color:P.text,lineHeight:1.55}}>{L(s.takeaway)}</div>
+                </div>
+              ))}
+            </div>
+            {isLastTier&&(
+              <>
+                <div style={{fontSize:13.5,fontWeight:800,color:P.text,marginBottom:6,textAlign:"center"}}>{t("30 situations terminées 🎉","30 scenarios completed 🎉")}</div>
+                <p style={{fontSize:12.5,color:P.muted,lineHeight:1.6,textAlign:"center"}}>{t("Connaître ses droits, respecter ses limites, demander de l'aide et soutenir les autres sont aussi des formes de dignité. 💗","Knowing your rights, respecting your limits, asking for help, and supporting others are also forms of dignity. 💗")}</p>
+              </>
+            )}
+          </div>
+          <div style={{display:"flex",gap:10,marginTop:20,width:"100%",maxWidth:400}}>
+            {isLastTier&&(
+              <button onClick={()=>{setSeen(new Set());setCurId(SITUATIONS_DATA[0].id);setSelPalier(1);setView("situation");}} style={{flex:1,background:isLastTier?"rgba(255,255,255,.15)":P.card,border:`1.5px solid ${isLastTier?"rgba(255,255,255,.3)":lvMeta.color+"33"}`,borderRadius:14,padding:"13px",color:isLastTier?"white":lvMeta.color,fontWeight:800,fontSize:13.5,cursor:"pointer"}}>🔁 {t("Rejouer","Play again")}</button>
+            )}
             <button onClick={()=>setView("paliers")} style={{flex:1,background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>{t("Retour aux situations","Back to scenarios")}</button>
           </div>
         </div>
@@ -5007,12 +5045,12 @@ function EscapeGame({lang,onBack}){
     <ScreenFill top={
       <button onClick={()=>setView("menu")} style={{background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:12,padding:"6px 14px",fontSize:13,color:"white",fontWeight:700,marginBottom:14}}>{lang==="en"?"← Menu":"← Menu"}</button>
     }>
-      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"24px 18px",textAlign:"center",boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
-        <div style={{fontSize:48,marginBottom:6}}>{lv.emoji}</div>
-        <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:900,marginBottom:6}}>{lv.name}</div>
-        <p style={{color:"rgba(255,210,220,.85)",fontSize:".82rem",lineHeight:1.65,margin:"0 0 16px"}}>{lang==="en"?`${lv.riddles.length} riddles await you. Each correct answer gives you a letter — in scrambled order. Collect them all, then use the final hint to reassemble the keyword.`:`${lv.riddles.length} énigmes t'attendent. Chaque bonne réponse te donne une lettre, dans le désordre. Rassemble-les toutes, puis utilise l'indice pour trouver le mot-clé.`}</p>
-        <button onClick={beginRiddles} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>🚀 {lang==="en"?"Start":"Commencer"}</button>
-        <button onClick={()=>setView("menu")} style={{background:"transparent",color:"rgba(255,210,220,.7)",border:"1px solid rgba(255,210,220,.3)",borderRadius:50,padding:"9px 18px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
+      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"30px 20px",textAlign:"center",boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
+        <div style={{fontSize:58,marginBottom:8}}>{lv.emoji}</div>
+        <div className="T" style={{color:"white",fontSize:"1.42rem",fontWeight:900,marginBottom:8}}>{lv.name}</div>
+        <p style={{color:"rgba(255,210,220,.85)",fontSize:"1rem",lineHeight:1.7,margin:"0 0 20px"}}>{lang==="en"?`${lv.riddles.length} riddles await you. Each correct answer gives you a letter — in scrambled order. Collect them all, then use the final hint to reassemble the keyword.`:`${lv.riddles.length} énigmes t'attendent. Chaque bonne réponse te donne une lettre, dans le désordre. Rassemble-les toutes, puis utilise l'indice pour trouver le mot-clé.`}</p>
+        <button onClick={beginRiddles} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"15px",fontWeight:800,fontSize:"1.05rem",cursor:"pointer",marginBottom:12}}>🚀 {lang==="en"?"Start":"Commencer"}</button>
+        <button onClick={()=>setView("menu")} style={{background:"transparent",color:"rgba(255,210,220,.7)",border:"1px solid rgba(255,210,220,.3)",borderRadius:50,padding:"10px 18px",fontSize:".92rem",fontWeight:600,cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
       </div>
     </ScreenFill>
   );
@@ -5029,21 +5067,21 @@ function EscapeGame({lang,onBack}){
           ))}
         </div>
       }>
-        <div style={{background:"rgba(255,255,255,.96)",backdropFilter:"blur(14px)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
-          <div style={{fontSize:".68rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{r.tag}</div>
-          <p style={{fontSize:".95rem",fontWeight:700,color:P.text,lineHeight:1.5,marginBottom:16}}>{r.q}</p>
-          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{background:"rgba(255,255,255,.96)",backdropFilter:"blur(14px)",borderRadius:22,padding:"26px 20px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
+          <div style={{fontSize:".78rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{r.tag}</div>
+          <p style={{fontSize:"1.15rem",fontWeight:700,color:P.text,lineHeight:1.5,marginBottom:20}}>{r.q}</p>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {r.opts.map((opt,i)=>{
               let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.text;
               if(showFb){if(i===r.ok){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#1A7A50";}else if(i===chosen){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
               return(
-                <button key={i} disabled={chosen!==null} onClick={()=>answer_riddle(i)} style={{background:bg,border,borderRadius:13,padding:"11px 14px",fontSize:".88rem",fontWeight:700,textAlign:"left",cursor:chosen!==null?"default":"pointer",color:col,transition:"all .15s"}}>
+                <button key={i} disabled={chosen!==null} onClick={()=>answer_riddle(i)} style={{background:bg,border,borderRadius:13,padding:"14px 16px",fontSize:"1.05rem",fontWeight:700,textAlign:"left",cursor:chosen!==null?"default":"pointer",color:col,transition:"all .15s"}}>
                   {String.fromCharCode(65+i)}. {opt}
                 </button>
               );
             })}
           </div>
-          {showFb&&<div style={{marginTop:12,padding:"10px 12px",background:"rgba(232,0,61,.06)",borderLeft:`3px solid ${P.red}`,borderRadius:8,fontSize:".78rem",color:P.muted,lineHeight:1.55}}>{r.fb}</div>}
+          {showFb&&<div style={{marginTop:14,padding:"12px 14px",background:"rgba(232,0,61,.06)",borderLeft:`3px solid ${P.red}`,borderRadius:8,fontSize:".92rem",color:P.muted,lineHeight:1.6}}>{r.fb}</div>}
         </div>
       </ScreenFill>
     );
@@ -5052,25 +5090,25 @@ function EscapeGame({lang,onBack}){
   if(view==="scramble"){
     return(
       <ScreenFill padding="16px 16px 88px">
-        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)",textAlign:"center"}}>
-          <div className="T" style={{fontSize:"1.1rem",fontWeight:900,color:P.red,marginBottom:4}}>{lang==="en"?"Rearrange the letters":"Réorganise les lettres"}</div>
-          <p style={{fontSize:".78rem",color:P.muted,marginBottom:14,lineHeight:1.5}}>{lang==="en"?`You collected ${letters.length} letters — in scrambled order. Put them in the right order to reveal the keyword.`:`Tu as recueilli ${letters.length} lettres dans le désordre. Remets-les dans le bon ordre pour révéler le mot-clé.`}</p>
-          <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:12,minHeight:46,flexWrap:"wrap"}}>
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"26px 20px",boxShadow:"0 6px 24px rgba(232,0,61,.12)",textAlign:"center"}}>
+          <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:P.red,marginBottom:6}}>{lang==="en"?"Rearrange the letters":"Réorganise les lettres"}</div>
+          <p style={{fontSize:".92rem",color:P.muted,marginBottom:18,lineHeight:1.55}}>{lang==="en"?`You collected ${letters.length} letters — in scrambled order. Put them in the right order to reveal the keyword.`:`Tu as recueilli ${letters.length} lettres dans le désordre. Remets-les dans le bon ordre pour révéler le mot-clé.`}</p>
+          <div style={{display:"flex",gap:7,justifyContent:"center",marginBottom:16,minHeight:52,flexWrap:"wrap"}}>
             {lv.targetWord.split("").map((_,i)=>(
-              <div key={i} style={{width:38,height:38,borderRadius:10,border:`2px ${answer[i]?"solid":"dashed"} ${answer[i]?P.red:"rgba(232,0,61,.3)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"white",background:answer[i]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"transparent"}}>
+              <div key={i} style={{width:44,height:44,borderRadius:11,border:`2px ${answer[i]?"solid":"dashed"} ${answer[i]?P.red:"rgba(232,0,61,.3)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:19,color:"white",background:answer[i]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"transparent"}}>
                 {answer[i]||""}
               </div>
             ))}
           </div>
-          <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginBottom:12}}>
+          <div style={{display:"flex",gap:7,justifyContent:"center",flexWrap:"wrap",marginBottom:16}}>
             {scramble.map(s=>(
-              <button key={s.id} onClick={()=>!s.used&&pickLetter(s.id)} style={{width:38,height:38,borderRadius:10,background:s.used?"rgba(200,180,200,.3)":"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",color:"white",fontWeight:800,fontSize:16,cursor:s.used?"default":"pointer",opacity:s.used?.3:1,transition:"all .15s"}}>
+              <button key={s.id} onClick={()=>!s.used&&pickLetter(s.id)} style={{width:44,height:44,borderRadius:11,background:s.used?"rgba(200,180,200,.3)":"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",color:"white",fontWeight:800,fontSize:19,cursor:s.used?"default":"pointer",opacity:s.used?.3:1,transition:"all .15s"}}>
                 {s.l}
               </button>
             ))}
           </div>
-          <button onClick={()=>{setScramble(scramble.map(s=>({...s,used:false})));setAnswer([]);}} style={{background:"transparent",border:"none",color:P.muted,fontSize:".75rem",textDecoration:"underline",cursor:"pointer",marginBottom:10}}>{lang==="en"?"Clear and try again":"Effacer et recommencer"}</button>
-          <div style={{background:"rgba(232,0,61,.06)",borderRadius:10,padding:"9px 12px",fontSize:".75rem",color:P.muted,border:"1px dashed rgba(232,0,61,.2)"}}>💡 {lv.hint}</div>
+          <button onClick={()=>{setScramble(scramble.map(s=>({...s,used:false})));setAnswer([]);}} style={{background:"transparent",border:"none",color:P.muted,fontSize:".85rem",textDecoration:"underline",cursor:"pointer",marginBottom:12}}>{lang==="en"?"Clear and try again":"Effacer et recommencer"}</button>
+          <div style={{background:"rgba(232,0,61,.06)",borderRadius:10,padding:"11px 14px",fontSize:".88rem",color:P.muted,border:"1px dashed rgba(232,0,61,.2)"}}>💡 {lv.hint}</div>
         </div>
       </ScreenFill>
     );
@@ -5081,14 +5119,14 @@ function EscapeGame({lang,onBack}){
     const hasNext=nextIdx<levels.length;
     return(
       <ScreenFill padding="16px 16px 88px">
-        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"24px 18px",boxShadow:"0 8px 28px rgba(232,0,61,.15)",textAlign:"center"}}>
-          <div style={{fontSize:56,marginBottom:8}}>🏆</div>
-          <div className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.red,marginBottom:4}}>{lv.badge}</div>
-          <div style={{fontSize:".82rem",color:P.muted,marginBottom:16}}>{lang==="en"?"Code unlocked:":"Code débloqué :"} <strong>{lv.display}</strong></div>
-          <div style={{background:"rgba(232,0,61,.05)",borderRadius:14,padding:"14px",textAlign:"left",fontSize:".78rem",color:P.text,lineHeight:1.7,marginBottom:14}} dangerouslySetInnerHTML={{__html:`<strong>📚 ${lang==="en"?"Key takeaways":"À retenir"} :</strong><br>${lv.fiche}`}}/>
-          {hasNext&&<div style={{background:"rgba(61,190,130,.12)",border:"1px solid rgba(61,190,130,.3)",borderRadius:12,padding:"8px 14px",fontSize:".78rem",fontWeight:700,color:"#1A7A50",marginBottom:14}}>🎯 {lang==="en"?"Next level unlocked:":"Niveau suivant débloqué :"} {levels[nextIdx].emoji} {levels[nextIdx].name}</div>}
-          {hasNext&&<button onClick={()=>startLevel(nextIdx)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>▶️ {lang==="en"?"Next level":"Niveau suivant"}</button>}
-          <button onClick={()=>setView("menu")} style={{width:"100%",background:"transparent",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"11px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"30px 22px",boxShadow:"0 8px 28px rgba(232,0,61,.15)",textAlign:"center"}}>
+          <div style={{fontSize:66,marginBottom:10}}>🏆</div>
+          <div className="T" style={{fontSize:"1.42rem",fontWeight:900,color:P.red,marginBottom:6}}>{lv.badge}</div>
+          <div style={{fontSize:".95rem",color:P.muted,marginBottom:20}}>{lang==="en"?"Code unlocked:":"Code débloqué :"} <strong>{lv.display}</strong></div>
+          <div style={{background:"rgba(232,0,61,.05)",borderRadius:14,padding:"17px",textAlign:"left",fontSize:".92rem",color:P.text,lineHeight:1.75,marginBottom:18}} dangerouslySetInnerHTML={{__html:`<strong>📚 ${lang==="en"?"Key takeaways":"À retenir"} :</strong><br>${lv.fiche}`}}/>
+          {hasNext&&<div style={{background:"rgba(61,190,130,.12)",border:"1px solid rgba(61,190,130,.3)",borderRadius:12,padding:"10px 15px",fontSize:".9rem",fontWeight:700,color:"#1A7A50",marginBottom:16}}>🎯 {lang==="en"?"Next level unlocked:":"Niveau suivant débloqué :"} {levels[nextIdx].emoji} {levels[nextIdx].name}</div>}
+          {hasNext&&<button onClick={()=>startLevel(nextIdx)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"15px",fontWeight:800,fontSize:"1.05rem",cursor:"pointer",marginBottom:12}}>▶️ {lang==="en"?"Next level":"Niveau suivant"}</button>}
+          <button onClick={()=>setView("menu")} style={{width:"100%",background:"transparent",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:700,fontSize:"1rem",cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
         </div>
       </ScreenFill>
     );
@@ -5712,7 +5750,7 @@ export default function App(){
 
         {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onProfil={()=>setScreen("profil_test")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onSituations={()=>{setScreen("situations");setNavActive("home");}} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
 
-        {screen==="situations"&&<Situations lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav}/>}
+        {screen==="situations"&&<Situations lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav} onBadge={badge=>{if(!badges.includes(badge.id)){const nb=[...badges,badge.id];setBadges(nb);persist(totalPts,nb,sessions,unlocked,streak);}}}/>}
 
         {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
 
