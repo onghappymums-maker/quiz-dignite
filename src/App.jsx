@@ -69,25 +69,13 @@ function SpeechBtn({text,lang,style={}}){
   );
 }
 
-const THEME_LIGHT = {
-  bg:"#FFF4F7", card:"white", text:"#2D0A14", muted:"#8B5A6A", dark:"#2D0A14",
-  border:"rgba(0,0,0,.1)", navBg:"rgba(255,255,255,.95)",
-};
-const THEME_DARK = {
-  bg:"#180810", card:"#2A1620", text:"#F7E7EE", muted:"#C79AAA", dark:"#F7E7EE",
-  border:"rgba(255,255,255,.14)", navBg:"rgba(24,8,16,.92)",
-};
-// P is intentionally mutated in place (not re-created) so every already-declared
-// `P.xxx` reference across the app picks up the current theme on each render —
-// see applyTheme() below, called synchronously at the top of App().
 const P = {
   red:"#C8102E", redSoft:"#FFE8EC", rose:"#FF6B9D", roseSoft:"#FFE4EE",
   coral:"#FF8C69", coralSoft:"#FFF0E8", amber:"#F59E0B", amberSoft:"#FEF9C3",
   green:"#3DBE82", greenSoft:"#E8FFF4", blue:"#4FB3F6", blueSoft:"#EBF7FF",
   purple:"#9B5DE5", purpleSoft:"#F0E8FF", teal:"#14B8A6", tealSoft:"#E6FFFA",
-  ...THEME_LIGHT,
+  text:"#2D0A14", muted:"#8B5A6A",
 };
-function applyTheme(isDark){ Object.assign(P, isDark?THEME_DARK:THEME_LIGHT); }
 const G    = "linear-gradient(135deg,#C8102E 0%,#E8426A 42%,#FF6B9D 75%,#FF8C69 100%)";
 const AKISSI_IMG = "/akissi.png";
 const AKISSI_IMGS = {
@@ -156,7 +144,7 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
         aria-label={message||`A-Kissi mascotte Quiz Dignité`}
       />
       {message&&(
-        <div style={{background:P.card,border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"9px 13px",maxWidth:200,textAlign:"center",fontSize:12,fontWeight:700,color:P.dark,lineHeight:1.45,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
+        <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"9px 13px",maxWidth:200,textAlign:"center",fontSize:12,fontWeight:700,color:P.dark,lineHeight:1.45,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
           {message}
         </div>
       )}
@@ -165,9 +153,6 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
 }
 
 const HERO = "linear-gradient(155deg,#C8102E 0%,#E8426A 28%,#FF6B9D 62%,#FFD4E8 100%)";
-// Traitement plus sobre pour les sujets graves (consentement, violences) — pas de
-// dégradé pastel ludique en sortie, pour ne pas "mignoniser" des contenus sensibles.
-const HERO_GRAVE = "linear-gradient(155deg,#1A0A15 0%,#3A0313 55%,#5C1020 100%)";
 const ALPHA = "ABCDEFGHIJKLMNOPRSTUVWYZ";
 const FC = ["#3DBE82","#9B5DE5","#F59E0B","#14B8A6","#4FB3F6","#FF8C69","#C8102E","#FF6B9D"];
 
@@ -200,16 +185,20 @@ button{font-family:'Nunito',sans-serif;cursor:pointer;}
 
 /* ── DESKTOP LAYOUT ─────────────────────────────────── */
 @media(min-width:700px){
-  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;background:linear-gradient(160deg,#3A0313 0%,#1A0A15 100%) !important;}
-  .desktop-shell{display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;gap:0;}
-  .desktop-side{display:flex;flex-direction:column;justify-content:center;align-items:center;width:260px;min-height:100vh;padding:40px 24px;flex-shrink:0;text-align:center;}
-  .desktop-side-r{display:flex;flex-direction:column;justify-content:center;align-items:center;width:260px;min-height:100vh;padding:40px 24px;flex-shrink:0;text-align:center;}
-  .SH{box-shadow:0 0 0 10px #1a1a1a,0 0 0 13px #3a3a3a,0 30px 90px rgba(0,0,0,.55);min-height:700px;max-height:900px;height:92vh;border-radius:38px !important;overflow-y:auto;overflow-x:hidden;}
+  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;}
+  .desktop-shell{display:flex;align-items:flex-start;justify-content:center;width:100%;min-height:100vh;gap:0;}
+  .desktop-side{display:flex;flex-direction:column;justify-content:center;align-items:center;width:200px;min-height:100vh;padding:40px 20px;flex-shrink:0;}
+  .desktop-side-r{display:flex;flex-direction:column;justify-content:center;align-items:center;width:200px;min-height:100vh;padding:40px 20px;flex-shrink:0;}
+  .SH{box-shadow:0 0 60px rgba(0,0,0,.35);min-height:100vh;}
   .BG{display:none;}
 }
 @media(max-width:699px){
   .desktop-side,.desktop-side-r{display:none;}
 }
+@keyframes splashFadeOut{0%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1.02)}100%{opacity:0;transform:scale(1.04)}}
+.splash-screen{position:fixed;inset:0;z-index:9999;margin:0;padding:0;background:#E8003D;overflow:hidden;}
+.splash-screen img{display:block;width:100%;height:100%;width:100vw;height:100dvh;object-fit:cover;object-position:center;margin:0;padding:0;border:none;}
+.splash-screen.fading{animation:splashFadeOut .4s ease-in forwards;}
 ${AKISSI_STYLE}
 `;
 
@@ -669,13 +658,11 @@ const QUIZ_BADGES = {
   fille:  [{id:"f1",icon:"🌸",name:"Fleur de Dignité"},{id:"f2",icon:"🩸",name:"Experte du Cycle"},{id:"f3",icon:"💬",name:"Briseuse de Tabous"},{id:"f4",icon:"🔦",name:"Lumière du Savoir"},{id:"f5",icon:"💪",name:"Fille Invincible"},{id:"f6",icon:"🌍",name:"Ambassadrice"},{id:"f7",icon:"🤝",name:"Voix des Filles"}],
   garcon: [{id:"g1",icon:"🦁",name:"Gardien du Respect"},{id:"g2",icon:"🤝",name:"Allié de la Dignité"},{id:"g3",icon:"👊",name:"Briseur de Préjugés"},{id:"g4",icon:"💡",name:"Éclaireur du Savoir"},{id:"g5",icon:"⚽",name:"Champion Empathie"},{id:"g6",icon:"🌍",name:"Ambassadeur"},{id:"g7",icon:"🛡️",name:"Protecteur Bienveillant"}],
   parent: [{id:"p1",icon:"❤️",name:"Cœur de Famille"},{id:"p2",icon:"📖",name:"Guide Bienveillant"},{id:"p3",icon:"🌱",name:"Semeur de Confiance"},{id:"p4",icon:"🏫",name:"Éducateur Engagé"},{id:"p5",icon:"🔑",name:"Clé du Dialogue"},{id:"p6",icon:"🌍",name:"Leader Changement"},{id:"p7",icon:"✨",name:"Source Inspiration"}],
-  situations: [{id:"situations_all",icon:"🌟",name:"Ambassadrice des Situations"}],
 };
 const QUIZ_BADGES_EN={
   fille:[{id:"f1",icon:"🌸",name:"Flower of Dignity"},{id:"f2",icon:"🩸",name:"Cycle Expert"},{id:"f3",icon:"💬",name:"Taboo Breaker"},{id:"f4",icon:"🔦",name:"Light of Knowledge"},{id:"f5",icon:"💪",name:"Invincible Girl"},{id:"f6",icon:"🌍",name:"Ambassador"},{id:"f7",icon:"🤝",name:"Voice of Girls"}],
   garcon:[{id:"g1",icon:"🦁",name:"Guardian of Respect"},{id:"g2",icon:"🤝",name:"Dignity Ally"},{id:"g3",icon:"👊",name:"Prejudice Breaker"},{id:"g4",icon:"💡",name:"Knowledge Scout"},{id:"g5",icon:"⚽",name:"Empathy Champion"},{id:"g6",icon:"🌍",name:"Ambassador"},{id:"g7",icon:"🛡️",name:"Caring Protector"}],
   parent:[{id:"p1",icon:"❤️",name:"Heart of Family"},{id:"p2",icon:"📖",name:"Caring Guide"},{id:"p3",icon:"🌱",name:"Sower of Trust"},{id:"p4",icon:"🏫",name:"Committed Educator"},{id:"p5",icon:"🔑",name:"Key to Dialogue"},{id:"p6",icon:"🌍",name:"Change Leader"},{id:"p7",icon:"✨",name:"Source of Inspiration"}],
-  situations:[{id:"situations_all",icon:"🌟",name:"Situations Ambassador"}],
 };
 const QUIZ_LEVELS_FR=[{icon:"🌱",label:"Débutant(e)",min:0},{icon:"📚",label:"Intermédiaire",min:150},{icon:"🌟",label:"Expert(e)",min:400},{icon:"🏆",label:"Champion(ne)",min:800}];
 const QUIZ_LEVELS_EN=[{icon:"🌱",label:"Beginner",min:0},{icon:"📚",label:"Intermediate",min:150},{icon:"🌟",label:"Expert",min:400},{icon:"🏆",label:"Champion",min:800}];
@@ -694,9 +681,9 @@ const CORPS_DATA=[
   [{id:"tete",label:"La Tête",icon:"😊",color:P.rose,info:"Ta tête pense, rêve et ressent ! Les hormones du cycle peuvent influencer ton humeur. C'est normal et passager. 💧"},{id:"poitrine",label:"La Poitrine",icon:"💗",color:P.purple,info:"Ta poitrine se développe pendant la puberté sous l'effet des hormones. Elle peut être sensible avant les règles. 🌸"},{id:"ventre",label:"Le Ventre",icon:"🌺",color:P.coral,info:"Ton ventre abrite l'utérus. Les douleurs sont normales mais une bouillotte aide. Si très intenses, consulte un médecin. 💪"},{id:"bras",label:"Les Bras",icon:"💪",color:P.blue,info:"Tes bras te donnent la force ! Le sport léger pendant les règles peut réduire les douleurs grâce aux endorphines. 🌟"},{id:"jambes",label:"Les Jambes",icon:"🌈",color:P.green,info:"Tes jambes te portent partout ! Marcher 20 minutes par jour améliore ton bien-être menstruel. 🎶"},{id:"uterus",label:"L'Utérus",icon:"🫁",color:P.red,info:"L'utérus est un organe en forme de poire dans ton bas-ventre. Chaque mois, il prépare un nid. Si pas de grossesse, il se nettoie — c'est tes règles ! 💗"},{id:"ovaires",label:"Les Ovaires",icon:"🌸",color:P.amber,info:"Tes ovaires produisent des ovules et des hormones comme les œstrogènes. Ce sont eux qui déclenchent ton cycle ! ✨"}],
 ];
 const MEM_DATA=[
-  [{id:1,e:"🩸",l:"Mes règles",info:"Les règles sont l'écoulement de sang qui a lieu environ une fois par mois, quand la muqueuse de l'utérus se renouvelle."},{id:2,e:"🧼",l:"Hygiène",info:"Se laver régulièrement pendant les règles aide à se sentir propre et à l'aise."},{id:3,e:"💧",l:"S'hydrater",info:"Boire de l'eau régulièrement peut aider à réduire les crampes menstruelles."},{id:4,e:"😊",l:"La joie",info:"Ressentir de la joie fait partie du quotidien, même pendant les règles."}],
-  [{id:1,e:"🩸",l:"Mes règles",info:"Les règles sont l'écoulement de sang qui a lieu environ une fois par mois, quand la muqueuse de l'utérus se renouvelle."},{id:2,e:"🧼",l:"Hygiène",info:"Se laver régulièrement pendant les règles aide à se sentir propre et à l'aise."},{id:3,e:"💧",l:"S'hydrater",info:"Boire de l'eau régulièrement peut aider à réduire les crampes menstruelles."},{id:4,e:"📦",l:"Protection",info:"Serviettes, tampons, coupes ou culottes menstruelles : chaque protection absorbe ou recueille le flux à sa façon."},{id:5,e:"😊",l:"La joie",info:"Ressentir de la joie fait partie du quotidien, même pendant les règles."},{id:6,e:"💪",l:"Ma force",info:"Traverser les règles avec confiance, c'est aussi une forme de force intérieure."}],
-  [{id:1,e:"🩸",l:"Mes règles",info:"Les règles sont l'écoulement de sang qui a lieu environ une fois par mois, quand la muqueuse de l'utérus se renouvelle."},{id:2,e:"🧼",l:"Hygiène",info:"Se laver régulièrement pendant les règles aide à se sentir propre et à l'aise."},{id:3,e:"💧",l:"S'hydrater",info:"Boire de l'eau régulièrement peut aider à réduire les crampes menstruelles."},{id:4,e:"📦",l:"Protection",info:"Serviettes, tampons, coupes ou culottes menstruelles : chaque protection absorbe ou recueille le flux à sa façon."},{id:5,e:"😊",l:"La joie",info:"Ressentir de la joie fait partie du quotidien, même pendant les règles."},{id:6,e:"💪",l:"Ma force",info:"Traverser les règles avec confiance, c'est aussi une forme de force intérieure."},{id:7,e:"💬",l:"En parler",info:"Parler de ses règles avec une personne de confiance aide à se sentir moins seule."},{id:8,e:"🌺",l:"Puberté",info:"La puberté est la période où le corps se transforme progressivement pour devenir adulte."}],
+  [{id:1,e:"🩸",l:"Mes règles"},{id:2,e:"🧼",l:"Hygiène"},{id:3,e:"💧",l:"S'hydrater"},{id:4,e:"😊",l:"La joie"}],
+  [{id:1,e:"🩸",l:"Mes règles"},{id:2,e:"🧼",l:"Hygiène"},{id:3,e:"💧",l:"S'hydrater"},{id:4,e:"📦",l:"Protection"},{id:5,e:"😊",l:"La joie"},{id:6,e:"💪",l:"Ma force"}],
+  [{id:1,e:"🩸",l:"Mes règles"},{id:2,e:"🧼",l:"Hygiène"},{id:3,e:"💧",l:"S'hydrater"},{id:4,e:"📦",l:"Protection"},{id:5,e:"😊",l:"La joie"},{id:6,e:"💪",l:"Ma force"},{id:7,e:"💬",l:"En parler"},{id:8,e:"🌺",l:"Puberté"}],
 ];
 const FOODS_ALL=[
   {e:"💧",l:"L'eau",good:true,why:"S'hydrater réduit les crampes. 8 verres par jour ! 💧"},
@@ -765,14 +752,11 @@ const MAZE_DATA=[
 ];
 const GAME_DEF_FR=[
   {id:"g1",e:"🎯",t:"Associe !",d:"Classe dans les bonnes catégories",col:P.blue,main:true,timer:false},
-  {id:"g2",e:"🧩",t:"Mon Corps",d:"Touche la zone concernée",col:P.purple,main:true,timer:false},
+  {id:"g2",e:"🧩",t:"Mon Corps",d:"Explore le corps féminin",col:P.purple,main:true,timer:false},
   {id:"g3",e:"🃏",t:"Jeu de Mémoire",d:"Retrouve les paires cachées",col:P.teal,main:true,timer:false},
   {id:"g4",e:"🍽️",t:"Chef Nyalê",d:"Bons aliments pour tes règles",col:P.green,main:true,timer:true},
   {id:"g5",e:"📅",t:"Mon Cycle",d:"Remets les phases dans l'ordre",col:P.coral,main:true,timer:false},
   {id:"g6",e:"🆘",t:"SOS Règles",d:"Que ferais-tu ?",col:P.red,main:true,timer:true},
-  {id:"err",e:"🔎",t:"Trouve l'erreur",d:"Repère ce qui ne va pas",col:P.purple,main:true,timer:false},
-  {id:"sac",e:"🎒",t:"Prépare ton sac",d:"Choisis ce qu'il te faut",col:P.amber,main:true,timer:false},
-  {id:"choix",e:"🌸",t:"Fais les bons choix",d:"Découvre les protections",col:P.rose,main:true,timer:false},
   {id:"dev",e:"💡",t:"Devinettes",d:"5 devinettes sur la santé menstruelle",col:P.amber,main:false,timer:false,noLevels:true},
   {id:"img",e:"🖼️",t:"4 Images 1 Mot",d:"Devine le mot derrière les images",col:P.coral,main:false,timer:false},
   {id:"ws",e:"🔍",t:"Mots Mêlés",d:"Trouve tous les mots cachés",col:P.teal,main:false,timer:false},
@@ -780,14 +764,11 @@ const GAME_DEF_FR=[
 ];
 const GAME_DEF_EN=[
   {id:"g1",e:"🎯",t:"Match It!",d:"Sort into the right categories",col:P.blue,main:true,timer:false},
-  {id:"g2",e:"🧩",t:"My Body",d:"Touch the right zone",col:P.purple,main:true,timer:false},
+  {id:"g2",e:"🧩",t:"My Body",d:"Explore the female body",col:P.purple,main:true,timer:false},
   {id:"g3",e:"🃏",t:"Memory Game",d:"Find the hidden pairs",col:P.teal,main:true,timer:false},
   {id:"g4",e:"🍽️",t:"Chef Nyalê",d:"Good foods for your period",col:P.green,main:true,timer:true},
   {id:"g5",e:"📅",t:"My Cycle",d:"Put the phases in order",col:P.coral,main:true,timer:false},
   {id:"g6",e:"🆘",t:"SOS Periods",d:"What would you do?",col:P.red,main:true,timer:true},
-  {id:"err",e:"🔎",t:"Find the Mistake",d:"Spot what's wrong",col:P.purple,main:true,timer:false},
-  {id:"sac",e:"🎒",t:"Pack Your Bag",d:"Choose what you need",col:P.amber,main:true,timer:false},
-  {id:"choix",e:"🌸",t:"Make Your Choice",d:"Discover period products",col:P.rose,main:true,timer:false},
   {id:"dev",e:"💡",t:"Riddles",d:"5 riddles about menstrual health",col:P.amber,main:false,timer:false,noLevels:true},
   {id:"img",e:"🖼️",t:"4 Images 1 Word",d:"Guess the word behind the images",col:P.coral,main:false,timer:false},
   {id:"ws",e:"🔍",t:"Word Search",d:"Find all the hidden words",col:P.teal,main:false,timer:false},
@@ -1730,38 +1711,35 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,on
   ];
   const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
   return(
-    <ScreenFill top={
-      <>
-        <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
-        <div style={{background:HERO,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
-          <div style={{fontSize:42,marginBottom:6}}>{catIcons[category]||"📚"}</div>
-          <div className="T" style={{color:"white",fontSize:"1.25rem",fontWeight:800,margin:"0 0 4px"}}>{getCatLabel(category)}</div>
-          <div style={{color:"rgba(255,255,255,.85)",fontSize:".88rem",fontWeight:600}}>{lang==="en"?"3 levels · 10 questions each · score 8/10 to progress":"3 niveaux · 10 questions · score min 8/10 pour avancer"}</div>
-        </div>
-        {msg&&<div style={{background:"#FFF4D6",border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10,fontSize:13,fontWeight:800,color:P.amber}}>{msg}</div>}
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"space-between",gap:14}}>
+    <div style={{padding:"16px 16px 88px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
+        <div style={{fontSize:36,marginBottom:4}}>{catIcons[category]||"📚"}</div>
+        <div className="T" style={{color:"white",fontSize:"1.1rem",fontWeight:800,margin:"0 0 3px"}}>{getCatLabel(category)}</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"3 levels · 10 questions each · score 8/10 to progress":"3 niveaux · 10 questions · score min 8/10 pour avancer"}</div>
+      </div>
+      {msg&&<div style={{background:"#FFF4D6",border:`1.5px solid ${P.amber}`,borderRadius:13,padding:"10px 14px",textAlign:"center",marginBottom:10,fontSize:13,fontWeight:800,color:P.amber}}>{msg}</div>}
+      <div style={{display:"flex",flexDirection:"column",gap:11}}>
         {lvls.map(l=>{
           const badge=QUIZ_LEVEL_BADGES[profile]?.[category]?.[l.lv-1];
           const isDone=l.score!==null&&l.score>=8;
           const tried=l.score!==null&&l.score<8;
           return(
             <button key={l.lv} onClick={()=>{if(!l.unlocked){setMsg(lang==="en"?`🔒 Score 8/10 on level ${l.lv-1} to unlock!`:`🔒 Score 8/10 au niveau ${l.lv-1} pour débloquer !`);setTimeout(()=>setMsg(''),2000);}else onStart(l.lv);}}
-              style={{flex:1,background:!l.unlocked?"#F5F0F8":"white",border:`2px solid ${!l.unlocked?"#D4C8E8":l.col+"33"}`,borderRadius:20,padding:"20px 20px",display:"flex",alignItems:"center",gap:16,textAlign:"left",width:"100%",boxShadow:!l.unlocked?"none":`0 4px 14px ${l.col}18`,opacity:l.unlocked?1:0.72,cursor:!l.unlocked?"default":"pointer"}}>
-              <div style={{width:60,height:60,borderRadius:18,background:!l.unlocked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,flexShrink:0}}>{!l.unlocked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
+              style={{background:!l.unlocked?"#F5F0F8":"white",border:`2px solid ${!l.unlocked?"#D4C8E8":l.col+"33"}`,borderRadius:18,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,textAlign:"left",width:"100%",boxShadow:!l.unlocked?"none":`0 4px 14px ${l.col}18`,opacity:l.unlocked?1:0.72,cursor:!l.unlocked?"default":"pointer"}}>
+              <div style={{width:48,height:48,borderRadius:15,background:!l.unlocked?"#E8E0F0":`${l.col}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{!l.unlocked?"🔒":isDone?badge?.icon||l.icon:l.icon}</div>
               <div style={{flex:1}}>
-                <div className="F" style={{fontSize:19,fontWeight:600,color:!l.unlocked?P.muted:P.text}}>{l.label} <span style={{fontSize:14.5,color:!l.unlocked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
-                <div style={{fontSize:12.5,fontWeight:600,marginTop:4,color:!l.unlocked?"#C8B8D8":isDone?P.green:tried?"#E8003D":P.muted}}>
+                <div className="F" style={{fontSize:17,fontWeight:600,color:!l.unlocked?P.muted:P.text}}>{l.label} <span style={{fontSize:13,color:!l.unlocked?"#C8B8D8":l.col}}>— {l.sub}</span></div>
+                <div style={{fontSize:11,fontWeight:600,marginTop:2,color:!l.unlocked?"#C8B8D8":isDone?P.green:tried?"#E8003D":P.muted}}>
                   {!l.unlocked?(lang==="en"?`🔒 Score 8/10 on level ${l.lv-1} required`:`🔒 Score 8/10 au niveau ${l.lv-1} requis`):isDone?(lang==="en"?`✅ ${l.score}/10 · Badge earned`:`✅ ${l.score}/10 · Badge obtenu`):tried?(lang==="en"?`❌ ${l.score}/10 — Try again to unlock next`:`❌ ${l.score}/10 — Réessaie pour débloquer le suivant`):(lang==="en"?"10 questions · badge 8/10":"10 questions · badge 8/10")}
                 </div>
               </div>
-              <div style={{fontSize:19,fontWeight:900,color:!l.unlocked?"#C8B8D8":isDone?P.green:l.col}}>{!l.unlocked?"🔒":isDone?"✅":"›"}</div>
+              <div style={{fontSize:17,fontWeight:900,color:!l.unlocked?"#C8B8D8":isDone?P.green:l.col}}>{!l.unlocked?"🔒":isDone?"✅":"›"}</div>
             </button>
           );
         })}
       </div>
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -1772,30 +1750,11 @@ function FloatingBg(){
   return(<div className="FL">{el.map(e=><span key={e.id} className="fl" style={{left:`${e.left}%`,fontSize:e.sz,animationDuration:`${e.dur}s`,animationDelay:`${e.delay}s`}}>{e.type}</span>)}</div>);
 }
 
-// ── CONTENEUR PARTAGÉ POUR LES ÉCRANS QUIZ / SITUATION / ÉNIGME ──
-// Corrige une fois pour toutes le défaut structurel : un petit bloc de contenu
-// collé en haut d'un écran 100vh, avec un grand vide avant la nav du bas.
-// `top` (barre retour/score/progression) reste ancré en haut, non centré.
-// `children` (la carte question/situation/énigme/feedback) occupe l'espace
-// disponible et s'y centre verticalement, sans jamais dépasser l'écran :
-// au-delà d'une certaine hauteur de contenu, le conteneur défile normalement
-// plutôt que de forcer un centrage qui pousserait le haut hors champ.
-function ScreenFill({top,children,navSpace=88,padding}){
-  return(
-    <div style={{minHeight:"100dvh",boxSizing:"border-box",display:"flex",flexDirection:"column",padding:padding??`14px 16px ${navSpace}px`}}>
-      {top}
-      <div style={{flex:1,display:"flex",flexDirection:"column"}}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
 function GHdr({title,onBack,score,prog=0,lang}){
   return(
     <div style={{marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-        <button onClick={onBack} style={{background:P.card,border:`2px solid rgba(232,0,61,.25)`,borderRadius:12,padding:"8px 14px",fontSize:13,color:P.red,fontWeight:800,display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
+        <button onClick={onBack} style={{background:"white",border:`2px solid rgba(232,0,61,.25)`,borderRadius:12,padding:"8px 14px",fontSize:13,color:P.red,fontWeight:800,display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
           ← {lang==="en"?"Back":"Retour"}
         </button>
         <h2 className="F" style={{flex:1,margin:0,fontSize:16,fontWeight:700,color:P.text,textAlign:"center"}}>{title}</h2>
@@ -1827,7 +1786,7 @@ function GWin({title,score,max,badge,msg,lang,onHome,onNext,hasNext}){
       </div>
       <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
         {hasNext&&<button onClick={onNext} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"Next level →":"Niveau suivant →"}</button>}
-        <button onClick={onHome} style={{background:P.card,color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"🏠 Home":"🏠 Menu"}</button>
+        <button onClick={onHome} style={{background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:14,padding:"12px 20px",fontSize:14,fontWeight:800}}>{lang==="en"?"🏠 Home":"🏠 Menu"}</button>
       </div>
     </div>
   );
@@ -1844,7 +1803,7 @@ function TRing({secs,onExpire,tkey}){
   const pct=left/secs,r=18,circ=2*Math.PI*r;
   const col=pct>.55?P.green:pct>.28?P.amber:"#FF4444";
   return(
-    <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:8,padding:"7px 11px",background:P.card,borderRadius:14,border:`1.5px solid ${col}22`}}>
+    <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:8,padding:"7px 11px",background:"white",borderRadius:14,border:`1.5px solid ${col}22`}}>
       <svg width="42" height="42" viewBox="0 0 42 42">
         <circle cx="21" cy="21" r={r} fill="none" stroke="#F0E8F8" strokeWidth="3.5"/>
         <circle cx="21" cy="21" r={r} fill="none" stroke={col} strokeWidth="3.5" strokeDasharray={circ} strokeDashoffset={circ*(1-pct)} strokeLinecap="round" transform="rotate(-90 21 21)" style={{transition:"stroke-dashoffset 1s linear,stroke .4s"}}/>
@@ -1860,7 +1819,7 @@ function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
   const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Foundation",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Deepening",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Mastery",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
   return(
     <div style={{padding:"14px 18px 40px"}}>
-      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← {lang==="en"?"Menu":"Menu"}</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"7px 16px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>← {lang==="en"?"Menu":"Menu"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:48,marginBottom:6}}>{gDef.e}</div>
         <h2 className="T" style={{color:"white",fontSize:22,fontWeight:700,margin:"0 0 4px"}}>{gDef.t}</h2>
@@ -1897,695 +1856,135 @@ function JeuAssocie({level,lang,onBack,onBadge,onComplete}){
     else{SND.play("ko");setSt(s=>({...s,sel:null,wrongId:item.id,fb:"ko"}));setTimeout(()=>setSt(s=>({...s,wrongId:null,fb:null})),1200);}
   };
   return st.done?<GWin title={lang==="en"?"🎯 Match It!":"🎯 Associe !"} score={st.score} max={st.items.length*10} badge={lang==="en"?"🎯 Matcher":"🎯 Associatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={<GHdr title={lang==="en"?`🎯 Match It! L${level}`:`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length} lang={lang}/>}>
-      <p style={{textAlign:"center",color:P.muted,fontSize:14,margin:"6px 0 12px",fontWeight:600}}>{st.sel?(lang==="en"?"↓ Tap the correct category ↓":"↓ Appuie sur la bonne catégorie ↓"):(lang==="en"?"Select a card then a category":"Sélectionne une carte puis une catégorie")}</p>
-      {st.fb&&<div className="up" style={{textAlign:"center",fontSize:18,fontWeight:900,color:st.fb==="ok"?P.green:P.amber,marginBottom:10}}>{st.fb==="ok"?(lang==="en"?"🌸 Well done!":"🌸 Bravo !"):(lang==="en"?"💛 Try again!":"💛 Essaie encore !")}</div>}
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🎯 Match It! L${level}`:`🎯 Associe ! N${level}`} onBack={onBack} score={st.score} prog={Object.keys(st.placed).length/st.items.length} lang={lang}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 10px",fontWeight:600}}>{st.sel?(lang==="en"?"↓ Tap the correct category ↓":"↓ Appuie sur la bonne catégorie ↓"):(lang==="en"?"Select a card then a category":"Sélectionne une carte puis une catégorie")}</p>
+      {st.fb&&<div className="up" style={{textAlign:"center",fontSize:17,fontWeight:900,color:st.fb==="ok"?P.green:P.amber,marginBottom:10}}>{st.fb==="ok"?(lang==="en"?"🌸 Well done!":"🌸 Bravo !"):(lang==="en"?"💛 Try again!":"💛 Essaie encore !")}</div>}
       {remaining.length>0&&(
-        <div style={{marginBottom:14}}>
-          <div style={{fontSize:12,color:P.muted,fontWeight:800,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>{lang==="en"?`To sort — ${remaining.length} remaining`:`À classer — ${remaining.length} restant${remaining.length>1?"s":""}`}</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+        <div style={{marginBottom:13}}>
+          <div style={{fontSize:11,color:P.muted,fontWeight:800,textTransform:"uppercase",letterSpacing:.8,marginBottom:7}}>{lang==="en"?`To sort — ${remaining.length} remaining`:`À classer — ${remaining.length} restant${remaining.length>1?"s":""}`}</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
             {remaining.map(item=>{const sel=st.sel===item.id,bad=st.wrongId===item.id;return(
               <button key={item.id} onClick={()=>setSt(s=>({...s,sel:s.sel===item.id?null:item.id}))} className={bad?"shake":""}
-                style={{background:sel?G:bad?"#FFE8E8":"white",border:`2px solid ${sel?"transparent":bad?"#FF6B6B":"#FFD4E8"}`,borderRadius:13,padding:"9px 13px",display:"flex",alignItems:"center",gap:7,fontSize:14.5,fontWeight:sel?800:600,color:sel?"white":P.text,transition:"all .15s"}}>
-                <span style={{fontSize:19}}>{item.e}</span><span>{item.l}</span>
+                style={{background:sel?G:bad?"#FFE8E8":"white",border:`2px solid ${sel?"transparent":bad?"#FF6B6B":"#FFD4E8"}`,borderRadius:13,padding:"7px 11px",display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:sel?800:600,color:sel?"white":P.text,transition:"all .15s"}}>
+                <span style={{fontSize:17}}>{item.e}</span><span>{item.l}</span>
               </button>
             );})}
           </div>
         </div>
       )}
-      <div style={{flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gridAutoRows:"1fr",gap:10,minHeight:140}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
         {d.cats.map((cat,ci)=>{const inCat=st.items.filter(i=>st.placed[i.id]===cat.id);const last=ci===d.cats.length-1&&d.cats.length%2!==0;return(
-          <button key={cat.id} onClick={()=>drop(cat.id)} style={{background:st.sel?cat.bg:"white",border:`2px solid ${st.sel?cat.color:"#FFD4E8"}`,borderRadius:18,padding:"14px 14px",textAlign:"left",cursor:st.sel?"pointer":"default",transition:"all .2s",transform:st.sel?"scale(1.02)":"scale(1)",gridColumn:last?"span 2":"auto"}}>
-            <div style={{fontSize:24,marginBottom:4}}>{cat.e}</div>
-            <div style={{fontWeight:800,fontSize:13,color:cat.color,letterSpacing:.3}}>{cat.label}</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:4,marginTop:6}}>{inCat.map(it=><span key={it.id} className="up" style={{fontSize:17}}>{it.e}</span>)}</div>
-            {inCat.length===0&&<div style={{fontSize:11.5,color:"#D4A0B0",marginTop:4,fontWeight:600}}>{st.sel?(lang==="en"?"Drop here?":"Mettre ici ?"):(lang==="en"?"Empty":"Vide")}</div>}
+          <button key={cat.id} onClick={()=>drop(cat.id)} style={{background:st.sel?cat.bg:"white",border:`2px solid ${st.sel?cat.color:"#FFD4E8"}`,borderRadius:16,padding:"10px 11px",textAlign:"left",cursor:st.sel?"pointer":"default",transition:"all .2s",transform:st.sel?"scale(1.02)":"scale(1)",minHeight:74,gridColumn:last?"span 2":"auto"}}>
+            <div style={{fontSize:19,marginBottom:2}}>{cat.e}</div>
+            <div style={{fontWeight:800,fontSize:11,color:cat.color,letterSpacing:.3}}>{cat.label}</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginTop:4}}>{inCat.map(it=><span key={it.id} className="up" style={{fontSize:14}}>{it.e}</span>)}</div>
+            {inCat.length===0&&<div style={{fontSize:10,color:"#D4A0B0",marginTop:3,fontWeight:600}}>{st.sel?(lang==="en"?"Drop here?":"Mettre ici ?"):(lang==="en"?"Empty":"Vide")}</div>}
           </button>
         );})}
       </div>
-    </ScreenFill>
+    </div>
   );
 }
-
-// ── OÙ ÇA SE PASSE ? (jeu de localisation corporelle) ────────────
-// Remplace l'ancien jeu "3 boutons" par une interaction tactile directe
-// sur la silhouette : on lit une situation, on touche la zone concernée,
-// on reçoit une explication (juste ou fausse réponse). Pas de symptôme
-// forcé dans une case anatomique qui ne lui correspond pas (ex: la
-// fatigue, générale, n'est volontairement pas incluse).
-const BODYMAP_ZONE_LABELS = {
-  tete:{fr:"la tête",en:"the head"},
-  poitrine:{fr:"la poitrine",en:"the chest"},
-  ventre:{fr:"le bas-ventre",en:"the lower belly"},
-  dos:{fr:"le bas du dos",en:"the lower back"},
-  jambes:{fr:"les jambes",en:"the legs"},
-};
-
-const BODYMAP_DATA = {
-  1:[
-    {zones:["ventre"],
-     situation:{fr:"😣 Je ressens des crampes pendant mes règles.",en:"😣 I feel cramps during my period."},
-     hint:{fr:"Pense à la zone située sous le nombril.",en:"Think of the area just below your belly button."},
-     explain:{fr:"Les crampes menstruelles sont souvent ressenties dans le bas-ventre. Elles sont liées aux contractions de l'utérus.",en:"Menstrual cramps are often felt in the lower belly. They're linked to contractions of the uterus."}},
-    {zones:["tete"],
-     situation:{fr:"🤕 J'ai mal à la tête pendant mes règles.",en:"🤕 I have a headache during my period."},
-     hint:{fr:"C'est la partie la plus haute du corps.",en:"It's the highest part of the body."},
-     explain:{fr:"Les variations hormonales du cycle peuvent parfois s'accompagner de maux de tête.",en:"Hormonal changes during the cycle can sometimes come with headaches."}},
-    {zones:["jambes"],
-     situation:{fr:"🦵 Mes jambes semblent lourdes.",en:"🦵 My legs feel heavy."},
-     hint:{fr:"Ce sont les membres qui te permettent de marcher.",en:"These are the limbs you walk with."},
-     explain:{fr:"Une sensation de lourdeur dans les jambes peut arriver avant ou pendant les règles, à cause d'une rétention d'eau.",en:"A heavy feeling in the legs can happen before or during your period, due to water retention."}},
-    {zones:["poitrine"],
-     situation:{fr:"💗 Ma poitrine est plus sensible avant mes règles.",en:"💗 My chest feels more sensitive before my period."},
-     hint:{fr:"C'est la zone du buste, au-dessus du ventre.",en:"It's the area of the chest, above the belly."},
-     explain:{fr:"La sensibilité de la poitrine avant les règles est liée aux variations hormonales du cycle.",en:"Chest sensitivity before your period is linked to hormonal changes in the cycle."}},
-    {zones:["ventre"],
-     situation:{fr:"🌸 J'ai des ballonnements dans le bas-ventre.",en:"🌸 I feel bloated in my lower belly."},
-     hint:{fr:"Encore la zone sous le nombril.",en:"Still the area below the belly button."},
-     explain:{fr:"Les ballonnements sont fréquents avant les règles, liés aux changements hormonaux.",en:"Bloating is common before your period, linked to hormonal changes."}},
-  ],
-  2:[
-    {zones:["dos"],
-     situation:{fr:"Pendant mes règles, je ressens une douleur qui descend parfois vers le bas du dos.",en:"During my period, I sometimes feel pain spreading toward my lower back."},
-     hint:{fr:"C'est la zone à l'arrière du corps, en bas.",en:"It's the area at the back of the body, low down."},
-     explain:{fr:"La douleur menstruelle peut irradier vers le bas du dos, en plus du bas-ventre.",en:"Menstrual pain can radiate toward the lower back, in addition to the lower belly."}},
-    {zones:["poitrine"],
-     situation:{fr:"Mes seins sont sensibles quelques jours avant mes règles.",en:"My breasts feel tender a few days before my period."},
-     hint:{fr:"C'est la zone du buste.",en:"It's the chest area."},
-     explain:{fr:"C'est un signe courant du syndrome prémenstruel (SPM), lié aux hormones.",en:"This is a common sign of premenstrual syndrome (PMS), linked to hormones."}},
-    {zones:["ventre"],
-     situation:{fr:"Je ressens une douleur dans le bas du ventre qui revient au moment de mes règles.",en:"I feel pain in my lower belly that comes back around my period."},
-     hint:{fr:"Sous le nombril.",en:"Below the belly button."},
-     explain:{fr:"C'est la localisation la plus fréquente des douleurs menstruelles.",en:"This is the most common location for menstrual pain."}},
-    {zones:["tete"],
-     situation:{fr:"Mes maux de tête s'intensifient les premiers jours de mes règles.",en:"My headaches get worse in the first days of my period."},
-     hint:{fr:"En haut du corps.",en:"At the top of the body."},
-     explain:{fr:"La chute d'hormones en début de règles peut accentuer les maux de tête chez certaines personnes.",en:"The drop in hormones at the start of your period can make headaches worse for some people."}},
-    {zones:["jambes"],
-     situation:{fr:"Mes jambes semblent engourdies ou picotent pendant mes règles.",en:"My legs feel numb or tingly during my period."},
-     hint:{fr:"Les membres du bas du corps.",en:"The lower limbs."},
-     explain:{fr:"La rétention d'eau et les changements de circulation pendant le cycle peuvent donner cette sensation dans les jambes.",en:"Water retention and circulation changes during the cycle can cause this feeling in the legs."}},
-  ],
-  3:[
-    {zones:["ventre","dos"],
-     situation:{fr:"Je ressens une gêne dans le bas-ventre et le bas du dos. Sélectionne les deux zones.",en:"I feel discomfort in my lower belly and lower back. Select both zones."},
-     hint:{fr:"Une zone à l'avant, une à l'arrière.",en:"One zone at the front, one at the back."},
-     explain:{fr:"Il est fréquent que la douleur menstruelle touche à la fois le bas-ventre et le bas du dos.",en:"It's common for menstrual pain to affect both the lower belly and the lower back."}},
-    {zones:["tete","ventre"],
-     situation:{fr:"Les premiers jours de mes règles, j'ai à la fois mal à la tête et des crampes. Sélectionne les deux zones.",en:"In the first days of my period, I get both a headache and cramps. Select both zones."},
-     hint:{fr:"Une zone en haut, une en bas.",en:"One zone up high, one lower down."},
-     explain:{fr:"Les variations hormonales du début des règles peuvent provoquer plusieurs sensations en même temps, dont des maux de tête et des crampes.",en:"Hormonal shifts at the start of your period can cause several sensations at once, including headaches and cramps."}},
-    {zones:["poitrine","jambes"],
-     situation:{fr:"Quelques jours avant mes règles, ma poitrine est sensible et mes jambes sont lourdes. Sélectionne les deux zones.",en:"A few days before my period, my chest is tender and my legs feel heavy. Select both zones."},
-     hint:{fr:"Une zone en haut du buste, une en bas du corps.",en:"One zone on the upper chest, one on the lower body."},
-     explain:{fr:"Le syndrome prémenstruel peut combiner plusieurs signes : sensibilité de la poitrine et rétention d'eau dans les jambes.",en:"Premenstrual syndrome can combine several signs: chest tenderness and water retention in the legs."}},
-    {zones:["ventre","poitrine"],
-     situation:{fr:"Avant mes règles, mon bas-ventre est ballonné et ma poitrine est sensible. Sélectionne les deux zones.",en:"Before my period, my lower belly feels bloated and my chest is tender. Select both zones."},
-     hint:{fr:"Une zone sous le nombril, une sur le buste.",en:"One zone below the belly button, one on the chest."},
-     explain:{fr:"Ballonnements et sensibilité de la poitrine sont deux signes courants du syndrome prémenstruel.",en:"Bloating and chest tenderness are two common signs of premenstrual syndrome."}},
-    {zones:["dos","jambes"],
-     situation:{fr:"En fin de journée pendant mes règles, j'ai mal au bas du dos et mes jambes sont lourdes. Sélectionne les deux zones.",en:"By the end of the day during my period, my lower back hurts and my legs feel heavy. Select both zones."},
-     hint:{fr:"Une zone à l'arrière, une en bas du corps.",en:"One zone at the back, one on the lower body."},
-     explain:{fr:"La fatigue de la journée peut accentuer la douleur dans le bas du dos et la lourdeur des jambes pendant les règles.",en:"Fatigue from the day can make lower back pain and heavy legs more noticeable during your period."}},
-  ],
-};
 
 function JeuCorps({level,lang,onBack,onBadge,onComplete}){
-  const data=BODYMAP_DATA[level]||BODYMAP_DATA[1];
-  const t=(fr,en)=>lang==="en"?en:fr;
-  const L=obj=>lang==="en"?obj.en:obj.fr;
-  const[idx,setIdx]=useState(0);
-  const[selected,setSelected]=useState(()=>new Set());
-  const[attempts,setAttempts]=useState(0);
-  const[usedHint,setUsedHint]=useState(false);
-  const[showHint,setShowHint]=useState(false);
-  const[feedback,setFeedback]=useState(null); // null | "correct" | "wrong" | "reveal"
-  const[wrongZone,setWrongZone]=useState(null);
-  const[score,setScore]=useState(0);
+  const parts=(lang==="en"?CORPS_DATA_EN:CORPS_DATA)[level-1];
+  const[disc,setDisc]=useState(new Set());
+  const[active,setActive]=useState(null);
   const[done,setDone]=useState(false);
-
-  const cur=data[idx];
-  const req=cur.zones;
-  const isMulti=req.length>1;
-
-  function tapZone(zid){
-    if(feedback==="correct"||feedback==="reveal")return;
-    if(req.includes(zid)&&!selected.has(zid)){
-      const ns=new Set([...selected,zid]);
-      setSelected(ns);
-      if(ns.size===req.length){SND.play("ok");setFeedback("correct");}
-      else SND.play("ok");
-    }else if(!req.includes(zid)){
-      SND.play("ko");setWrongZone(zid);setAttempts(a=>a+1);setFeedback("wrong");
-      setTimeout(()=>setWrongZone(null),500);
-    }
-  }
-  function retry(){setFeedback(null);}
-  function revealAnswer(){setSelected(new Set(req));setFeedback("reveal");}
-  function useHint(){setUsedHint(true);setShowHint(true);}
-  function goNext(){
-    const pts=feedback==="reveal"?0:(attempts===0&&!usedHint?2:1);
-    const ns=score+pts;
-    setScore(ns);
-    if(idx+1>=data.length){
-      setDone(true);
-      onBadge(t(`📍 Repère-toi N${level}`,`📍 Body Mapper L${level}`));
-    }else{
-      setIdx(i=>i+1);setSelected(new Set());setAttempts(0);setUsedHint(false);setShowHint(false);setFeedback(null);setWrongZone(null);
-    }
-  }
-
-  const zoneFill=zid=>{
-    if(feedback==="reveal"&&req.includes(zid))return P.rose;
-    if(selected.has(zid))return P.green;
-    if(wrongZone===zid)return "#FF6B6B";
-    return "#FFD9E4";
-  };
-  const zoneStroke=zid=>{
-    if(feedback==="reveal"&&req.includes(zid))return P.red;
-    if(selected.has(zid))return "#1A7A50";
-    if(wrongZone===zid)return "#E74C3C";
-    return "#FFB3CC";
-  };
-
-  return done?<GWin title={t("📍 Où ça se passe ?","📍 Where Does It Happen?")} score={score} max={data.length*2} badge={t(`📍 Repère-toi N${level}`,`📍 Body Mapper L${level}`)} msg={t("Tu connais de mieux en mieux ton corps ! 🌸","You're getting to know your body better! 🌸")} lang={lang} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={t(`🧩 Mon Corps — N${level}`,`🧩 My Body — L${level}`)} onBack={onBack} score={score} prog={idx/data.length} lang={lang}/>
-        <div style={{textAlign:"center",fontSize:13,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,margin:"2px 0 8px"}}>📍 {t("Où ça se passe ?","Where does it happen?")}</div>
-        <div style={{background:P.card,borderRadius:16,padding:"12px 15px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
-          <p style={{margin:0,fontSize:14.5,fontWeight:700,color:P.text,lineHeight:1.5,textAlign:"center"}}>{L(cur.situation)}</p>
-          {isMulti&&!feedback&&<div style={{textAlign:"center",fontSize:11.5,color:P.muted,fontWeight:700,marginTop:6}}>{selected.size}/{req.length} {t("zones trouvées","zones found")}</div>}
-        </div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-        <svg viewBox="0 0 160 300" style={{display:"block",margin:"0 auto",maxWidth:250,width:"100%",userSelect:"none",filter:"drop-shadow(0 4px 14px #C8102E1E)"}}>
-          <path d="M54 28 Q58 7 80 5 Q102 7 106 28 Q98 16 80 16 Q62 16 54 28Z" fill="#5D3A6A"/>
-          {/* TÊTE */}
-          <g onClick={()=>tapZone("tete")} style={{cursor:"pointer"}}>
-            <circle cx="80" cy="34" r="28" fill={zoneFill("tete")} stroke={zoneStroke("tete")} strokeWidth="2.5"/>
-            <circle cx="71" cy="31" r="2.5" fill="#5D3A6A" opacity=".65"/><circle cx="89" cy="31" r="2.5" fill="#5D3A6A" opacity=".65"/>
-            <path d="M71 41 Q80 48 89 41" stroke="#5D3A6A" strokeWidth="1.8" fill="none" strokeLinecap="round" opacity=".65"/>
-            {selected.has("tete")&&<text x="80" y="39" textAnchor="middle" fontSize="15" fill="white" style={{pointerEvents:"none"}}>✓</text>}
+  const tap=id=>{SND.play("ok");setActive(id);const nd=new Set([...disc,id]);setDisc(nd);if(nd.size===parts.length&&!done)setTimeout(()=>{setDone(true);onBadge(lang==="en"?`🧩 Explorer L${level}`:`🧩 Exploratrice N${level}`);},600);};
+  const gc=id=>{const p=parts.find(x=>x.id===id);if(!p)return"#FFD4E8";if(active===id)return p.color;if(disc.has(id))return p.color+"99";return"#FFD4E8";};
+  const gs=id=>disc.has(id)?(parts.find(x=>x.id===id)?.color||"#FFB3CC"):"#FFB3CC";
+  const ap=parts.find(p=>p.id===active);
+  const showU=level===3;
+  return done?<GWin title={lang==="en"?"🧩 My Body!":"🧩 Mon Corps !"} score={disc.size*10} max={parts.length*10} badge={lang==="en"?"🧩 Body Explorer":"🧩 Exploratrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🧩 My Body L${level}`:`🧩 Mon Corps N${level}`} onBack={onBack} prog={disc.size/parts.length} lang={lang}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"6px 0 8px",fontWeight:600}}>{lang==="en"?"Tap each body part to discover it! ✨":"Appuie sur chaque partie pour la découvrir ! ✨"}</p>
+      <svg viewBox="0 0 160 285" style={{display:"block",margin:"0 auto",maxWidth:185,width:"100%",userSelect:"none",filter:"drop-shadow(0 4px 12px #C8102E18)"}}>
+        <path d="M54 28 Q58 7 80 5 Q102 7 106 28 Q98 16 80 16 Q62 16 54 28Z" fill="#5D3A6A"/>
+        <g onClick={()=>parts.find(p=>p.id==="tete")&&tap("tete")} style={{cursor:"pointer"}}>
+          <circle cx="80" cy="33" r="27" fill={gc("tete")} stroke={gs("tete")} strokeWidth="2.5"/>
+          <circle cx="72" cy="30" r="2.5" fill="#5D3A6A" opacity=".75"/><circle cx="88" cy="30" r="2.5" fill="#5D3A6A" opacity=".75"/>
+          <path d="M72 39 Q80 46 88 39" stroke="#5D3A6A" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+          {!disc.has("tete")&&<circle cx="80" cy="33" r="10" fill={P.rose} className="pulse" style={{transformOrigin:"80px 33px"}}/>}
+          {disc.has("tete")&&<text x="80" y="37" textAnchor="middle" fontSize="14" fill="white" style={{pointerEvents:"none"}}>✓</text>}
+        </g>
+        <rect x="74" y="60" width="12" height="9" rx="4" fill="#FFD4E8" stroke="#FFB3CC" strokeWidth="1.5"/>
+        {parts.find(p=>p.id==="poitrine")&&(
+          <g onClick={()=>tap("poitrine")} style={{cursor:"pointer"}}>
+            <path d="M55 68 Q46 77 46 93 Q46 106 53 110 Q66 114 80 114 Q94 114 107 110 Q114 106 114 93 Q114 77 105 68 Q93 63 80 63 Q67 63 55 68Z" fill={gc("poitrine")} stroke={gs("poitrine")} strokeWidth="2"/>
+            {!disc.has("poitrine")&&<circle cx="80" cy="87" r="9" fill={P.purple} className="pulse" style={{transformOrigin:"80px 87px"}}/>}
+            {disc.has("poitrine")&&<text x="80" y="91" textAnchor="middle" fontSize="14" fill="white" style={{pointerEvents:"none"}}>✓</text>}
           </g>
-          <rect x="74" y="62" width="12" height="10" rx="4" fill="#FFD4E8"/>
-          {/* POITRINE */}
-          <g onClick={()=>tapZone("poitrine")} style={{cursor:"pointer"}}>
-            <path d="M53 70 Q44 80 44 97 Q44 110 52 114 Q66 118 80 118 Q94 118 108 114 Q116 110 116 97 Q116 80 107 70 Q93 65 80 65 Q67 65 53 70Z" fill={zoneFill("poitrine")} stroke={zoneStroke("poitrine")} strokeWidth="2.5"/>
-            {selected.has("poitrine")&&<text x="80" y="96" textAnchor="middle" fontSize="16" fill="white" style={{pointerEvents:"none"}}>✓</text>}
-          </g>
-          {/* DOS / FLANCS (approximation visible depuis l'avant) */}
-          <g onClick={()=>tapZone("dos")} style={{cursor:"pointer"}}>
-            <rect x="34" y="118" width="12" height="34" rx="6" fill={zoneFill("dos")} stroke={zoneStroke("dos")} strokeWidth="2"/>
-            <rect x="114" y="118" width="12" height="34" rx="6" fill={zoneFill("dos")} stroke={zoneStroke("dos")} strokeWidth="2"/>
-            {selected.has("dos")&&<text x="40" y="139" textAnchor="middle" fontSize="10" fill="white" style={{pointerEvents:"none"}}>✓</text>}
-          </g>
-          {/* VENTRE / BAS-VENTRE */}
-          <g onClick={()=>tapZone("ventre")} style={{cursor:"pointer"}}>
-            <path d="M48 116 Q46 130 48 142 Q54 150 80 150 Q106 150 112 142 Q114 130 112 116 Q96 122 80 122 Q64 122 48 116Z" fill={zoneFill("ventre")} stroke={zoneStroke("ventre")} strokeWidth="2.5"/>
-            {selected.has("ventre")&&<text x="80" y="138" textAnchor="middle" fontSize="15" fill="white" style={{pointerEvents:"none"}}>✓</text>}
-          </g>
-          {/* BRAS (décoratifs, non interactifs) */}
-          <path d="M51 72 Q39 80 33 104 Q29 124 33 138 Q39 144 45 136 Q49 120 51 97 Q53 80 55 72Z" fill="#FFE0EC" stroke="#FFC0D8" strokeWidth="1.5"/>
-          <path d="M109 72 Q121 80 127 104 Q131 124 127 138 Q121 144 115 136 Q111 120 109 97 Q107 80 105 72Z" fill="#FFE0EC" stroke="#FFC0D8" strokeWidth="1.5"/>
-          {/* JAMBES */}
-          <g onClick={()=>tapZone("jambes")} style={{cursor:"pointer"}}>
-            <path d="M50 150 Q46 172 44 198 Q42 226 44 250 Q46 265 57 267 Q68 267 70 253 Q72 226 72 196 Q72 170 70 150Z" fill={zoneFill("jambes")} stroke={zoneStroke("jambes")} strokeWidth="2.5"/>
-            <path d="M110 150 Q114 172 116 198 Q118 226 116 250 Q114 265 103 267 Q92 267 90 253 Q88 226 88 196 Q88 170 90 150Z" fill={zoneFill("jambes")} stroke={zoneStroke("jambes")} strokeWidth="2.5"/>
-            {selected.has("jambes")&&<text x="57" y="212" textAnchor="middle" fontSize="14" fill="white" style={{pointerEvents:"none"}}>✓</text>}
-          </g>
-        </svg>
-
-        {!feedback&&(
-          <div style={{textAlign:"center",marginTop:10}}>
-            {!showHint?(
-              <button onClick={useHint} style={{background:"transparent",border:`1.5px dashed ${P.amber}`,color:P.amber,borderRadius:50,padding:"7px 16px",fontSize:12.5,fontWeight:700,cursor:"pointer"}}>💡 {t("Indice","Hint")}</button>
-            ):(
-              <div style={{fontSize:12.5,color:P.amber,fontWeight:700,background:P.amberSoft,borderRadius:12,padding:"8px 14px",display:"inline-block"}}>💡 {L(cur.hint)}</div>
-            )}
-          </div>
         )}
-
-        {feedback==="correct"&&(
-          <div className="up" style={{marginTop:14,padding:"14px 16px",borderRadius:16,background:"rgba(61,190,130,.1)",border:`1.5px solid ${P.green}`,textAlign:"center"}}>
-            <div style={{fontSize:16,fontWeight:900,color:"#18a044",marginBottom:6}}>✨ {t("Bien joué !","Well done!")}</div>
-            <p style={{fontSize:13.5,color:P.text,lineHeight:1.6,margin:"0 0 12px"}}>{L(cur.explain)}</p>
-            <button onClick={goNext} style={{width:"100%",background:G,border:"none",borderRadius:50,padding:"12px",color:"white",fontWeight:800,fontSize:14.5,cursor:"pointer"}}>{t("Continuer →","Continue →")}</button>
-          </div>
+        <g onClick={()=>tap("ventre")} style={{cursor:"pointer"}}>
+          <path d="M46 108 Q45 122 47 133 Q53 142 80 142 Q107 142 113 133 Q115 122 114 108 Q94 114 80 114 Q66 114 46 108Z" fill={gc("ventre")} stroke={gs("ventre")} strokeWidth="2"/>
+          {!disc.has("ventre")&&<circle cx="80" cy="124" r="9" fill={P.coral} className="pulse" style={{transformOrigin:"80px 124px"}}/>}
+          {disc.has("ventre")&&<text x="80" y="128" textAnchor="middle" fontSize="14" fill="white" style={{pointerEvents:"none"}}>✓</text>}
+        </g>
+        {showU&&(<>
+          <g onClick={()=>tap("uterus")} style={{cursor:"pointer"}}>
+            <ellipse cx="80" cy="132" rx="10" ry="7" fill={gc("uterus")} stroke={gs("uterus")} strokeWidth="1.5"/>
+            {!disc.has("uterus")&&<circle cx="80" cy="132" r="5" fill={P.red} className="pulse" style={{transformOrigin:"80px 132px"}}/>}
+            {disc.has("uterus")&&<text x="80" y="136" textAnchor="middle" fontSize="8" fill="white" style={{pointerEvents:"none"}}>✓</text>}
+          </g>
+          <g onClick={()=>tap("ovaires")} style={{cursor:"pointer"}}>
+            <circle cx="66" cy="130" r="5" fill={gc("ovaires")} stroke={gs("ovaires")} strokeWidth="1.5"/>
+            <circle cx="94" cy="130" r="5" fill={gc("ovaires")} stroke={gs("ovaires")} strokeWidth="1.5"/>
+            {!disc.has("ovaires")&&<circle cx="66" cy="130" r="3" fill={P.amber} className="pulse" style={{transformOrigin:"66px 130px"}}/>}
+          </g>
+        </>)}
+        {parts.find(p=>p.id==="bras")&&(
+          <g onClick={()=>tap("bras")} style={{cursor:"pointer"}}>
+            <path d="M51 68 Q39 75 33 98 Q29 117 33 130 Q39 136 45 128 Q49 113 51 91 Q53 75 55 68Z" fill={gc("bras")} stroke={gs("bras")} strokeWidth="2"/>
+            <path d="M109 68 Q121 75 127 98 Q131 117 127 130 Q121 136 115 128 Q111 113 109 91 Q107 75 105 68Z" fill={gc("bras")} stroke={gs("bras")} strokeWidth="2"/>
+            {!disc.has("bras")&&<circle cx="37" cy="102" r="8" fill={P.blue} className="pulse" style={{transformOrigin:"37px 102px"}}/>}
+            {disc.has("bras")&&<text x="37" y="106" textAnchor="middle" fontSize="12" fill="white" style={{pointerEvents:"none"}}>✓</text>}
+          </g>
         )}
-        {feedback==="wrong"&&(
-          <div className="up" style={{marginTop:14,padding:"14px 16px",borderRadius:16,background:"rgba(245,166,35,.1)",border:`1.5px solid ${P.amber}`,textAlign:"center"}}>
-            <div style={{fontSize:15,fontWeight:900,color:P.amber,marginBottom:6}}>{t("Pas exactement 💡","Not quite 💡")}</div>
-            <p style={{fontSize:13.5,color:P.text,lineHeight:1.6,margin:"0 0 12px"}}>{L(cur.explain)}</p>
-            <button onClick={attempts>=2?revealAnswer:retry} style={{width:"100%",background:attempts>=2?"transparent":G,border:attempts>=2?`2px solid ${P.red}`:"none",color:attempts>=2?P.red:"white",borderRadius:50,padding:"12px",fontWeight:800,fontSize:14.5,cursor:"pointer"}}>{attempts>=2?t("Voir la réponse","See the answer"):t("Réessayer","Try again")}</button>
-          </div>
-        )}
-        {feedback==="reveal"&&(
-          <div className="up" style={{marginTop:14,padding:"14px 16px",borderRadius:16,background:P.roseSoft,border:`1.5px solid ${P.rose}`,textAlign:"center"}}>
-            <div style={{fontSize:14.5,fontWeight:800,color:P.red,marginBottom:6}}>{t("La bonne réponse était :","The correct answer was:")} {req.map(z=>BODYMAP_ZONE_LABELS[z][lang==="en"?"en":"fr"]).join(t(" et "," and "))}</div>
-            <p style={{fontSize:13.5,color:P.text,lineHeight:1.6,margin:"0 0 12px"}}>{L(cur.explain)}</p>
-            <button onClick={goNext} style={{width:"100%",background:G,border:"none",borderRadius:50,padding:"12px",color:"white",fontWeight:800,fontSize:14.5,cursor:"pointer"}}>{t("Continuer →","Continue →")}</button>
-          </div>
-        )}
+        <g onClick={()=>tap("jambes")} style={{cursor:"pointer"}}>
+          <path d="M50 140 Q46 158 44 180 Q42 204 44 224 Q46 237 56 239 Q66 239 68 227 Q70 204 70 178 Q70 156 68 140Z" fill={gc("jambes")} stroke={gs("jambes")} strokeWidth="2"/>
+          <path d="M110 140 Q114 158 116 180 Q118 204 116 224 Q114 237 104 239 Q94 239 92 227 Q90 204 90 178 Q90 156 92 140Z" fill={gc("jambes")} stroke={gs("jambes")} strokeWidth="2"/>
+          {!disc.has("jambes")&&<circle cx="56" cy="188" r="8" fill={P.green} className="pulse" style={{transformOrigin:"56px 188px"}}/>}
+          {disc.has("jambes")&&<text x="56" y="192" textAnchor="middle" fontSize="12" fill="white" style={{pointerEvents:"none"}}>✓</text>}
+        </g>
+      </svg>
+      {ap&&<div key={ap.id} className="up" style={{background:"white",borderRadius:18,padding:"12px 14px",border:`2px solid ${ap.color}`,boxShadow:`0 4px 18px ${ap.color}28`,margin:"8px 0 10px"}}><div style={{fontWeight:800,fontSize:14,color:ap.color,marginBottom:3}}>{ap.icon} {ap.label}</div><div style={{fontSize:12,color:P.text,lineHeight:1.6,fontWeight:600}}>{ap.info}</div></div>}
+      <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
+        {parts.map(p=><button key={p.id} onClick={()=>tap(p.id)} style={{background:disc.has(p.id)?p.color:"white",color:disc.has(p.id)?"white":P.muted,border:`1.5px solid ${disc.has(p.id)?p.color:"#FFD4E8"}`,borderRadius:18,padding:"5px 12px",fontSize:11,fontWeight:700,transition:"all .2s"}}>{disc.has(p.id)?"✓ ":""}{p.label}</button>)}
       </div>
-    </ScreenFill>
+    </div>
   );
 }
-// ── TROUVE L'ERREUR ──────────────────────────────────────────────
-// Une scène = une liste d'éléments (icône + libellé). Certains sont
-// incorrects. On les touche directement, pas de QCM. Chaque erreur
-// trouvée donne une explication courte ; toucher un élément correct
-// ne pénalise pas, juste une relance douce.
-const ERR_SCENES={
-  1:[ // N1 — 1 erreur par scène
-    {title:{fr:"🛁 Dans la salle de bain",en:"🛁 In the bathroom"},errorCount:1,items:[
-      {id:1,icon:"🧼",label:{fr:"Savon",en:"Soap"},wrong:false},
-      {id:2,icon:"🚿",label:{fr:"Douche",en:"Shower"},wrong:false},
-      {id:3,icon:"🚽",label:{fr:"Serviette hygiénique jetée dans les toilettes",en:"Pad thrown into the toilet"},wrong:true,
-       explain:{fr:"Les serviettes hygiéniques ne doivent pas être jetées dans les toilettes : elles peuvent boucher les canalisations. Elles vont à la poubelle, bien enveloppées.",en:"Pads shouldn't be flushed down the toilet: they can clog the pipes. They go in the bin, wrapped up."}},
-      {id:4,icon:"🗑️",label:{fr:"Poubelle",en:"Trash can"},wrong:false},
-      {id:5,icon:"🧻",label:{fr:"Papier toilette",en:"Toilet paper"},wrong:false},
-      {id:6,icon:"📦",label:{fr:"Serviette hygiénique bien emballée dans la poubelle",en:"Pad properly wrapped in the bin"},wrong:false},
-    ]},
-    {title:{fr:"🎒 Le sac d'école",en:"🎒 The school bag"},errorCount:1,items:[
-      {id:1,icon:"📓",label:{fr:"Cahier",en:"Notebook"},wrong:false},
-      {id:2,icon:"🩸",label:{fr:"Serviette hygiénique de rechange",en:"Spare pad"},wrong:false},
-      {id:3,icon:"🧻",label:{fr:"Mouchoirs",en:"Tissues"},wrong:false},
-      {id:4,icon:"🧦",label:{fr:"Chaussette utilisée comme protection de secours",en:"Sock used as an emergency pad"},wrong:true,
-       explain:{fr:"Une chaussette n'est pas conçue pour absorber le flux menstruel et n'est pas hygiénique. Mieux vaut emporter une vraie protection ou en emprunter une à quelqu'un de confiance.",en:"A sock isn't designed to absorb menstrual flow and isn't hygienic. It's better to carry a real pad or borrow one from someone you trust."}},
-      {id:5,icon:"🖊️",label:{fr:"Stylo",en:"Pen"},wrong:false},
-      {id:6,icon:"🩲",label:{fr:"Sous-vêtement de rechange",en:"Spare underwear"},wrong:false},
-    ]},
-  ],
-  2:[ // N2 — 2 erreurs par scène
-    {title:{fr:"🚻 Les toilettes de l'école",en:"🚻 The school restrooms"},errorCount:2,items:[
-      {id:1,icon:"🧻",label:{fr:"Papier toilette disponible",en:"Toilet paper available"},wrong:false},
-      {id:2,icon:"🚽",label:{fr:"Serviette hygiénique jetée dans la cuvette",en:"Pad thrown into the bowl"},wrong:true,
-       explain:{fr:"Une serviette jetée dans les toilettes peut boucher les canalisations : elle doit aller à la poubelle.",en:"A pad thrown in the toilet can clog the pipes: it belongs in the bin."}},
-      {id:3,icon:"🗑️",label:{fr:"Poubelle avec couvercle",en:"Bin with a lid"},wrong:false},
-      {id:4,icon:"💬",label:{fr:"Une élève se moque d'une autre qui a taché son uniforme",en:"A student mocks another for staining her uniform"},wrong:true,
-       explain:{fr:"Se moquer d'une tache de règles blesse la personne concernée. Mieux vaut l'aider discrètement ou ne rien dire du tout.",en:"Mocking a period stain hurts the person involved. It's better to help quietly or say nothing at all."}},
-      {id:5,icon:"💧",label:{fr:"Lavabo et savon disponibles",en:"Sink and soap available"},wrong:false},
-      {id:6,icon:"🩸",label:{fr:"Distributeur de protections",en:"Pad dispenser"},wrong:false},
-    ]},
-    {title:{fr:"🩸 Une journée de règles",en:"🩸 A day on your period"},errorCount:2,items:[
-      {id:1,icon:"🔁",label:{fr:"Garder la même protection toute la journée sans jamais la changer",en:"Keep the same pad all day without ever changing it"},wrong:true,
-       explain:{fr:"Il est recommandé de changer sa protection régulièrement (environ toutes les 4 à 6 heures) pour rester à l'aise et limiter les risques d'infection.",en:"It's recommended to change your pad regularly (roughly every 4 to 6 hours) to stay comfortable and limit the risk of infection."}},
-      {id:2,icon:"💧",label:{fr:"Boire de l'eau régulièrement",en:"Drink water regularly"},wrong:false},
-      {id:3,icon:"🏃",label:{fr:"Continuer ses activités si elle se sent bien",en:"Keep doing her activities if she feels fine"},wrong:false},
-      {id:4,icon:"🙅",label:{fr:"S'interdire totalement de faire du sport",en:"Completely ban herself from doing sports"},wrong:true,
-       explain:{fr:"Faire du sport pendant les règles n'est pas interdit : chacune choisit selon comment elle se sent.",en:"Exercising during your period isn't forbidden: everyone chooses based on how they feel."}},
-      {id:5,icon:"🛌",label:{fr:"Se reposer si elle en a besoin",en:"Rest if she needs to"},wrong:false},
-      {id:6,icon:"🧻",label:{fr:"Avoir une protection de rechange sur elle",en:"Carry a spare pad"},wrong:false},
-    ]},
-  ],
-  3:[ // N3 — 3 erreurs par scène
-    {title:{fr:"🏫 Un espace partagé",en:"🏫 A shared space"},errorCount:3,items:[
-      {id:1,icon:"🗣️",label:{fr:"Parler fort des règles d'une camarade sans son accord",en:"Loudly discuss a classmate's period without her consent"},wrong:true,
-       explain:{fr:"La santé menstruelle d'une personne est privée. En parler fort sans son accord ne respecte pas sa vie privée.",en:"A person's menstrual health is private. Talking about it loudly without her consent doesn't respect her privacy."}},
-      {id:2,icon:"🩸",label:{fr:"Prêter discrètement une protection à une camarade qui en a besoin",en:"Quietly lend a pad to a classmate who needs one"},wrong:false},
-      {id:3,icon:"📱",label:{fr:"Prendre en photo une tache sur les vêtements de quelqu'un pour la partager",en:"Take a photo of a stain on someone's clothes to share it"},wrong:true,
-       explain:{fr:"Photographier et partager une tache de règles humilie la personne concernée. Ce n'est jamais acceptable.",en:"Photographing and sharing a period stain humiliates the person involved. This is never acceptable."}},
-      {id:4,icon:"🧴",label:{fr:"Nécessaire d'hygiène accessible à toutes",en:"Hygiene basics accessible to everyone"},wrong:false},
-      {id:5,icon:"😠",label:{fr:"Se plaindre bruyamment qu'une camarade \"sent les règles\"",en:"Loudly complain that a classmate \"smells like her period\""},wrong:true,
-       explain:{fr:"Ce type de remarque est stigmatisant et blessant. Les règles sont un phénomène naturel, pas quelque chose à pointer du doigt.",en:"This kind of remark is stigmatizing and hurtful. Periods are natural — not something to call out."}},
-      {id:6,icon:"🤝",label:{fr:"Proposer de l'aide sans jugement",en:"Offer help without judgment"},wrong:false},
-    ]},
-    {title:{fr:"💗 Respect entre camarades",en:"💗 Respect among classmates"},errorCount:3,items:[
-      {id:1,icon:"💬",label:{fr:"Partager une confidence intime d'une amie sans son accord",en:"Share a friend's intimate confidence without her consent"},wrong:true,
-       explain:{fr:"Une confidence mérite d'être respectée. La partager sans accord trahit la confiance de la personne.",en:"A confidence deserves to be respected. Sharing it without consent betrays that person's trust."}},
-      {id:2,icon:"🤗",label:{fr:"Écouter une amie qui a besoin d'en parler",en:"Listen to a friend who needs to talk"},wrong:false},
-      {id:3,icon:"😏",label:{fr:"Se moquer du corps ou du poids d'une camarade",en:"Mock a classmate's body or weight"},wrong:true,
-       explain:{fr:"Se moquer du corps de quelqu'un peut avoir un impact durable sur sa confiance en elle. Le respect du corps de chacune est essentiel.",en:"Mocking someone's body can have a lasting impact on their self-confidence. Respecting everyone's body matters."}},
-      {id:4,icon:"🙋",label:{fr:"Défendre une amie moquée par d'autres",en:"Stand up for a friend being mocked by others"},wrong:false},
-      {id:5,icon:"📵",label:{fr:"Publier une rumeur sur une camarade sur les réseaux sociaux",en:"Post a rumor about a classmate on social media"},wrong:true,
-       explain:{fr:"Publier une rumeur peut gravement nuire à la réputation et au bien-être de la personne concernée.",en:"Posting a rumor can seriously harm the reputation and wellbeing of the person involved."}},
-      {id:6,icon:"💗",label:{fr:"Complimenter sincèrement une amie",en:"Sincerely compliment a friend"},wrong:false},
-    ]},
-  ],
-};
 
-function JeuErreur({level,lang,onBack,onBadge,onComplete}){
-  const t=(fr,en)=>lang==="en"?en:fr;
-  const L=obj=>lang==="en"?obj.en:obj.fr;
-  const scenes=ERR_SCENES[level]||ERR_SCENES[1];
-  const[sceneIdx,setSceneIdx]=useState(0);
-  const[found,setFound]=useState(()=>new Set());
-  const[toast,setToast]=useState(null); // {ok:bool, text, explain}
-  const[sceneDone,setSceneDone]=useState(false);
-  const[score,setScore]=useState(0);
-  const[done,setDone]=useState(false);
-
-  const scene=scenes[sceneIdx];
-  const totalErrors=scenes.reduce((s,sc)=>s+sc.errorCount,0);
-
-  function tapItem(item){
-    if(sceneDone)return;
-    if(item.wrong){
-      if(found.has(item.id))return;
-      SND.play("ok");
-      const nf=new Set([...found,item.id]);setFound(nf);
-      setScore(s=>s+15);
-      setToast({ok:true,text:t("✓ Bien vu !","✓ Well spotted!"),explain:L(item.explain)});
-      if(nf.size===scene.errorCount)setTimeout(()=>setSceneDone(true),350);
-    }else{
-      SND.play("ko");
-      setToast({ok:false,text:t("Ce n'est pas une erreur 💡","Not a mistake 💡"),explain:t("Continue à chercher.","Keep looking.")});
-    }
-  }
-  function nextScene(){
-    if(sceneIdx+1>=scenes.length){
-      setDone(true);
-      onBadge(t(`🔎 Œil de Lynx N${level}`,`🔎 Sharp Eye L${level}`));
-    }else{
-      setSceneIdx(i=>i+1);setFound(new Set());setToast(null);setSceneDone(false);
-    }
-  }
-
-  return done?<GWin title={t("🔎 Trouve l'erreur !","🔎 Find the Mistake!")} score={score} max={totalErrors*15} badge={t(`🔎 Œil de Lynx N${level}`,`🔎 Sharp Eye L${level}`)} msg={t("Tu repères de mieux en mieux ce qui ne va pas ! 🌸","You're getting better at spotting what's off! 🌸")} lang={lang} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={t(`🔎 Trouve l'erreur — N${level}`,`🔎 Find the Mistake — L${level}`)} onBack={onBack} score={score} prog={(sceneIdx+(sceneDone?1:0))/scenes.length} lang={lang}/>
-        <div style={{textAlign:"center",fontSize:14.5,fontWeight:800,color:P.text,margin:"2px 0 6px"}}>{L(scene.title)}</div>
-        <div style={{textAlign:"center",fontSize:12.5,color:P.muted,fontWeight:700,marginBottom:8}}>
-          🔎 {t(`Trouve ${scene.errorCount===1?"l'erreur":`les ${scene.errorCount} erreurs`}`,`Find ${scene.errorCount===1?"the mistake":`the ${scene.errorCount} mistakes`}`)} · {found.size}/{scene.errorCount}
-        </div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-        {!sceneDone?(
-          <>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
-              {scene.items.map(item=>{
-                const isFound=item.wrong&&found.has(item.id);
-                return(
-                  <button key={item.id} onClick={()=>tapItem(item)} disabled={isFound} style={{background:isFound?P.greenSoft:"white",border:`2px solid ${isFound?P.green:"#FFD4E8"}`,borderRadius:16,padding:"14px 10px",textAlign:"center",cursor:isFound?"default":"pointer",transition:"all .2s"}}>
-                    <div style={{fontSize:30,marginBottom:6}}>{isFound?"✅":item.icon}</div>
-                    <div style={{fontSize:11.5,fontWeight:700,color:isFound?P.green:P.text,lineHeight:1.3}}>{L(item.label)}</div>
-                  </button>
-                );
-              })}
-            </div>
-            {toast&&(
-              <div className="up" style={{marginTop:14,padding:"12px 15px",borderRadius:14,background:toast.ok?"rgba(61,190,130,.1)":"rgba(245,166,35,.1)",border:`1.5px solid ${toast.ok?P.green:P.amber}`}}>
-                <div style={{fontSize:13.5,fontWeight:900,color:toast.ok?"#18a044":P.amber,marginBottom:4}}>{toast.text}</div>
-                <div style={{fontSize:12.5,color:P.text,lineHeight:1.55}}>{toast.explain}</div>
-              </div>
-            )}
-          </>
-        ):(
-          <div className="up" style={{background:P.card,borderRadius:22,padding:"26px 22px",textAlign:"center",border:`2px solid ${P.green}`,boxShadow:"0 8px 26px rgba(61,190,130,.18)"}}>
-            <div style={{fontSize:46,marginBottom:10}}>✅</div>
-            <div className="T" style={{fontSize:17,fontWeight:900,color:"#18a044",marginBottom:14}}>{t("Scène terminée !","Scene complete!")}</div>
-            <p style={{fontSize:13.5,color:P.text,lineHeight:1.6,margin:"0 0 18px"}}>{t(`Tu as trouvé ${scene.errorCount===1?"l'erreur":`les ${scene.errorCount} erreurs`}.`,`You found ${scene.errorCount===1?"the mistake":`all ${scene.errorCount} mistakes`}.`)}</p>
-            <button onClick={nextScene} style={{width:"100%",background:G,border:"none",borderRadius:50,padding:"13px",color:"white",fontWeight:800,fontSize:15,cursor:"pointer"}}>{t("Continuer →","Continue →")}</button>
-          </div>
-        )}
-      </div>
-    </ScreenFill>
-  );
-}
-// ── PRÉPARE TON SAC ───────────────────────────────────────────────
-// Toucher simple plutôt que drag & drop, pour rester fiable sur mobile.
-// Les objets utiles rejoignent le sac ; les autres ne sont jamais
-// présentés comme "mauvais", juste comme non indispensables ici.
-const SAC_DATA={
-  1:{situation:{fr:"🎒 Tu vas passer toute la journée à l'école. Tes règles peuvent commencer. Que mets-tu dans ton sac ?",en:"🎒 You're spending the whole day at school. Your period could start. What do you put in your bag?"},
-    items:[
-      {id:1,icon:"🩸",label:{fr:"Serviette hygiénique",en:"Pad"},useful:true,explain:{fr:"Toujours utile pour être prête, peu importe le jour où les règles arrivent.",en:"Always useful to be ready, no matter which day your period arrives."}},
-      {id:2,icon:"🧻",label:{fr:"Mouchoirs",en:"Tissues"},useful:true,explain:{fr:"Pratiques pour se sécher les mains ou en cas de petit accident.",en:"Handy for drying your hands or for a small accident."}},
-      {id:3,icon:"🩲",label:{fr:"Sous-vêtement de rechange",en:"Spare underwear"},useful:true,explain:{fr:"Rassurant en cas de fuite inattendue.",en:"Reassuring in case of an unexpected leak."}},
-      {id:4,icon:"🧼",label:{fr:"Savon",en:"Soap"},useful:false,explain:{fr:"Utile en général, mais souvent déjà disponible dans les toilettes de l'école.",en:"Useful in general, but often already available in the school restrooms."}},
-      {id:5,icon:"💧",label:{fr:"Eau",en:"Water"},useful:false,explain:{fr:"Toujours bien de s'hydrater, mais pas spécifique à la préparation pour tes règles.",en:"Always good to stay hydrated, but not specific to preparing for your period."}},
-      {id:6,icon:"📱",label:{fr:"Téléphone",en:"Phone"},useful:false,explain:{fr:"Utile pour la journée, mais ça ne t'aide pas à gérer tes règles.",en:"Useful for the day, but it doesn't help you manage your period."}},
-      {id:7,icon:"🍬",label:{fr:"Bonbons",en:"Candy"},useful:false,explain:{fr:"Sympa comme petit plaisir, mais pas indispensable ici.",en:"Nice as a small treat, but not essential here."}},
-    ]},
-  2:{situation:{fr:"🧳 Tu pars en voyage de plusieurs jours pendant tes règles. Que mets-tu dans ton sac ?",en:"🧳 You're leaving on a multi-day trip during your period. What do you put in your bag?"},
-    items:[
-      {id:1,icon:"🩸",label:{fr:"Protections en quantité suffisante",en:"Enough pads/tampons for the trip"},useful:true,explain:{fr:"Pour plusieurs jours, il vaut mieux prévoir large : tu ne sais pas toujours si tu pourras en racheter facilement.",en:"For several days, it's better to pack extra: you might not always be able to buy more easily."}},
-      {id:2,icon:"🩲",label:{fr:"Sous-vêtements de rechange",en:"Spare underwear"},useful:true,explain:{fr:"Toujours rassurant en voyage, surtout pendant les règles.",en:"Always reassuring while traveling, especially during your period."}},
-      {id:3,icon:"🧴",label:{fr:"Trousse de toilette (savon, mouchoirs)",en:"Toiletry bag (soap, tissues)"},useful:true,explain:{fr:"En voyage, tu n'as pas toujours accès à ce qu'il faut : mieux vaut l'avoir sur toi.",en:"While traveling you don't always have access to what you need: better to bring it along."}},
-      {id:4,icon:"💧",label:{fr:"Bouteille d'eau",en:"Water bottle"},useful:false,explain:{fr:"Bonne idée pour le voyage en général, mais pas spécifique à tes règles.",en:"A good idea for the trip in general, but not specific to your period."}},
-      {id:5,icon:"🎧",label:{fr:"Écouteurs",en:"Headphones"},useful:false,explain:{fr:"Agréable pour le trajet, mais ça ne concerne pas tes règles.",en:"Nice for the ride, but it's not about your period."}},
-      {id:6,icon:"🍫",label:{fr:"Collation",en:"Snack"},useful:false,explain:{fr:"Toujours pratique en voyage, mais pas indispensable ici.",en:"Always handy while traveling, but not essential here."}},
-      {id:7,icon:"📖",label:{fr:"Livre",en:"Book"},useful:false,explain:{fr:"Sympa pour le trajet, sans lien avec la préparation pour tes règles.",en:"Nice for the ride, unrelated to preparing for your period."}},
-    ]},
-  3:{situation:{fr:"🥾 Tu pars pour une sortie en plein air qui dure toute la journée, pendant tes règles. Que mets-tu dans ton sac ?",en:"🥾 You're heading out for an all-day outdoor activity during your period. What do you put in your bag?"},
-    items:[
-      {id:1,icon:"🩸",label:{fr:"Protection adaptée à l'activité",en:"A pad/product suited to the activity"},useful:true,explain:{fr:"Pour une activité physique toute la journée, mieux vaut une protection dans laquelle tu te sens à l'aise pour bouger.",en:"For a full day of physical activity, it's best to choose a product you feel comfortable moving in."}},
-      {id:2,icon:"🧻",label:{fr:"Petits sacs pour jeter discrètement une protection usagée",en:"Small disposal bags for used pads"},useful:true,explain:{fr:"En extérieur, tu n'as pas toujours de poubelle à disposition : avoir de quoi emporter discrètement, c'est utile.",en:"Outdoors, a bin isn't always nearby: having a way to carry things away discreetly is useful."}},
-      {id:3,icon:"🩲",label:{fr:"Sous-vêtement de rechange",en:"Spare underwear"},useful:true,explain:{fr:"Rassurant pour une journée entière loin de chez toi.",en:"Reassuring for a full day away from home."}},
-      {id:4,icon:"💧",label:{fr:"Eau",en:"Water"},useful:true,explain:{fr:"Pour une activité physique toute la journée, bien s'hydrater est important.",en:"For a full day of physical activity, staying well hydrated matters."}},
-      {id:5,icon:"🎒",label:{fr:"Sac étanche",en:"Waterproof bag"},useful:false,explain:{fr:"Peut être pratique selon l'activité, mais ce n'est pas lié spécifiquement à tes règles.",en:"Can be handy depending on the activity, but it's not specifically related to your period."}},
-      {id:6,icon:"🍫",label:{fr:"Encas",en:"Snack"},useful:false,explain:{fr:"Bonne idée pour une longue journée, mais pas indispensable pour gérer tes règles.",en:"A good idea for a long day, but not essential for managing your period."}},
-      {id:7,icon:"📱",label:{fr:"Téléphone",en:"Phone"},useful:false,explain:{fr:"Utile en général, mais ça ne t'aide pas à te préparer pour tes règles.",en:"Useful in general, but it doesn't help you prepare for your period."}},
-    ]},
-};
-
-function JeuSac({level,lang,onBack,onBadge,onComplete}){
-  const t=(fr,en)=>lang==="en"?en:fr;
-  const L=obj=>lang==="en"?obj.en:obj.fr;
-  const d=SAC_DATA[level]||SAC_DATA[1];
-  const usefulCount=d.items.filter(i=>i.useful).length;
-  const[inBag,setInBag]=useState(()=>new Set());
-  const[toast,setToast]=useState(null);
-  const[score,setScore]=useState(0);
-  const[done,setDone]=useState(false);
-
-  function tapItem(item){
-    if(item.useful){
-      if(inBag.has(item.id))return;
-      SND.play("ok");
-      const nb=new Set([...inBag,item.id]);setInBag(nb);
-      setScore(s=>s+10);
-      setToast({ok:true,text:t("✓ Bonne idée !","✓ Good idea!"),explain:L(item.explain)});
-      if(nb.size===usefulCount)setTimeout(()=>{setDone(true);onBadge(t(`🎒 Prête pour Tout N${level}`,`🎒 Ready for Anything L${level}`));},400);
-    }else{
-      SND.play("ko");
-      setToast({ok:false,text:t("💡 Pas indispensable pour cette situation.","💡 Not essential for this situation."),explain:L(item.explain)});
-    }
-  }
-
-  return done?<GWin title={t("🎒 Sac prêt !","🎒 Bag ready!")} score={score} max={usefulCount*10} badge={t(`🎒 Prête pour Tout N${level}`,`🎒 Ready for Anything L${level}`)} msg={t("Prévoir une protection et un petit nécessaire d'hygiène peut aider à se sentir plus sereine lorsqu'on ne sait pas exactement quand les règles vont commencer. 🌸","Packing a pad and a small hygiene kit can help you feel more at ease when you're not sure exactly when your period will start. 🌸")} lang={lang} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={t(`🎒 Prépare ton sac — N${level}`,`🎒 Pack Your Bag — L${level}`)} onBack={onBack} score={score} prog={inBag.size/usefulCount} lang={lang}/>
-        <div style={{background:P.card,borderRadius:16,padding:"12px 15px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)",marginBottom:4}}>
-          <p style={{margin:0,fontSize:14,fontWeight:700,color:P.text,lineHeight:1.5,textAlign:"center"}}>{L(d.situation)}</p>
-        </div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-        <div style={{textAlign:"center",marginBottom:14}}>
-          <div style={{fontSize:64,filter:inBag.size>0?"none":"grayscale(30%)",transition:"filter .3s"}}>🎒</div>
-          <div style={{fontSize:12.5,fontWeight:800,color:P.muted}}>{inBag.size}/{usefulCount} {t("objets utiles trouvés","useful items found")}</div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
-          {d.items.map(item=>{
-            const added=item.useful&&inBag.has(item.id);
-            return(
-              <button key={item.id} onClick={()=>tapItem(item)} disabled={added} style={{background:added?P.greenSoft:"white",border:`2px solid ${added?P.green:"#FFD4E8"}`,borderRadius:16,padding:"14px 10px",textAlign:"center",cursor:added?"default":"pointer",transition:"all .2s",opacity:added?0.85:1}}>
-                <div style={{fontSize:28,marginBottom:6}}>{added?"✅":item.icon}</div>
-                <div style={{fontSize:11.5,fontWeight:700,color:added?P.green:P.text,lineHeight:1.3}}>{L(item.label)}</div>
-              </button>
-            );
-          })}
-        </div>
-        {toast&&(
-          <div className="up" style={{marginTop:14,padding:"12px 15px",borderRadius:14,background:toast.ok?"rgba(61,190,130,.1)":"rgba(245,166,35,.1)",border:`1.5px solid ${toast.ok?P.green:P.amber}`}}>
-            <div style={{fontSize:13.5,fontWeight:900,color:toast.ok?"#18a044":P.amber,marginBottom:4}}>{toast.text}</div>
-            <div style={{fontSize:12.5,color:P.text,lineHeight:1.55}}>{toast.explain}</div>
-          </div>
-        )}
-      </div>
-    </ScreenFill>
-  );
-}
-// ── FAIS LES BONS CHOIX (découverte des protections) ─────────────
-// Le cœur du jeu est l'exploration, pas le quiz : on découvre chaque
-// protection (fonctionnement, usage, avantages, points d'attention),
-// puis une question de renforcement légère, sans jamais désigner une
-// protection comme "la meilleure" — le choix dépend de chacune.
-const PROTECTIONS_DATA=[
-  {id:"serviette",icon:"🩸",name:{fr:"Serviette hygiénique",en:"Pad"},
-   comment:{fr:"Se colle à l'intérieur du sous-vêtement et absorbe le flux à l'extérieur du corps.",en:"Sticks inside your underwear and absorbs the flow outside the body."},
-   usage:{fr:"Se change généralement toutes les 4 à 6 heures.",en:"Usually changed every 4 to 6 hours."},
-   avantages:{fr:"Facile à utiliser, ne nécessite pas d'insertion, existe en plusieurs tailles.",en:"Easy to use, no insertion needed, comes in several sizes."},
-   attention:{fr:"À changer régulièrement pour rester à l'aise.",en:"Needs regular changing to stay comfortable."},
-   pratique:{fr:"Un bon choix pour débuter, ou pour les nuits.",en:"A good choice to start with, or for nighttime."}},
-  {id:"culotte",icon:"🩲",name:{fr:"Culotte menstruelle",en:"Period underwear"},
-   comment:{fr:"Un sous-vêtement avec des couches absorbantes intégrées, qui recueille le flux directement.",en:"Underwear with built-in absorbent layers that collects the flow directly."},
-   usage:{fr:"Se porte comme une culotte classique, puis se lave et se réutilise.",en:"Worn like regular underwear, then washed and reused."},
-   avantages:{fr:"Réutilisable, confortable, réduit les déchets.",en:"Reusable, comfortable, reduces waste."},
-   attention:{fr:"Nécessite d'en avoir plusieurs ou de la laver rapidement selon le flux.",en:"Needs a few pairs on hand, or quick washing depending on your flow."},
-   pratique:{fr:"Une option écologique et confortable au quotidien.",en:"An eco-friendly, comfortable everyday option."}},
-  {id:"tampon",icon:"🔵",name:{fr:"Tampon",en:"Tampon"},
-   comment:{fr:"S'insère à l'intérieur du vagin et absorbe le flux directement à la source.",en:"Inserted inside the vagina and absorbs the flow right at the source."},
-   usage:{fr:"Se change toutes les 4 à 8 heures maximum.",en:"Changed every 4 to 8 hours at most."},
-   avantages:{fr:"Discret, compatible avec la natation et le sport.",en:"Discreet, works with swimming and sports."},
-   attention:{fr:"Doit être changé régulièrement ; se laver les mains avant et après la pose.",en:"Must be changed regularly; wash your hands before and after inserting it."},
-   pratique:{fr:"Pratique pour les activités physiques ou la piscine.",en:"Handy for physical activities or the pool."}},
-  {id:"coupe",icon:"🥣",name:{fr:"Coupe menstruelle",en:"Menstrual cup"},
-   comment:{fr:"Une petite coupe souple insérée dans le vagin qui recueille le flux au lieu de l'absorber.",en:"A small flexible cup inserted in the vagina that collects the flow instead of absorbing it."},
-   usage:{fr:"Se vide et se rince toutes les 8 à 12 heures selon le flux, puis se réutilise.",en:"Emptied and rinsed every 8 to 12 hours depending on your flow, then reused."},
-   avantages:{fr:"Réutilisable pendant plusieurs années, économique sur le long terme.",en:"Reusable for several years, cost-effective in the long run."},
-   attention:{fr:"Demande un temps d'adaptation pour apprendre à l'insérer et la retirer.",en:"Takes some practice to learn how to insert and remove it."},
-   pratique:{fr:"Une option durable pour celles à l'aise avec l'insertion.",en:"A durable option for those comfortable with insertion."}},
-];
-
-const CHOIX_QUESTIONS={
-  1:{q:{fr:"Laquelle de ces protections s'insère à l'intérieur du corps et se rince pour être réutilisée ?",en:"Which of these products is inserted inside the body and rinsed to be reused?"},a:"coupe"},
-  2:{q:{fr:"Quelle protection est un sous-vêtement qu'on lave et qu'on réutilise ?",en:"Which product is underwear that you wash and reuse?"},a:"culotte"},
-  3:{q:{fr:"Quelle protection est pratique pour la natation ?",en:"Which product is handy for swimming?"},a:"tampon"},
-};
-
-function JeuChoix({level,lang,onBack,onBadge,onComplete}){
-  const t=(fr,en)=>lang==="en"?en:fr;
-  const L=obj=>lang==="en"?obj.en:obj.fr;
-  const[phase,setPhase]=useState("explore"); // explore | question
-  const[explored,setExplored]=useState(()=>new Set());
-  const[openId,setOpenId]=useState(null);
-  const[ansId,setAnsId]=useState(null);
-  const[score,setScore]=useState(0);
-  const[done,setDone]=useState(false);
-  const q=CHOIX_QUESTIONS[level];
-
-  function openCard(p){
-    setOpenId(p.id);
-    if(!explored.has(p.id)){SND.play("ok");setExplored(new Set([...explored,p.id]));setScore(s=>s+5);}
-  }
-  function chooseAnswer(pid){
-    if(ansId)return;
-    setAnsId(pid);
-    const ok=pid===q.a;
-    SND.play(ok?"ok":"ko");
-    if(ok)setScore(s=>s+15);
-    setTimeout(()=>{
-      setDone(true);
-      onBadge(t(`🌸 Exploratrice des Protections N${level}`,`🌸 Protection Explorer L${level}`));
-    },1800);
-  }
-
-  const allExplored=explored.size===PROTECTIONS_DATA.length;
-  const openProt=PROTECTIONS_DATA.find(p=>p.id===openId);
-
-  return done?<GWin title={t("🌸 Bien joué !","🌸 Well done!")} score={score} max={PROTECTIONS_DATA.length*5+15} badge={t(`🌸 Exploratrice des Protections N${level}`,`🌸 Protection Explorer L${level}`)} msg={t("Tu connais maintenant plusieurs options ! Le choix dépend des préférences, de l'aisance et de la situation de chacune — il n'y en a pas une meilleure que les autres. 🌸","You now know several options! The choice depends on personal preference, comfort, and each person's situation — none is better than the others. 🌸")} lang={lang} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={t(`🌸 Fais les bons choix — N${level}`,`🌸 Make Your Choice — L${level}`)} onBack={onBack} score={score} prog={phase==="explore"?explored.size/PROTECTIONS_DATA.length:0.9} lang={lang}/>
-        {phase==="explore"&&<div style={{textAlign:"center",fontSize:13.5,fontWeight:700,color:P.text,margin:"2px 0 6px"}}>{t("Tu veux découvrir les différentes protections menstruelles.","You want to discover the different period products.")}</div>}
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-        {phase==="explore"&&!openProt&&(
-          <>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-              {PROTECTIONS_DATA.map(p=>{
-                const isExp=explored.has(p.id);
-                return(
-                  <button key={p.id} onClick={()=>openCard(p)} style={{background:isExp?P.greenSoft:"white",border:`2px solid ${isExp?P.green:"#FFD4E8"}`,borderRadius:18,padding:"18px 12px",textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
-                    <div style={{fontSize:36,marginBottom:8}}>{p.icon}</div>
-                    <div style={{fontSize:12.5,fontWeight:700,color:isExp?P.green:P.text,lineHeight:1.3}}>{L(p.name)}</div>
-                    {isExp&&<div style={{fontSize:11,color:P.green,fontWeight:800,marginTop:4}}>✓ {t("Découverte","Discovered")}</div>}
-                  </button>
-                );
-              })}
-            </div>
-            {allExplored&&(
-              <button onClick={()=>setPhase("question")} className="up" style={{marginTop:18,width:"100%",background:G,border:"none",borderRadius:50,padding:"14px",color:"white",fontWeight:800,fontSize:15,cursor:"pointer"}}>{t("Continuer →","Continue →")}</button>
-            )}
-          </>
-        )}
-
-        {phase==="explore"&&openProt&&(
-          <div className="up" style={{background:P.card,borderRadius:22,padding:"22px 20px",border:"2px solid rgba(232,0,61,.15)",boxShadow:"0 8px 26px rgba(232,0,61,.12)"}}>
-            <div style={{textAlign:"center",marginBottom:14}}>
-              <div style={{fontSize:44,marginBottom:6}}>{openProt.icon}</div>
-              <div className="T" style={{fontSize:17,fontWeight:900,color:P.red}}>{L(openProt.name)}</div>
-            </div>
-            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:18}}>
-              <div><div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.5}}>{t("Comment ça marche","How it works")}</div><div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(openProt.comment)}</div></div>
-              <div><div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.5}}>{t("Usage","Usage")}</div><div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(openProt.usage)}</div></div>
-              <div><div style={{fontSize:11,fontWeight:900,color:P.green,textTransform:"uppercase",letterSpacing:.5}}>{t("Avantages","Pros")}</div><div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(openProt.avantages)}</div></div>
-              <div><div style={{fontSize:11,fontWeight:900,color:P.amber,textTransform:"uppercase",letterSpacing:.5}}>{t("Points d'attention","Things to keep in mind")}</div><div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(openProt.attention)}</div></div>
-              <div><div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.5}}>{t("Pratique pour","Handy for")}</div><div style={{fontSize:13.5,color:P.text,lineHeight:1.55}}>{L(openProt.pratique)}</div></div>
-            </div>
-            <button onClick={()=>setOpenId(null)} style={{width:"100%",background:G,border:"none",borderRadius:50,padding:"13px",color:"white",fontWeight:800,fontSize:14.5,cursor:"pointer"}}>{t("← Retour aux protections","← Back to products")}</button>
-          </div>
-        )}
-
-        {phase==="question"&&(
-          <div className="up" style={{background:P.card,borderRadius:22,padding:"22px 20px",border:"2px solid rgba(232,0,61,.15)",boxShadow:"0 8px 26px rgba(232,0,61,.12)"}}>
-            <p style={{fontSize:15.5,fontWeight:700,color:P.text,textAlign:"center",lineHeight:1.5,margin:"0 0 18px"}}>{L(q.q)}</p>
-            <div style={{display:"flex",flexDirection:"column",gap:10}}>
-              {PROTECTIONS_DATA.map(p=>{
-                const chosen=ansId===p.id,right=chosen&&p.id===q.a,wrong=chosen&&p.id!==q.a,revealed=ansId&&p.id===q.a&&!chosen;
-                return(
-                  <button key={p.id} onClick={()=>chooseAnswer(p.id)} disabled={!!ansId} style={{background:right||revealed?P.greenSoft:wrong?"#FFF0F0":"white",border:`2px solid ${right||revealed?P.green:wrong?"#FF6B6B":"#FFD4E8"}`,borderRadius:14,padding:"13px 15px",display:"flex",alignItems:"center",gap:10,textAlign:"left",fontSize:14,fontWeight:700,color:P.text,cursor:ansId?"default":"pointer"}}>
-                    <span style={{fontSize:22}}>{p.icon}</span>{L(p.name)}
-                    {(right||revealed)&&<span style={{marginLeft:"auto",color:P.green}}>✓</span>}
-                    {wrong&&<span style={{marginLeft:"auto",color:"#FF6B6B"}}>✗</span>}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-    </ScreenFill>
-  );
-}
 function JeuMemoire({level,lang,onBack,onBadge,onComplete}){
   const pairs=(lang==="en"?MEM_DATA_EN:MEM_DATA)[level-1];
   const mkC=()=>shuffle(pairs.flatMap(p=>[{uid:`${p.id}a`,pairId:p.id,face:p.e,isEmoji:true,flipped:false,matched:false},{uid:`${p.id}b`,pairId:p.id,face:p.l,isEmoji:false,flipped:false,matched:false}]));
   const[cards,setCards]=useState(mkC);const[sel,setSel]=useState([]);const[score,setScore]=useState(0);const[tries,setTries]=useState(0);const[lock,setLock]=useState(false);const[done,setDone]=useState(false);
-  const[infoPair,setInfoPair]=useState(null);const[pendingUids,setPendingUids]=useState(null);
   const total=pairs.length,matched=cards.filter(c=>c.matched).length/2;
   const flip=uid=>{
-    if(lock||done||infoPair)return;const card=cards.find(c=>c.uid===uid);if(!card||card.flipped||card.matched)return;
+    if(lock||done)return;const card=cards.find(c=>c.uid===uid);if(!card||card.flipped||card.matched)return;
     const nc=cards.map(c=>c.uid===uid?{...c,flipped:true}:c);setCards(nc);const ns=[...sel,uid];
     if(ns.length===1){setSel(ns);}
     else{setLock(true);setTries(t=>t+1);setSel([]);const[u1,u2]=ns,c1=nc.find(c=>c.uid===u1),c2=nc.find(c=>c.uid===u2);
-      if(c1.pairId===c2.pairId){SND.play("ok");const p=pairs.find(p=>p.id===c1.pairId);setPendingUids([u1,u2]);setInfoPair(p);}
+      if(c1.pairId===c2.pairId){SND.play("ok");setTimeout(()=>{setCards(cs=>{const u=cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,matched:true}:c);if(u.every(c=>c.matched)){setDone(true);onBadge(lang==="en"?`🃏 Memory Gold L${level}`:`🃏 Mémoire d'Or N${level}`);}return u;});setScore(s=>s+10);setLock(false);},600);}
       else{SND.play("ko");setTimeout(()=>{setCards(cs=>cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,flipped:false}:c));setLock(false);},1100);}
     }
   };
-  const confirmMatch=()=>{
-    const[u1,u2]=pendingUids;
-    setCards(cs=>{const u=cs.map(c=>(c.uid===u1||c.uid===u2)?{...c,matched:true}:c);if(u.every(c=>c.matched)){setDone(true);onBadge(lang==="en"?`🃏 Memory Gold L${level}`:`🃏 Mémoire d'Or N${level}`);}return u;});
-    setScore(s=>s+10);setInfoPair(null);setPendingUids(null);setLock(false);
-  };
   return done?<GWin title={lang==="en"?"🃏 Perfect Memory!":"🃏 Mémoire parfaite !"} score={score} max={total*10} badge={lang==="en"?"🃏 Memory Gold":"🃏 Mémoire d'Or"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?`🃏 Memory L${level}`:`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total} lang={lang}/>
-        <p style={{textAlign:"center",color:P.muted,fontSize:14,margin:"4px 0 14px",fontWeight:600}}>{lang==="en"?`Match each 🌸 to its word! — Tries: `:"Associe chaque 🌸 à son mot ! — Essais : "}<strong style={{color:P.text}}>{tries}</strong></p>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      {!infoPair&&(
-        <>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
-            {cards.map(card=>{const show=card.flipped||card.matched;return(
-              <button key={card.uid} onClick={()=>flip(card.uid)} style={{aspectRatio:"1",borderRadius:15,border:card.matched?`2.5px solid ${P.green}`:show?`2.5px solid ${P.rose}`:`2px solid #FFD4E8`,background:card.matched?P.greenSoft:show?"white":G,display:"flex",alignItems:"center",justifyContent:"center",fontSize:card.isEmoji&&show?32:show?11:22,fontWeight:800,color:card.matched?P.green:show?P.text:"white",padding:4,transition:"all .25s",cursor:card.matched?"default":"pointer",textAlign:"center",lineHeight:1.2}}>
-                {show?card.face:"🌸"}
-              </button>
-            );})}
-          </div>
-          <div style={{textAlign:"center",marginTop:12,color:P.muted,fontSize:14,fontWeight:600}}>{matched}/{total} paires ✨</div>
-        </>
-      )}
-      {infoPair&&(
-        <div className="up" style={{background:P.card,borderRadius:22,padding:"26px 22px",textAlign:"center",border:`2px solid ${P.green}`,boxShadow:"0 8px 26px rgba(61,190,130,.18)"}}>
-          <div style={{fontSize:52,marginBottom:10}}>{infoPair.e}</div>
-          <div className="T" style={{fontSize:19,fontWeight:900,color:P.green,marginBottom:12}}>{infoPair.l}</div>
-          <p style={{fontSize:14.5,color:P.text,lineHeight:1.65,margin:"0 0 18px"}}>{infoPair.info}</p>
-          <button onClick={confirmMatch} style={{width:"100%",background:G,border:"none",borderRadius:50,padding:"13px",color:"white",fontWeight:800,fontSize:15,cursor:"pointer"}}>{lang==="en"?"Continue →":"Continuer →"}</button>
-        </div>
-      )}
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🃏 Memory L${level}`:`🃏 Mémoire N${level}`} onBack={onBack} score={score} prog={matched/total} lang={lang}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?`Match each 🌸 to its word! — Tries: `:"Associe chaque 🌸 à son mot ! — Essais : "}<strong style={{color:P.text}}>{tries}</strong></p>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:7}}>
+        {cards.map(card=>{const show=card.flipped||card.matched;return(
+          <button key={card.uid} onClick={()=>flip(card.uid)} style={{aspectRatio:"1",borderRadius:13,border:card.matched?`2.5px solid ${P.green}`:show?`2.5px solid ${P.rose}`:`2px solid #FFD4E8`,background:card.matched?P.greenSoft:show?"white":G,display:"flex",alignItems:"center",justifyContent:"center",fontSize:card.isEmoji&&show?26:show?9:18,fontWeight:800,color:card.matched?P.green:show?P.text:"white",padding:3,transition:"all .25s",cursor:card.matched?"default":"pointer",textAlign:"center",lineHeight:1.2}}>
+            {show?card.face:"🌸"}
+          </button>
+        );})}
       </div>
-    </ScreenFill>
+      <div style={{textAlign:"center",marginTop:10,color:P.muted,fontSize:13,fontWeight:600}}>{matched}/{total} paires ✨</div>
+    </div>
   );
 }
 
@@ -2600,25 +1999,20 @@ function JeuChef({level,lang,onBack,onBadge,onComplete}){
   const expire=()=>{if(ans)return;setAns("time");SND.play("ko");setTimeout(next,1800);};
   const isTime=ans==="time";const ok=!isTime&&ans!==null&&(ans==="bon")===food.good;
   return done?<GWin lang={lang} title="🍽️ Chef Nyalê!" score={score} max={foods.length*10} badge="🍽️ Chef Nyalê" onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length} lang={lang}/>
-        <p style={{textAlign:"center",color:P.muted,fontSize:14,margin:"4px 0 10px",fontWeight:600}}>{lang==="en"?<>Food <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Good or bad for your period?</>:<>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</>}</p>
-        {!ans&&<TRing key={`c-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{background:P.card,borderRadius:28,padding:"32px 22px",textAlign:"center",border:`2.5px solid ${ans?(ok?P.green:"#FF6B6B"):"#FFD4E8"}`,boxShadow:`0 6px 22px ${P.red}12`,marginBottom:18,transition:"border .3s"}}>
-        <div style={{fontSize:84,marginBottom:10}}>{food.e}</div>
-        <div className="F" style={{fontSize:24,fontWeight:600,color:P.text}}>{food.l}</div>
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🍽️ Chef Nyalê L${level}`:`🍽️ Chef Nyalê N${level}`} onBack={onBack} score={score} prog={idx/foods.length} lang={lang}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 8px",fontWeight:600}}>{lang==="en"?<>Food <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Good or bad for your period?</>:<>Aliment <strong style={{color:P.text}}>{idx+1}/{foods.length}</strong> — Bon ou mauvais pour tes règles ?</>}</p>
+      {!ans&&<TRing key={`c-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
+      <div style={{background:"white",borderRadius:26,padding:"22px 18px",textAlign:"center",border:`2.5px solid ${ans?(ok?P.green:"#FF6B6B"):"#FFD4E8"}`,boxShadow:`0 6px 22px ${P.red}12`,marginBottom:14,transition:"border .3s"}}>
+        <div style={{fontSize:62,marginBottom:6}}>{food.e}</div>
+        <div className="F" style={{fontSize:20,fontWeight:600,color:P.text}}>{food.l}</div>
       </div>
-      {!ans&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-        <button onClick={()=>answer("bon")} style={{background:P.greenSoft,color:P.green,border:`2.5px solid ${P.green}`,borderRadius:18,padding:"18px 8px",fontSize:16,fontWeight:900}}>{lang==="en"?"✅ Good for me!":"✅ Bon pour moi !"}</button>
-        <button onClick={()=>answer("mauvais")} style={{background:"#FFF0F0",color:"#FF6B6B",border:"2.5px solid #FF6B6B",borderRadius:18,padding:"18px 8px",fontSize:16,fontWeight:900}}>{lang==="en"?"❌ Avoid!":"❌ À éviter"}</button>
+      {!ans&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <button onClick={()=>answer("bon")} style={{background:P.greenSoft,color:P.green,border:`2.5px solid ${P.green}`,borderRadius:18,padding:"14px 8px",fontSize:14,fontWeight:900}}>{lang==="en"?"✅ Good for me!":"✅ Bon pour moi !"}</button>
+        <button onClick={()=>answer("mauvais")} style={{background:"#FFF0F0",color:"#FF6B6B",border:"2.5px solid #FF6B6B",borderRadius:18,padding:"14px 8px",fontSize:14,fontWeight:900}}>{lang==="en"?"❌ Avoid!":"❌ À éviter"}</button>
       </div>}
       {ans&&<Fb ok={isTime?null:ok} msg={isTime?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):ok?(lang==="en"?"🌸 Well done!":"🌸 Bravo !"):(lang==="en"?"💛 Not quite...":"💛 Pas tout à fait...")} exp={food.why}/>}
-      </div>
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -2644,56 +2038,48 @@ function JeuCycle({level,lang,onBack,onBadge,onComplete}){
   const totalScore=level===2?(order.length*10+sympScore):order.length*25;
   const totalMax=level===2?(phaseData.length*10+sympData.length*15):100;
   return done||(level===2&&sympDone)?<GWin title={lang==="en"?"📅 Cycle Mastered!":"📅 Cycle Maîtrisé !"} score={totalScore} max={totalMax} badge={lang==="en"?"📅 Cycle Expert":"📅 Cycle Maîtrisé"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?"📅 My Cycle L2":"📅 Mon Cycle N2"} onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/sympData.length} lang={lang}/>
-        <p style={{textAlign:"center",color:P.muted,fontSize:14,margin:"4px 0 14px",fontWeight:600}}>{lang==="en"?"Match each symptom to its phase!":"Associe chaque symptôme à sa phase !"}</p>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"space-between",gap:12}}>
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?"📅 My Cycle L2":"📅 Mon Cycle N2"} onBack={onBack} score={sympScore} prog={Object.keys(sympAns).length/sympData.length} lang={lang}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?"Match each symptom to its phase!":"Associe chaque symptôme à sa phase !"}</p>
+      <div style={{display:"flex",flexDirection:"column",gap:10}}>
         {sympShuffle.map((s,si)=>{const ans2=sympAns[si];const correct=ans2!==undefined&&ans2===s.phaseId;return(
-          <div key={si} style={{flex:1,background:P.card,borderRadius:16,padding:"15px 16px",border:`1.5px solid ${ans2?(correct?P.green:"#FF6B6B"):"#FFD4E8"}`,display:"flex",flexDirection:"column",justifyContent:"center"}}>
-            <div style={{fontWeight:800,fontSize:15,color:P.text,marginBottom:10}}>{s.e} {s.symptom}</div>
-            <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+          <div key={si} style={{background:"white",borderRadius:16,padding:"12px 14px",border:`1.5px solid ${ans2?(correct?P.green:"#FF6B6B"):"#FFD4E8"}`}}>
+            <div style={{fontWeight:800,fontSize:13,color:P.text,marginBottom:8}}>{s.e} {s.symptom}</div>
+            <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
               {phaseData.map(ph=>(
                 <button key={ph.id} onClick={()=>tapSymp(si,ph.id)} disabled={ans2!==undefined}
-                  style={{background:ans2===ph.id?(correct?P.greenSoft:"#FFF0F0"):`${ph.c}18`,color:ans2===ph.id?(correct?P.green:"#FF6B6B"):ph.c,border:`1.5px solid ${ans2===ph.id?(correct?P.green:"#FF6B6B"):ph.c+"44"}`,borderRadius:11,padding:"7px 12px",fontSize:12.5,fontWeight:700,cursor:ans2!==undefined?"default":"pointer",transition:"all .2s"}}>
+                  style={{background:ans2===ph.id?(correct?P.greenSoft:"#FFF0F0"):`${ph.c}18`,color:ans2===ph.id?(correct?P.green:"#FF6B6B"):ph.c,border:`1.5px solid ${ans2===ph.id?(correct?P.green:"#FF6B6B"):ph.c+"44"}`,borderRadius:10,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:ans2!==undefined?"default":"pointer",transition:"all .2s"}}>
                   {ph.e} {ph.t}
                 </button>
               ))}
             </div>
-            {ans2&&<div style={{fontSize:12.5,color:correct?P.green:"#FF6B6B",fontWeight:800,marginTop:8}}>{correct?(lang==="en"?"✓ Correct!":"✓ Correct !"):(lang==="en"?"✗ Incorrect":"✗ Incorrect")}</div>}
+            {ans2&&<div style={{fontSize:11,color:correct?P.green:"#FF6B6B",fontWeight:800,marginTop:5}}>{correct?(lang==="en"?"✓ Correct!":"✓ Correct !"):(lang==="en"?"✗ Incorrect":"✗ Incorrect")}</div>}
           </div>
         );})}
       </div>
-    </ScreenFill>
+    </div>
   );
   const nextExp=order.length+1;
   return(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?`📅 My Cycle L${level}`:`📅 Mon Cycle N${level}`} onBack={onBack} score={order.length*25} prog={order.length/phaseData.length} lang={lang}/>
-        <p style={{textAlign:"center",color:P.muted,fontSize:14,margin:"4px 0 12px",fontWeight:600}}>{lang==="en"?"Tap in the correct order:":"Appuie dans le bon ordre :"} <strong style={{color:P.text}}>1 → 2 → 3 → 4</strong></p>
-        <div style={{display:"flex",gap:9,justifyContent:"center",marginBottom:6}}>
-          {[1,2,3,4].map(n=>{const d=order.includes(n),a=n===nextExp,ph=phaseData[n-1];return<div key={n} style={{width:40,height:40,borderRadius:"50%",background:d?ph.c:a?"white":"#FFF0F3",border:`2.5px solid ${d?ph.c:a?ph.c:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:900,color:d?"white":a?ph.c:P.muted,transition:"all .3s",boxShadow:a?`0 2px 10px ${ph.c}44`:"none"}}>{d?"✓":n}</div>;})}
-        </div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`📅 My Cycle L${level}`:`📅 Mon Cycle N${level}`} onBack={onBack} score={order.length*25} prog={order.length/phaseData.length} lang={lang}/>
+      <p style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 10px",fontWeight:600}}>{lang==="en"?"Tap in the correct order:":"Appuie dans le bon ordre :"} <strong style={{color:P.text}}>1 → 2 → 3 → 4</strong></p>
+      <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:13}}>
+        {[1,2,3,4].map(n=>{const d=order.includes(n),a=n===nextExp,ph=phaseData[n-1];return<div key={n} style={{width:36,height:36,borderRadius:"50%",background:d?ph.c:a?"white":"#FFF0F3",border:`2.5px solid ${d?ph.c:a?ph.c:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:d?"white":a?ph.c:P.muted,transition:"all .3s",boxShadow:a?`0 2px 10px ${ph.c}44`:"none"}}>{d?"✓":n}</div>;})}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:11}}>
         {phases.map(p=>{const d=order.includes(p.id),w=wrong===p.id;return(
-          <button key={p.id} onClick={()=>tap(p)} className={w?"shake":""} style={{background:d?p.bg:w?"#FFF0F0":"white",border:`2.5px solid ${d?p.c:w?"#FF6B6B":"#FFD4E8"}`,borderRadius:20,padding:"18px 12px",textAlign:"center",cursor:d?"default":"pointer",transition:"all .2s",opacity:d?.6:1,position:"relative"}}>
-            {d&&<div style={{position:"absolute",top:9,right:11,fontSize:14,color:p.c,fontWeight:900}}>✓{p.id}</div>}
-            <div style={{fontSize:36,marginBottom:6}}>{p.e}</div>
-            <div className="F" style={{fontSize:14,fontWeight:700,color:d?p.c:P.text,lineHeight:1.25}}>{p.t}</div>
-            <div style={{fontSize:11.5,color:P.muted,marginTop:3,fontWeight:600}}>{p.j}</div>
+          <button key={p.id} onClick={()=>tap(p)} className={w?"shake":""} style={{background:d?p.bg:w?"#FFF0F0":"white",border:`2.5px solid ${d?p.c:w?"#FF6B6B":"#FFD4E8"}`,borderRadius:20,padding:"14px 10px",textAlign:"center",cursor:d?"default":"pointer",transition:"all .2s",opacity:d?.6:1,position:"relative"}}>
+            {d&&<div style={{position:"absolute",top:7,right:9,fontSize:13,color:p.c,fontWeight:900}}>✓{p.id}</div>}
+            <div style={{fontSize:28,marginBottom:4}}>{p.e}</div>
+            <div className="F" style={{fontSize:12,fontWeight:700,color:d?p.c:P.text,lineHeight:1.2}}>{p.t}</div>
+            <div style={{fontSize:10,color:P.muted,marginTop:2,fontWeight:600}}>{p.j}</div>
           </button>
         );})}
       </div>
-      {info&&!done&&<div key={info.id} className="up" style={{background:P.card,borderRadius:18,padding:"14px 16px",border:`2px solid ${info.c}`,boxShadow:`0 4px 14px ${info.c}28`,marginTop:12}}><div style={{fontWeight:800,fontSize:15,color:info.c,marginBottom:3}}>{info.e} {info.t}</div><div style={{fontSize:13.5,color:P.text,lineHeight:1.6,fontWeight:600}}>{info.info}</div></div>}
-      {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontWeight:900,fontSize:15,marginTop:9}}>💛 Cherche la phase {nextExp}...</div>}
-      </div>
-    </ScreenFill>
+      {info&&!done&&<div key={info.id} className="up" style={{background:"white",borderRadius:18,padding:"12px 14px",border:`2px solid ${info.c}`,boxShadow:`0 4px 14px ${info.c}28`}}><div style={{fontWeight:800,fontSize:13,color:info.c,marginBottom:2}}>{info.e} {info.t}</div><div style={{fontSize:12,color:P.text,lineHeight:1.55,fontWeight:600}}>{info.info}</div></div>}
+      {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontWeight:900,fontSize:14,marginTop:7}}>💛 Cherche la phase {nextExp}...</div>}
+    </div>
   );
 }
 
@@ -2708,29 +2094,24 @@ function JeuSOS({level,lang,onBack,onBadge,onComplete}){
   const expire=()=>{if(ans!==null)return;setAns("time");SND.play("ko");setTimeout(next,2000);};
   const isTime=ans==="time";const chosenOk=!isTime&&ans!==null&&s.opts[ans]?.ok;const correctOpt=s.opts.find(o=>o.ok);
   return done?<GWin title={lang==="en"?"🆘 SOS Mastered!":"🆘 SOS Maîtrisé !"} score={score} max={scens.length*20} badge={lang==="en"?"🆘 SOS Expert":"🆘 Experte SOS"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length} lang={lang}/>
-        <div style={{textAlign:"center",color:P.muted,fontSize:14,margin:"4px 0 10px",fontWeight:600}}>{lang==="en"?"Situation ":"Situation "}<strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
-        {ans===null&&<TRing key={`s-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{background:P.card,borderRadius:22,padding:"20px 17px",border:"2px solid #FFD4E8",boxShadow:"0 4px 18px #C8102E10",marginBottom:16}}>
-        <div style={{fontSize:48,textAlign:"center",marginBottom:10}}>{s.ctx}</div>
-        <p className="F" style={{fontSize:17,fontWeight:600,color:P.text,margin:0,textAlign:"center",lineHeight:1.45}}>{s.q}</p>
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🆘 SOS Periods L${level}`:`🆘 SOS Règles N${level}`} onBack={onBack} score={score} prog={idx/scens.length} lang={lang}/>
+      <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 7px",fontWeight:600}}>{lang==="en"?"Situation ":"Situation "}<strong style={{color:P.text}}>{idx+1}/{scens.length}</strong></div>
+      {ans===null&&<TRing key={`s-${idx}-${level}`} secs={d.timer} onExpire={expire}/>}
+      <div style={{background:"white",borderRadius:22,padding:"16px 14px",border:"2px solid #FFD4E8",boxShadow:"0 4px 18px #C8102E10",marginBottom:12}}>
+        <div style={{fontSize:38,textAlign:"center",marginBottom:8}}>{s.ctx}</div>
+        <p className="F" style={{fontSize:15,fontWeight:600,color:P.text,margin:0,textAlign:"center",lineHeight:1.45}}>{s.q}</p>
       </div>
-      <div style={{display:"flex",flexDirection:"column",gap:9}}>
+      <div style={{display:"flex",flexDirection:"column",gap:7}}>
         {s.opts.map((opt,i)=>{const chosen=ans===i,right=chosen&&opt.ok,wrong=chosen&&!opt.ok,revealed=ans!==null&&opt.ok;return(
-          <button key={i} onClick={()=>answer(i)} disabled={ans!==null} style={{background:right||revealed?P.greenSoft:wrong?"#FFF0F0":"white",border:`2px solid ${right||revealed?P.green:wrong?"#FF6B6B":"#FFD4E8"}`,borderRadius:16,padding:"14px 16px",textAlign:"left",cursor:ans!==null?"default":"pointer",fontSize:14,fontWeight:700,color:P.text,transition:"all .2s",display:"flex",alignItems:"center",gap:11}}>
-            <span style={{width:28,height:28,borderRadius:"50%",flexShrink:0,background:right||revealed?P.green:wrong?"#FF6B6B":"#FFE8EC",color:(right||revealed||wrong)?"white":P.muted,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:12.5,fontWeight:900}}>{right||revealed?"✓":wrong?"✗":String.fromCharCode(64+i+1)}</span>
+          <button key={i} onClick={()=>answer(i)} disabled={ans!==null} style={{background:right||revealed?P.greenSoft:wrong?"#FFF0F0":"white",border:`2px solid ${right||revealed?P.green:wrong?"#FF6B6B":"#FFD4E8"}`,borderRadius:16,padding:"11px 13px",textAlign:"left",cursor:ans!==null?"default":"pointer",fontSize:12,fontWeight:700,color:P.text,transition:"all .2s",display:"flex",alignItems:"center",gap:9}}>
+            <span style={{width:24,height:24,borderRadius:"50%",flexShrink:0,background:right||revealed?P.green:wrong?"#FF6B6B":"#FFE8EC",color:(right||revealed||wrong)?"white":P.muted,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:900}}>{right||revealed?"✓":wrong?"✗":String.fromCharCode(64+i+1)}</span>
             {opt.t}
           </button>
         );})}
       </div>
       {ans!==null&&<Fb ok={isTime?null:chosenOk} msg={isTime?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):chosenOk?(lang==="en"?"🌸 Well done!":"🌸 Bonne réponse !"):(lang==="en"?"💛 Not quite...":"💛 Pas tout à fait...")} exp={isTime?(correctOpt?.exp||""):(s.opts[ans]?.exp||"")}/>}
-      </div>
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -2741,31 +2122,26 @@ function JeuDevinettes({onBack,onBadge,lang}){
   const next=()=>{if(idx+1>=devs.length){setDone(true);onBadge(lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître");}else{setIdx(i=>i+1);setAns(null);}};
   const choose=opt=>{if(ans)return;const ok=opt===q.a;setAns(opt);SND.play(ok?"ok":"ko");if(ok)setScore(s=>s+20);setTimeout(next,2400);};
   return done?<GWin title={lang==="en"?"💡 Riddles!":"💡 Devinettes !"} score={score} max={devs.length*20} badge={lang==="en"?"💡 Riddle Master":"💡 Devinettes Maître"} msg={lang==="en"?"You got them all! 🌟":"Tu as tout trouvé ! 🌟"} onHome={onBack} onNext={()=>{setIdx(0);setAns(null);setScore(0);setDone(false);}} hasNext={false}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?"💡 Riddles":"💡 Devinettes"} onBack={onBack} score={score} prog={(idx+(ans?1:0))/devs.length} lang={lang}/>
-        <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 14px",fontWeight:700}}>{lang==="en"?"Riddle ":"Devinette "}{idx+1} / {devs.length}</div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{background:G,borderRadius:24,padding:"30px 22px",textAlign:"center",marginBottom:18,boxShadow:"0 6px 22px #C8102E33"}}>
-        <div style={{fontSize:56,marginBottom:14}}>{q.emoji}</div>
-        <div className="F" style={{fontSize:19,fontWeight:600,color:"white",lineHeight:1.55,whiteSpace:"pre-line"}}>{q.q}</div>
-        <div style={{fontSize:13,color:"rgba(255,255,255,.7)",marginTop:14,fontWeight:600}}>💡 {lang==="en"?"Hint":"Indice"} : {q.hint}</div>
+    <div style={{padding:"14px 16px 36px"}}>
+      <GHdr title={lang==="en"?"💡 Riddles":"💡 Devinettes"} onBack={onBack} score={score} prog={(idx+(ans?1:0))/devs.length} lang={lang}/>
+      <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 12px",fontWeight:700}}>{lang==="en"?"Riddle ":"Devinette "}{idx+1} / {devs.length}</div>
+      <div style={{background:G,borderRadius:22,padding:"22px 18px",textAlign:"center",marginBottom:14,boxShadow:"0 6px 22px #C8102E33"}}>
+        <div style={{fontSize:44,marginBottom:10}}>{q.emoji}</div>
+        <div className="F" style={{fontSize:16,fontWeight:600,color:"white",lineHeight:1.55,whiteSpace:"pre-line"}}>{q.q}</div>
+        <div style={{fontSize:11,color:"rgba(255,255,255,.7)",marginTop:10,fontWeight:600}}>💡 {lang==="en"?"Hint":"Indice"} : {q.hint}</div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
         {q.opts.map(opt=>{const chosen=ans===opt,correct=chosen&&opt===q.a,wrong=chosen&&opt!==q.a,revealed=ans&&opt===q.a&&!chosen;return(
-          <button key={opt} onClick={()=>choose(opt)} disabled={!!ans} style={{background:correct||revealed?P.greenSoft:wrong?"#FFF0F0":"white",border:`2px solid ${correct||revealed?P.green:wrong?"#FF6B6B":"#FFD4E8"}`,borderRadius:16,padding:"17px 12px",textAlign:"center",cursor:ans?"default":"pointer",fontSize:15,fontWeight:800,color:correct||revealed?P.green:wrong?"#FF6B6B":P.text,transition:"all .2s"}}>
+          <button key={opt} onClick={()=>choose(opt)} disabled={!!ans} style={{background:correct||revealed?P.greenSoft:wrong?"#FFF0F0":"white",border:`2px solid ${correct||revealed?P.green:wrong?"#FF6B6B":"#FFD4E8"}`,borderRadius:16,padding:"13px 10px",textAlign:"center",cursor:ans?"default":"pointer",fontSize:13,fontWeight:800,color:correct||revealed?P.green:wrong?"#FF6B6B":P.text,transition:"all .2s"}}>
             {correct||revealed?"✓ ":wrong?"✗ ":""}{opt}
           </button>
         );})}
       </div>
-      {ans&&<div className="up" style={{textAlign:"center",marginTop:16,padding:"15px",background:ans===q.a?P.greenSoft:P.amberSoft,borderRadius:16,border:`2px solid ${ans===q.a?P.green:P.amber}`}}>
-        <div style={{fontSize:18,fontWeight:900,color:ans===q.a?P.green:P.amber,marginBottom:4}}>{ans===q.a?(lang==="en"?"🌸 Well done!":"🌸 Bravo ! C'est bien ça !"):(lang==="en"?"💛 The answer was:":"💛 La bonne réponse était :")}</div>
-        {ans!==q.a&&<div style={{fontSize:16,fontWeight:900,color:P.green}}>{q.a}</div>}
+      {ans&&<div className="up" style={{textAlign:"center",marginTop:12,padding:"12px",background:ans===q.a?P.greenSoft:P.amberSoft,borderRadius:16,border:`2px solid ${ans===q.a?P.green:P.amber}`}}>
+        <div style={{fontSize:16,fontWeight:900,color:ans===q.a?P.green:P.amber,marginBottom:3}}>{ans===q.a?(lang==="en"?"🌸 Well done!":"🌸 Bravo ! C'est bien ça !"):(lang==="en"?"💛 The answer was:":"💛 La bonne réponse était :")}</div>
+        {ans!==q.a&&<div style={{fontSize:14,fontWeight:900,color:P.green}}>{q.a}</div>}
       </div>}
-      </div>
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -2787,25 +2163,20 @@ function JeuImages({level,lang,onBack,onBadge,onComplete}){
   };
   const remL=idx=>{if(correct)return;const r=guess[idx];setGuess(guess.filter((_,i)=>i!==idx));setAvail(avail.map(a=>a.i===r.i?{...a,used:false}:a));};
   return done?<GWin title={lang==="en"?"🖼️ 4 Images 1 Word!":"🖼️ 4 Images 1 Mot !"} score={score} max={rounds.length*20} badge={lang==="en"?"🖼️ Word Detective":"🖼️ Détective des mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill top={
-      <>
-        <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length} lang={lang}/>
-        <div style={{textAlign:"center",color:P.muted,fontSize:13,margin:"4px 0 12px",fontWeight:700}}>{ri+1}/{rounds.length} — <em>{rounds[ri].hint}</em></div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-        {rounds[ri].emojis.map((e,i)=><div key={i} style={{background:P.card,borderRadius:18,border:`2px solid ${correct?P.green:"#FFD4E8"}`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",fontSize:58,transition:"border .3s"}}>{e}</div>)}
+    <div style={{padding:"12px 16px 36px"}}>
+      <GHdr title={lang==="en"?`🖼️ 4 Images 1 Word L${level}`:`🖼️ 4 Images 1 Mot N${level}`} onBack={onBack} score={score} prog={(ri+(correct?1:0))/rounds.length} lang={lang}/>
+      <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 10px",fontWeight:700}}>{ri+1}/{rounds.length} — <em>{rounds[ri].hint}</em></div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:12}}>
+        {rounds[ri].emojis.map((e,i)=><div key={i} style={{background:"white",borderRadius:16,border:`2px solid ${correct?P.green:"#FFD4E8"}`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",fontSize:46,transition:"border .3s"}}>{e}</div>)}
       </div>
-      <div className={wrong?"shake":correct?"pop":""} style={{display:"flex",justifyContent:"center",gap:6,marginBottom:16,flexWrap:"wrap"}}>
-        {Array.from({length:word.length},(_,i)=>{const g=guess[i];return(<div key={i} onClick={()=>g&&remL(i)} style={{width:40,height:44,borderRadius:10,background:correct?P.greenSoft:g?"white":"#FFF0F8",border:`2.5px solid ${correct?P.green:g?P.rose:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900,color:correct?P.green:P.text,cursor:g?"pointer":"default",transition:"all .2s"}}>{g?g.l:""}</div>);})}
+      <div className={wrong?"shake":correct?"pop":""} style={{display:"flex",justifyContent:"center",gap:5,marginBottom:12,flexWrap:"wrap"}}>
+        {Array.from({length:word.length},(_,i)=>{const g=guess[i];return(<div key={i} onClick={()=>g&&remL(i)} style={{width:32,height:36,borderRadius:8,background:correct?P.greenSoft:g?"white":"#FFF0F8",border:`2.5px solid ${correct?P.green:g?P.rose:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:900,color:correct?P.green:P.text,cursor:g?"pointer":"default",transition:"all .2s"}}>{g?g.l:""}</div>);})}
       </div>
-      {correct&&<div className="up" style={{textAlign:"center",fontSize:17,marginBottom:14}}>🌸 {lang==="en"?`Well done! The word was `:`Bravo ! Le mot était `}<strong style={{color:P.green}}>{word}</strong>!</div>}
-      <div style={{display:"flex",flexWrap:"wrap",gap:9,justifyContent:"center"}}>
-        {avail.map(av=><button key={av.i} onClick={()=>pickL(av)} disabled={av.used||correct} style={{width:46,height:46,borderRadius:13,background:av.used?"#F0E8F8":G,color:av.used?"transparent":"white",border:"none",fontSize:18,fontWeight:900,opacity:av.used?.25:1,transition:"all .15s"}}>{av.used?"":av.l}</button>)}
+      {correct&&<div className="up" style={{textAlign:"center",fontSize:15,marginBottom:10}}>🌸 {lang==="en"?`Well done! The word was `:`Bravo ! Le mot était `}<strong style={{color:P.green}}>{word}</strong>!</div>}
+      <div style={{display:"flex",flexWrap:"wrap",gap:7,justifyContent:"center"}}>
+        {avail.map(av=><button key={av.i} onClick={()=>pickL(av)} disabled={av.used||correct} style={{width:38,height:38,borderRadius:11,background:av.used?"#F0E8F8":G,color:av.used?"transparent":"white",border:"none",fontSize:15,fontWeight:900,opacity:av.used?.25:1,transition:"all .15s"}}>{av.used?"":av.l}</button>)}
       </div>
-      </div>
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -2830,7 +2201,7 @@ function JeuMotsMeles({level,lang,onBack,onBadge,onComplete}){
   const wsd=(lang==="en"?WS_DATA_EN:WS_DATA)[level-1];
   const[{grid,placed}]=useState(()=>genWS(wsd.words,wsd.size,wsd.dirs));
   const[found,setFound]=useState([]);const[sel1,setSel1]=useState(null);const[score,setScore]=useState(0);const[flash,setFlash]=useState(null);const[done,setDone]=useState(false);const[wrong,setWrong]=useState(false);
-  const csz=Math.min(34,Math.floor(320/wsd.size));
+  const csz=Math.min(30,Math.floor(310/wsd.size));
   const getCC=(r,c)=>{for(const fi of found)if(placed[fi]?.cells.some(x=>x.r===r&&x.c===c))return FC[fi%FC.length];return null;};
   const tapC=(r,c)=>{
     if(!sel1){setSel1({r,c});return;}
@@ -2846,28 +2217,23 @@ function JeuMotsMeles({level,lang,onBack,onBadge,onComplete}){
     setSel1(null);
   };
   return done?<GWin title={lang==="en"?"🔍 Word Search!":"🔍 Mots Mêlés !"} score={score} max={wsd.words.length*15} badge={lang==="en"?"🔍 Word Hunter":"🔍 Chasseuse de mots"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill padding="12px 13px 88px" top={
-      <>
-        <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length} lang={lang}/>
-        <div style={{textAlign:"center",color:P.muted,fontSize:12,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} {lang==="en"?"found":"trouvés"}</div>
-        {sel1&&<div style={{textAlign:"center",color:P.rose,fontSize:12,fontWeight:800,marginBottom:5}}>✅ {lang==="en"?"Start selected — tap the last letter!":"Départ sélectionné — appuie sur la dernière lettre !"}</div>}
-        {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontSize:13,fontWeight:800,marginBottom:5}}>💛 Pas dans la liste, essaie encore !</div>}
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{overflowX:"auto",marginBottom:16}}>
-        <div style={{display:"inline-grid",gridTemplateColumns:`repeat(${wsd.size},${csz}px)`,gap:2,margin:"0 auto"}}>
+    <div style={{padding:"12px 13px 36px"}}>
+      <GHdr title={lang==="en"?`🔍 Word Search L${level}`:`🔍 Mots Mêlés N${level}`} onBack={onBack} score={score} prog={found.length/wsd.words.length} lang={lang}/>
+      <div style={{textAlign:"center",color:P.muted,fontSize:11,margin:"4px 0 7px",fontWeight:700}}>{wsd.label} · {found.length}/{wsd.words.length} {lang==="en"?"found":"trouvés"}</div>
+      {sel1&&<div style={{textAlign:"center",color:P.rose,fontSize:11,fontWeight:800,marginBottom:5}}>✅ {lang==="en"?"Start selected — tap the last letter!":"Départ sélectionné — appuie sur la dernière lettre !"}</div>}
+      {wrong&&<div className="up" style={{textAlign:"center",color:P.amber,fontSize:12,fontWeight:800,marginBottom:5}}>💛 Pas dans la liste, essaie encore !</div>}
+      <div style={{overflowX:"auto",marginBottom:10}}>
+        <div style={{display:"inline-grid",gridTemplateColumns:`repeat(${wsd.size},${csz}px)`,gap:2}}>
           {grid.map((row,r)=>row.map((letter,c)=>{
             const fc=getCC(r,c);const isSel=sel1?.r===r&&sel1?.c===c;const isF=flash!==null&&placed[flash]?.cells.some(x=>x.r===r&&x.c===c);
-            return(<div key={`${r},${c}`} onClick={()=>tapC(r,c)} className={isF?"pop":""} style={{width:csz,height:csz,borderRadius:5,cursor:"pointer",background:fc?fc+"28":isSel?P.roseSoft:"white",border:`1.5px solid ${fc?fc:isSel?P.rose:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:csz>24?13:10,fontWeight:900,color:fc?fc:isSel?P.rose:P.text,userSelect:"none",transition:"background .15s"}}>{letter}</div>);
+            return(<div key={`${r},${c}`} onClick={()=>tapC(r,c)} className={isF?"pop":""} style={{width:csz,height:csz,borderRadius:5,cursor:"pointer",background:fc?fc+"28":isSel?P.roseSoft:"white",border:`1.5px solid ${fc?fc:isSel?P.rose:"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:csz>24?12:9,fontWeight:900,color:fc?fc:isSel?P.rose:P.text,userSelect:"none",transition:"background .15s"}}>{letter}</div>);
           }))}
         </div>
       </div>
-      <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
-        {wsd.words.map((w,wi)=>{const pi=placed.findIndex(p=>p.word===w);const isFnd=found.includes(pi);const col=isFnd?FC[pi%FC.length]:P.muted;return(<span key={wi} style={{background:isFnd?col+"18":"white",color:col,border:`1.5px solid ${isFnd?col:"#FFD4E8"}`,borderRadius:10,padding:"4px 12px",fontSize:12.5,fontWeight:800,textDecoration:isFnd?"line-through":"none",opacity:isFnd?.65:1}}>{w}</span>);})}
+      <div style={{display:"flex",flexWrap:"wrap",gap:5,justifyContent:"center"}}>
+        {wsd.words.map((w,wi)=>{const pi=placed.findIndex(p=>p.word===w);const isFnd=found.includes(pi);const col=isFnd?FC[pi%FC.length]:P.muted;return(<span key={wi} style={{background:isFnd?col+"18":"white",color:col,border:`1.5px solid ${isFnd?col:"#FFD4E8"}`,borderRadius:10,padding:"3px 10px",fontSize:11,fontWeight:800,textDecoration:isFnd?"line-through":"none",opacity:isFnd?.65:1}}>{w}</span>);})}
       </div>
-      </div>
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -2877,36 +2243,31 @@ function JeuLabyrinthe({level,lang,onBack,onBadge,onComplete}){
   useEffect(()=>{if(done)return;const t=setInterval(()=>setTimer(s=>s+1),1000);return()=>clearInterval(t);},[done]);
   const canMove=(r,c)=>r>=0&&r<md.rows&&c>=0&&c<md.cols&&md.grid[r][c]===0;
   const move=(dr,dc)=>{const nr=pos[0]+dr,nc=pos[1]+dc;if(!canMove(nr,nc))return;SND.play("ok");const nv=new Set([...visited,`${nr},${nc}`]);setVisited(nv);setPos([nr,nc]);setMoves(m=>m+1);if(nr===md.end[0]&&nc===md.end[1])setTimeout(()=>{setDone(true);onBadge(`🌿 Navigatrice N${level}`);},400);};
-  const cellSz=Math.min(40,Math.floor(300/md.cols));const score=Math.max(10,100-moves*2);
+  const cellSz=Math.min(36,Math.floor(290/md.cols));const score=Math.max(10,100-moves*2);
   return done?<GWin title={lang==="en"?"🌿 Maze!":"🌿 Labyrinthe !"} score={score} max={100} badge={lang==="en"?"🌿 Navigator":"🌿 Navigatrice"} onHome={onBack} onNext={onComplete} hasNext={level<3}/>:(
-    <ScreenFill padding="14px 14px 88px" top={
-      <>
-        <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)} lang={lang}/>
-        <div style={{display:"flex",justifyContent:"space-between",margin:"4px 0 12px"}}>
-          <span style={{fontSize:13,fontWeight:700,color:P.muted}}>{lang==="en"?"🎯 Reach the exit 🌺":"🎯 Atteins la sortie 🌺"}</span>
-          <span style={{fontSize:13,fontWeight:700,color:P.muted}}>⏱️ {timer}s | 👣 {moves}</span>
-        </div>
-      </>
-    }>
-      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",minHeight:0}}>
-      <div style={{overflowX:"auto",marginBottom:18}}>
-        <div style={{display:"inline-grid",gridTemplateColumns:`repeat(${md.cols},${cellSz}px)`,gap:2,padding:2,margin:"0 auto"}}>
+    <div style={{padding:"14px 14px 36px"}}>
+      <GHdr title={lang==="en"?`🌿 Maze L${level}`:`🌿 Labyrinthe N${level}`} onBack={onBack} score={score} prog={visited.size/(md.rows*md.cols)} lang={lang}/>
+      <div style={{display:"flex",justifyContent:"space-between",margin:"4px 0 10px"}}>
+        <span style={{fontSize:12,fontWeight:700,color:P.muted}}>{lang==="en"?"🎯 Reach the exit 🌺":"🎯 Atteins la sortie 🌺"}</span>
+        <span style={{fontSize:12,fontWeight:700,color:P.muted}}>⏱️ {timer}s | 👣 {moves}</span>
+      </div>
+      <div style={{overflowX:"auto",marginBottom:14}}>
+        <div style={{display:"inline-grid",gridTemplateColumns:`repeat(${md.cols},${cellSz}px)`,gap:2,padding:2}}>
           {md.grid.map((row,r)=>row.map((cell,c)=>{
             const isPos=pos[0]===r&&pos[1]===c,isEnd=md.end[0]===r&&md.end[1]===c,wasV=visited.has(`${r},${c}`);
-            return cell===1?<div key={`${r},${c}`} style={{width:cellSz,height:cellSz,background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:6}}/>:
-            (<div key={`${r},${c}`} onClick={()=>{if(Math.abs(r-pos[0])+Math.abs(c-pos[1])===1)move(r-pos[0],c-pos[1]);}} style={{width:cellSz,height:cellSz,borderRadius:6,background:isPos?"linear-gradient(135deg,#FF6B9D,#FF8C69)":isEnd?"linear-gradient(135deg,#3DBE82,#14B8A6)":wasV?P.roseSoft:"white",border:`1.5px solid ${isPos?P.rose:isEnd?P.green:wasV?P.rose+"44":"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:isPos||isEnd?cellSz*.5:13,cursor:"pointer",transition:"background .15s"}}>{isPos?"🌸":isEnd?"🌺":""}</div>);
+            return cell===1?<div key={`${r},${c}`} style={{width:cellSz,height:cellSz,background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:5}}/>:
+            (<div key={`${r},${c}`} onClick={()=>{if(Math.abs(r-pos[0])+Math.abs(c-pos[1])===1)move(r-pos[0],c-pos[1]);}} style={{width:cellSz,height:cellSz,borderRadius:5,background:isPos?"linear-gradient(135deg,#FF6B9D,#FF8C69)":isEnd?"linear-gradient(135deg,#3DBE82,#14B8A6)":wasV?P.roseSoft:"white",border:`1.5px solid ${isPos?P.rose:isEnd?P.green:wasV?P.rose+"44":"#FFD4E8"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:isPos||isEnd?cellSz*.5:12,cursor:"pointer",transition:"background .15s"}}>{isPos?"🌸":isEnd?"🌺":""}</div>);
           }))}
         </div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,maxWidth:210,margin:"0 auto"}}>
-        <div/><button onClick={()=>move(-1,0)} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"16px 0",fontSize:23,fontWeight:900}}>↑</button><div/>
-        <button onClick={()=>move(0,-1)} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"16px 0",fontSize:23,fontWeight:900}}>←</button>
-        <button onClick={()=>move(1,0)} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"16px 0",fontSize:23,fontWeight:900}}>↓</button>
-        <button onClick={()=>move(0,1)} style={{background:G,color:"white",border:"none",borderRadius:14,padding:"16px 0",fontSize:23,fontWeight:900}}>→</button>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,maxWidth:180,margin:"0 auto"}}>
+        <div/><button onClick={()=>move(-1,0)} style={{background:G,color:"white",border:"none",borderRadius:12,padding:"13px 0",fontSize:20,fontWeight:900}}>↑</button><div/>
+        <button onClick={()=>move(0,-1)} style={{background:G,color:"white",border:"none",borderRadius:12,padding:"13px 0",fontSize:20,fontWeight:900}}>←</button>
+        <button onClick={()=>move(1,0)} style={{background:G,color:"white",border:"none",borderRadius:12,padding:"13px 0",fontSize:20,fontWeight:900}}>↓</button>
+        <button onClick={()=>move(0,1)} style={{background:G,color:"white",border:"none",borderRadius:12,padding:"13px 0",fontSize:20,fontWeight:900}}>→</button>
       </div>
-      <p style={{textAlign:"center",fontSize:12.5,color:P.muted,marginTop:14,fontWeight:600}}>{lang==="en"?"Tap adjacent cells or use the arrows ☝️":"Appuie sur les cases adjacentes ou utilise les flèches ☝️"}</p>
-      </div>
-    </ScreenFill>
+      <p style={{textAlign:"center",fontSize:11,color:P.muted,marginTop:10,fontWeight:600}}>{lang==="en"?"Tap adjacent cells or use the arrows ☝️":"Appuie sur les cases adjacentes ou utilise les flèches ☝️"}</p>
+    </div>
   );
 }
 
@@ -2937,7 +2298,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
     }
     return ql;
   });
-  const[qi,setQi]=useState(0);const[sel,setSel]=useState(null);const[showFb,setShowFb]=useState(false);const[timerV,setTimerV]=useState(15);const[dispScore,setDispScore]=useState(0);const[showDA,setShowDA]=useState(false);const[showGloss,setShowGloss]=useState(false);
+  const[qi,setQi]=useState(0);const[sel,setSel]=useState(null);const[showFb,setShowFb]=useState(false);const[timerV,setTimerV]=useState(15);const[dispScore,setDispScore]=useState(0);const[showDA,setShowDA]=useState(false);
   const q=qs[qi];const L=["A","B","C","D"];
   useEffect(()=>{
     if(showFb||sel!==null||category==="defi")return;
@@ -2956,15 +2317,14 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
   const tClr=timerV>7?"linear-gradient(90deg,#FF9A9E,#FF6B9D)":"linear-gradient(90deg,#E8003D,#FF5555)";
   const catLabel=lang==="en"?{qcm:"Multiple Choice",vf:"True or False",mr:"Myth or Reality",defi:"Daily Challenge",urgence:"Emergency",violence:"Violence & Safety",ca_1:"Learn & Understand — L1",ca_2:"Learn & Understand — L2",ca_3:"Learn & Understand — L3",qsj:"Who Am I?"}:{qcm:"QCM",vf:"Vrai / Faux",mr:"Mythe ou Réalité",defi:"Défi",urgence:"Urgence",violence:"Violences & Sécurité",ca_1:"Comprendre & Apprendre — N1",ca_2:"Comprendre & Apprendre — N2",ca_3:"Comprendre & Apprendre — N3",qsj:"Qui suis-je ?"};
   return(
-    <ScreenFill top={
+    <div style={{padding:"14px 16px 36px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-        <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
+        <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
           <button onClick={()=>{SND.on=!SND.on;}} style={{background:"rgba(255,255,255,.8)",border:"none",borderRadius:"50%",width:32,height:32,cursor:"pointer",fontSize:".95rem"}}>🔊</button>
           <div style={{background:G,color:"white",borderRadius:12,padding:"5px 14px",fontSize:13,fontWeight:800}}>⭐ {dispScore}</div>
         </div>
       </div>
-    }>
       {category==="defi"?(
         <div>
           <div style={{fontSize:".7rem",textTransform:"uppercase",letterSpacing:2,color:P.muted,marginBottom:11,fontWeight:700}}>Défi {qi+1}/{qs.length}</div>
@@ -2973,7 +2333,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:10,lineHeight:1.4}}>{q.q}</div>
             <div style={{textAlign:"center",marginBottom:12}}><SpeechBtn text={q.q} lang={lang}/></div>
             {!showDA?<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"12px 24px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={()=>setShowDA(true)}>Voir la réponse 👀</button>
-            :<div style={{background:P.card,borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
+            :<div style={{background:"white",borderRadius:14,padding:14,textAlign:"left",border:`1px solid ${P.rose}22`}}><div style={{fontWeight:800,color:P.red,fontSize:".78rem",marginBottom:7,textTransform:"uppercase",letterSpacing:1.2}}>💬 Réponse</div><div style={{fontSize:".85rem",color:P.muted,lineHeight:1.65,whiteSpace:"pre-line"}}>{q.rep}</div></div>}
           </div>
           {showDA&&<button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"14px 22px",fontSize:".95rem",fontWeight:700,cursor:"pointer",width:"100%"}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next challenge →":"Défi suivant →")}</button>}
         </div>
@@ -2987,36 +2347,32 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
               <div style={{height:"100%",borderRadius:4,transition:"width 1s linear,background .5s",width:`${tPct}%`,background:tClr}}/>
             </div>
           </div>
-            <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:26,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
-            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:22}}><div className="T" style={{fontSize:"1.42rem",fontWeight:800,lineHeight:1.4,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
-            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(14px)",borderRadius:26,padding:22,boxShadow:"0 10px 36px rgba(232,0,61,.12)",border:"1.5px solid rgba(255,255,255,.95)"}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:18}}><div className="T" style={{fontSize:"1.25rem",fontWeight:800,lineHeight:1.45,color:P.text,flex:1}}>{q.q}</div><SpeechBtn text={q.q} lang={lang} style={{marginTop:2}}/></div>
+            <div style={{display:"flex",flexDirection:"column",gap:10}}>
               {q.answers.map((a,i)=>{
                 let bg="rgba(255,255,255,.9)",border=`2.5px solid rgba(232,0,61,.13)`;
                 if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border=`2.5px solid ${P.green}`;}else if(i===sel){bg="rgba(231,76,60,.1)";border="2.5px solid #E74C3C";}}
-                return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"17px 18px",cursor:showFb?"default":"pointer",fontSize:"1.18rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
-                  <span style={{width:32,height:32,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".8rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
+                return(<button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:15,padding:"14px 16px",cursor:showFb?"default":"pointer",fontSize:"1.05rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",transition:"all .17s",width:"100%",color:P.text}}>
+                  <span style={{width:30,height:30,borderRadius:"50%",background:showFb&&i===q.correct?P.green:showFb&&i===sel?"#E74C3C":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".75rem",fontWeight:800,flexShrink:0}}>{L[i]}</span>
                   {lang==="en"?(a==="Vrai"?"True":a==="Faux"?"False":a==="Mythe"?"Myth":a==="Réalité"?"Reality":a):a}
                 </button>);
               })}
             </div>
             {showFb&&(
-              <div style={{marginTop:18,padding:"18px 19px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
-                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
+              <div style={{marginTop:15,padding:"15px 17px",borderRadius:17,background:sel===q.correct?"rgba(61,190,130,.11)":"rgba(231,76,60,.09)",border:`1.5px solid ${sel===q.correct?P.green:"#E74C3C"}`}} className="up">
+                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
                   <AKissi state={sel===-1?"encouragement":sel===q.correct?"joie":"erreur"} lang={lang} size={60} msg={null} style={{flexShrink:0}}/>
                   <div style={{flex:1}}>
-                    <div className="T" style={{fontSize:"1.12rem",fontWeight:800,marginBottom:5,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
-                    <div style={{fontSize:"1.02rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
+                    <div className="T" style={{fontSize:"1rem",fontWeight:800,marginBottom:4,color:sel===q.correct?"#18a044":"#E74C3C"}}>{sel===-1?(lang==="en"?"⏰ Time's up!":"⏰ Temps écoulé !"):sel===q.correct?(lang==="en"?"✅ Correct!":"✅ Bonne réponse !"):(lang==="en"?"❌ Not quite...":"❌ Pas tout à fait...")}</div>
+                    <div style={{fontSize:".9rem",color:P.muted,lineHeight:1.6}}>{q.ex}</div>
                   </div>
                   <SpeechBtn text={q.ex} lang={lang} style={{marginTop:1,flexShrink:0}}/>
                 </div>
-                {sel!==q.correct&&(
-                  <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${P.red}33`,color:P.red,borderRadius:50,padding:"10px 16px",fontSize:".92rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:9,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {lang==="en"?"Look it up in the glossary":"Consulter le glossaire"}</button>
-                )}
-                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"15px 22px",fontSize:"1.12rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:9}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
+                <button style={{background:G,color:"white",border:"none",borderRadius:50,padding:"13px 22px",fontSize:"1rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:6}} onClick={next}>{qi+1>=qs.length?(lang==="en"?"See results 🏆":"Voir les résultats 🏆"):(lang==="en"?"Next question →":"Question suivante →")}</button>
               </div>
             )}
           </div>
-          {showGloss&&<GlossaryModal onClose={()=>setShowGloss(false)} lang={lang}/>}
           {showFb&&category==="violence"&&[1,5,8].includes(qi)&&(
             <div className="up" style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.18)",borderRadius:15,padding:13,textAlign:"center",marginTop:12}}>
               <div style={{fontSize:".78rem",color:P.muted,fontWeight:700}}>💬 {lang==="en"?"Need help?":"Besoin d'aide ?"}</div>
@@ -3025,7 +2381,7 @@ function QuizGame({profile,category,level=1,soundOn,lang,onBack,onResult}){
           )}
         </div>
       )}
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -3112,12 +2468,12 @@ function QuizResults({profile,category,levelNum,finalScore,qLen,totalPts,lvl,new
 
         {/* Actions */}
         <div style={{display:"flex",gap:10,marginBottom:12}}>
-          <button onClick={onReplay} style={{flex:1,background:P.card,color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
+          <button onClick={onReplay} style={{flex:1,background:"white",color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
           <button onClick={onHome} style={{flex:1,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
         </div>
 
         {/* Partage */}
-        <div style={{background:P.card,borderRadius:20,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
+        <div style={{background:"white",borderRadius:20,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
           <div style={{fontSize:12,fontWeight:800,color:P.red,marginBottom:10}}>📲 {t("Partager mon score","Share my score")}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
             <button onClick={onShareWA} style={{background:"#25D366",color:"white",border:"none",borderRadius:12,padding:"11px 6px",fontWeight:700,fontSize:11,cursor:"pointer",display:"flex",flexDirection:"column",gap:3,alignItems:"center"}}>
@@ -3348,20 +2704,6 @@ const SPECIAL_DEFIS_REACT={
   '11-20':{icon:"🧒🏾",title:"Journée Mondiale des Droits de l'Enfant",text:"Écris un droit que tu veux exercer pleinement cette année. Pas pour quelqu'un d'autre — pour toi."},
 };
 
-// Glossaire affiché en overlay par-dessus l'écran courant (quiz, etc.) — permet de
-// consulter un terme sans perdre sa progression, contrairement à une navigation
-// vers l'écran Glossaire à part entière.
-function GlossaryModal({onClose,lang}){
-  return(
-    <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(45,10,31,.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div style={{width:"100%",maxWidth:480,background:P.bg,borderRadius:"28px 28px 0 0",maxHeight:"88vh",overflowY:"auto"}}>
-        <div style={{width:40,height:4,background:"#E8003D33",borderRadius:99,margin:"14px auto 0"}}/>
-        <Glossaire onBack={onClose} lang={lang}/>
-      </div>
-    </div>
-  );
-}
-
 function DefiModal({onClose,lang}){
   const[done,setDone]=useState(()=>localStorage.getItem('hm_defi_last_done')===getTodayKeyR());
   const[streak]=useState(()=>parseInt(localStorage.getItem('hm_defi_streak')||'0',10));
@@ -3389,7 +2731,7 @@ function DefiModal({onClose,lang}){
 
   return(
     <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(45,10,31,.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div style={{width:"100%",maxWidth:480,background:P.bg,borderRadius:"28px 28px 0 0",padding:"28px 22px 42px",maxHeight:"92vh",overflowY:"auto"}}>
+      <div style={{width:"100%",maxWidth:480,background:"#FFF4F7",borderRadius:"28px 28px 0 0",padding:"28px 22px 42px",maxHeight:"92vh",overflowY:"auto"}}>
         <div style={{width:40,height:4,background:"#E8003D33",borderRadius:99,margin:"0 auto 20px"}}/>
         {special&&<div style={{textAlign:"center",marginBottom:14}}>
           <div style={{fontSize:11,fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>{lang==="en"?"🎉 Special Day":"🎉 Jour Spécial"}</div>
@@ -3413,7 +2755,7 @@ function DefiModal({onClose,lang}){
           </div>
         </div>}
         <div style={{display:"flex",gap:10}}>
-          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:P.card,color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>{lang==="en"?"Later":"Plus tard"}</button>
+          <button onClick={onClose} style={{flex:1,padding:14,borderRadius:14,border:"2px solid rgba(232,0,61,.2)",background:"white",color:"#B33",fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>{lang==="en"?"Later":"Plus tard"}</button>
           <button onClick={handleDone} disabled={done} style={{flex:2,padding:14,borderRadius:14,border:"none",background:done?"linear-gradient(135deg,#7FB069,#52A35D)":"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",fontSize:".92rem",fontWeight:800,cursor:done?"default":"pointer",boxShadow:"0 5px 18px rgba(232,0,61,.32)"}}>
             {done?(lang==="en"?"✅ Challenge done today":"✅ Défi fait aujourd'hui"):(lang==="en"?"Challenge done 🌸":"Défi accompli 🌸")}
           </button>
@@ -3432,9 +2774,6 @@ function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
     g4:<JeuChef     key={`g4-${gameLevel}`}  {...props}/>,
     g5:<JeuCycle    key={`g5-${gameLevel}`}  {...props}/>,
     g6:<JeuSOS      key={`g6-${gameLevel}`}  {...props}/>,
-    err:<JeuErreur  key={`err-${gameLevel}`} {...props}/>,
-    sac:<JeuSac     key={`sac-${gameLevel}`} {...props}/>,
-    choix:<JeuChoix key={`choix-${gameLevel}`} {...props}/>,
     dev:<JeuDevinettes key="dev" onBack={onBack} onBadge={onBadge} lang={lang}/>,
     img:<JeuImages  key={`img-${gameLevel}`} {...props}/>,
     ws:<JeuMotsMeles key={`ws-${gameLevel}`} {...props}/>,
@@ -3443,6 +2782,46 @@ function GamePlay({gameId,gameLevel,lang,onBack,onBadge,onComplete}){
   return games[gameId]||null;
 }
 
+
+// ── SPLASH SCREEN ───────────────────────────────────────────────
+function SplashScreen({onDone,isReady}){
+  const[fading,setFading]=useState(false);
+  const startRef=useRef(Date.now());
+  const MIN_SHOW=900;   // minimum visible : 900ms
+  const FADE_DUR=400;   // fondu : 400ms
+  const MAX_TOTAL=1800; // jamais plus de 1.8s
+
+  // Déclencheur unique : ferme dès que l'app est prête ET min atteint, ou au bout de MAX_TOTAL
+  useEffect(()=>{
+    const hardStop=setTimeout(()=>{setFading(true);setTimeout(onDone,FADE_DUR);},MAX_TOTAL-FADE_DUR);
+    return()=>clearTimeout(hardStop);
+  },[]);
+
+  useEffect(()=>{
+    if(!isReady)return;
+    const elapsed=Date.now()-startRef.current;
+    const wait=Math.max(0,MIN_SHOW-elapsed);
+    const t=setTimeout(()=>{
+      setFading(true);
+      setTimeout(onDone,FADE_DUR);
+    },wait);
+    return()=>clearTimeout(t);
+  },[isReady]);
+
+  return(
+    <div
+      className={`splash-screen${fading?" fading":""}`}
+      style={{position:"fixed",inset:0,zIndex:9999,margin:0,padding:0,background:"#E8003D",overflow:"hidden",WebkitTapHighlightColor:"transparent"}}
+    >
+      <img
+        src="/splash.jpg"
+        alt="Quiz Dignité"
+        style={{display:"block",width:"100vw",height:"100dvh",minHeight:"100vh",objectFit:"cover",objectPosition:"center center",margin:0,padding:0,border:"none",maxWidth:"none",maxHeight:"none",WebkitUserSelect:"none",userSelect:"none"}}
+        draggable={false}
+      />
+    </div>
+  );
+}
 
 function WelcomeScreen({onStart,lang,setLang}){
   const t=(fr,en)=>lang==="en"?en:fr;
@@ -3461,10 +2840,7 @@ function WelcomeScreen({onStart,lang,setLang}){
           <AKissi state="salut" lang={lang} size={100} msg={lang==="en"?"Hi! I'm A-Kissi 🌸":"Salut ! Je suis A-Kissi 🌸"}/>
         </div>
         <div className="T" style={{fontSize:"3.4rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:10}}>Quiz Dignité</div>
-        <div style={{fontSize:".8rem",fontWeight:800,letterSpacing:"2.5px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:14}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
-        <div style={{display:"inline-block",background:"rgba(232,0,61,.09)",border:"1px solid rgba(232,0,61,.18)",borderRadius:20,padding:"5px 14px",fontSize:11.5,fontWeight:700,color:P.red,marginBottom:18}}>
-          {t("👨‍👩‍👧 Dès 12 ans · avec un adulte pour les plus jeunes","👨‍👩‍👧 Ages 12+ · with an adult for younger kids")}
-        </div>
+        <div style={{fontSize:".8rem",fontWeight:800,letterSpacing:"2.5px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:32}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
         <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"22px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:32}}>
           <p style={{fontSize:"1.05rem",color:"#4A2040",lineHeight:1.7,margin:"0 0 10px"}}>
             {t(<><strong>Apprends les règles sans tabou, sans honte, avec confiance.</strong></>,<><strong>Learn about periods — no taboo, no shame, just confidence.</strong></>)}
@@ -3511,7 +2887,7 @@ function PrivacyPage({onBack,lang}){
   ];
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{t("← Retour","← Back")}</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{t("← Retour","← Back")}</button>
       <div style={{textAlign:"center",marginBottom:22}}>
         <div style={{fontSize:"2rem",marginBottom:6}}>🔐</div>
         <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red}}>{t("Politique de confidentialité","Privacy Policy")}</div>
@@ -3543,9 +2919,9 @@ const CORPS_DATA_EN=[
   [{id:"tete",label:"The Head",icon:"😊",color:P.rose,info:"Your head thinks, dreams and feels! Cycle hormones can affect your mood. This is normal and temporary. 💧"},{id:"poitrine",label:"The Chest",icon:"💗",color:P.purple,info:"Your chest develops during puberty due to hormones. It can feel tender before your period. 🌸"},{id:"ventre",label:"The Stomach",icon:"🌺",color:P.coral,info:"Your stomach is home to the uterus. Pain is normal but a hot water bottle helps. If very intense, see a doctor. 💪"},{id:"bras",label:"The Arms",icon:"💪",color:P.blue,info:"Your arms give you strength! Light exercise during periods can reduce pain through endorphins. 🌟"},{id:"jambes",label:"The Legs",icon:"🌈",color:P.green,info:"Your legs carry you everywhere! Walking 20 minutes a day improves your menstrual wellbeing. 🎶"},{id:"uterus",label:"The Uterus",icon:"🫁",color:P.red,info:"The uterus is a pear-shaped organ in your lower abdomen. Every month, it prepares a nest. If there is no pregnancy, it renews itself — that is your period! 💗"},{id:"ovaires",label:"The Ovaries",icon:"🌸",color:P.amber,info:"Your ovaries produce eggs and hormones like oestrogen. They are what trigger your cycle! ✨"}],
 ];
 const MEM_DATA_EN=[
-  [{id:1,e:"🩸",l:"Periods",info:"A period is the flow of blood that happens about once a month, when the uterus lining renews itself."},{id:2,e:"🧼",l:"Hygiene",info:"Washing regularly during your period helps you feel clean and comfortable."},{id:3,e:"💧",l:"Hydration",info:"Drinking water regularly can help reduce menstrual cramps."},{id:4,e:"😊",l:"Joy",info:"Feeling joy is part of everyday life, even during your period."}],
-  [{id:1,e:"🩸",l:"Periods",info:"A period is the flow of blood that happens about once a month, when the uterus lining renews itself."},{id:2,e:"🧼",l:"Hygiene",info:"Washing regularly during your period helps you feel clean and comfortable."},{id:3,e:"💧",l:"Hydration",info:"Drinking water regularly can help reduce menstrual cramps."},{id:4,e:"📦",l:"Protection",info:"Pads, tampons, cups or period pants: each product absorbs or collects the flow in its own way."},{id:5,e:"😊",l:"Joy",info:"Feeling joy is part of everyday life, even during your period."},{id:6,e:"💪",l:"Strength",info:"Getting through your period with confidence is also a form of inner strength."}],
-  [{id:1,e:"🩸",l:"Periods",info:"A period is the flow of blood that happens about once a month, when the uterus lining renews itself."},{id:2,e:"🧼",l:"Hygiene",info:"Washing regularly during your period helps you feel clean and comfortable."},{id:3,e:"💧",l:"Hydration",info:"Drinking water regularly can help reduce menstrual cramps."},{id:4,e:"📦",l:"Protection",info:"Pads, tampons, cups or period pants: each product absorbs or collects the flow in its own way."},{id:5,e:"😊",l:"Joy",info:"Feeling joy is part of everyday life, even during your period."},{id:6,e:"💪",l:"Strength",info:"Getting through your period with confidence is also a form of inner strength."},{id:7,e:"💬",l:"Talk",info:"Talking about your period with someone you trust helps you feel less alone."},{id:8,e:"🌺",l:"Puberty",info:"Puberty is the period when the body gradually changes into an adult body."}],
+  [{id:1,e:"🩸",l:"Periods"},{id:2,e:"🧼",l:"Hygiene"},{id:3,e:"💧",l:"Hydration"},{id:4,e:"😊",l:"Joy"}],
+  [{id:1,e:"🩸",l:"Periods"},{id:2,e:"🧼",l:"Hygiene"},{id:3,e:"💧",l:"Hydration"},{id:4,e:"📦",l:"Protection"},{id:5,e:"😊",l:"Joy"},{id:6,e:"💪",l:"Strength"}],
+  [{id:1,e:"🩸",l:"Periods"},{id:2,e:"🧼",l:"Hygiene"},{id:3,e:"💧",l:"Hydration"},{id:4,e:"📦",l:"Protection"},{id:5,e:"😊",l:"Joy"},{id:6,e:"💪",l:"Strength"},{id:7,e:"💬",l:"Talk"},{id:8,e:"🌺",l:"Puberty"}],
 ];
 const FOODS_ALL_EN=[
   {e:"💧",l:"Water",good:true,why:"Staying hydrated reduces cramps. Aim for 8 glasses a day! 💧"},
@@ -3700,52 +3076,20 @@ const GLOSSAIRE_DATA=[
   ]},
 ];
 
-// ── COMMENT ÇA MARCHE ────────────────────────────────────────────
-function HowItWorks({lang,onBack}){
-  const t=(fr,en)=>lang==="en"?en:fr;
-  const items=[
-    {icon:"🌱",title:t("Thèmes","Themes"),text:t("5 catégories pour apprendre les bases : Mon corps, Mes règles, Mythes & vérités, Dignité & confiance, Droits & dignité.","5 categories to learn the basics: My body, My period, Myths & truths, Dignity & confidence, Rights & dignity.")},
-    {icon:"🥇",title:t("Niveaux","Levels"),text:t("Dans chaque thème, 3 niveaux de quiz (10 questions chacun). Un score d'au moins 8/10 débloque le niveau suivant.","In each theme, 3 quiz levels (10 questions each). A score of at least 8/10 unlocks the next level.")},
-    {icon:"⭐",title:t("Points","Points"),text:t("Chaque bonne réponse aux quiz rapporte des points. Ils font monter ton niveau de progression global, affiché en haut de l'accueil.","Each correct quiz answer earns points. They raise your overall progress level, shown at the top of the home screen.")},
-    {icon:"🏅",title:t("Badges","Badges"),text:t("Des récompenses que tu débloques en terminant un module (quiz, Escape Game, Profil Dignité...). Ils sont visibles dans Progrès.","Rewards you unlock by finishing a module (quiz, Escape Game, Dignity Profile...). You can see them under Progress.")},
-    {icon:"🧭",title:t("Paliers de Situations","Situation tiers"),text:t("5 groupes de 6 situations réelles à vivre. Indépendants des thèmes et des niveaux : pas de score, juste pour t'entraîner à réagir.","5 groups of 6 real-life scenarios. Separate from themes and levels: no score, just practice reacting to real situations.")},
-    {icon:"✨",title:t("Profil Dignité","Dignity Profile"),text:t("Un test à part (6 questions rapides) qui te révèle ta facette dominante (Découvreuse, Battante, Leader...). Tu peux le refaire à volonté.","A separate test (6 quick questions) revealing your dominant trait (Explorer, Fighter, Leader...). You can retake it anytime.")},
-    {icon:"🔁",title:t("Peut-on rejouer ?","Can I replay?"),text:t("Oui, à tout moment — les quiz, les situations et le test de profil peuvent être refaits sans perdre ta progression déjà acquise.","Yes, anytime — quizzes, situations, and the profile test can all be redone without losing progress you've already earned.")},
-  ];
-  return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
-      <div style={{background:HERO,padding:"50px 20px 24px",borderRadius:"0 0 32px 32px"}}>
-        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
-        <div className="T" style={{fontSize:24,fontWeight:900,color:"white",marginBottom:6}}>🧩 {t("Comment ça marche ?","How it works")}</div>
-        <p style={{fontSize:13,color:"rgba(255,255,255,.82)",fontWeight:600}}>{t("Thèmes, niveaux, points, paliers, badges, profil… un petit guide pour s'y retrouver.","Themes, levels, points, tiers, badges, profile… a quick guide to make sense of it all.")}</p>
-      </div>
-      <div style={{flex:1,padding:"16px 14px 32px",display:"flex",flexDirection:"column",gap:11}}>
-        {items.map((it,i)=>(
-          <div key={i} style={{background:P.card,borderRadius:18,padding:"14px 16px",display:"flex",gap:12,border:"1.5px solid rgba(232,0,61,.08)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
-            <div style={{fontSize:24,flexShrink:0}}>{it.icon}</div>
-            <div>
-              <div className="T" style={{fontSize:14.5,fontWeight:800,color:P.text,marginBottom:3}}>{it.title}</div>
-              <div style={{fontSize:12.5,color:P.muted,lineHeight:1.55,fontWeight:600}}>{it.text}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function Glossaire({onBack,lang}){
-  const[open,setOpen]=useState(null);
+  const[search,setSearch]=useState("");const[open,setOpen]=useState(null);
   const data=lang==="en"?GLOSSAIRE_DATA_EN:GLOSSAIRE_DATA;
-  const cats=data;
+  const cats=data.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:36,marginBottom:4}}>📚</div>
         <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
         <div style={{color:"rgba(255,255,255,.85)",fontSize:".78rem",fontWeight:600}}>{lang==="en"?"30 key terms to understand your body and your rights":"30 mots clés pour comprendre ton corps et tes droits"}</div>
       </div>
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={lang==="en"?"🔍 Search for a term...":"🔍 Rechercher un mot..."}
+        style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:14,padding:"12px 16px",fontSize:".9rem",outline:"none",marginBottom:14,boxSizing:"border-box",fontFamily:"'Nunito',sans-serif",color:P.text}}/>
       {cats.map((c,ci)=>(
         <div key={ci} style={{marginBottom:14}}>
           <div className="T" style={{fontSize:".78rem",fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>{c.cat}</div>
@@ -3767,6 +3111,7 @@ function Glossaire({onBack,lang}){
           })}
         </div>
       ))}
+      {cats.length===0&&<div style={{textAlign:"center",color:P.muted,fontSize:".88rem",marginTop:20}}>Aucun résultat pour "{search}"</div>}
     </div>
   );
 }
@@ -3847,7 +3192,7 @@ function JeMeCelebre({lang,onBack}){
   return showJournal?(
     <div style={{padding:"16px 16px 88px"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:18}}>
-        <button onClick={()=>setShowJournal(false)} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
+        <button onClick={()=>setShowJournal(false)} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700}}>{lang==="en"?"← Back":"← Retour"}</button>
         <div>
           <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:P.red}}>🌸 {lang==="en"?"My Journal":"Mon Journal"}</div>
           <div style={{fontSize:".72rem",color:P.muted,fontWeight:600}}>{journal.length} {lang==="en"?`entr${journal.length>1?"ies":"y"}`:`entrée${journal.length>1?"s":""}`}</div>
@@ -3860,7 +3205,7 @@ function JeMeCelebre({lang,onBack}){
         </div>
       ):(
         <div>{journal.map((entry,idx)=>(
-          <div key={entry.date} style={{background:P.card,border:`1.5px solid rgba(232,0,61,${idx===0?.2:.1})`,borderRadius:20,padding:"16px 18px",marginBottom:12,boxShadow:idx===0?"0 4px 16px rgba(232,0,61,.08)":"none",position:"relative"}}>
+          <div key={entry.date} style={{background:"white",border:`1.5px solid rgba(232,0,61,${idx===0?.2:.1})`,borderRadius:20,padding:"16px 18px",marginBottom:12,boxShadow:idx===0?"0 4px 16px rgba(232,0,61,.08)":"none",position:"relative"}}>
             {idx===0&&<div style={{position:"absolute",top:12,left:18,fontSize:".65rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8}}>{lang==="en"?"Today":"Aujourd'hui"}</div>}
             <div style={{fontSize:".7rem",fontWeight:800,color:P.red,marginBottom:5,opacity:.8,marginTop:idx===0?14:0}}>🌸 {fmtDate(entry.date)}</div>
             <div style={{fontSize:".75rem",color:P.muted,marginBottom:8,fontStyle:"italic",lineHeight:1.4}}>{entry.prompt}</div>
@@ -3872,7 +3217,7 @@ function JeMeCelebre({lang,onBack}){
     </div>
   ):(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.25)"}}>
         <div style={{fontSize:42,marginBottom:6}}>🌸</div>
         <div className="T" style={{color:"white",fontSize:"1.4rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
@@ -3880,7 +3225,7 @@ function JeMeCelebre({lang,onBack}){
       </div>
 
       {showIntro?(
-        <div style={{background:P.card,border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+        <div style={{background:"white",border:"2px solid rgba(232,0,61,.15)",borderRadius:22,padding:"20px 18px",marginBottom:20,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
           <div style={{fontSize:".7rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>✨ {lang==="en"?"What is this?":"C'est quoi ?"}</div>
           <p style={{fontSize:".88rem",color:P.text,lineHeight:1.75,margin:"0 0 16px",whiteSpace:"pre-line"}}>{lang==="en"?INTRO_EN:INTRO_FR}</p>
           <button onClick={()=>setShowIntro(false)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer"}}>
@@ -3893,7 +3238,7 @@ function JeMeCelebre({lang,onBack}){
         </button>
       )}
 
-      <div style={{background:P.navBg,border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:16,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
+      <div style={{background:"rgba(255,255,255,.95)",border:`2px solid rgba(232,0,61,.15)`,borderRadius:22,padding:"18px 16px",marginBottom:16,boxShadow:"0 4px 18px rgba(232,0,61,.08)"}}>
         <div style={{fontSize:".72rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>{lang==="en"?"Today":"Aujourd'hui"} · {fmtDate(todayKey())}</div>
         <div style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:12}}>
           <div style={{fontSize:".9rem",color:P.muted,fontWeight:700,lineHeight:1.4,flex:1}}>{todayPrompt}</div>
@@ -3920,7 +3265,7 @@ function JeMeCelebre({lang,onBack}){
       </div>
 
       {journal.length>0&&(
-        <button onClick={()=>setShowJournal(true)} style={{width:"100%",background:P.card,border:`2px solid rgba(232,0,61,.2)`,borderRadius:18,padding:"14px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+        <button onClick={()=>setShowJournal(true)} style={{width:"100%",background:"white",border:`2px solid rgba(232,0,61,.2)`,borderRadius:18,padding:"14px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <span style={{fontSize:28}}>📖</span>
             <div style={{textAlign:"left"}}>
@@ -4180,7 +3525,6 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   const[showFb,setShowFb]=useState(false);
   const[score,setScore]=useState(0);
   const[done,setDone]=useState(false);
-  const[showGloss,setShowGloss]=useState(false);
 
   // Shuffle answers so correct is not always B
   const[qs]=useState(()=>{
@@ -4234,7 +3578,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
           </div>
         )}
         <div style={{display:"flex",gap:10}}>
-          <button onClick={()=>{setQi(0);setSel(null);setShowFb(false);setScore(0);setDone(false);}} style={{flex:1,background:P.card,color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
+          <button onClick={()=>{setQi(0);setSel(null);setShowFb(false);setScore(0);setDone(false);}} style={{flex:1,background:"white",color:P.red,border:`2px solid rgba(232,0,61,.25)`,borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>🔄 {t("Rejouer","Replay")}</button>
           <button onClick={onBack} style={{flex:1,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"14px",fontWeight:800,fontSize:15,cursor:"pointer"}}>← {t("Modules","Modules")}</button>
         </div>
       </div>
@@ -4242,55 +3586,50 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   }
 
   return(
-    <ScreenFill padding="0 0 24px" top={
+    <div style={{paddingBottom:24}}>
       <div style={{background:`linear-gradient(135deg,${module.color},${module.color}99)`,padding:"48px 16px 16px"}}>
         <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:12}}>← {t("Retour","Back")}</button>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
           <div style={{flex:1,height:6,background:"rgba(255,255,255,.2)",borderRadius:3,overflow:"hidden"}}>
-            <div style={{height:"100%",background:P.card,borderRadius:3,width:`${((qi)/qs.length)*100}%`,transition:"width .4s"}}/>
+            <div style={{height:"100%",background:"white",borderRadius:3,width:`${((qi)/qs.length)*100}%`,transition:"width .4s"}}/>
           </div>
           <span style={{fontSize:12,color:"white",fontWeight:800}}>{qi+1}/{qs.length}</span>
         </div>
       </div>
-    }>
       <div style={{padding:"14px 14px 0"}}>
-        <div style={{background:P.card,borderRadius:22,padding:"22px 19px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
-          <div className="T" style={{fontSize:"1.38rem",fontWeight:800,color:P.dark,lineHeight:1.4,marginBottom:20}}>{q.q}</div>
-          <div style={{display:"flex",flexDirection:"column",gap:11}}>
+        <div style={{background:"white",borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
+          <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:16}}>{q.q}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:9}}>
             {q.answers.map((a,i)=>{
               let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.dark;
               if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#18a044";}else if(i===sel){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
               return(
-                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"16px 17px",cursor:showFb?"default":"pointer",fontSize:"1.14rem",fontWeight:700,display:"flex",alignItems:"center",gap:11,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
-                  <span style={{width:30,height:30,borderRadius:"50%",background:showFb&&i===q.correct?"#3DBE82":showFb&&i===sel?"#E74C3C":`${module.color}`,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".78rem",fontWeight:800,flexShrink:0}}>{q.answers.length===2?(i===0?(lang==="en"?"T":"V"):(lang==="en"?"F":"F")):L[i]}</span>
+                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"13px 14px",cursor:showFb?"default":"pointer",fontSize:"1.02rem",fontWeight:700,display:"flex",alignItems:"center",gap:10,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
+                  <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?"#3DBE82":showFb&&i===sel?"#E74C3C":`${module.color}`,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{q.answers.length===2?(i===0?(lang==="en"?"T":"V"):(lang==="en"?"F":"F")):L[i]}</span>
                   {a}
                 </button>
               );
             })}
           </div>
           {showFb&&(
-            <div style={{marginTop:17,padding:"17px",borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
+            <div style={{marginTop:14,padding:"14px",borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
               <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
                 <AKissi state={sel===q.correct?"joie":"erreur"} lang={lang} size={50} msg={null} style={{flexShrink:0}}/>
                 <div>
-                  <div className="T" style={{fontSize:16,fontWeight:800,color:sel===q.correct?"#18a044":"#E74C3C",marginBottom:5}}>
+                  <div className="T" style={{fontSize:14,fontWeight:800,color:sel===q.correct?"#18a044":"#E74C3C",marginBottom:4}}>
                     {sel===q.correct?t("✅ Bonne réponse !","✅ Correct!"):`❌ ${t("Pas tout à fait...","Not quite...")}`}
                   </div>
-                  <div style={{fontSize:15,color:P.muted,lineHeight:1.6}}>{q.ex}</div>
+                  <div style={{fontSize:13,color:P.muted,lineHeight:1.55}}>{q.ex}</div>
                 </div>
               </div>
-              {sel!==q.correct&&(
-                <button onClick={()=>setShowGloss(true)} style={{background:"transparent",border:`1.5px solid ${module.color}55`,color:module.color,borderRadius:50,padding:"10px 16px",fontSize:".9rem",fontWeight:700,cursor:"pointer",width:"100%",marginTop:11,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>📖 {t("Consulter le glossaire","Look it up in the glossary")}</button>
-              )}
-              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"15px",fontSize:16,fontWeight:800,cursor:"pointer",width:"100%",marginTop:9}}>
+              <button onClick={next} style={{background:`linear-gradient(135deg,${module.color},${module.color}aa)`,color:"white",border:"none",borderRadius:50,padding:"12px",fontSize:14,fontWeight:800,cursor:"pointer",width:"100%",marginTop:12}}>
                 {qi+1>=qs.length?t("Voir mes résultats 🏆","See results 🏆"):t("Question suivante →","Next question →")}
               </button>
             </div>
           )}
         </div>
       </div>
-      {showGloss&&<GlossaryModal onClose={()=>setShowGloss(false)} lang={lang}/>}
-    </ScreenFill>
+    </div>
   );
 }
 
@@ -4302,7 +3641,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
   if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={(pts,badge)=>{onModuleFinish&&onModuleFinish(pts,badge);setActiveModule(null);}}/>;
 
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
       {/* Header riche */}
       <div style={{background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)",padding:"52px 20px 28px",position:"relative",overflow:"hidden"}}>
         {/* Cercles déco */}
@@ -4333,7 +3672,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
       </div>
       <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
         {modules.map((m,i)=>(
-          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:P.card,borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,.06)",border:`1.5px solid ${m.color}22`}}>
+          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,.06)",border:`1.5px solid ${m.color}22`}}>
             <div style={{width:54,height:54,borderRadius:16,background:`${m.color}18`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <span style={{fontSize:22}}>{m.emoji}</span>
               <span style={{fontSize:9,fontWeight:900,color:m.color}}>{t(`M${m.num}`,`M${m.num}`)}</span>
@@ -4348,572 +3687,13 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
         ))}
         <div style={{height:16}}/>
       </div>
-      <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
+      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
         {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
           </button>
         ))}
       </nav>
-    </div>
-  );
-}
-
-// ── SITUATIONS INTERACTIVES ──────────────────────────────────────
-const SITUATIONS_LEVELS=[
-  {level:1,emoji:"🌸",color:P.rose,title:{fr:"Je découvre mon corps",en:"Discovering my body"},desc:{fr:"Corps, règles et hygiène",en:"Body, periods, and hygiene"}},
-  {level:2,emoji:"📅",color:P.blue,title:{fr:"Je comprends mon cycle",en:"Understanding my cycle"},desc:{fr:"Cycle, douleurs et quotidien",en:"Cycle, pain, and daily life"}},
-  {level:3,emoji:"🧭",color:P.purple,title:{fr:"Je connais mes limites",en:"Knowing my limits"},desc:{fr:"Consentement et respect",en:"Consent and respect"},grave:true},
-  {level:4,emoji:"🛡️",color:P.red,title:{fr:"Je me protège et je protège les autres",en:"Protecting myself and others"},desc:{fr:"Violences et recherche d'aide",en:"Abuse and seeking help"},grave:true},
-  {level:5,emoji:"👑",color:P.amber,title:{fr:"Dignité, droits & leadership",en:"Dignity, rights & leadership"},desc:{fr:"Droits, solidarité et leadership",en:"Rights, solidarity, and leadership"}},
-];
-
-const SITUATIONS_FEEDBACK_LABEL={
-  recommended:{fr:"💗 Bonne piste",en:"💗 Good move"},
-  acceptable:{fr:"💛 Possible, mais…",en:"💛 Okay, but…"},
-  risky:{fr:"🧡 À éviter",en:"🧡 Better avoided"},
-};
-const SITUATIONS_FEEDBACK_COLOR={recommended:P.green,acceptable:P.amber,risky:P.coral};
-
-const SITUATIONS_DATA=[
-  {id:1,level:1,
-   title:{fr:"Mes premières règles à l'école",en:"My first period at school"},
-   context:{fr:"Aïcha vient d'avoir ses premières règles. Elle est à l'école et remarque une tache de sang sur sa jupe. Elle est surprise, ne sait pas vraiment quoi faire et a peur que ses camarades se moquent d'elle.",en:"Aïcha has just had her first period. She's at school and notices a blood stain on her skirt. She's surprised, doesn't really know what to do, and is afraid her classmates will make fun of her."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Garder le secret et essayer de gérer seule.",en:"Keep it secret and try to handle it alone."},feedbackType:"acceptable",feedback:{fr:"C'est possible, mais tu n'as pas à tout gérer seule. Demander de l'aide n'a rien de honteux.",en:"That's possible, but you don't have to handle everything alone. Asking for help is nothing to be ashamed of."}},
-     {id:"B",text:{fr:"Demander discrètement une protection et en parler à une personne de confiance si elle en a besoin.",en:"Quietly ask for a period product, and talk to a trusted person if she needs to."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Avoir ses premières règles peut susciter des questions ou de l'inquiétude. Demander de l'aide est normal. Une personne de confiance peut l'aider à trouver une protection et à se sentir plus à l'aise.",en:"Good move 💗 Having your first period can raise questions or worries. Asking for help is completely normal. A trusted person can help her find protection and feel more comfortable."}},
-     {id:"C",text:{fr:"Ne plus retourner en classe pendant ses règles.",en:"Stop going to class while she has her period."},feedbackType:"risky",feedback:{fr:"À éviter. Manquer les cours à cause de ses règles n'est pas nécessaire quand on a la bonne protection et du soutien.",en:"Better avoided. Missing class because of your period isn't necessary when you have the right protection and support."}},
-   ],
-   takeaway:{fr:"Les premières règles sont une étape naturelle de la puberté. Tu peux poser des questions et demander de l'aide.",en:"Your first period is a natural stage of puberty. You can ask questions and ask for help."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:2,level:1,
-   title:{fr:"Comprendre mes règles",en:"Understanding my period"},
-   context:{fr:"Mariam vient d'avoir ses premières règles. Elle entend plusieurs personnes parler des menstruations et reçoit des informations contradictoires. Elle ne sait plus ce qui est vrai.",en:"Mariam has just had her first period. She hears several people talking about menstruation and gets conflicting information. She no longer knows what's true."},
-   question:{fr:"Que devrait-elle faire lorsqu'elle entend une information qui lui paraît étrange ?",en:"What should she do when she hears information that seems strange to her?"},
-   choices:[
-     {id:"A",text:{fr:"La croire parce qu'un adulte l'a dit.",en:"Believe it because an adult said it."},feedbackType:"risky",feedback:{fr:"Un adulte peut se tromper aussi. Il vaut mieux vérifier une information avant d'y croire complètement.",en:"An adult can be wrong too. It's better to check information before fully believing it."}},
-     {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Certaines croyances sur les règles sont très répandues sans être exactes. Pour les questions concernant ton corps, il est préférable de vérifier auprès d'une source fiable ou d'un professionnel compétent.",en:"Good move. Some beliefs about periods are widespread without being accurate. For questions about your body, it's best to check with a reliable source or a qualified professional."}},
-     {id:"C",text:{fr:"La partager à ses amies pour savoir ce qu'elles en pensent.",en:"Share it with her friends to see what they think."},feedbackType:"acceptable",feedback:{fr:"En parler entre amies peut aider, mais leurs réponses ne remplacent pas une information vérifiée.",en:"Talking about it with friends can help, but their answers don't replace verified information."}},
-   ],
-   takeaway:{fr:"Une information souvent répétée n'est pas forcément vraie.",en:"Information that's often repeated isn't necessarily true."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:3,level:1,
-   title:{fr:"Choisir une protection",en:"Choosing a period product"},
-   context:{fr:"Fatou doit choisir une protection menstruelle. Ses amies utilisent des produits différents et chacune lui dit que sa méthode est la meilleure.",en:"Fatou needs to choose a menstrual product. Her friends use different products, and each one tells her that her method is the best."},
-   question:{fr:"Que devrait faire Fatou ?",en:"What should Fatou do?"},
-   choices:[
-     {id:"A",text:{fr:"Utiliser obligatoirement la même protection que ses amies.",en:"Use the exact same product as her friends."},feedbackType:"risky",feedback:{fr:"Chaque corps est différent. Ce qui convient à une amie ne te conviendra pas forcément.",en:"Every body is different. What works for a friend won't necessarily work for you."}},
-     {id:"B",text:{fr:"Choisir une protection adaptée à ses besoins, à son confort et à ce qui lui est accessible.",en:"Choose a product suited to her needs, her comfort, and what's accessible to her."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Il existe plusieurs types de protections menstruelles. Le choix peut dépendre des préférences personnelles, du confort, de l'accessibilité et de la situation de chacune.",en:"Good move. There are several types of menstrual products. The choice can depend on personal preference, comfort, accessibility, and each person's situation."}},
-     {id:"C",text:{fr:"Ne rien utiliser puisqu'elle ne sait pas laquelle choisir.",en:"Use nothing since she doesn't know which one to choose."},feedbackType:"risky",feedback:{fr:"Ne pas se protéger peut être inconfortable et stressant. Il vaut mieux essayer une protection, même simple, en attendant de trouver la bonne.",en:"Not using any protection can be uncomfortable and stressful. It's better to try a product, even a simple one, while looking for the right fit."}},
-   ],
-   takeaway:{fr:"Il n'existe pas une seule protection adaptée à toutes les personnes.",en:"There is no single product that suits everyone."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:4,level:1,
-   title:{fr:"La tache sur ma jupe",en:"The stain on my skirt"},
-   context:{fr:"Nadia remarque qu'une camarade a une tache de sang sur son uniforme. Quelques élèves commencent à rire.",en:"Nadia notices that a classmate has a blood stain on her uniform. A few students start laughing."},
-   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
-   choices:[
-     {id:"A",text:{fr:"Rire aussi pour ne pas attirer l'attention sur toi.",en:"Laugh along too, so you don't draw attention to yourself."},feedbackType:"risky",feedback:{fr:"Rire avec le groupe peut sembler plus simple, mais cela blesse la personne concernée.",en:"Laughing along with the group might feel easier, but it hurts the person involved."}},
-     {id:"B",text:{fr:"Lui signaler discrètement la tache et lui proposer ton aide.",en:"Quietly point out the stain to her and offer to help."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Une tache de règles peut arriver à n'importe qui. Prévenir discrètement la personne et lui proposer de l'aide permet de préserver sa dignité.",en:"Good move. A period stain can happen to anyone. Quietly letting her know and offering help protects her dignity."}},
-     {id:"C",text:{fr:"Prendre une photo et l'envoyer au groupe de classe.",en:"Take a photo and send it to the class group chat."},feedbackType:"risky",feedback:{fr:"Cela peut gravement humilier la personne et lui faire du tort. Une tache de règles ne mérite jamais d'être exposée ainsi.",en:"This can seriously humiliate the person and cause real harm. A period stain never deserves to be exposed like that."}},
-   ],
-   takeaway:{fr:"Une personne qui a ses règles mérite du respect, pas des moqueries.",en:"A person who has their period deserves respect, not mockery."},source:null},
-
-  {id:5,level:1,
-   title:{fr:"L'hygiène pendant les règles",en:"Hygiene during your period"},
-   context:{fr:"Une cousine dit à Sarah qu'elle devrait éviter de se laver pendant ses règles parce que cela pourrait provoquer un problème. Sarah ne sait pas si cette information est vraie.",en:"A cousin tells Sarah she should avoid washing while on her period because it could cause a problem. Sarah doesn't know if this is true."},
-   question:{fr:"Quelle est la meilleure réaction ?",en:"What's the best response?"},
-   choices:[
-     {id:"A",text:{fr:"Suivre le conseil sans se poser de question.",en:"Follow the advice without questioning it."},feedbackType:"risky",feedback:{fr:"Suivre un conseil sans vérifier peut te faire croire des choses fausses sur ton propre corps.",en:"Following advice without checking it can make you believe false things about your own body."}},
-     {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une information sur la santé mérite toujours d'être vérifiée avant d'être suivie.",en:"Good move 💗 Health information always deserves to be checked before you follow it."}},
-     {id:"C",text:{fr:"Dire à toutes ses amies de faire la même chose.",en:"Tell all her friends to do the same."},feedbackType:"risky",feedback:{fr:"Propager une information non vérifiée peut faire circuler une fausse idée à beaucoup de monde.",en:"Spreading unverified information can pass a false idea on to many people."}},
-   ],
-   takeaway:{fr:"Les règles ne rendent pas le corps sale. Une bonne hygiène menstruelle contribue au confort et au bien-être.",en:"Periods don't make the body dirty. Good menstrual hygiene contributes to comfort and wellbeing."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:6,level:1,
-   title:{fr:"Le mythe de mon quartier",en:"The myth from my neighborhood"},
-   context:{fr:"Des camarades affirment qu'une fille ne devrait pas faire certaines activités simplement parce qu'elle a ses règles. Plusieurs personnes autour d'elle disent la même chose.",en:"Classmates claim that a girl shouldn't do certain activities just because she has her period. Several people around her say the same thing."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Croire automatiquement ce que dit la majorité.",en:"Automatically believe what the majority says."},feedbackType:"risky",feedback:{fr:"Le nombre de personnes qui répètent une idée ne la rend pas vraie.",en:"The number of people repeating an idea doesn't make it true."}},
-     {id:"B",text:{fr:"Vérifier l'information et écouter également les besoins de son propre corps.",en:"Check the information and also listen to what her own body needs."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Ton corps et une information fiable sont de meilleurs guides que les croyances populaires.",en:"Good move 💗 Your body and reliable information are better guides than popular beliefs."}},
-     {id:"C",text:{fr:"Dire que toutes les croyances sur les règles sont forcément fausses.",en:"Say that all beliefs about periods must be false."},feedbackType:"acceptable",feedback:{fr:"Rejeter en bloc toutes les croyances n'est pas non plus la solution. Mieux vaut vérifier chaque idée une par une.",en:"Rejecting every belief outright isn't the solution either. It's better to check each idea one by one."}},
-   ],
-   takeaway:{fr:"Il est possible de respecter les habitudes de sa communauté tout en vérifiant les informations concernant sa santé.",en:"It's possible to respect your community's habits while still checking information about your health."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:7,level:2,
-   title:{fr:"Mon cycle n'est pas toujours pareil",en:"My cycle isn't always the same"},
-   context:{fr:"Grâce remarque que ses règles ne commencent pas exactement le même jour chaque mois. Elle commence à s'inquiéter parce qu'elle pensait que son cycle devait toujours être identique.",en:"Grâce notices that her period doesn't start on exactly the same day every month. She starts to worry because she thought her cycle should always be identical."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Paniquer immédiatement.",en:"Panic immediately."},feedbackType:"risky",feedback:{fr:"La panique n'aide pas à comprendre ce qui se passe. Elle peut même rendre les choses plus stressantes.",en:"Panicking doesn't help you understand what's happening. It can even make things more stressful."}},
-     {id:"B",text:{fr:"Observer son cycle et demander conseil si quelque chose l'inquiète.",en:"Track her cycle and ask for advice if something worries her."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Observer son cycle permet de mieux le comprendre, et demander conseil rassure en cas de doute.",en:"Good move 💗 Tracking your cycle helps you understand it better, and asking for advice is reassuring when in doubt."}},
-     {id:"C",text:{fr:"Prendre un produit conseillé par une amie pour régulariser ses règles.",en:"Take a product recommended by a friend to regulate her period."},feedbackType:"risky",feedback:{fr:"Prendre un produit sans avis médical peut être risqué. Mieux vaut consulter un professionnel avant.",en:"Taking a product without medical advice can be risky. It's better to consult a professional first."}},
-   ],
-   takeaway:{fr:"Les cycles peuvent varier. En cas d'inquiétude importante ou de symptômes inhabituels, demander conseil à un professionnel de santé est préférable.",en:"Cycles can vary. If you're seriously worried or notice unusual symptoms, it's best to ask a health professional for advice."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:8,level:2,
-   title:{fr:"Mes règles sont en retard",en:"My period is late"},
-   context:{fr:"Awa attend ses règles mais elles ne sont pas arrivées au moment où elle les attendait. Elle commence à chercher des solutions sur les réseaux sociaux.",en:"Awa is waiting for her period, but it hasn't arrived when she expected. She starts looking for solutions on social media."},
-   question:{fr:"Quelle est la meilleure réaction ?",en:"What's the best response?"},
-   choices:[
-     {id:"A",text:{fr:"Prendre n'importe quel produit recommandé en ligne.",en:"Take any product recommended online."},feedbackType:"risky",feedback:{fr:"Un produit trouvé en ligne peut être inefficace ou risqué sans avis médical.",en:"A product found online can be ineffective or risky without medical advice."}},
-     {id:"B",text:{fr:"Chercher une information fiable et demander conseil si nécessaire.",en:"Look for reliable information and ask for advice if needed."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"Good move. A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."}},
-     {id:"C",text:{fr:"Ignorer complètement la situation.",en:"Completely ignore the situation."},feedbackType:"acceptable",feedback:{fr:"Ignorer peut sembler simple, mais si le retard inquiète, il vaut mieux en parler à quelqu'un de confiance.",en:"Ignoring it might seem simple, but if the delay is worrying, it's better to talk to someone you trust."}},
-   ],
-   takeaway:{fr:"Un retard peut avoir différentes causes. Il vaut mieux éviter l'automédication et rechercher une information adaptée.",en:"A late period can have different causes. It's best to avoid self-medicating and look for appropriate information."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:9,level:2,
-   title:{fr:"Des règles très douloureuses",en:"Very painful periods"},
-   context:{fr:"Mariam a régulièrement des douleurs menstruelles tellement fortes qu'elles l'empêchent parfois d'aller en cours.",en:"Mariam regularly has menstrual pain so intense that it sometimes keeps her from going to class."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Tout supporter en silence.",en:"Endure it all in silence."},feedbackType:"risky",feedback:{fr:"Souffrir en silence n'est pas nécessaire. Une douleur forte mérite d'être prise au sérieux.",en:"Suffering in silence isn't necessary. Strong pain deserves to be taken seriously."}},
-     {id:"B",text:{fr:"En parler à une personne de confiance et, si nécessaire, consulter un professionnel de santé.",en:"Talk to a trusted person and, if needed, see a health professional."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Good move. Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."}},
-     {id:"C",text:{fr:"Prendre n'importe quel médicament conseillé sur Internet.",en:"Take any medication recommended on the internet."},feedbackType:"risky",feedback:{fr:"L'automédication sans avis médical peut être dangereuse.",en:"Self-medicating without medical advice can be dangerous."}},
-   ],
-   takeaway:{fr:"Les douleurs menstruelles peuvent être fréquentes, mais une douleur très forte ou inhabituelle mérite d'être prise au sérieux.",en:"Menstrual pain can be common, but very strong or unusual pain deserves to be taken seriously."},source:{fr:"ACOG — Dysménorrhée",en:"ACOG — Dysmenorrhea",url:"https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods"}},
-
-  {id:10,level:2,
-   title:{fr:"Les règles et le sport",en:"Periods and sport"},
-   context:{fr:"Aminata a ses règles le jour d'un entraînement important. Elle se sent bien mais une camarade lui dit qu'elle ne devrait absolument pas faire de sport pendant ses règles.",en:"Aminata has her period on the day of an important training session. She feels fine, but a classmate tells her she absolutely shouldn't exercise during her period."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Arrêter automatiquement toute activité.",en:"Automatically stop all activity."},feedbackType:"acceptable",feedback:{fr:"Se reposer est possible si le corps en a besoin, mais ce n'est pas obligatoire pour tout le monde.",en:"Resting is fine if your body needs it, but it isn't mandatory for everyone."}},
-     {id:"B",text:{fr:"Écouter son corps et décider selon son état et son confort.",en:"Listen to her body and decide based on how she feels and her comfort."},feedbackType:"recommended",feedback:{fr:"Bonne piste. Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important.",en:"Good move. Some people continue their activities during their period, while others need rest. Listening to your body matters."}},
-     {id:"C",text:{fr:"Se forcer à participer même si elle se sent mal.",en:"Force herself to take part even if she feels unwell."},feedbackType:"risky",feedback:{fr:"Se forcer à continuer alors que le corps souffre peut aggraver l'inconfort.",en:"Forcing yourself to continue when your body is struggling can make the discomfort worse."}},
-   ],
-   takeaway:{fr:"Certaines personnes continuent leurs activités pendant leurs règles, tandis que d'autres ont besoin de repos. Écouter son corps est important.",en:"Some people continue their activities during their period, while others need rest. Listening to your body matters."},source:null},
-
-  {id:11,level:2,
-   title:{fr:"Je prépare un voyage",en:"Planning a trip"},
-   context:{fr:"Esther doit passer toute la journée loin de chez elle et pense avoir bientôt ses règles.",en:"Esther will be away from home all day and thinks her period might start soon."},
-   question:{fr:"Quelle précaution peut-elle prendre ?",en:"What precaution can she take?"},
-   choices:[
-     {id:"A",text:{fr:"Prévoir quelques protections dans son sac.",en:"Pack a few period products in her bag."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Anticiper permet d'être tranquille, peu importe le moment où les règles arrivent.",en:"Good move 💗 Planning ahead lets you relax, whenever your period actually arrives."}},
-     {id:"B",text:{fr:"Annuler sa sortie.",en:"Cancel her outing."},feedbackType:"risky",feedback:{fr:"Annuler n'est pas nécessaire. Une bonne anticipation permet de vivre sa journée normalement.",en:"Cancelling isn't necessary. Planning ahead lets you carry on with your day as normal."}},
-     {id:"C",text:{fr:"Ne rien prévoir parce qu'elle ne peut pas connaître exactement la date.",en:"Not plan anything because she can't know the exact date."},feedbackType:"risky",feedback:{fr:"Ne rien prévoir augmente le risque de stress si les règles arrivent au mauvais moment.",en:"Not planning ahead increases the risk of stress if your period arrives at an inconvenient moment."}},
-   ],
-   takeaway:{fr:"Anticiper ses besoins peut éviter beaucoup de stress.",en:"Planning ahead for your needs can avoid a lot of stress."},source:null},
-
-  {id:12,level:2,
-   title:{fr:"Mon amie vient d'avoir ses premières règles",en:"My friend just had her first period"},
-   context:{fr:"Ta meilleure amie vient te voir après ses premières règles. Elle semble inquiète et dit qu'elle ne sait pas à qui poser ses questions.",en:"Your best friend comes to see you after her first period. She seems worried and says she doesn't know who to ask her questions to."},
-   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
-   choices:[
-     {id:"A",text:{fr:"Lui dire de chercher seule sur Internet.",en:"Tell her to search for answers online by herself."},feedbackType:"risky",feedback:{fr:"La laisser seule face à des informations parfois fausses n'est pas idéal.",en:"Leaving her alone with information that's sometimes false isn't ideal."}},
-     {id:"B",text:{fr:"L'écouter, la rassurer et l'aider à trouver une information fiable ou une personne de confiance.",en:"Listen to her, reassure her, and help her find reliable information or a trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une personne qui découvre son corps a le droit de poser des questions.",en:"Good move 💗 Someone discovering their body has every right to ask questions."}},
-     {id:"C",text:{fr:"Lui dire de ne parler de ses règles à personne.",en:"Tell her not to talk about her period to anyone."},feedbackType:"risky",feedback:{fr:"Cacher un sujet aussi naturel peut renforcer un sentiment de honte qui n'a pas lieu d'être.",en:"Hiding such a natural topic can reinforce a shame that has no reason to exist."}},
-   ],
-   takeaway:{fr:"Une personne qui découvre son corps a le droit de poser des questions.",en:"Someone discovering their body has every right to ask questions."},source:null},
-
-  {id:13,level:3,
-   title:{fr:"« Envoie-moi une photo »",en:"\"Send me a photo\""},
-   context:{fr:"Inès discute avec un garçon qui lui demande une photo intime. Elle lui dit qu'elle ne veut pas, mais il insiste et lui dit que si elle l'aimait vraiment, elle accepterait.",en:"Inès is chatting with a boy who asks her for an intimate photo. She tells him she doesn't want to, but he insists and tells her that if she really loved him, she'd agree."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Envoyer la photo pour éviter qu'il se fâche.",en:"Send the photo to avoid making him angry."},feedbackType:"risky",feedback:{fr:"Céder à la pression ne garantit rien et peut t'exposer à des risques importants.",en:"Giving in to pressure guarantees nothing and can expose you to serious risks."}},
-     {id:"B",text:{fr:"Refuser et chercher de l'aide si la pression continue.",en:"Refuse and seek help if the pressure continues."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"Good move 💗 No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."}},
-     {id:"C",text:{fr:"Envoyer une photo de quelqu'un d'autre.",en:"Send a photo of someone else instead."},feedbackType:"risky",feedback:{fr:"Utiliser la photo d'une autre personne sans son accord lui ferait du tort à elle aussi.",en:"Using another person's photo without their consent would harm them too."}},
-   ],
-   takeaway:{fr:"Personne ne devrait être obligé de partager une image intime. La pression ou le chantage ne remplacent jamais le consentement.",en:"No one should ever be forced to share an intimate image. Pressure or blackmail never replace consent."},source:{fr:"UNFPA — Droits reproductifs & consentement",en:"UNFPA — Reproductive rights & consent",url:"https://www.unfpa.org/human-rights"}},
-
-  {id:14,level:3,
-   title:{fr:"Mon corps, mes limites",en:"My body, my limits"},
-   context:{fr:"Lors d'une sortie, quelqu'un essaie de prendre Mariam dans ses bras alors qu'elle ne veut pas.",en:"During an outing, someone tries to hug Mariam even though she doesn't want them to."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Ne rien dire pour ne pas vexer la personne.",en:"Say nothing so as not to upset the person."},feedbackType:"risky",feedback:{fr:"Se taire alors qu'un contact ne te convient pas peut te mettre mal à l'aise plus longtemps.",en:"Staying silent when contact makes you uncomfortable can leave you feeling uneasy for longer."}},
-     {id:"B",text:{fr:"Dire clairement qu'elle ne souhaite pas ce contact.",en:"Clearly say that she doesn't want this contact."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Tu as le droit de poser des limites concernant ton propre corps.",en:"Good move 💗 You have every right to set limits about your own body."}},
-     {id:"C",text:{fr:"Accepter parce qu'elle connaît cette personne.",en:"Accept it because she knows this person."},feedbackType:"risky",feedback:{fr:"Connaître quelqu'un ne veut pas dire qu'on doit accepter tout ce qu'il ou elle propose.",en:"Knowing someone doesn't mean you have to accept everything they offer or ask."}},
-   ],
-   takeaway:{fr:"Tu as le droit de poser des limites concernant ton propre corps.",en:"You have every right to set limits about your own body."},source:{fr:"UNFPA — Droits reproductifs & consentement",en:"UNFPA — Reproductive rights & consent",url:"https://www.unfpa.org/human-rights"}},
-
-  {id:15,level:3,
-   title:{fr:"La pression du groupe",en:"Peer pressure"},
-   context:{fr:"Ses camarades veulent convaincre Sarah de participer à un défi qu'elle trouve gênant. Ils lui disent qu'elle est « trop coincée » si elle refuse.",en:"Sarah's classmates want to convince her to take part in a challenge she finds embarrassing. They tell her she's \"too uptight\" if she refuses."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Participer pour être acceptée.",en:"Take part just to be accepted."},feedbackType:"risky",feedback:{fr:"Se forcer à participer pour plaire peut te mettre dans une situation gênante.",en:"Forcing yourself to take part just to fit in can put you in an uncomfortable position."}},
-     {id:"B",text:{fr:"Dire qu'elle ne souhaite pas participer.",en:"Say that she doesn't want to take part."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Dire non à une pression de groupe est une façon de protéger ses limites.",en:"Good move 💗 Saying no to peer pressure is a way of protecting your own limits."}},
-     {id:"C",text:{fr:"Insulter ses camarades.",en:"Insult her classmates."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut envenimer la situation. Un refus calme est tout aussi efficace.",en:"Responding with insults can make the situation worse. A calm refusal works just as well."}},
-   ],
-   takeaway:{fr:"Dire non à une pression de groupe est une façon de protéger ses limites.",en:"Saying no to peer pressure is a way of protecting your own limits."},source:null},
-
-  {id:16,level:3,
-   title:{fr:"Les moqueries sur les règles",en:"Mockery about periods"},
-   context:{fr:"Dans la cour, plusieurs élèves se moquent d'une fille parce qu'elle a taché son uniforme.",en:"In the schoolyard, several students are mocking a girl because she stained her uniform."},
-   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
-   choices:[
-     {id:"A",text:{fr:"Participer aux moqueries.",en:"Join in the mockery."},feedbackType:"risky",feedback:{fr:"Participer aggrave l'humiliation d'une personne qui n'a rien fait de mal.",en:"Joining in worsens the humiliation of someone who has done nothing wrong."}},
-     {id:"B",text:{fr:"Ne pas encourager les moqueries et soutenir discrètement la fille.",en:"Don't encourage the mockery and quietly support the girl."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une situation embarrassante ne donne à personne le droit d'humilier une autre personne.",en:"Good move 💗 An embarrassing situation never gives anyone the right to humiliate someone else."}},
-     {id:"C",text:{fr:"Filmer la scène.",en:"Film the scene."},feedbackType:"risky",feedback:{fr:"Filmer une personne en difficulté sans son accord aggrave son humiliation.",en:"Filming someone in a difficult moment without their consent makes their humiliation worse."}},
-   ],
-   takeaway:{fr:"Une situation embarrassante ne donne à personne le droit d'humilier une autre personne.",en:"An embarrassing situation never gives anyone the right to humiliate someone else."},source:null},
-
-  {id:17,level:3,
-   title:{fr:"Une confidence",en:"A secret shared"},
-   context:{fr:"Une amie te raconte quelque chose de très personnel et te demande de ne pas le répéter.",en:"A friend tells you something very personal and asks you not to repeat it."},
-   question:{fr:"Que fais-tu ?",en:"What do you do?"},
-   choices:[
-     {id:"A",text:{fr:"Envoyer immédiatement l'information à ton groupe d'amies.",en:"Immediately send the information to your friend group chat."},feedbackType:"risky",feedback:{fr:"Partager une confidence sans accord trahit la confiance de la personne.",en:"Sharing a confidence without consent betrays that person's trust."}},
-     {id:"B",text:{fr:"Respecter sa confidence, tout en cherchant de l'aide si elle est en danger.",en:"Respect her confidence, while seeking help if she's in danger."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important.",en:"Good move 💗 A confidence deserves to be respected. But when someone is in danger, asking for help matters."}},
-     {id:"C",text:{fr:"Publier son histoire anonymement sur les réseaux sociaux.",en:"Post her story anonymously on social media."},feedbackType:"risky",feedback:{fr:"Même anonyme, publier l'histoire de quelqu'un sans son accord est une trahison de sa confiance.",en:"Even anonymously, posting someone's story without their consent is a betrayal of their trust."}},
-   ],
-   takeaway:{fr:"Une confidence mérite d'être respectée. Mais lorsqu'une personne est en danger, demander de l'aide est important.",en:"A confidence deserves to be respected. But when someone is in danger, asking for help matters."},source:null},
-
-  {id:18,level:3,
-   title:{fr:"Je ne sais pas quoi faire",en:"I don't know what to do"},
-   context:{fr:"Une amie te raconte une situation qui la met mal à l'aise. Tu ne sais pas exactement comment l'aider.",en:"A friend tells you about a situation that makes her uncomfortable. You're not sure exactly how to help her."},
-   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
-   choices:[
-     {id:"A",text:{fr:"Lui dire de régler le problème toute seule.",en:"Tell her to sort out the problem by herself."},feedbackType:"risky",feedback:{fr:"La laisser seule face à une situation difficile peut la faire se sentir abandonnée.",en:"Leaving her alone with a difficult situation can make her feel abandoned."}},
-     {id:"B",text:{fr:"L'écouter sans la juger et l'aider à trouver une personne de confiance.",en:"Listen to her without judging and help her find a trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important.",en:"Good move 💗 Helping someone doesn't necessarily mean solving their problem yourself. Knowing how to point them toward the right help matters too."}},
-     {id:"C",text:{fr:"Confronter immédiatement la personne concernée.",en:"Immediately confront the person involved."},feedbackType:"risky",feedback:{fr:"Agir seule et dans la précipitation peut aggraver la situation au lieu de l'aider.",en:"Acting alone and hastily can make the situation worse instead of helping."}},
-   ],
-   takeaway:{fr:"Aider quelqu'un ne signifie pas forcément résoudre soi-même son problème. Savoir orienter vers la bonne aide est aussi important.",en:"Helping someone doesn't necessarily mean solving their problem yourself. Knowing how to point them toward the right help matters too."},source:null},
-
-  {id:19,level:4,
-   title:{fr:"Le harcèlement",en:"Bullying"},
-   context:{fr:"Depuis plusieurs semaines, des élèves se moquent régulièrement de Fatou et publient des commentaires humiliants sur elle.",en:"For several weeks, some students have been regularly mocking Fatou and posting humiliating comments about her."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Garder tout pour elle.",en:"Keep it all to herself."},feedbackType:"risky",feedback:{fr:"Garder le silence face au harcèlement laisse la situation continuer.",en:"Staying silent about bullying lets the situation continue."}},
-     {id:"B",text:{fr:"Conserver les éléments utiles et en parler à une personne de confiance ou à un responsable.",en:"Keep evidence that could help and talk to a trusted person or someone in authority."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Face au harcèlement, demander de l'aide est important.",en:"Good move 💗 When facing bullying, asking for help matters."}},
-     {id:"C",text:{fr:"Répondre avec les mêmes insultes.",en:"Respond with the same insults."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut aggraver le conflit au lieu de le résoudre.",en:"Responding with insults can worsen the conflict instead of resolving it."}},
-   ],
-   takeaway:{fr:"Face au harcèlement, demander de l'aide est important.",en:"When facing bullying, asking for help matters."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:20,level:4,
-   title:{fr:"Une relation qui fait peur",en:"A frightening relationship"},
-   context:{fr:"Une fille raconte que son partenaire se met régulièrement en colère, la menace et veut contrôler avec qui elle parle.",en:"A girl says her partner regularly gets angry, threatens her, and wants to control who she talks to."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Penser que c'est simplement de la jalousie.",en:"Think it's simply jealousy."},feedbackType:"risky",feedback:{fr:"Minimiser un comportement contrôlant peut empêcher de voir un vrai danger.",en:"Minimizing controlling behavior can prevent you from seeing a real danger."}},
-     {id:"B",text:{fr:"En parler à une personne de confiance et chercher une aide adaptée.",en:"Talk to a trusted person and seek appropriate help."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Good move 💗 Threats and control can be signs of abuse. No one should have to live in fear."}},
-     {id:"C",text:{fr:"Garder le silence pour protéger la relation.",en:"Stay silent to protect the relationship."},feedbackType:"risky",feedback:{fr:"Se taire pour protéger une relation qui fait peur peut aggraver la situation.",en:"Staying silent to protect a frightening relationship can make the situation worse."}},
-   ],
-   takeaway:{fr:"Les menaces et le contrôle peuvent être des signes de violence. Personne ne devrait vivre dans la peur.",en:"Threats and control can be signs of abuse. No one should have to live in fear."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:21,level:4,
-   title:{fr:"Une photo déjà envoyée",en:"A photo already sent"},
-   context:{fr:"Une adolescente a envoyé une photo personnelle à quelqu'un qui lui avait promis de garder le secret. Maintenant, cette personne lui demande d'en envoyer d'autres et menace de partager la première.",en:"A teenage girl sent a personal photo to someone who promised to keep it secret. Now, this person is asking her to send more and threatens to share the first one."},
-   question:{fr:"Que peut-elle faire ?",en:"What can she do?"},
-   choices:[
-     {id:"A",text:{fr:"Envoyer d'autres photos pour éviter les problèmes.",en:"Send more photos to avoid trouble."},feedbackType:"risky",feedback:{fr:"Céder au chantage ne l'arrête généralement pas, il peut même s'aggraver.",en:"Giving in to blackmail usually doesn't stop it — it can even get worse."}},
-     {id:"B",text:{fr:"Ne pas céder à la pression et chercher rapidement l'aide d'un adulte de confiance ou d'un service compétent.",en:"Not give in to the pressure and quickly seek help from a trusted adult or a competent service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Good move 💗 Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."}},
-     {id:"C",text:{fr:"Menacer de publier une photo de l'autre personne.",en:"Threaten to post a photo of the other person."},feedbackType:"risky",feedback:{fr:"Répondre par une autre menace ne résout rien et peut créer davantage de tort.",en:"Responding with another threat solves nothing and can cause more harm."}},
-   ],
-   takeaway:{fr:"Une confiance mal placée ne donne à personne le droit de faire du chantage. Une victime doit pouvoir demander de l'aide sans être culpabilisée.",en:"Misplaced trust never gives anyone the right to blackmail. A victim should be able to ask for help without being blamed."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:22,level:4,
-   title:{fr:"Mon amie me parle d'une violence",en:"My friend tells me about abuse"},
-   context:{fr:"Une amie te dit qu'une personne lui a fait du mal. Elle a peur que personne ne la croie.",en:"A friend tells you that someone hurt her. She's afraid no one will believe her."},
-   question:{fr:"Comment peux-tu réagir ?",en:"How can you react?"},
-   choices:[
-     {id:"A",text:{fr:"Lui demander pourquoi elle n'a pas réagi.",en:"Ask her why she didn't react."},feedbackType:"risky",feedback:{fr:"Cette question peut sembler accuser la victime, alors qu'elle n'est jamais responsable de ce qu'elle a subi.",en:"This question can sound like blaming the victim, when she is never responsible for what happened to her."}},
-     {id:"B",text:{fr:"L'écouter, éviter de la culpabiliser et l'aider à trouver une personne compétente et de confiance.",en:"Listen to her, avoid making her feel guilty, and help her find a competent, trusted person."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Good move 💗 Listening without blaming and seeking appropriate help can be far more useful than acting alone."}},
-     {id:"C",text:{fr:"Aller immédiatement confronter la personne accusée.",en:"Immediately go confront the accused person."},feedbackType:"risky",feedback:{fr:"Confronter seule une personne dangereuse peut être risqué. Mieux vaut chercher une aide compétente d'abord.",en:"Confronting a dangerous person alone can be risky. It's better to seek competent help first."}},
-   ],
-   takeaway:{fr:"Écouter sans culpabiliser et chercher une aide adaptée peut être beaucoup plus utile que d'agir seul.",en:"Listening without blaming and seeking appropriate help can be far more useful than acting alone."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:23,level:4,
-   title:{fr:"« Pourquoi elle n'est pas partie ? »",en:"\"Why didn't she just leave?\""},
-   context:{fr:"Des élèves parlent d'une fille victime de violence. Quelqu'un dit : « Si elle n'était pas contente, elle n'avait qu'à partir. »",en:"Some students are talking about a girl who was a victim of abuse. Someone says: \"If she wasn't happy, she should have just left.\""},
-   question:{fr:"Quelle réponse est la plus juste ?",en:"Which response is the most accurate?"},
-   choices:[
-     {id:"A",text:{fr:"« C'est vrai. »",en:"\"That's true.\""},feedbackType:"risky",feedback:{fr:"Cette réponse fait porter la responsabilité à la victime, alors que ce n'est jamais elle qui est en faute.",en:"This response puts the responsibility on the victim, when it's never her fault."}},
-     {id:"B",text:{fr:"« La personne victime n'est pas responsable de la violence qu'elle subit. »",en:"\"The victim is never responsible for the abuse she suffers.\""},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Good move 💗 Responsibility for abuse lies with the person who commits it, never with the victim."}},
-     {id:"C",text:{fr:"« Il ne faut jamais parler de violence. »",en:"\"We should never talk about abuse.\""},feedbackType:"acceptable",feedback:{fr:"Éviter le sujet n'aide pas à faire changer les mentalités ni à protéger les victimes.",en:"Avoiding the subject doesn't help change attitudes or protect victims."}},
-   ],
-   takeaway:{fr:"La responsabilité de la violence revient à la personne qui la commet, pas à la victime.",en:"Responsibility for abuse lies with the person who commits it, never with the victim."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:24,level:4,
-   title:{fr:"Trouver la bonne aide",en:"Finding the right help"},
-   context:{fr:"Une adolescente est confrontée à une situation qui la met en danger. Elle ne sait pas vers qui se tourner.",en:"A teenage girl is facing a situation that puts her in danger. She doesn't know who to turn to."},
-   question:{fr:"Quelle peut être une première étape ?",en:"What could be a first step?"},
-   choices:[
-     {id:"A",text:{fr:"Gérer seule la situation, même si elle se sent en danger.",en:"Handle the situation alone, even though she feels in danger."},feedbackType:"risky",feedback:{fr:"Gérer seule une situation dangereuse peut aggraver les risques encourus.",en:"Handling a dangerous situation alone can increase the risks involved."}},
-     {id:"B",text:{fr:"Identifier un adulte ou un service fiable pouvant l'aider.",en:"Identify a trusted adult or reliable service that can help."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"Good move 💗 You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."}},
-     {id:"C",text:{fr:"Publier toute son histoire sur les réseaux sociaux.",en:"Post her entire story on social media."},feedbackType:"risky",feedback:{fr:"Publier publiquement peut exposer la personne à plus de danger ou de jugement, sans forcément l'aider concrètement.",en:"Posting publicly can expose the person to more danger or judgment, without necessarily helping her concretely."}},
-   ],
-   takeaway:{fr:"Tu n'as pas à gérer seule une situation dangereuse. Chercher une aide fiable peut être une première étape importante.",en:"You don't have to handle a dangerous situation alone. Seeking reliable help can be an important first step."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:25,level:5,
-   title:{fr:"Le mariage de ma petite sœur",en:"My little sister's marriage"},
-   context:{fr:"Mariam a 15 ans. Sa famille parle de la marier prochainement. Elle ne se sent pas prête et veut continuer son école. Sa grande sœur pense qu'elle devrait pouvoir être entendue mais ne sait pas comment l'aider.",en:"Mariam is 15. Her family is talking about marrying her off soon. She doesn't feel ready and wants to continue school. Her older sister thinks she should be heard, but doesn't know how to help her."},
-   question:{fr:"Que peut faire sa grande sœur ?",en:"What can her older sister do?"},
-   choices:[
-     {id:"A",text:{fr:"Lui dire d'accepter parce que la décision appartient uniquement aux adultes.",en:"Tell her to accept it because the decision belongs only to the adults."},feedbackType:"risky",feedback:{fr:"Cette réponse ignore les émotions et les besoins de la jeune fille concernée.",en:"This response ignores the feelings and needs of the girl involved."}},
-     {id:"B",text:{fr:"L'écouter, prendre ses inquiétudes au sérieux et chercher l'aide d'une personne ou d'un service compétent.",en:"Listen to her, take her worries seriously, and seek help from a competent person or service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Une situation de mariage concernant une mineure peut soulever des questions importantes de sécurité et de droits. Il est important de ne pas laisser la jeune fille seule et de chercher un accompagnement fiable.",en:"Good move 💗 A marriage involving a minor can raise serious safety and rights concerns. It's important not to leave the girl alone and to seek reliable support."}},
-     {id:"C",text:{fr:"Publier immédiatement son histoire sur les réseaux sociaux.",en:"Immediately post her story on social media."},feedbackType:"risky",feedback:{fr:"Publier sans réfléchir pourrait mettre la jeune fille encore plus en danger.",en:"Posting without thinking could put the girl in even more danger."}},
-   ],
-   takeaway:{fr:"Écouter une jeune fille et chercher une aide adaptée peut contribuer à sa protection.",en:"Listening to a girl and seeking appropriate help can contribute to her protection."},source:{fr:"Union africaine — Protocole de Maputo",en:"African Union — Maputo Protocol",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"}},
-
-  {id:26,level:5,
-   title:{fr:"Ma petite sœur me demande de garder un secret",en:"My little sister asks me to keep a secret"},
-   context:{fr:"Ta petite sœur de 12 ans vient te voir. Elle te dit qu'un adulte lui envoie régulièrement des messages qui la mettent mal à l'aise et lui demande de garder cela secret. Elle te demande de ne rien dire.",en:"Your 12-year-old little sister comes to see you. She tells you an adult regularly sends her messages that make her uncomfortable and asks her to keep it secret. She asks you not to say anything."},
-   question:{fr:"Que peux-tu faire ?",en:"What can you do?"},
-   choices:[
-     {id:"A",text:{fr:"Promettre de garder le secret quoi qu'il arrive.",en:"Promise to keep the secret no matter what."},feedbackType:"risky",feedback:{fr:"Certains secrets doivent être partagés avec un adulte de confiance, surtout quand un enfant est en danger.",en:"Some secrets must be shared with a trusted adult, especially when a child is in danger."}},
-     {id:"B",text:{fr:"L'écouter, la rassurer et chercher rapidement l'aide d'un adulte de confiance ou d'un service adapté.",en:"Listen to her, reassure her, and quickly seek help from a trusted adult or an appropriate service."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Good move 💗 Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."}},
-     {id:"C",text:{fr:"Aller seule confronter immédiatement l'adulte.",en:"Go confront the adult alone right away."},feedbackType:"risky",feedback:{fr:"Confronter seule un adulte peut être dangereux. Il vaut mieux passer par un adulte de confiance ou un service compétent.",en:"Confronting an adult alone can be dangerous. It's better to go through a trusted adult or a competent service."}},
-   ],
-   takeaway:{fr:"Certains secrets ne doivent pas être gardés lorsqu'une enfant semble être en danger. Demander l'aide d'un adulte capable de protéger est important.",en:"Some secrets shouldn't be kept when a child seems to be in danger. Asking a capable adult for help to protect her matters."},source:{fr:"UNFPA — Violences basées sur le genre",en:"UNFPA — Gender-based violence",url:"https://www.unfpa.org/gender-based-violence"}},
-
-  {id:27,level:5,
-   title:{fr:"Défendre une camarade",en:"Standing up for a classmate"},
-   context:{fr:"Une fille est ridiculisée parce qu'elle parle ouvertement de ses règles. Plusieurs élèves rient d'elle.",en:"A girl is being ridiculed because she talks openly about her period. Several students are laughing at her."},
-   question:{fr:"Quelle réaction peut aider ?",en:"What response can help?"},
-   choices:[
-     {id:"A",text:{fr:"La laisser seule pour éviter les problèmes.",en:"Leave her alone to avoid trouble."},feedbackType:"risky",feedback:{fr:"La laisser seule ne l'aide pas et peut renforcer son sentiment d'isolement.",en:"Leaving her alone doesn't help and can reinforce her feeling of isolation."}},
-     {id:"B",text:{fr:"Lui montrer son soutien et rappeler que parler de santé menstruelle n'est pas honteux.",en:"Show her support and remind others that talking about menstrual health is nothing to be ashamed of."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence.",en:"Good move 💗 Standing up for someone's dignity doesn't require reproducing the same aggression."}},
-     {id:"C",text:{fr:"Insulter les élèves qui se moquent d'elle.",en:"Insult the students who are mocking her."},feedbackType:"acceptable",feedback:{fr:"Répondre par des insultes peut envenimer la situation au lieu de la calmer.",en:"Responding with insults can escalate the situation instead of calming it."}},
-   ],
-   takeaway:{fr:"Défendre la dignité de quelqu'un ne nécessite pas de reproduire la violence.",en:"Standing up for someone's dignity doesn't require reproducing the same aggression."},source:null},
-
-  {id:28,level:5,
-   title:{fr:"Une information sur mes droits",en:"Information about my rights"},
-   context:{fr:"Une publication sur les réseaux sociaux affirme qu'une fille n'a pas le droit de parler de ses règles à l'école. La publication est très partagée et plusieurs personnes la présentent comme une « règle officielle ».",en:"A social media post claims that a girl isn't allowed to talk about her period at school. The post is widely shared and several people present it as an \"official rule.\""},
-   question:{fr:"Que fais-tu ?",en:"What do you do?"},
-   choices:[
-     {id:"A",text:{fr:"La partager parce qu'elle a beaucoup de likes.",en:"Share it because it has a lot of likes."},feedbackType:"risky",feedback:{fr:"Le nombre de likes ne garantit jamais qu'une information est vraie.",en:"The number of likes never guarantees that information is true."}},
-     {id:"B",text:{fr:"Vérifier l'information auprès d'une source fiable.",en:"Check the information with a reliable source."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Le nombre de likes, de partages ou de commentaires ne garantit pas qu'une information est vraie. Lorsqu'une information concerne tes droits, ta santé ou une règle officielle, il est préférable de vérifier auprès d'une source fiable.",en:"Good move 💗 Likes, shares, or comments never guarantee that information is true. When information concerns your rights, your health, or an official rule, it's best to check with a reliable source."}},
-     {id:"C",text:{fr:"Demander à une seule amie si elle pense que c'est vrai.",en:"Ask just one friend if she thinks it's true."},feedbackType:"acceptable",feedback:{fr:"L'avis d'une amie peut aider, mais il ne remplace pas une vérification auprès d'une source fiable.",en:"A friend's opinion can help, but it doesn't replace checking with a reliable source."}},
-   ],
-   takeaway:{fr:"Une information populaire n'est pas forcément une information fiable. Vérifie avant de partager.",en:"Popular information isn't necessarily reliable information. Check before you share."},source:{fr:"OMS — Santé menstruelle",en:"WHO — Menstrual health",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"}},
-
-  {id:29,level:5,
-   title:{fr:"Prendre la parole pour changer les choses",en:"Speaking up to change things"},
-   context:{fr:"Dans ton établissement, plusieurs filles rencontrent des difficultés lorsqu'elles ont leurs règles. Certaines n'ont pas toujours de protection avec elles et certaines évitent même de participer à certaines activités par peur d'avoir une fuite. Tu penses qu'il serait utile d'en parler, mais tu ne sais pas par où commencer.",en:"At your school, several girls struggle when they have their period. Some don't always have period products with them, and some even avoid certain activities for fear of leaking. You think it would help to speak up, but you don't know where to start."},
-   question:{fr:"Quelle serait une bonne première étape ?",en:"What would be a good first step?"},
-   choices:[
-     {id:"A",text:{fr:"Publier immédiatement une vidéo pour dénoncer l'établissement.",en:"Immediately post a video calling out the school."},feedbackType:"risky",feedback:{fr:"Dénoncer publiquement peut attirer l'attention, mais ce n'est pas toujours la première étape la plus constructive. Il peut être utile de comprendre le problème et d'identifier les personnes capables d'agir.",en:"Calling something out publicly can draw attention, but it's not always the most constructive first step. It can help to understand the problem and identify the people who can act on it."}},
-     {id:"B",text:{fr:"Écouter les filles concernées, comprendre leurs besoins et présenter une proposition aux personnes responsables.",en:"Listen to the girls affected, understand their needs, and present a proposal to those in charge."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Avant de vouloir changer une situation, il est important de comprendre ce que vivent réellement les personnes concernées. Écouter, recueillir les besoins et proposer une solution réaliste est déjà une forme de leadership.",en:"Good move 💗 Before trying to change a situation, it's important to understand what those affected are really experiencing. Listening, gathering needs, and proposing a realistic solution is already a form of leadership."}},
-     {id:"C",text:{fr:"Décider seule de la solution et demander ensuite aux autres de l'appliquer.",en:"Decide on the solution alone and then ask others to apply it."},feedbackType:"acceptable",feedback:{fr:"Vouloir aider est positif, mais décider à la place des personnes concernées peut conduire à une solution qui ne répond pas réellement à leurs besoins. Le leadership commence aussi par l'écoute.",en:"Wanting to help is positive, but deciding on behalf of the people affected can lead to a solution that doesn't actually meet their needs. Leadership also starts with listening."}},
-   ],
-   takeaway:{fr:"Être leader, ce n'est pas décider pour les autres. C'est écouter, comprendre et contribuer à construire des solutions.",en:"Being a leader isn't about deciding for others. It's about listening, understanding, and helping build solutions."},source:null},
-
-  {id:30,level:5,
-   title:{fr:"Devenir une personne ressource",en:"Becoming a resource person"},
-   context:{fr:"Une fille plus jeune vient te voir parce qu'elle vient d'avoir ses premières règles. Elle est inquiète, a beaucoup de questions et te demande de lui expliquer ce qui lui arrive. Tu connais certaines choses, mais tu n'as pas toutes les réponses.",en:"A younger girl comes to see you because she just had her first period. She's worried, has a lot of questions, and asks you to explain what's happening to her. You know some things, but you don't have all the answers."},
-   question:{fr:"Quelle est la meilleure façon de l'aider ?",en:"What's the best way to help her?"},
-   choices:[
-     {id:"A",text:{fr:"Lui donner une réponse même lorsque tu n'es pas sûre, pour ne pas lui montrer que tu ne sais pas.",en:"Give her an answer even when you're not sure, so she doesn't see that you don't know."},feedbackType:"risky",feedback:{fr:"Vouloir aider est positif, mais inventer une réponse ou donner une information dont tu n'es pas sûre peut induire quelqu'un en erreur. Il est préférable de dire que tu ne sais pas et de chercher une information fiable.",en:"Wanting to help is positive, but making up an answer or giving information you're unsure about can mislead someone. It's better to say you don't know and look for reliable information."}},
-     {id:"B",text:{fr:"L'écouter, la rassurer, partager les informations fiables que tu connais et l'orienter vers une personne compétente lorsque tu ne sais pas.",en:"Listen to her, reassure her, share the reliable information you know, and point her toward a qualified person when you don't."},feedbackType:"recommended",feedback:{fr:"Bonne piste 💗 Être une personne ressource ne signifie pas avoir réponse à toutes les questions. Tu peux écouter, rassurer, partager une information fiable et reconnaître lorsque tu as besoin de demander conseil à quelqu'un de plus compétent.",en:"Good move 💗 Being a resource person doesn't mean having an answer to every question. You can listen, reassure, share reliable information, and recognize when you need to ask someone more qualified for advice."}},
-     {id:"C",text:{fr:"Lui raconter les expériences personnelles d'autres filles pour lui montrer que tout le monde vit la même chose.",en:"Tell her about other girls' personal experiences to show her that everyone goes through the same thing."},feedbackType:"acceptable",feedback:{fr:"Les expériences personnelles peuvent être différentes d'une personne à l'autre. Elles ne remplacent pas une information fiable et il est important de respecter la vie privée des autres filles.",en:"Personal experiences can differ from one person to another. They don't replace reliable information, and it's important to respect other girls' privacy."}},
-   ],
-   takeaway:{fr:"Le leadership, c'est aussi savoir écouter, transmettre une information fiable et reconnaître quand il faut demander de l'aide.",en:"Leadership also means knowing how to listen, share reliable information, and recognize when to ask for help."},source:null},
-];
-
-function InteractiveSituation({situation,index,total,onNext,isLast,lang}){
-  const[sel,setSel]=useState(null);
-  const choice=sel?situation.choices.find(c=>c.id===sel):null;
-  const L=obj=>lang==="en"?obj.en:obj.fr;
-  return(
-    <div style={{background:P.card,borderRadius:22,padding:"22px 20px",boxShadow:"0 2px 14px rgba(0,0,0,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
-      <div style={{fontSize:13,fontWeight:800,color:P.muted,marginBottom:10,textTransform:"uppercase",letterSpacing:.5}}>{lang==="en"?"Scenario":"Situation"} {String(index+1).padStart(2,"0")} / {total}</div>
-      <div className="T" style={{fontSize:21,fontWeight:900,color:P.text,marginBottom:13,lineHeight:1.3}}>{L(situation.title)}</div>
-      <p style={{fontSize:16.5,color:P.text,lineHeight:1.65,margin:"0 0 18px"}}>{L(situation.context)}</p>
-      <div style={{fontSize:17,fontWeight:800,color:P.text,marginBottom:13}}>{L(situation.question)}</div>
-      <div style={{display:"flex",flexDirection:"column",gap:11}}>
-        {situation.choices.map(c=>{
-          const active=sel===c.id;
-          const disabled=sel&&!active;
-          return(
-            <button key={c.id} disabled={!!sel} onClick={()=>setSel(c.id)} style={{textAlign:"left",padding:"15px 17px",borderRadius:16,border:`1.8px solid ${active?SITUATIONS_FEEDBACK_COLOR[c.feedbackType]:"rgba(0,0,0,.1)"}`,background:active?`${SITUATIONS_FEEDBACK_COLOR[c.feedbackType]}14`:"white",cursor:sel?"default":"pointer",opacity:disabled?.45:1,fontSize:16,color:P.text,fontWeight:600,lineHeight:1.5,transition:"all .15s"}}>
-              <span style={{fontWeight:900,marginRight:8}}>{c.id}.</span>{L(c.text)}
-            </button>
-          );
-        })}
-      </div>
-      {choice&&(
-        <div className="up" style={{marginTop:20}}>
-          <div style={{background:`${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}14`,border:`1.5px solid ${SITUATIONS_FEEDBACK_COLOR[choice.feedbackType]}55`,borderRadius:16,padding:"15px 17px",marginBottom:14}}>
-            <div style={{fontSize:14,fontWeight:900,color:SITUATIONS_FEEDBACK_COLOR[choice.feedbackType],marginBottom:6}}>{L(SITUATIONS_FEEDBACK_LABEL[choice.feedbackType])}</div>
-            <div style={{fontSize:16,color:P.text,lineHeight:1.6}}>{L(choice.feedback)}</div>
-          </div>
-          <div style={{background:P.roseSoft,borderRadius:16,padding:"15px 17px",marginBottom:18}}>
-            <div style={{fontSize:12.5,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>✨ {lang==="en"?"Key takeaway":"À retenir"}</div>
-            <div style={{fontSize:16,color:P.text,lineHeight:1.6,fontWeight:600}}>{L(situation.takeaway)}</div>
-            {situation.source&&(
-              <a href={situation.source.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:10,fontSize:13,color:P.red,fontWeight:700,textDecoration:"none"}}>📚 {L(situation.source)} ↗</a>
-            )}
-          </div>
-          <button onClick={()=>{setSel(null);onNext();}} style={{width:"100%",background:G,border:"none",borderRadius:16,padding:"16px",color:"white",fontWeight:900,fontSize:17,cursor:"pointer"}}>
-            {isLast?(lang==="en"?"Finish →":"Terminer →"):(lang==="en"?"Continue →":"Continuer →")}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Situations({lang,onBack,navActive,onNav,onBadge}){
-  const[view,setView]=useState("paliers"); // paliers | list | situation | recap
-  const[selPalier,setSelPalier]=useState(null);
-  const[curId,setCurId]=useState(null);
-  const[seen,setSeen]=useState(()=>new Set());
-  const[recapLevel,setRecapLevel]=useState(null);
-  const t=(fr,en)=>lang==="en"?en:fr;
-  const L=obj=>lang==="en"?obj.en:obj.fr;
-
-  const situationsOf=lv=>SITUATIONS_DATA.filter(s=>s.level===lv);
-
-  function openPalier(lv){setSelPalier(lv);setView("list");}
-  function openSituation(id){setCurId(id);setView("situation");}
-  function markSeen(id){setSeen(prev=>{const n=new Set(prev);n.add(id);return n;});}
-
-  function handleNext(){
-    const cur=SITUATIONS_DATA.find(s=>s.id===curId);
-    markSeen(cur.id);
-    const listLv=situationsOf(cur.level);
-    const idxInLv=listLv.findIndex(s=>s.id===cur.id);
-    if(idxInLv<listLv.length-1){
-      setCurId(listLv[idxInLv+1].id);
-    }else{
-      if(cur.level===5){
-        onBadge&&onBadge({id:"situations_all",icon:"🌟",name:lang==="en"?"Situations Ambassador":"Ambassadrice des Situations"});
-      }
-      setRecapLevel(cur.level);
-      setView("recap");
-    }
-  }
-
-  const NAV=(
-    <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100}}>
-      {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
-        <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
-          <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
-        </button>
-      ))}
-    </nav>
-  );
-
-  if(view==="situation"&&curId){
-    const cur=SITUATIONS_DATA.find(s=>s.id===curId);
-    const listLv=situationsOf(cur.level);
-    const idxInLv=listLv.findIndex(s=>s.id===cur.id);
-    const isGrave=SITUATIONS_LEVELS[cur.level-1].grave;
-    return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}>{!isGrave&&<FloatingBg/>}
-        <div style={{background:isGrave?HERO_GRAVE:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
-          <button onClick={()=>setView("list")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
-          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:700}}>{t("Palier","Level")} {cur.level} · {L(SITUATIONS_LEVELS[cur.level-1].title)}</div>
-        </div>
-        <div style={{flex:1,padding:"16px 14px 24px"}}>
-          <InteractiveSituation situation={cur} index={idxInLv} total={listLv.length} isLast={cur.id===30} onNext={handleNext} lang={lang}/>
-        </div>
-        {NAV}
-      </div>
-    );
-  }
-
-  if(view==="recap"&&recapLevel){
-    const lvMeta=SITUATIONS_LEVELS[recapLevel-1];
-    const list=situationsOf(recapLevel);
-    const isLastTier=recapLevel===5;
-    return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:isLastTier?"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)":P.bg,position:"relative"}}><FloatingBg/>
-        <div style={{flex:1,padding:"36px 18px 24px",display:"flex",flexDirection:"column",alignItems:"center"}}>
-          <div style={{background:P.card,borderRadius:24,padding:"24px 20px",boxShadow:"0 10px 34px rgba(232,0,61,.18)",width:"100%",maxWidth:400}}>
-            {isLastTier?(
-              <>
-                <div style={{textAlign:"center",marginBottom:18}}>
-                  <div style={{fontSize:56,marginBottom:6}}>🌟</div>
-                  <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>{t("Badge débloqué","Badge unlocked")}</div>
-                  <div className="T" style={{fontSize:"1.25rem",fontWeight:900,color:P.text}}>{t("Ambassadrice des Situations","Situations Ambassador")}</div>
-                </div>
-              </>
-            ):(
-              <div style={{textAlign:"center",marginBottom:16}}>
-                <div style={{fontSize:40,marginBottom:6}}>{lvMeta.emoji}</div>
-                <div style={{fontSize:11,fontWeight:900,color:lvMeta.color,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>{t("Palier terminé","Tier completed")} {recapLevel}/5</div>
-                <div className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.text}}>{L(lvMeta.title)}</div>
-              </div>
-            )}
-            <div style={{fontSize:12.5,fontWeight:800,color:P.muted,textTransform:"uppercase",letterSpacing:.5,marginBottom:10}}>✨ {t("Ce qu'il faut retenir","Key takeaways")}</div>
-            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:isLastTier?18:6}}>
-              {list.map((s,i)=>(
-                <div key={s.id} style={{background:`${lvMeta.color}0F`,borderRadius:14,padding:"12px 14px"}}>
-                  <div style={{fontSize:12,fontWeight:800,color:lvMeta.color,marginBottom:4}}>{i+1}. {L(s.title)}</div>
-                  <div style={{fontSize:13,color:P.text,lineHeight:1.55}}>{L(s.takeaway)}</div>
-                </div>
-              ))}
-            </div>
-            {isLastTier&&(
-              <>
-                <div style={{fontSize:13.5,fontWeight:800,color:P.text,marginBottom:6,textAlign:"center"}}>{t("30 situations terminées 🎉","30 scenarios completed 🎉")}</div>
-                <p style={{fontSize:12.5,color:P.muted,lineHeight:1.6,textAlign:"center"}}>{t("Connaître ses droits, respecter ses limites, demander de l'aide et soutenir les autres sont aussi des formes de dignité. 💗","Knowing your rights, respecting your limits, asking for help, and supporting others are also forms of dignity. 💗")}</p>
-              </>
-            )}
-          </div>
-          <div style={{display:"flex",gap:10,marginTop:20,width:"100%",maxWidth:400}}>
-            {isLastTier&&(
-              <button onClick={()=>{setSeen(new Set());setCurId(SITUATIONS_DATA[0].id);setSelPalier(1);setView("situation");}} style={{flex:1,background:isLastTier?"rgba(255,255,255,.15)":P.card,border:`1.5px solid ${isLastTier?"rgba(255,255,255,.3)":lvMeta.color+"33"}`,borderRadius:14,padding:"13px",color:isLastTier?"white":lvMeta.color,fontWeight:800,fontSize:13.5,cursor:"pointer"}}>🔁 {t("Rejouer","Play again")}</button>
-            )}
-            <button onClick={()=>setView("paliers")} style={{flex:1,background:G,border:"none",borderRadius:14,padding:"13px",color:"white",fontWeight:800,fontSize:13.5,cursor:"pointer"}}>{t("Retour aux situations","Back to scenarios")}</button>
-          </div>
-        </div>
-        {NAV}
-      </div>
-    );
-  }
-
-  if(view==="list"&&selPalier){
-    const lvMeta=SITUATIONS_LEVELS[selPalier-1];
-    const list=situationsOf(selPalier);
-    const isGrave=lvMeta.grave;
-    return(
-      <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}>{!isGrave&&<FloatingBg/>}
-        <div style={{background:isGrave?HERO_GRAVE:HERO,padding:"46px 18px 20px",borderRadius:"0 0 28px 28px"}}>
-          <button onClick={()=>setView("paliers")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:10}}>← {t("Retour","Back")}</button>
-          <div style={{fontSize:22}}>{lvMeta.emoji}</div>
-          <div className="T" style={{fontSize:19,fontWeight:900,color:"white",marginTop:4}}>{L(lvMeta.title)}</div>
-          <div style={{fontSize:12,color:"rgba(255,255,255,.75)",fontWeight:600,marginTop:3}}>{list.length} {t("situations","scenarios")}</div>
-        </div>
-        <div style={{flex:1,padding:"14px 14px 24px",display:"flex",flexDirection:"column",gap:9}}>
-          {list.map((s,i)=>(
-            <button key={s.id} onClick={()=>openSituation(s.id)} style={{textAlign:"left",background:P.card,borderRadius:16,padding:"13px 14px",display:"flex",alignItems:"center",gap:12,border:`1.5px solid ${lvMeta.color}22`,boxShadow:`0 2px 10px ${lvMeta.color}12`,cursor:"pointer"}}>
-              <div style={{width:36,height:36,borderRadius:11,background:`${lvMeta.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:900,color:lvMeta.color,flexShrink:0}}>{i+1}</div>
-              <div style={{flex:1,fontSize:13.5,fontWeight:700,color:P.text}}>{L(s.title)}</div>
-              {seen.has(s.id)&&<span style={{fontSize:15}}>✅</span>}
-              <span style={{fontSize:18,color:lvMeta.color,fontWeight:900}}>›</span>
-            </button>
-          ))}
-        </div>
-        {NAV}
-      </div>
-    );
-  }
-
-  return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
-      <div style={{background:HERO,padding:"50px 20px 24px",borderRadius:"0 0 32px 32px"}}>
-        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
-        <div className="T" style={{fontSize:24,fontWeight:900,color:"white",marginBottom:6}}>🤔 Situations</div>
-        <div style={{fontSize:14,color:"rgba(255,255,255,.82)",fontWeight:600}}>{t("Et toi, tu ferais quoi ?","What would you do?")}</div>
-        <p style={{fontSize:12.5,color:"rgba(255,255,255,.7)",marginTop:6,lineHeight:1.5}}>{t("Découvre des situations de la vraie vie et choisis comment tu réagirais.","Discover real-life scenarios and choose how you'd react.")}</p>
-      </div>
-      <div style={{flex:1,padding:"16px 14px 24px",display:"flex",flexDirection:"column",gap:11}}>
-        {SITUATIONS_LEVELS.map(lv=>{
-          const list=situationsOf(lv.level);
-          const doneCount=list.filter(s=>seen.has(s.id)).length;
-          return(
-            <button key={lv.level} onClick={()=>openPalier(lv.level)} style={{textAlign:"left",background:P.card,borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,border:`1.5px solid ${lv.color}22`,boxShadow:`0 2px 12px ${lv.color}14`,cursor:"pointer"}}>
-              <div style={{width:52,height:52,borderRadius:16,background:`${lv.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{lv.emoji}</div>
-              <div style={{flex:1}}>
-                <div style={{fontSize:11,fontWeight:900,color:lv.color,textTransform:"uppercase",letterSpacing:.5,marginBottom:2}}>{t("Palier","Level")} {lv.level}</div>
-                <div className="T" style={{fontSize:15.5,fontWeight:800,color:P.text,marginBottom:3}}>{L(lv.title)}</div>
-                <div style={{fontSize:11.5,color:P.muted,fontWeight:600}}>{L(lv.desc)} · {list.length} {t("situations","scenarios")}{doneCount>0?` · ${doneCount} ${t("vues","viewed")}`:""}</div>
-              </div>
-              <span style={{fontSize:20,color:lv.color,fontWeight:900}}>›</span>
-            </button>
-          );
-        })}
-      </div>
-      {NAV}
     </div>
   );
 }
@@ -5258,7 +4038,7 @@ function ProfilTest({lang,onBack,onResult}){
   const q=questions[qi];
   const prog=(qi+1)/questions.length;
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}>
       <FloatingBg/>
       <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",padding:"48px 16px 20px"}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
@@ -5284,7 +4064,7 @@ function ProfilTest({lang,onBack,onResult}){
           })}
         </div>
       </div>
-      <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,padding:"12px 16px 20px",background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1px solid rgba(232,0,61,.1)"}}>
+      <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,padding:"12px 16px 20px",background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1px solid rgba(232,0,61,.1)"}}>
         <button onClick={goNext} disabled={!answers[qi]} style={{width:"100%",background:answers[qi]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"#D0D0D0",color:"white",border:"none",borderRadius:50,padding:"17px",fontWeight:900,fontSize:"1.05rem",cursor:answers[qi]?"pointer":"default",transition:"all .2s",boxShadow:answers[qi]?"0 6px 22px rgba(232,0,61,.35)":"none"}}>
           {qi===questions.length-1?t("Voir mon profil ✨","See my profile ✨"):t("Question suivante →","Next question →")}
         </button>
@@ -5309,7 +4089,7 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
   }
 
   return(
-    <div style={{minHeight:"100vh",background:P.bg,paddingBottom:40}}>
+    <div style={{minHeight:"100vh",background:"#FFF4F7",paddingBottom:40}}>
 
       {/* ── CARTE PLEINE PAGE avec A-Kissi ── */}
       <div style={{position:"relative",width:"100%"}}>
@@ -5321,7 +4101,6 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
           src={cardUrl}
           alt={profil.name}
           style={{width:"100%",display:"block",borderRadius:0}}
-          onError={e=>{e.target.style.display="none";}}
         />
 
         {/* A-Kissi en overlay bas droite */}
@@ -5338,11 +4117,11 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
         <button onClick={share} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"16px",fontWeight:900,fontSize:"1.05rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.35)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           <span>💬</span> {t("Partager mon profil","Share my profile")}
         </button>
-        <button onClick={()=>downloadProfilCardAsPNG(cardUrl,profilKey)} style={{width:"100%",background:P.card,color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>
+        <button onClick={()=>downloadProfilCardAsPNG(cardUrl,profilKey)} style={{width:"100%",background:"white",color:P.red,border:"2px solid rgba(232,0,61,.2)",borderRadius:50,padding:"14px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>
           📸 {t("Télécharger ma carte","Download my card")}
         </button>
         <div style={{display:"flex",gap:10}}>
-          <button onClick={onRetry} style={{flex:1,background:P.card,color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🔄 {t("Refaire","Retry")}</button>
+          <button onClick={onRetry} style={{flex:1,background:"white",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🔄 {t("Refaire","Retry")}</button>
           <button onClick={onExplore} style={{flex:1,background:G,color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:"1rem",cursor:"pointer"}}>🎮 {t("Explorer","Explore")}</button>
         </div>
       </div>
@@ -5358,7 +4137,7 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
           </div>
         </div>
         {/* Phrase */}
-        <div style={{background:P.card,borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
+        <div style={{background:"white",borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(232,0,61,.1)",textAlign:"center"}}>
           <div style={{fontSize:11,fontWeight:800,color:P.red,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>💬 {t("Ta phrase","Your phrase")}</div>
           <p style={{fontSize:15,fontStyle:"italic",color:P.dark,lineHeight:1.6,margin:0}}>« {profil.phrase} »</p>
         </div>
@@ -5394,7 +4173,7 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
   const Section=({title,children})=>(
     <div style={{marginBottom:20}}>
       <div style={{fontSize:".68rem",fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:1.2,marginBottom:8,paddingLeft:4}}>{title}</div>
-      <div style={{background:P.card,borderRadius:18,overflow:"hidden",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>{children}</div>
+      <div style={{background:"white",borderRadius:18,overflow:"hidden",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>{children}</div>
     </div>
   );
 
@@ -5408,13 +4187,13 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
   const Toggle=({on,onToggle})=>(
     <div onClick={onToggle} style={{width:46,height:26,borderRadius:13,background:on?P.red:"#D4C0CC",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
-      <div style={{width:20,height:20,borderRadius:"50%",background:P.card,position:"absolute",top:3,left:on?23:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
+      <div style={{width:20,height:20,borderRadius:"50%",background:"white",position:"absolute",top:3,left:on?23:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
     </div>
   );
 
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={()=>onBack()} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={()=>onBack()} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:P.red,marginBottom:20}}>⚙️ {lang==="en"?"Settings":"Réglages"}</div>
 
       <Section title={lang==="en"?"Appearance":"Apparence"}>
@@ -5462,7 +4241,6 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
 
       <Section title={lang==="en"?"App":"Application"}>
         <Row icon="📲" label={lang==="en"?"Download Android app":"Télécharger l'app Android"} right={<span style={{color:P.red,fontSize:18}}>↗</span>} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")} border/>
-        <Row icon="🧩" label={lang==="en"?"How it works":"Comment ça marche ?"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("how_it_works")} border/>
         <Row icon="📚" label={lang==="en"?"Sources & References":"Sources & Références"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("sources")} border/>
         <Row icon="ℹ️" label={lang==="en"?"About Quiz Dignité":"À propos de Quiz Dignité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("about")} border/>
         <Row icon="🔐" label={lang==="en"?"Privacy policy":"Politique de confidentialité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("privacy")} border/>
@@ -5630,7 +4408,7 @@ function EscapeGame({lang,onBack}){
 
   if(view==="menu")return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"20px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
         <div style={{fontSize:36,marginBottom:4}}>🔐</div>
         <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
@@ -5654,23 +4432,22 @@ function EscapeGame({lang,onBack}){
   );
 
   if(view==="intro")return(
-    <ScreenFill top={
+    <div style={{padding:"16px 16px 88px"}}>
       <button onClick={()=>setView("menu")} style={{background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:12,padding:"6px 14px",fontSize:13,color:"white",fontWeight:700,marginBottom:14}}>{lang==="en"?"← Menu":"← Menu"}</button>
-    }>
-      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"30px 20px",textAlign:"center",boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
-        <div style={{fontSize:58,marginBottom:8}}>{lv.emoji}</div>
-        <div className="T" style={{color:"white",fontSize:"1.42rem",fontWeight:900,marginBottom:8}}>{lv.name}</div>
-        <p style={{color:"rgba(255,210,220,.85)",fontSize:"1rem",lineHeight:1.7,margin:"0 0 20px"}}>{lang==="en"?`${lv.riddles.length} riddles await you. Each correct answer gives you a letter — in scrambled order. Collect them all, then use the final hint to reassemble the keyword.`:`${lv.riddles.length} énigmes t'attendent. Chaque bonne réponse te donne une lettre, dans le désordre. Rassemble-les toutes, puis utilise l'indice pour trouver le mot-clé.`}</p>
-        <button onClick={beginRiddles} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"15px",fontWeight:800,fontSize:"1.05rem",cursor:"pointer",marginBottom:12}}>🚀 {lang==="en"?"Start":"Commencer"}</button>
-        <button onClick={()=>setView("menu")} style={{background:"transparent",color:"rgba(255,210,220,.7)",border:"1px solid rgba(255,210,220,.3)",borderRadius:50,padding:"10px 18px",fontSize:".92rem",fontWeight:600,cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
+      <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"24px 18px",textAlign:"center",boxShadow:"0 8px 28px rgba(232,0,61,.35)"}}>
+        <div style={{fontSize:48,marginBottom:6}}>{lv.emoji}</div>
+        <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:900,marginBottom:6}}>{lv.name}</div>
+        <p style={{color:"rgba(255,210,220,.85)",fontSize:".82rem",lineHeight:1.65,margin:"0 0 16px"}}>{lang==="en"?`${lv.riddles.length} riddles await you. Each correct answer gives you a letter — in scrambled order. Collect them all, then use the final hint to reassemble the keyword.`:`${lv.riddles.length} énigmes t'attendent. Chaque bonne réponse te donne une lettre, dans le désordre. Rassemble-les toutes, puis utilise l'indice pour trouver le mot-clé.`}</p>
+        <button onClick={beginRiddles} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>🚀 {lang==="en"?"Start":"Commencer"}</button>
+        <button onClick={()=>setView("menu")} style={{background:"transparent",color:"rgba(255,210,220,.7)",border:"1px solid rgba(255,210,220,.3)",borderRadius:50,padding:"9px 18px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
       </div>
-    </ScreenFill>
+    </div>
   );
 
   if(view==="riddle"){
     const r=lv.riddles[step];
     return(
-      <ScreenFill top={
+      <div style={{padding:"16px 16px 88px"}}>
         <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap",justifyContent:"center"}}>
           {lv.riddles.map((_,i)=>(
             <div key={i} style={{width:28,height:28,borderRadius:8,border:"2px solid rgba(255,255,255,.25)",background:i<letters.length?"linear-gradient(135deg,#E8003D,#FF6B9D)":"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,color:"white"}}>
@@ -5678,51 +4455,50 @@ function EscapeGame({lang,onBack}){
             </div>
           ))}
         </div>
-      }>
-        <div style={{background:"rgba(255,255,255,.96)",backdropFilter:"blur(14px)",borderRadius:22,padding:"26px 20px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
-          <div style={{fontSize:".78rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{r.tag}</div>
-          <p style={{fontSize:"1.15rem",fontWeight:700,color:P.text,lineHeight:1.5,marginBottom:20}}>{r.q}</p>
-          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        <div style={{background:"rgba(255,255,255,.96)",backdropFilter:"blur(14px)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
+          <div style={{fontSize:".68rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{r.tag}</div>
+          <p style={{fontSize:".95rem",fontWeight:700,color:P.text,lineHeight:1.5,marginBottom:16}}>{r.q}</p>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {r.opts.map((opt,i)=>{
               let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.text;
               if(showFb){if(i===r.ok){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#1A7A50";}else if(i===chosen){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
               return(
-                <button key={i} disabled={chosen!==null} onClick={()=>answer_riddle(i)} style={{background:bg,border,borderRadius:13,padding:"14px 16px",fontSize:"1.05rem",fontWeight:700,textAlign:"left",cursor:chosen!==null?"default":"pointer",color:col,transition:"all .15s"}}>
+                <button key={i} disabled={chosen!==null} onClick={()=>answer_riddle(i)} style={{background:bg,border,borderRadius:13,padding:"11px 14px",fontSize:".88rem",fontWeight:700,textAlign:"left",cursor:chosen!==null?"default":"pointer",color:col,transition:"all .15s"}}>
                   {String.fromCharCode(65+i)}. {opt}
                 </button>
               );
             })}
           </div>
-          {showFb&&<div style={{marginTop:14,padding:"12px 14px",background:"rgba(232,0,61,.06)",borderLeft:`3px solid ${P.red}`,borderRadius:8,fontSize:".92rem",color:P.muted,lineHeight:1.6}}>{r.fb}</div>}
+          {showFb&&<div style={{marginTop:12,padding:"10px 12px",background:"rgba(232,0,61,.06)",borderLeft:`3px solid ${P.red}`,borderRadius:8,fontSize:".78rem",color:P.muted,lineHeight:1.55}}>{r.fb}</div>}
         </div>
-      </ScreenFill>
+      </div>
     );
   }
 
   if(view==="scramble"){
     return(
-      <ScreenFill padding="16px 16px 88px">
-        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"26px 20px",boxShadow:"0 6px 24px rgba(232,0,61,.12)",textAlign:"center"}}>
-          <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:P.red,marginBottom:6}}>{lang==="en"?"Rearrange the letters":"Réorganise les lettres"}</div>
-          <p style={{fontSize:".92rem",color:P.muted,marginBottom:18,lineHeight:1.55}}>{lang==="en"?`You collected ${letters.length} letters — in scrambled order. Put them in the right order to reveal the keyword.`:`Tu as recueilli ${letters.length} lettres dans le désordre. Remets-les dans le bon ordre pour révéler le mot-clé.`}</p>
-          <div style={{display:"flex",gap:7,justifyContent:"center",marginBottom:16,minHeight:52,flexWrap:"wrap"}}>
+      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"20px 16px",boxShadow:"0 6px 24px rgba(232,0,61,.12)"}}>
+          <div className="T" style={{fontSize:"1.1rem",fontWeight:900,color:P.red,marginBottom:4}}>{lang==="en"?"Rearrange the letters":"Réorganise les lettres"}</div>
+          <p style={{fontSize:".78rem",color:P.muted,marginBottom:14,lineHeight:1.5}}>{lang==="en"?`You collected ${letters.length} letters — in scrambled order. Put them in the right order to reveal the keyword.`:`Tu as recueilli ${letters.length} lettres dans le désordre. Remets-les dans le bon ordre pour révéler le mot-clé.`}</p>
+          <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:12,minHeight:46,flexWrap:"wrap"}}>
             {lv.targetWord.split("").map((_,i)=>(
-              <div key={i} style={{width:44,height:44,borderRadius:11,border:`2px ${answer[i]?"solid":"dashed"} ${answer[i]?P.red:"rgba(232,0,61,.3)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:19,color:"white",background:answer[i]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"transparent"}}>
+              <div key={i} style={{width:38,height:38,borderRadius:10,border:`2px ${answer[i]?"solid":"dashed"} ${answer[i]?P.red:"rgba(232,0,61,.3)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"white",background:answer[i]?"linear-gradient(135deg,#E8003D,#FF6B9D)":"transparent"}}>
                 {answer[i]||""}
               </div>
             ))}
           </div>
-          <div style={{display:"flex",gap:7,justifyContent:"center",flexWrap:"wrap",marginBottom:16}}>
+          <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginBottom:12}}>
             {scramble.map(s=>(
-              <button key={s.id} onClick={()=>!s.used&&pickLetter(s.id)} style={{width:44,height:44,borderRadius:11,background:s.used?"rgba(200,180,200,.3)":"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",color:"white",fontWeight:800,fontSize:19,cursor:s.used?"default":"pointer",opacity:s.used?.3:1,transition:"all .15s"}}>
+              <button key={s.id} onClick={()=>!s.used&&pickLetter(s.id)} style={{width:38,height:38,borderRadius:10,background:s.used?"rgba(200,180,200,.3)":"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",color:"white",fontWeight:800,fontSize:16,cursor:s.used?"default":"pointer",opacity:s.used?.3:1,transition:"all .15s"}}>
                 {s.l}
               </button>
             ))}
           </div>
-          <button onClick={()=>{setScramble(scramble.map(s=>({...s,used:false})));setAnswer([]);}} style={{background:"transparent",border:"none",color:P.muted,fontSize:".85rem",textDecoration:"underline",cursor:"pointer",marginBottom:12}}>{lang==="en"?"Clear and try again":"Effacer et recommencer"}</button>
-          <div style={{background:"rgba(232,0,61,.06)",borderRadius:10,padding:"11px 14px",fontSize:".88rem",color:P.muted,border:"1px dashed rgba(232,0,61,.2)"}}>💡 {lv.hint}</div>
+          <button onClick={()=>{setScramble(scramble.map(s=>({...s,used:false})));setAnswer([]);}} style={{background:"transparent",border:"none",color:P.muted,fontSize:".75rem",textDecoration:"underline",cursor:"pointer",marginBottom:10}}>{lang==="en"?"Clear and try again":"Effacer et recommencer"}</button>
+          <div style={{background:"rgba(232,0,61,.06)",borderRadius:10,padding:"9px 12px",fontSize:".75rem",color:P.muted,border:"1px dashed rgba(232,0,61,.2)"}}>💡 {lv.hint}</div>
         </div>
-      </ScreenFill>
+      </div>
     );
   }
 
@@ -5730,17 +4506,17 @@ function EscapeGame({lang,onBack}){
     const nextIdx=lvIdx+1;
     const hasNext=nextIdx<levels.length;
     return(
-      <ScreenFill padding="16px 16px 88px">
-        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"30px 22px",boxShadow:"0 8px 28px rgba(232,0,61,.15)",textAlign:"center"}}>
-          <div style={{fontSize:66,marginBottom:10}}>🏆</div>
-          <div className="T" style={{fontSize:"1.42rem",fontWeight:900,color:P.red,marginBottom:6}}>{lv.badge}</div>
-          <div style={{fontSize:".95rem",color:P.muted,marginBottom:20}}>{lang==="en"?"Code unlocked:":"Code débloqué :"} <strong>{lv.display}</strong></div>
-          <div style={{background:"rgba(232,0,61,.05)",borderRadius:14,padding:"17px",textAlign:"left",fontSize:".92rem",color:P.text,lineHeight:1.75,marginBottom:18}} dangerouslySetInnerHTML={{__html:`<strong>📚 ${lang==="en"?"Key takeaways":"À retenir"} :</strong><br>${lv.fiche}`}}/>
-          {hasNext&&<div style={{background:"rgba(61,190,130,.12)",border:"1px solid rgba(61,190,130,.3)",borderRadius:12,padding:"10px 15px",fontSize:".9rem",fontWeight:700,color:"#1A7A50",marginBottom:16}}>🎯 {lang==="en"?"Next level unlocked:":"Niveau suivant débloqué :"} {levels[nextIdx].emoji} {levels[nextIdx].name}</div>}
-          {hasNext&&<button onClick={()=>startLevel(nextIdx)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"15px",fontWeight:800,fontSize:"1.05rem",cursor:"pointer",marginBottom:12}}>▶️ {lang==="en"?"Next level":"Niveau suivant"}</button>}
-          <button onClick={()=>setView("menu")} style={{width:"100%",background:"transparent",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"13px",fontWeight:700,fontSize:"1rem",cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
+      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:22,padding:"24px 18px",boxShadow:"0 8px 28px rgba(232,0,61,.15)"}}>
+          <div style={{fontSize:56,marginBottom:8}}>🏆</div>
+          <div className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.red,marginBottom:4}}>{lv.badge}</div>
+          <div style={{fontSize:".82rem",color:P.muted,marginBottom:16}}>{lang==="en"?"Code unlocked:":"Code débloqué :"} <strong>{lv.display}</strong></div>
+          <div style={{background:"rgba(232,0,61,.05)",borderRadius:14,padding:"14px",textAlign:"left",fontSize:".78rem",color:P.text,lineHeight:1.7,marginBottom:14}} dangerouslySetInnerHTML={{__html:`<strong>📚 ${lang==="en"?"Key takeaways":"À retenir"} :</strong><br>${lv.fiche}`}}/>
+          {hasNext&&<div style={{background:"rgba(61,190,130,.12)",border:"1px solid rgba(61,190,130,.3)",borderRadius:12,padding:"8px 14px",fontSize:".78rem",fontWeight:700,color:"#1A7A50",marginBottom:14}}>🎯 {lang==="en"?"Next level unlocked:":"Niveau suivant débloqué :"} {levels[nextIdx].emoji} {levels[nextIdx].name}</div>}
+          {hasNext&&<button onClick={()=>startLevel(nextIdx)} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",color:"white",border:"none",borderRadius:50,padding:"13px",fontWeight:800,fontSize:".95rem",cursor:"pointer",marginBottom:10}}>▶️ {lang==="en"?"Next level":"Niveau suivant"}</button>}
+          <button onClick={()=>setView("menu")} style={{width:"100%",background:"transparent",color:P.red,border:`2px solid ${P.red}`,borderRadius:50,padding:"11px",fontWeight:700,fontSize:".88rem",cursor:"pointer"}}>{lang==="en"?"← Back to menu":"← Retour au menu"}</button>
         </div>
-      </ScreenFill>
+      </div>
     );
   }
 
@@ -5764,21 +4540,20 @@ const THEMES_EN=[
 ];
 
 // ── EXPLORER ─────────────────────────────────────────────────────
-function Explorer({lang,onTheme,onNav,navActive,onBack}){
+function Explorer({lang,onTheme,onNav,navActive}){
   const themes=lang==="en"?THEMES_EN:THEMES_FR;
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",padding:"52px 20px 22px"}}>
-        <button onClick={onBack} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
         <div className="T" style={{fontSize:26,fontWeight:900,color:"white",marginBottom:5}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</div>
         <p style={{fontSize:14,color:"rgba(255,255,255,.8)",fontWeight:600}}>{t("Choisis un thème pour commencer","Choose a theme to start")}</p>
       </div>
       {/* Themes */}
       <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
         {themes.map(th=>(
-          <div key={th.id} onClick={()=>onTheme(th)} style={{background:P.card,borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
+          <div key={th.id} onClick={()=>onTheme(th)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
             <div style={{width:52,height:52,borderRadius:16,background:th.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{th.emoji}</div>
             <div style={{flex:1}}>
               <div className="T" style={{fontSize:17,fontWeight:800,color:P.dark,marginBottom:3}}>{th.name}</div>
@@ -5790,7 +4565,7 @@ function Explorer({lang,onTheme,onNav,navActive,onBack}){
         <div style={{height:16}}/>
       </div>
       {/* Nav */}
-      <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
+      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
         {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
@@ -5802,18 +4577,18 @@ function Explorer({lang,onTheme,onNav,navActive,onBack}){
 }
 
 // ── HUB ────────────────────────────────────────────────────────
-function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onSituations,onNav,navActive,defiText}){
+function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onNav,navActive,defiText}){
   const t=(fr,en)=>lang==="en"?en:fr;
   const quickItems=[
     {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),color:"#4FB3F6",action:onGames},
     {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),color:"#E8003D",action:onDroits},
-    {icon:"🤔",label:t("Situations","Situations"),color:"#14B8A6",action:onSituations},
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
     {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
+    {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
     {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
   ];
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:P.bg,position:"relative"}}><FloatingBg/>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       {/* Header */}
       <div style={{background:HERO,padding:"50px 20px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px rgba(232,0,61,.22)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
@@ -5826,14 +4601,13 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
             </div>
           </div>
           <div style={{textAlign:"right"}}>
-            <button onClick={()=>onNav("how_it_works")} style={{background:"rgba(255,255,255,.18)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:"50%",width:26,height:26,color:"white",fontWeight:900,fontSize:13,cursor:"pointer",marginBottom:4}} aria-label={t("Comment ça marche ?","How it works")}>?</button>
             <div style={{fontSize:22,fontWeight:900,color:"white"}}>{totalPts}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,.7)",fontWeight:700}}>pts</div>
           </div>
         </div>
         {/* Progress bar */}
         <div style={{height:6,background:"rgba(255,255,255,.2)",borderRadius:6,overflow:"hidden"}}>
-          <div style={{height:"100%",background:P.card,borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
+          <div style={{height:"100%",background:"white",borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
         </div>
         {badges.length>0&&<div style={{fontSize:11,color:"rgba(255,255,255,.75)",fontWeight:700,marginTop:6}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""} débloqué${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""} unlocked`)}</div>}
       </div>
@@ -5843,12 +4617,12 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("5 thèmes · 3 niveaux · quiz interactifs","5 themes · 3 levels · interactive quizzes")}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("7 thèmes · 3 niveaux · bilingue","7 themes · 3 levels · bilingual")}</div>
           </div>
           <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
         </button>
         {/* Défi du jour */}
-        {defiText&&<div style={{background:P.card,borderRadius:18,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
+        {defiText&&<div style={{background:"white",borderRadius:18,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
           <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:6}}>🔥 {t("Défi du jour","Daily challenge")}</div>
           <div style={{display:"flex",alignItems:"flex-end",gap:10}}>
             <AKissi state="encouragement" lang={lang} size={64} msg={null} style={{flexShrink:0,marginBottom:-6}}/>
@@ -5864,25 +4638,18 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           </div>
           <span style={{fontSize:20,color:"#FF6B9D",fontWeight:900}}>›</span>
         </div>
-        {/* SOS — toujours accessible, jamais présenté comme une activité parmi d'autres */}
-        <button onClick={()=>onNav("sos")} style={{width:"100%",background:"rgba(231,76,60,.08)",border:"1.5px solid rgba(231,76,60,.25)",borderRadius:16,padding:"11px 14px",display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
-          <span style={{fontSize:18}}>🚨</span>
-          <span style={{flex:1,textAlign:"left",fontSize:13,fontWeight:800,color:"#E74C3C"}}>{t("Besoin d'aide maintenant ? SOS","Need help right now? SOS")}</span>
-          <span style={{fontSize:16,color:"#E74C3C",fontWeight:900}}>›</span>
-        </button>
         {/* Quick access grid */}
-        <div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.8,marginTop:6}}>{t("Pour aller plus loin","More to explore")}</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {quickItems.map((it,i)=>(
-            <button key={i} onClick={it.action} style={{background:P.card,border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"16px 14px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:10,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
-              <div style={{width:48,height:48,borderRadius:14,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>{it.icon}</div>
-              <div style={{fontSize:14.5,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
+            <button key={i} onClick={it.action} style={{background:"white",border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
+              <div style={{width:40,height:40,borderRadius:12,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{it.icon}</div>
+              <div style={{fontSize:12,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
             </button>
           ))}
         </div>
       </div>
       {/* Nav */}
-      <nav style={{position:"sticky",bottom:0,background:P.navBg,backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
+      <nav style={{position:"sticky",bottom:0,background:"rgba(255,255,255,.95)",backdropFilter:"blur(14px)",borderTop:"1.5px solid rgba(232,0,61,.1)",display:"flex",zIndex:100,boxShadow:"0 -4px 20px rgba(232,0,61,.08)"}}>
         {[{id:"home",icon:"🏠",fr:"Accueil",en:"Home"},{id:"explore",icon:"🎮",fr:"Explorer",en:"Explore"},{id:"glossaire",icon:"📖",fr:"Glossaire",en:"Glossary"},{id:"progress",icon:"🏆",fr:"Progrès",en:"Progress"},{id:"settings",icon:"⚙️",fr:"Réglages",en:"Settings"}].map(n=>(
           <button key={n.id} onClick={()=>onNav(n.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"9px 3px",cursor:"pointer",border:"none",background:"transparent",color:navActive===n.id?P.red:P.muted,fontSize:".5rem",fontWeight:700,gap:3}}>
             <span style={{fontSize:"1.15rem"}}>{n.icon}</span>{lang==="en"?n.en:n.fr}
@@ -5903,7 +4670,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
           <div>
             <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",fontSize:13,color:"white",fontWeight:800,cursor:"pointer",marginBottom:10}}>← {lang==="en"?"Back":"Retour"}</button>
             <h1 className="T" style={{margin:"0 0 2px",fontSize:25,fontWeight:700,color:"white"}}>{lang==="en"?"Educational Games":"Jeux Éducatifs"}</h1>
-            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"13 games · 3 levels each ✨":"13 jeux · 3 niveaux chacun ✨"}</p>
+            <p style={{margin:0,color:"rgba(255,255,255,.82)",fontSize:11,fontWeight:600}}>{lang==="en"?"10 games · 3 levels each ✨":"10 jeux · 3 niveaux chacun ✨"}</p>
           </div>
           <button onClick={toggleSound} style={{background:"rgba(255,255,255,.22)",border:"none",borderRadius:11,padding:"7px 11px",fontSize:16,cursor:"pointer",color:"white"}}>{soundOn?"🔊":"🔇"}</button>
         </div>
@@ -5912,7 +4679,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
         <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎮 {lang==="en"?"Main Games":"Jeux Principaux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
           {gameDef.filter(g=>g.main).map(g=>(
-            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:P.card,border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
+            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:"white",border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
               <div style={{width:44,height:44,borderRadius:13,background:`linear-gradient(135deg,${g.col}22,${g.col}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0,position:"relative"}}>
                 {g.e}
                 {g.timer&&<div style={{position:"absolute",top:-4,right:-4,fontSize:8,background:P.amber,borderRadius:"50%",width:14,height:14,display:"flex",alignItems:"center",justifyContent:"center",border:"1.5px solid white"}}>⏱</div>}
@@ -5931,7 +4698,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
         <div style={{fontSize:12,fontWeight:800,color:P.text,marginBottom:9}}>🎲 {lang==="en"?"Mini-Games":"Mini-Jeux"}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {gameDef.filter(g=>!g.main).map(g=>(
-            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:P.card,border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
+            <button key={g.id} onClick={()=>onGame(g.id)} style={{background:"white",border:`2px solid ${g.col}22`,borderRadius:17,padding:"11px 13px",display:"flex",alignItems:"center",gap:11,textAlign:"left",width:"100%",boxShadow:`0 3px 12px ${g.col}13`,transition:"transform .15s"}}>
               <div style={{width:44,height:44,borderRadius:13,background:`linear-gradient(135deg,${g.col}22,${g.col}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0}}>{g.e}</div>
               <div style={{flex:1}}>
                 <div className="F" style={{fontWeight:600,fontSize:14,color:P.text}}>{g.t}</div>
@@ -5961,7 +4728,7 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
   ];
   return(
     <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
       <div style={{background:HERO,borderRadius:22,padding:"20px 18px",textAlign:"center",marginBottom:18,boxShadow:"0 8px 28px #C8102E2A"}}>
         <div style={{fontSize:42,marginBottom:6}}>📖</div>
         <div className="T" style={{color:"white",fontSize:"1.3rem",fontWeight:800,margin:"0 0 4px"}}>{lang==="en"?"Learn & Understand":"Comprendre & Apprendre"}</div>
@@ -5989,35 +4756,13 @@ function CaLevels({profile,caProgress,getCaUnlocked,lang,onBack,onStart}){
 
 export default function App(){
   const[screen,setScreen]=useState("boot");
+  const[showSplash,setShowSplash]=useState(true);
 
-  // Annule le message "chargement lent" côté index.html : la présence même de
-  // ce composant prouve que le bundle a chargé et que React a bien monté.
-  useEffect(()=>{ window.__QD_READY=true; },[]);
-
-  // Fait fondre le logo plein page (pre-splash CSS) une fois l'app prête —
-  // un seul écran de démarrage, pas de relais vers un second composant.
-  const splashStartRef=useRef(Date.now());
+  // Masque le pré-splash CSS dès que React monte
   useEffect(()=>{
-    const MIN_SHOW=900;   // durée minimale visible : 900ms
-    const FADE_DUR=400;   // durée du fondu : 400ms
-    const MAX_TOTAL=1800; // jamais plus de 1.8s au total
-    const isReady=screen!=="boot";
-    const finish=()=>{
-      const el=document.getElementById("pre-splash");
-      if(el){
-        el.classList.add("pre-splash-fading");
-        setTimeout(()=>{el.style.display="none";},FADE_DUR);
-      }
-    };
-    if(isReady){
-      const elapsed=Date.now()-splashStartRef.current;
-      const wait=Math.max(0,MIN_SHOW-elapsed);
-      const t=setTimeout(finish,wait);
-      return()=>clearTimeout(t);
-    }
-    const hardStop=setTimeout(finish,MAX_TOTAL);
-    return()=>clearTimeout(hardStop);
-  },[screen]);
+    const el=document.getElementById("pre-splash");
+    if(el)el.style.display="none";
+  },[]);
   const[user,setUser]=useState({name:"",country:""});
   const[profile,setProfile]=useState(null);
   const[category,setCategory]=useState(null);
@@ -6054,11 +4799,10 @@ export default function App(){
 
   SND.on=soundOn;
   AUDIO_ON=audioOn;
-  applyTheme(darkMode);
 
   useEffect(()=>{
     const s=document.getElementById("hm-dark")||(()=>{const el=document.createElement("style");el.id="hm-dark";document.head.appendChild(el);return el;})();
-    s.textContent=`body,#root{background:${darkMode?THEME_DARK.bg:THEME_LIGHT.bg}!important;}`;
+    s.textContent=darkMode?`body,#root{background:#1A0A15!important;}.app-root{background:linear-gradient(160deg,#2A0A20,#1A0A15)!important;}`:"";
   },[darkMode]);
 
   function persist(pts,bdg,sess,unl,str){Store.save("qd-data",{pts,bdg,sess,unl,snd:soundOn,streak:str??streak});}
@@ -6090,7 +4834,7 @@ export default function App(){
   function submitOnboarding(name,country){
     const u={name:name.trim(),country:country.trim()};
     setUser(u);Store.save("qd-user",u);persist(0,[],0,{});
-    ga("onboarding",{country:u.country});SND.play("start");
+    ga("onboarding",{name:u.name,country:u.country});SND.play("start");
     scheduleDefiNotif();setScreen("hub");
   }
 
@@ -6345,24 +5089,22 @@ export default function App(){
   return(
     <div>
       <style>{STYLE}</style>
-      <div className="BG"/>
-      <FloatingBg/>
-      <div className="desktop-shell">
-        <div className="desktop-side">
-          <img src={HM_LOGO} alt="" style={{width:72,height:72,objectFit:"contain",marginBottom:14}} onError={e=>{e.target.style.display="none";}}/>
-          <div style={{fontSize:26,fontWeight:900,color:"white",lineHeight:1.15,marginBottom:10}}>Quiz Dignité</div>
-          <div style={{fontSize:13,color:"rgba(255,180,200,.75)",lineHeight:1.6,maxWidth:200}}>{lang==="en"?"An educational app by ONG Happy Mum's on menstrual health, women's rights and dignity.":"Une app éducative de l'ONG Happy Mum's sur la santé menstruelle, les droits des femmes et la dignité."}</div>
-        </div>
-        <div className="SH">
+      {showSplash?(
+        <SplashScreen onDone={()=>setShowSplash(false)} isReady={screen!=="boot"}/>
+      ):(
+        <>
+          <div className="BG"/>
+          <FloatingBg/>
+          <div className="SH">
 
         {screen==="boot"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}><div style={{fontSize:64}} className="pulse">🌸</div></div>}
 
         {screen==="welcome"&&<WelcomeScreen onStart={()=>setScreen("onboarding")} lang={lang} setLang={setLang}/>}
         {screen==="onboarding"&&<Onboarding onSubmit={submitOnboarding} lang={lang}/>}
 
-        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onProfil={()=>setScreen("profil_test")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onSituations={()=>{setScreen("situations");setNavActive("home");}} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
+        {screen==="hub"&&<Hub user={user} totalPts={totalPts} lvl={lvl} badges={badges} soundOn={soundOn} lang={lang} streak={streak} onExplore={()=>{setNavActive("explore");setScreen("explore");}} onGames={()=>setScreen("games_hub")} onDroits={()=>{setScreen("droits_femmes");setNavActive("home");}} onProfil={()=>setScreen("profil_test")} onCelebrate={()=>setScreen("celebrate")} onEscape={()=>setScreen("escape")} onNav={goNav} navActive={navActive} defiText={defiToday}/>}
 
-        {screen==="situations"&&<Situations lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}} navActive={navActive} onNav={goNav} onBadge={badge=>{if(!badges.includes(badge.id)){const nb=[...badges,badge.id];setBadges(nb);persist(totalPts,nb,sessions,unlocked,streak);}}}/>}
+        {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
 
         {screen==="profil_test"&&<ProfilTest lang={lang} onBack={()=>setScreen("hub")} onResult={(key,profil)=>{setProfilResult({key,profil});setScreen("profil_result");}}/>}
 
@@ -6377,7 +5119,7 @@ export default function App(){
           updateStreak();
         }}/>}
 
-        {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onBack={()=>{setScreen("hub");setNavActive("home");}} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
+        {screen==="explore"&&<Explorer lang={lang} navActive={navActive} onNav={goNav} onTheme={th=>{setProfile(th.profile);ga("theme",{th:th.id});setScreen("quiz_level_select");setQuizLevelCat(th.cat);}}/>}
 
 
         {showDefiModal&&<DefiModal onClose={()=>setShowDefiModal(false)} lang={lang}/>}
@@ -6385,8 +5127,6 @@ export default function App(){
         {screen==="privacy"&&<PrivacyPage onBack={()=>setScreen("settings")} lang={lang}/>}
 
         {screen==="glossaire"&&<Glossaire onBack={()=>setScreen("hub")} lang={lang}/>}
-
-        {screen==="how_it_works"&&<HowItWorks lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
 
         {screen==="quiz_level_select"&&quizLevelCat&&<QuizLevelSelect profile={profile} category={quizLevelCat} quizLevels={quizLevels} getCatLabel={getCatLabelFn} lang={lang} onBack={()=>setScreen("explore")} onStart={lv=>{startQuiz(profile,quizLevelCat,lv);}}/>}
 
@@ -6397,7 +5137,7 @@ export default function App(){
         {screen==="quiz_results"&&<QuizResults profile={profile} category={category} levelNum={quizLevelNum} finalScore={quizScore} qLen={quizQLen} totalPts={totalPts} lvl={lvl} newBadges={newBadges} storyDataUrl={storyDataUrl} userName={user?.name||''} lang={lang} streak={streak} onReplay={()=>startQuiz(profile,category,quizLevelNum)} onHome={()=>{setNewBadges([]);setScreen("explore");setNavActive("explore");}} onShareWA={shareWA} onNextLevel={(nextLv)=>{startQuiz(profile,category,nextLv);}}/>}
 
         {screen==="celebrate"&&<JeMeCelebre lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
-        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"||dest==="sources"||dest==="how_it_works"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
+        {screen==="settings"&&<Settings lang={lang} setLang={setLang} soundOn={soundOn} setSoundOn={setSoundOn} audioOn={audioOn} setAudioOn={setAudioOn} darkMode={darkMode} setDarkMode={setDarkMode} user={user} setUser={setUser} onResetProgress={resetProgress} onBack={(dest)=>{if(dest==="about"||dest==="privacy"||dest==="sources"){setScreen(dest);}else{setScreen("hub");}}} onNav={goNav}/>}
         {screen==="escape"&&<EscapeGame lang={lang} onBack={()=>{setScreen("hub");setNavActive("home");}}/>}
         {screen==="games_hub"&&<GamesHub soundOn={soundOn} toggleSound={toggleSound} unlocked={unlocked} lang={lang} onGame={startGame} onBack={()=>setScreen("hub")}/>}
 
@@ -6422,7 +5162,7 @@ export default function App(){
 
             <div style={{padding:"14px 14px 0"}}>
               {/* Streak */}
-              <div style={{background:P.card,borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(255,120,0,.2)",boxShadow:"0 2px 12px rgba(255,120,0,.08)"}}>
+              <div style={{background:"white",borderRadius:20,padding:"16px",marginBottom:12,border:"1.5px solid rgba(255,120,0,.2)",boxShadow:"0 2px 12px rgba(255,120,0,.08)"}}>
                 <div style={{display:"flex",alignItems:"center",gap:14}}>
                   <div style={{width:56,height:56,borderRadius:16,background:"linear-gradient(135deg,#FF6B00,#FF9A00)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🔥</div>
                   <div style={{flex:1}}>
@@ -6454,7 +5194,7 @@ export default function App(){
                   {icon:"⭐",val:totalPts,label:lang==="en"?"Total points":"Points totaux",color:"#9B6BEA"},
                   {icon:"🔥",val:streak,label:lang==="en"?"Day streak":"Jours de suite",color:"#FF6B00"},
                 ].map((s,i)=>(
-                  <div key={i} style={{background:P.card,borderRadius:18,padding:"14px 12px",textAlign:"center",border:`1.5px solid ${s.color}22`,boxShadow:`0 2px 10px ${s.color}11`}}>
+                  <div key={i} style={{background:"white",borderRadius:18,padding:"14px 12px",textAlign:"center",border:`1.5px solid ${s.color}22`,boxShadow:`0 2px 10px ${s.color}11`}}>
                     <div style={{fontSize:24,marginBottom:4}}>{s.icon}</div>
                     <div className="T" style={{fontSize:22,fontWeight:900,color:s.color}}>{s.val}</div>
                     <div style={{fontSize:11,color:P.muted,fontWeight:700,marginTop:2}}>{s.label}</div>
@@ -6463,7 +5203,7 @@ export default function App(){
               </div>
 
               {/* Badges */}
-              <div style={{background:P.card,borderRadius:20,padding:"16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
+              <div style={{background:"white",borderRadius:20,padding:"16px",border:"1.5px solid rgba(232,0,61,.1)"}}>
                 <div className="T" style={{fontSize:15,fontWeight:900,color:P.red,marginBottom:12}}>🏅 {lang==="en"?"My Badges":"Mes Badges"} ({badges.length})</div>
                 {badges.length===0?(
                   <div style={{textAlign:"center",padding:"20px 0"}}>
@@ -6487,9 +5227,9 @@ export default function App(){
 
         {screen==="about"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>setScreen("settings")} style={{background:P.card,border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <button onClick={()=>setScreen("settings")} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:13,color:P.muted,fontWeight:700,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div style={{textAlign:"center",marginBottom:18}}>
-              <img src={HM_LOGO} alt="" style={{width:65,height:65,objectFit:"contain"}} onError={e=>{e.target.style.display="none";}}/>
+              <img src={HM_LOGO} alt="" style={{width:65,height:65,objectFit:"contain"}}/>
               <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginTop:8}}>Qui est Happy Mum's ?</div>
             </div>
             {[
@@ -6512,7 +5252,7 @@ export default function App(){
 
         {screen==="sos"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:P.card,border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div className="T" style={{fontSize:"1.3rem",fontWeight:800,color:P.red,marginBottom:6}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
 
             {/* Disclaimer */}
@@ -6544,6 +5284,7 @@ export default function App(){
             {[
               {n:"1308",l:lang==="en"?"SOS Violence — free, 24/7":"SOS Violences — gratuit, 24h/24",i:"🆘"},
               {n:"116",l:lang==="en"?"Allô Enfant — Child Protection":"Allô Enfant en Danger",i:"👶"},
+              {n:"115",l:lang==="en"?"Gendarmerie Nationale":"Gendarmerie Nationale",i:"🪖"},
             ].map(n=>(
               <button key={n.n} onClick={()=>window.open(`tel:${n.n}`)} style={{background:`linear-gradient(135deg,${P.red},${P.rose})`,borderRadius:16,padding:"13px 16px",marginBottom:8,display:"flex",alignItems:"center",gap:12,color:"white",cursor:"pointer",border:"none",width:"100%",textAlign:"left",boxShadow:"0 4px 16px rgba(232,0,61,.2)"}}>
                 <span style={{fontSize:"1.4rem"}} role="img" aria-label={n.l}>{n.i}</span>
@@ -6554,7 +5295,7 @@ export default function App(){
 
             {/* Soutien */}
             <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"16px 0 8px"}}>💗 {lang==="en"?"Psychological support":"Soutien psychologique"}</div>
-            <div style={{background:P.card,borderRadius:16,padding:"14px 16px",marginBottom:8,border:"1.5px solid rgba(232,0,61,.12)"}}>
+            <div style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:8,border:"1.5px solid rgba(232,0,61,.12)"}}>
               <p style={{fontSize:13,color:P.dark,margin:0,lineHeight:1.65,fontWeight:600}}>
                 {lang==="en"
                   ?"If you are experiencing emotional distress, talk to a trusted adult (teacher, doctor, social worker) or contact a local listening centre."
@@ -6566,8 +5307,8 @@ export default function App(){
             <div style={{background:"rgba(245,166,35,.08)",border:"1px solid rgba(245,166,35,.3)",borderRadius:12,padding:"10px 14px",marginBottom:12}}>
               <p style={{fontSize:11,color:"#996600",margin:0,lineHeight:1.6,fontWeight:600}}>
                 {lang==="en"
-                  ?"📍 Numbers verified for Côte d'Ivoire (last checked: September 2026). If you are in another country, call your local emergency services."
-                  :"📍 Numéros vérifiés pour la Côte d'Ivoire (dernière vérification : septembre 2026). Si tu es dans un autre pays, contacte les services d'urgence locaux."}
+                  ?"📍 Numbers verified for Côte d'Ivoire. If you are in another country, call your local emergency services."
+                  :"📍 Numéros vérifiés pour la Côte d'Ivoire. Si tu es dans un autre pays, contacte les services d'urgence locaux."}
               </p>
             </div>
 
@@ -6587,39 +5328,21 @@ export default function App(){
 
         {screen==="sources"&&(
           <div style={{padding:"16px 16px 88px"}}>
-            <button onClick={()=>setScreen(navActive==="settings"?"settings":"sos")} style={{background:P.card,border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
+            <button onClick={()=>setScreen(navActive==="settings"?"settings":"sos")} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:13,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:6}}>📚 {lang==="en"?"Sources & References":"Sources & Références"}</div>
             <p style={{fontSize:13,color:P.muted,marginBottom:16,lineHeight:1.65}}>{lang==="en"?"Quiz Dignité's content is based on the following recognised sources:":"Le contenu de Quiz Dignité s'appuie sur les sources reconnues suivantes :"}</p>
             {[
               {org:"OMS / WHO",desc:lang==="en"?"World Health Organization — menstrual health, sexual and reproductive health":"Organisation Mondiale de la Santé — santé menstruelle, santé sexuelle et reproductive",url:"https://www.who.int"},
               {org:"UNICEF",desc:lang==="en"?"Children's rights, girls' education, child protection":"Droits de l'enfant, éducation des filles, protection de l'enfance",url:"https://www.unicef.org"},
               {org:"UNFPA",desc:lang==="en"?"United Nations Population Fund — reproductive rights, gender-based violence":"Fonds des Nations Unies pour la Population — droits reproductifs, violences basées sur le genre",url:"https://www.unfpa.org"},
-              {org:"Protocole de Maputo (2003)",desc:lang==="en"?"African Union — Protocol on the Rights of Women in Africa":"Union africaine — Protocole sur les droits des femmes en Afrique",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"},
+              {org:"Protocole de Maputo (2003)",desc:lang==="en"?"African Union — Protocol on the Rights of Women in Africa":"Union africaine — Protocole sur les droits des femmes en Afrique",url:"https://au.int"},
               {org:"ONU Femmes",desc:lang==="en"?"United Nations Entity for Gender Equality and Women's Empowerment":"Entité des Nations Unies pour l'égalité des sexes",url:"https://www.unwomen.org"},
               {org:"ONUSIDA",desc:lang==="en"?"Joint United Nations Programme on HIV/AIDS — sexual health":"Programme commun des Nations Unies sur le VIH/SIDA",url:"https://www.unaids.org"},
             ].map((s,i)=>(
-              <div key={i} style={{background:P.card,borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
+              <div key={i} style={{background:"white",borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
                 <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
                 <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
                 <a href={s.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:P.red,fontWeight:700,textDecoration:"none"}}>{s.url} ↗</a>
-              </div>
-            ))}
-
-            {/* Références précises par sujet */}
-            <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"20px 0 8px"}}>🎯 {lang==="en"?"Precise references by topic":"Références précises par sujet"}</div>
-            {[
-              {topic:lang==="en"?"Menstrual cycle":"Cycle menstruel",org:"OMS / WHO",desc:lang==="en"?"Menstrual health — official fact sheet":"Santé menstruelle — fiche officielle",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"},
-              {topic:lang==="en"?"Menstrual pain":"Douleurs menstruelles",org:"ACOG",desc:lang==="en"?"American College of Obstetricians and Gynecologists — dysmenorrhea":"American College of Obstetricians and Gynecologists — dysménorrhée",url:"https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods"},
-              {topic:lang==="en"?"Consent":"Consentement",org:"UNFPA",desc:lang==="en"?"Human rights — reproductive rights and free consent":"Droits humains — droits reproductifs et consentement libre",url:"https://www.unfpa.org/human-rights"},
-              {topic:lang==="en"?"Violence":"Violences",org:"UNFPA",desc:lang==="en"?"Gender-based violence — dedicated resource":"Violences basées sur le genre — ressource dédiée",url:"https://www.unfpa.org/gender-based-violence"},
-              {topic:"Protocole de Maputo",org:"Union africaine",desc:lang==="en"?"Official treaty text":"Texte officiel du traité",url:"https://au.int/en/treaties/protocol-african-charter-human-and-peoples-rights-rights-women-africa"},
-              {topic:"Contraception",org:"OMS / WHO",desc:lang==="en"?"Family planning / contraception methods — updated fact sheet":"Planification familiale / méthodes contraceptives — fiche mise à jour",url:"https://www.who.int/news-room/fact-sheets/detail/family-planning-contraception"},
-            ].map((s,i)=>(
-              <div key={i} style={{background:P.card,borderRadius:16,padding:"14px 16px",marginBottom:10,border:"1.5px solid rgba(232,0,61,.1)"}}>
-                <div style={{fontSize:11,fontWeight:900,color:P.muted,textTransform:"uppercase",letterSpacing:.5,marginBottom:3}}>{s.topic}</div>
-                <div style={{fontSize:14,fontWeight:800,color:P.red,marginBottom:4}}>{s.org}</div>
-                <div style={{fontSize:12,color:P.muted,lineHeight:1.55,marginBottom:6}}>{s.desc}</div>
-                <a href={s.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:P.red,fontWeight:700,textDecoration:"none",wordBreak:"break-all"}}>{s.url} ↗</a>
               </div>
             ))}
             <div style={{background:"rgba(232,0,61,.05)",borderRadius:16,padding:"14px",marginTop:8}}>
@@ -6643,11 +5366,8 @@ export default function App(){
           ))}
         </nav>
       )}
-        <div className="desktop-side-r">
-          <div style={{fontSize:13,color:"rgba(255,180,200,.6)",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:10}}>{lang==="en"?"Optimized for mobile":"Optimisé pour mobile"}</div>
-          <div style={{fontSize:12,color:"rgba(255,180,200,.5)",lineHeight:1.6,maxWidth:200}}>{lang==="en"?"Try it on your phone for the full experience.":"Essayez-la sur votre téléphone pour l'expérience complète."}</div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
