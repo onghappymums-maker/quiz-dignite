@@ -3525,6 +3525,10 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   const[showFb,setShowFb]=useState(false);
   const[score,setScore]=useState(0);
   const[done,setDone]=useState(false);
+  const fbRef=useRef(null);
+  const topRef=useRef(null);
+  useEffect(()=>{if(showFb&&fbRef.current)setTimeout(()=>{try{fbRef.current&&fbRef.current.scrollIntoView({behavior:"smooth",block:"end"});}catch(e){}},80);},[showFb]);
+  useEffect(()=>{try{topRef.current&&topRef.current.scrollIntoView({block:"start"});}catch(e){}},[qi,done]);
 
   // Shuffle answers so correct is not always B
   const[qs]=useState(()=>{
@@ -3560,7 +3564,7 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
     const pct=Math.round((score/(qs.length*10))*100);
     const akState=pct>=80?"celebration":pct>=60?"joie":"encouragement";
     return(
-      <div style={{padding:"16px 16px 88px",textAlign:"center"}}>
+      <div ref={topRef} style={{minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"center",padding:"48px 16px 110px",textAlign:"center"}}>
         <div style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:24,padding:"32px 20px",marginBottom:16}}>
           <AKissi state={akState} lang={lang} size={100} style={{marginBottom:8}}/>
           <div className="T" style={{fontSize:"3rem",fontWeight:900,color:"white"}}>{score/10}/{qs.length}</div>
@@ -3586,9 +3590,12 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
   }
 
   return(
-    <div style={{paddingBottom:24}}>
-      <div style={{background:`linear-gradient(135deg,${module.color},${module.color}99)`,padding:"48px 16px 16px"}}>
-        <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:12}}>← {t("Retour","Back")}</button>
+    <div ref={topRef} style={{display:"flex",flexDirection:"column",minHeight:"100dvh"}}>
+      <div style={{background:`linear-gradient(135deg,${module.color},${module.color}99)`,padding:"48px 16px 16px",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+          <button onClick={onBack} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",flexShrink:0}}>← {t("Retour","Back")}</button>
+          <div className="T" style={{flex:1,minWidth:0,color:"white",fontWeight:800,fontSize:15,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",textAlign:"right"}}>{module.emoji} {module.title}</div>
+        </div>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
           <div style={{flex:1,height:6,background:"rgba(255,255,255,.2)",borderRadius:3,overflow:"hidden"}}>
             <div style={{height:"100%",background:"white",borderRadius:3,width:`${((qi)/qs.length)*100}%`,transition:"width .4s"}}/>
@@ -3596,15 +3603,15 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
           <span style={{fontSize:12,color:"white",fontWeight:800}}>{qi+1}/{qs.length}</span>
         </div>
       </div>
-      <div style={{padding:"14px 14px 0"}}>
-        <div style={{background:"white",borderRadius:22,padding:"18px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
-          <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:16}}>{q.q}</div>
-          <div style={{display:"flex",flexDirection:"column",gap:9}}>
+      <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",padding:"20px 14px 110px"}}>
+        <div style={{background:"white",borderRadius:22,padding:"22px 16px",boxShadow:"0 4px 20px rgba(232,0,61,.1)"}}>
+          <div className="T" style={{fontSize:"1.3rem",fontWeight:800,color:P.dark,lineHeight:1.45,marginBottom:20}}>{q.q}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
             {q.answers.map((a,i)=>{
               let bg="rgba(255,255,255,.9)",border=`2px solid rgba(232,0,61,.13)`,col=P.dark;
               if(showFb){if(i===q.correct){bg="rgba(61,190,130,.14)";border="2px solid #3DBE82";col="#18a044";}else if(i===sel){bg="rgba(231,76,60,.1)";border="2px solid #E74C3C";col="#E74C3C";}}
               return(
-                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"13px 14px",cursor:showFb?"default":"pointer",fontSize:"1.02rem",fontWeight:700,display:"flex",alignItems:"center",gap:10,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
+                <button key={i} disabled={showFb} onClick={()=>answer(i)} style={{background:bg,border,borderRadius:14,padding:"17px 14px",cursor:showFb?"default":"pointer",fontSize:"1.08rem",fontWeight:700,display:"flex",alignItems:"center",gap:10,textAlign:"left",color:col,transition:"all .15s",width:"100%"}}>
                   <span style={{width:28,height:28,borderRadius:"50%",background:showFb&&i===q.correct?"#3DBE82":showFb&&i===sel?"#E74C3C":`${module.color}`,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".72rem",fontWeight:800,flexShrink:0}}>{q.answers.length===2?(i===0?(lang==="en"?"T":"V"):(lang==="en"?"F":"F")):L[i]}</span>
                   {a}
                 </button>
@@ -3612,10 +3619,10 @@ function DroitsQuiz({module,lang,onBack,onFinish}){
             })}
           </div>
           {showFb&&(
-            <div style={{marginTop:14,padding:"14px",borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
-              <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+            <div ref={fbRef} style={{marginTop:14,padding:"14px",scrollMarginBottom:110,borderRadius:14,background:sel===q.correct?"rgba(61,190,130,.08)":"rgba(231,76,60,.06)",border:`1.5px solid ${sel===q.correct?"#3DBE82":"#E74C3C"}`}} className="up">
+              <div style={{display:"flex",flexWrap:"wrap",alignItems:"flex-start",gap:10}}>
                 <AKissi state={sel===q.correct?"joie":"erreur"} lang={lang} size={50} msg={null} style={{flexShrink:0}}/>
-                <div>
+                <div style={{flex:"1 1 100%",minWidth:0}}>
                   <div className="T" style={{fontSize:14,fontWeight:800,color:sel===q.correct?"#18a044":"#E74C3C",marginBottom:4}}>
                     {sel===q.correct?t("✅ Bonne réponse !","✅ Correct!"):`❌ ${t("Pas tout à fait...","Not quite...")}`}
                   </div>
@@ -3638,7 +3645,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
   const modules=lang==="en"?DROITS_MODULES_EN:DROITS_MODULES_FR;
   const t=(fr,en)=>lang==="en"?en:fr;
 
-  if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={(pts,badge)=>{onModuleFinish&&onModuleFinish(pts,badge);setActiveModule(null);}}/>;
+  if(activeModule)return <DroitsQuiz module={activeModule} lang={lang} onBack={()=>setActiveModule(null)} onFinish={(pts,badge)=>{onModuleFinish&&onModuleFinish(pts,badge);}}/>;
 
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
@@ -5332,7 +5339,9 @@ export default function App(){
             <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red,marginBottom:6}}>📚 {lang==="en"?"Sources & References":"Sources & Références"}</div>
             <p style={{fontSize:13,color:P.muted,marginBottom:16,lineHeight:1.65}}>{lang==="en"?"Quiz Dignité's content is based on the following recognised sources:":"Le contenu de Quiz Dignité s'appuie sur les sources reconnues suivantes :"}</p>
             {[
-              {org:"OMS / WHO",desc:lang==="en"?"World Health Organization — menstrual health, sexual and reproductive health":"Organisation Mondiale de la Santé — santé menstruelle, santé sexuelle et reproductive",url:"https://www.who.int"},
+              {org:"OMS / WHO — Menstrual health",desc:lang==="en"?"World Health Organization — Menstrual health fact sheet":"Organisation mondiale de la Santé — Fiche d'information sur la santé menstruelle",url:"https://www.who.int/news-room/fact-sheets/detail/menstrual-health"},
+              {org:"OMS / WHO (2018)",desc:lang==="en"?"WHO recommendations on adolescent sexual and reproductive health and rights":"Recommandations de l'OMS sur la santé et les droits sexuels et reproductifs des adolescents",url:"https://www.who.int/publications/i/item/9789241514606"},
+              {org:"OMS / WHO (2025)",desc:lang==="en"?"WHO guideline on preventing early pregnancy and poor reproductive outcomes among adolescents in low- and middle-income countries":"Ligne directrice de l'OMS sur la prévention des grossesses précoces et des mauvais résultats en santé reproductive chez les adolescentes dans les pays à revenu faible ou intermédiaire",url:"https://www.who.int/publications/i/item/9789240104105"},
               {org:"UNICEF",desc:lang==="en"?"Children's rights, girls' education, child protection":"Droits de l'enfant, éducation des filles, protection de l'enfance",url:"https://www.unicef.org"},
               {org:"UNFPA",desc:lang==="en"?"United Nations Population Fund — reproductive rights, gender-based violence":"Fonds des Nations Unies pour la Population — droits reproductifs, violences basées sur le genre",url:"https://www.unfpa.org"},
               {org:"Protocole de Maputo (2003)",desc:lang==="en"?"African Union — Protocol on the Rights of Women in Africa":"Union africaine — Protocole sur les droits des femmes en Afrique",url:"https://au.int"},
