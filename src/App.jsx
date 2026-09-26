@@ -4597,36 +4597,44 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       {/* Header */}
-      <div style={{background:HERO,padding:"50px 20px 22px",borderRadius:"0 0 32px 32px",boxShadow:"0 10px 34px rgba(232,0,61,.22)"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
-          <div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,.7)",fontWeight:700,marginBottom:4}}>🌸 Quiz Dignité</div>
-            <div className="T" style={{fontSize:24,fontWeight:900,color:"white"}}>{t(`Bonjour ${user.name} !`,`Hello ${user.name}!`)}</div>
-            <div style={{display:"flex",gap:8,alignItems:"center",marginTop:4,flexWrap:"wrap"}}>
-              <div style={{fontSize:12,color:"rgba(255,255,255,.7)",fontWeight:600}}>{user.country} · {lvl.icon} {lvl.label}</div>
-              {streak>0&&<div style={{background:"rgba(255,100,0,.35)",borderRadius:12,padding:"2px 10px",fontSize:11,fontWeight:800,color:"#FFB366"}}>🔥 {streak}j</div>}
-            </div>
-          </div>
-          <div style={{textAlign:"right"}}>
-            <div style={{fontSize:22,fontWeight:900,color:"white"}}>{totalPts}</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,.7)",fontWeight:700}}>pts</div>
+      <div style={{background:HERO,padding:"46px 20px 24px",borderRadius:"0 0 34px 34px",boxShadow:"0 12px 36px rgba(232,0,61,.25)",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",width:220,height:220,borderRadius:"50%",background:"rgba(255,255,255,.10)",top:-90,right:-70,pointerEvents:"none"}}/>
+        <div style={{position:"absolute",width:130,height:130,borderRadius:"50%",background:"rgba(255,255,255,.08)",bottom:-50,left:-40,pointerEvents:"none"}}/>
+        <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.18)",border:"1px solid rgba(255,255,255,.3)",borderRadius:50,padding:"6px 12px",fontSize:12.5,color:"white",fontWeight:800,letterSpacing:.3}}>🌸 Quiz Dignité</div>
+          <div style={{display:"inline-flex",alignItems:"baseline",gap:5,background:"white",borderRadius:50,padding:"7px 14px",boxShadow:"0 6px 16px rgba(160,0,40,.22)"}}>
+            <span style={{fontSize:15}}>⭐</span>
+            <span className="T" style={{fontSize:19,fontWeight:900,color:P.red,lineHeight:1}}>{totalPts}</span>
+            <span style={{fontSize:11,fontWeight:800,color:"#E8426A"}}>pts</span>
           </div>
         </div>
-        {/* Progress bar */}
-        <div style={{height:6,background:"rgba(255,255,255,.2)",borderRadius:6,overflow:"hidden"}}>
-          <div style={{height:"100%",background:"white",borderRadius:6,width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
+        <div className="T" style={{position:"relative",fontSize:29,fontWeight:900,color:"white",lineHeight:1.15,textShadow:"0 2px 12px rgba(150,0,40,.25)"}}>{t(`Bonjour ${user.name} ! 👋`,`Hello ${user.name}! 👋`)}</div>
+        <div style={{position:"relative",display:"flex",gap:7,alignItems:"center",marginTop:12,flexWrap:"wrap"}}>
+          {user.country&&<span style={{background:"rgba(255,255,255,.2)",borderRadius:50,padding:"5px 11px",fontSize:12,color:"white",fontWeight:700}}>📍 {user.country}</span>}
+          <span style={{background:"rgba(255,255,255,.2)",borderRadius:50,padding:"5px 11px",fontSize:12,color:"white",fontWeight:700}}>{lvl.icon} {lvl.label}</span>
+          {streak>0&&<span style={{background:"linear-gradient(135deg,#FF8A00,#FFB347)",borderRadius:50,padding:"5px 11px",fontSize:12,fontWeight:900,color:"white",boxShadow:"0 3px 10px rgba(255,120,0,.35)"}}>🔥 {streak}{t("j","d")}</span>}
         </div>
-        {badges.length>0&&<div style={{fontSize:11,color:"rgba(255,255,255,.75)",fontWeight:700,marginTop:6}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""} débloqué${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""} unlocked`)}</div>}
+        {/* Progress */}
+        <div style={{position:"relative",marginTop:16,background:"rgba(255,255,255,.16)",border:"1px solid rgba(255,255,255,.25)",borderRadius:18,padding:"12px 14px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+            <span style={{fontSize:12,color:"white",fontWeight:800}}>{t("Ma progression","My progress")}</span>
+            {badges.length>0&&<span style={{fontSize:12,color:"white",fontWeight:800}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""}`)}</span>}
+          </div>
+          <div style={{height:10,background:"rgba(255,255,255,.25)",borderRadius:10,overflow:"hidden"}}>
+            <div style={{height:"100%",background:"linear-gradient(90deg,#FFFFFF,#FFE3A3)",borderRadius:10,boxShadow:"0 0 10px rgba(255,255,255,.7)",width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
+          </div>
+        </div>
       </div>
       <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
         {/* Explorer CTA */}
-        <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:"20px 18px",textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
+        <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:"20px 18px",textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:14,cursor:"pointer",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,.1)",top:-60,right:-30,pointerEvents:"none"}}/>
           <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
             <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("7 thèmes · 3 niveaux · bilingue","7 themes · 3 levels · bilingual")}</div>
           </div>
-          <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
+          <span style={{width:36,height:36,borderRadius:"50%",background:"white",color:P.red,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,position:"relative",boxShadow:"0 4px 12px rgba(160,0,40,.25)"}}>›</span>
         </button>
         {/* Défi du jour */}
         {defiText&&<div style={{background:"white",borderRadius:18,padding:"16px 18px 18px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)",textAlign:"center"}}>
