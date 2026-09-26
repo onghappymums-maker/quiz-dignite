@@ -2726,50 +2726,46 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
 
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7"}}>
-      {/* Header riche */}
-      <div style={{background:"linear-gradient(160deg,#1A0A15 0%,#3A0313 50%,#1A0A15 100%)",padding:"52px 20px 28px",position:"relative",overflow:"hidden"}}>
-        {/* Cercles déco */}
-        <div style={{position:"absolute",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,0,61,.25),transparent)",top:-60,right:-40,pointerEvents:"none"}}/>
-        <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(79,179,246,.15),transparent)",bottom:-30,left:-20,pointerEvents:"none"}}/>
-        <div style={{position:"absolute",width:80,height:80,borderRadius:"50%",background:"radial-gradient(circle,rgba(155,107,234,.2),transparent)",top:40,left:"40%",pointerEvents:"none"}}/>
-        {/* Émojis flottants */}
-        {["📜","💗","⚖️","📚","🛡️","🌍"].map((e,i)=>(
-          <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.2,top:`${15+i*12}%`,left:i%2===0?`${3+i*5}%`:`${72+i*3}%`,animation:`ak-float ${2+i*.4}s ease-in-out infinite`,pointerEvents:"none"}}>{e}</span>
-        ))}
-        <button onClick={onBack} style={{background:"rgba(255,255,255,.12)",border:"1.5px solid rgba(255,255,255,.2)",borderRadius:12,padding:"7px 14px",color:"white",fontWeight:800,fontSize:13,cursor:"pointer",marginBottom:18}}>← {t("Retour","Back")}</button>
-        <div style={{display:"flex",alignItems:"flex-end",gap:14}}>
-          <AKissi state="salut" lang={lang} size={90} msg={null} style={{flexShrink:0,marginBottom:-8}}/>
-          <div style={{flex:1}}>
-            <div style={{display:"inline-block",background:"rgba(232,0,61,.25)",border:"1px solid rgba(232,0,61,.4)",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:800,color:"#FF8FA3",marginBottom:8,letterSpacing:.5}}>🌸 ONG Happy Mum's</div>
-            <div className="T" style={{fontSize:22,fontWeight:900,color:"white",lineHeight:1.1,marginBottom:6}}>{t("Quiz Droits des Femmes","Women's Rights Quiz")}</div>
-            <div style={{fontSize:12,color:"rgba(255,180,200,.7)",fontWeight:600,lineHeight:1.5}}>{t("6 modules · 10 questions chacun","6 modules · 10 questions each")}</div>
+      {/* Header */}
+      <div style={{background:"linear-gradient(160deg,#1A0A15 0%,#4A0418 55%,#2A0615 100%)",padding:"46px 18px 22px",position:"relative",overflow:"hidden",borderRadius:"0 0 30px 30px",boxShadow:"0 12px 30px rgba(58,3,19,.35)"}}>
+        <div style={{position:"absolute",width:240,height:240,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,0,61,.35),transparent 70%)",top:-80,right:-60,pointerEvents:"none"}}/>
+        <div style={{position:"absolute",width:160,height:160,borderRadius:"50%",background:"radial-gradient(circle,rgba(155,107,234,.25),transparent 70%)",bottom:-50,left:-40,pointerEvents:"none"}}/>
+        <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <button onClick={onBack} style={{background:"rgba(255,255,255,.14)",border:"1.5px solid rgba(255,255,255,.28)",borderRadius:14,padding:"10px 18px",color:"white",fontWeight:800,fontSize:16,cursor:"pointer"}}>← {t("Retour","Back")}</button>
+          <span style={{background:"rgba(232,0,61,.28)",border:"1px solid rgba(255,143,163,.45)",borderRadius:50,padding:"6px 12px",fontSize:12,fontWeight:800,color:"#FFB3C1",letterSpacing:.3}}>🌸 ONG Happy Mum's</span>
+        </div>
+        <div style={{position:"relative",display:"flex",alignItems:"center",gap:10}}>
+          <img src={AKISSI_IMGS.salut} alt="A-Kissi" onError={e=>{e.target.style.display="none";}} style={{width:112,height:"auto",flexShrink:0,filter:"drop-shadow(0 8px 18px rgba(232,0,61,.35))",animation:"ak-float 3s ease-in-out infinite"}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:30,lineHeight:1,marginBottom:6}}>⚖️</div>
+            <div className="T" style={{fontSize:29,fontWeight:900,color:"white",lineHeight:1.08,marginBottom:8,textShadow:"0 2px 14px rgba(232,0,61,.4)"}}>{t("Quiz Droits des Femmes","Women's Rights Quiz")}</div>
+            <div style={{fontSize:15,color:"rgba(255,205,218,.92)",fontWeight:700,lineHeight:1.4}}>{t("Connais tes droits, protège ta dignité 💪","Know your rights, protect your dignity 💪")}</div>
           </div>
         </div>
-        {/* Pills modules */}
-        <div style={{display:"flex",gap:6,marginTop:16,flexWrap:"wrap"}}>
-          {modules.map(m=>(
-            <div key={m.id} style={{background:`${m.color}25`,border:`1px solid ${m.color}44`,borderRadius:20,padding:"4px 10px",fontSize:10,fontWeight:800,color:"white"}}>
-              {m.emoji} {t(`M${m.num}`,`M${m.num}`)}
+        <div style={{position:"relative",display:"flex",gap:8,marginTop:16}}>
+          {[["📚",modules.length,t("modules","modules")],["❓",modules.length*10,t("questions","questions")],["🏅",modules.length,t("badges","badges")]].map(([ic,n,l],i)=>(
+            <div key={i} style={{flex:1,background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.18)",borderRadius:16,padding:"10px 6px",textAlign:"center"}}>
+              <div className="T" style={{fontSize:22,fontWeight:900,color:"white",lineHeight:1.1}}>{ic} {n}</div>
+              <div style={{fontSize:12.5,fontWeight:700,color:"rgba(255,205,218,.85)",marginTop:2}}>{l}</div>
             </div>
           ))}
         </div>
       </div>
-      <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
+      <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12}}>
         {modules.map((m,i)=>(
-          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,.06)",border:`1.5px solid ${m.color}22`}}>
-            <div style={{width:54,height:54,borderRadius:16,background:`${m.color}18`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-              <span style={{fontSize:22}}>{m.emoji}</span>
-              <span style={{fontSize:9,fontWeight:900,color:m.color}}>{t(`M${m.num}`,`M${m.num}`)}</span>
+          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:22,padding:"16px 14px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:`0 6px 18px ${m.color}1f`,border:`2px solid ${m.color}33`,borderLeft:`6px solid ${m.color}`}}>
+            <div style={{width:66,height:66,borderRadius:18,background:`${m.color}1c`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <span style={{fontSize:30,lineHeight:1}}>{m.emoji}</span>
+              <span style={{fontSize:12,fontWeight:900,color:m.color,marginTop:3}}>{`M${m.num}`}</span>
             </div>
-            <div style={{flex:1}}>
-              <div className="T" style={{fontSize:16,fontWeight:800,color:P.dark,marginBottom:3}}>{m.title}</div>
-              <div style={{fontSize:12,color:P.muted,fontWeight:600,lineHeight:1.4}}>{m.desc}</div>
-              <div style={{fontSize:11,color:m.color,fontWeight:800,marginTop:4}}>10 {t("questions","questions")} · 🏅 {m.badge.name}</div>
+            <div style={{flex:1,minWidth:0}}>
+              <div className="T" style={{fontSize:19,fontWeight:900,color:P.dark,marginBottom:4,lineHeight:1.2}}>{m.title}</div>
+              <div style={{fontSize:14,color:P.muted,fontWeight:600,lineHeight:1.4}}>{m.desc}</div>
+              <div style={{fontSize:13,color:m.color,fontWeight:800,marginTop:6}}>10 {t("questions","questions")} · 🏅 {m.badge.name}</div>
             </div>
-            <div style={{fontSize:20,color:m.color,fontWeight:900,flexShrink:0}}>›</div>
+            <div style={{width:36,height:36,borderRadius:"50%",background:m.color,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,boxShadow:`0 4px 10px ${m.color}55`}}>›</div>
           </div>
         ))}
-        <div style={{height:16}}/>
       </div>
     </div>
   );
