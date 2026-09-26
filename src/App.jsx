@@ -4629,12 +4629,10 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <span style={{fontSize:24,color:"white",fontWeight:900}}>›</span>
         </button>
         {/* Défi du jour */}
-        {defiText&&<div style={{background:"white",borderRadius:18,padding:"14px 16px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)"}}>
-          <div style={{fontSize:11,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:6}}>🔥 {t("Défi du jour","Daily challenge")}</div>
-          <div style={{display:"flex",alignItems:"flex-end",gap:10}}>
-            <AKissi state="encouragement" lang={lang} size={64} msg={null} style={{flexShrink:0,marginBottom:-6}}/>
-            <p style={{fontSize:14,color:P.dark,fontWeight:700,lineHeight:1.5,margin:0,flex:1}}>{defiText}</p>
-          </div>
+        {defiText&&<div style={{background:"white",borderRadius:18,padding:"16px 18px 18px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)",textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>🔥 {t("Défi du jour","Daily challenge")}</div>
+          <img src={AKISSI_IMGS.encouragement||AKISSI_IMGS.confiance} alt="A-Kissi" onError={e=>{e.target.style.display="none";}} style={{width:84,height:"auto",display:"block",margin:"0 auto 10px",filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}/>
+          <p style={{fontSize:17,color:P.dark,fontWeight:800,lineHeight:1.45,margin:0,background:"rgba(232,0,61,.06)",borderRadius:14,padding:"12px 14px"}}>{defiText}</p>
         </div>}
         {/* Profil Dignité — featured */}
         <div onClick={onProfil} style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:20,padding:"16px 18px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,boxShadow:"0 6px 22px rgba(0,0,0,.2)",border:"1px solid rgba(232,0,61,.3)"}}>
@@ -4646,11 +4644,11 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <span style={{fontSize:20,color:"#FF6B9D",fontWeight:900}}>›</span>
         </div>
         {/* Quick access grid */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
           {quickItems.map((it,i)=>(
-            <button key={i} onClick={it.action} style={{background:"white",border:`1.5px solid ${it.color}22`,borderRadius:18,padding:"14px 12px",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:8,cursor:"pointer",boxShadow:`0 2px 10px ${it.color}14`}}>
-              <div style={{width:40,height:40,borderRadius:12,background:`${it.color}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{it.icon}</div>
-              <div style={{fontSize:12,fontWeight:800,color:P.dark,lineHeight:1.3}}>{it.label}</div>
+            <button key={i} onClick={it.action} style={{background:"white",border:`2px solid ${it.color}40`,borderBottom:`5px solid ${it.color}`,borderRadius:22,padding:"20px 10px 18px",minHeight:150,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,cursor:"pointer",textAlign:"center",boxShadow:`0 6px 18px ${it.color}26`}}>
+              <div style={{width:66,height:66,borderRadius:20,background:`${it.color}1f`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36}}>{it.icon}</div>
+              <div className="T" style={{fontSize:17,fontWeight:900,color:P.dark,lineHeight:1.25}}>{it.label}</div>
             </button>
           ))}
         </div>
