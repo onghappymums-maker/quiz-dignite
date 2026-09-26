@@ -3663,14 +3663,28 @@ function NavBar({active,onNav,lang,fixed}){
 // ── HUB ────────────────────────────────────────────────────────
 function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onNav,navActive,defiText}){
   const t=(fr,en)=>lang==="en"?en:fr;
-  const quickItems=[
-    {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),color:"#4FB3F6",action:onGames},
-    {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),color:"#E8003D",action:onDroits},
-    {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),color:"#FF6B9D",action:onCelebrate},
-    {icon:"🔐",label:t("Escape Game","Escape Game"),color:"#9B6BEA",action:onEscape},
-    {icon:"🚨",label:t("SOS & Aide","SOS & Help"),color:"#E74C3C",action:()=>onNav("sos")},
-    {icon:"📖",label:t("Glossaire","Glossary"),color:"#3DBE82",action:()=>{onNav("glossaire");}},
+  const playItems=[
+    {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),sub:t("Apprends en t'amusant","Learn while playing"),color:"#4FB3F6",action:onGames},
+    {icon:"🔐",label:t("Escape Game","Escape Game"),sub:t("Résous les énigmes","Solve the puzzles"),color:"#9B6BEA",action:onEscape},
   ];
+  const meItems=[
+    {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),sub:t("6 modules à découvrir","6 modules to explore"),color:"#E8003D",action:onDroits},
+    {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),sub:t("Prends soin de toi","Take care of yourself"),color:"#FF6B9D",action:onCelebrate},
+  ];
+  const Sec=({icon,label,color})=>(
+    <div style={{display:"flex",alignItems:"center",gap:10,margin:"10px 2px 0"}}>
+      <span style={{width:34,height:34,borderRadius:11,background:`${color}1f`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{icon}</span>
+      <span className="T" style={{fontSize:19,fontWeight:900,color:P.dark,letterSpacing:.2}}>{label}</span>
+      <span style={{flex:1,height:2,borderRadius:2,background:`linear-gradient(90deg,${color}55,transparent)`}}/>
+    </div>
+  );
+  const Tile=({it})=>(
+    <button onClick={it.action} style={{background:"white",border:`2px solid ${it.color}40`,borderBottom:`5px solid ${it.color}`,borderRadius:22,padding:"18px 10px 16px",minHeight:160,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,cursor:"pointer",textAlign:"center",boxShadow:`0 6px 18px ${it.color}26`}}>
+      <div style={{width:66,height:66,borderRadius:20,background:`${it.color}1f`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36}}>{it.icon}</div>
+      <div className="T" style={{fontSize:17,fontWeight:900,color:P.dark,lineHeight:1.2}}>{it.label}</div>
+      <div style={{fontSize:13,fontWeight:700,color:it.color,lineHeight:1.25}}>{it.sub}</div>
+    </button>
+  );
   return(
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
       {/* Header */}
@@ -3703,13 +3717,15 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
         </div>
       </div>
       <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
+        {/* ── APPRENDRE ── */}
+        <Sec icon="📚" label={t("Apprendre","Learn")} color="#E8003D"/>
         {/* Explorer CTA */}
         <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:"20px 18px",textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:14,cursor:"pointer",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,.1)",top:-60,right:-30,pointerEvents:"none"}}/>
           <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("7 thèmes · 3 niveaux · bilingue","7 themes · 3 levels · bilingual")}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("5 thèmes · 3 niveaux · bilingue","5 themes · 3 levels · bilingual")}</div>
           </div>
           <span style={{width:36,height:36,borderRadius:"50%",background:"white",color:P.red,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,position:"relative",boxShadow:"0 4px 12px rgba(160,0,40,.25)"}}>›</span>
         </button>
@@ -3728,15 +3744,35 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           </div>
           <span style={{fontSize:20,color:"#FF6B9D",fontWeight:900}}>›</span>
         </div>
-        {/* Quick access grid */}
+        {/* ── JOUER ── */}
+        <Sec icon="🎮" label={t("Jouer","Play")} color="#4FB3F6"/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          {quickItems.map((it,i)=>(
-            <button key={i} onClick={it.action} style={{background:"white",border:`2px solid ${it.color}40`,borderBottom:`5px solid ${it.color}`,borderRadius:22,padding:"20px 10px 18px",minHeight:150,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,cursor:"pointer",textAlign:"center",boxShadow:`0 6px 18px ${it.color}26`}}>
-              <div style={{width:66,height:66,borderRadius:20,background:`${it.color}1f`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36}}>{it.icon}</div>
-              <div className="T" style={{fontSize:17,fontWeight:900,color:P.dark,lineHeight:1.25}}>{it.label}</div>
-            </button>
-          ))}
+          {playItems.map((it,i)=><Tile key={i} it={it}/>)}
         </div>
+        {/* ── MOI & MES DROITS ── */}
+        <Sec icon="💗" label={t("Moi & mes droits","Me & my rights")} color="#FF6B9D"/>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          {meItems.map((it,i)=><Tile key={i} it={it}/>)}
+        </div>
+        {/* ── BESOIN D'AIDE ── */}
+        <Sec icon="🆘" label={t("Besoin d'aide ?","Need help?")} color="#E74C3C"/>
+        <button onClick={()=>onNav("sos")} style={{width:"100%",background:"linear-gradient(135deg,#E74C3C,#C0392B)",border:"none",borderRadius:22,padding:"18px 16px",display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",boxShadow:"0 10px 26px rgba(192,57,43,.35)",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,.1)",top:-60,right:-30,pointerEvents:"none"}}/>
+          <div style={{width:60,height:60,borderRadius:18,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,flexShrink:0}}>🚨</div>
+          <div style={{flex:1,position:"relative"}}>
+            <div className="T" style={{fontSize:20,fontWeight:900,color:"white"}}>{t("SOS & Aide","SOS & Help")}</div>
+            <div style={{fontSize:14,fontWeight:700,color:"rgba(255,255,255,.92)",marginTop:3,lineHeight:1.35}}>{t("Appeler, parler à quelqu'un, trouver de l'aide","Call, talk to someone, find help")}</div>
+          </div>
+          <span style={{width:36,height:36,borderRadius:"50%",background:"white",color:"#C0392B",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,position:"relative"}}>›</span>
+        </button>
+        <button onClick={()=>onNav("glossaire")} style={{width:"100%",background:"white",border:"2px solid #3DBE8240",borderLeft:"6px solid #3DBE82",borderRadius:20,padding:"14px 16px",marginTop:6,display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",boxShadow:"0 6px 16px #3DBE8222"}}>
+          <div style={{width:52,height:52,borderRadius:16,background:"#3DBE821f",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>📖</div>
+          <div style={{flex:1}}>
+            <div className="T" style={{fontSize:18,fontWeight:900,color:P.dark}}>{t("Glossaire","Glossary")}</div>
+            <div style={{fontSize:13.5,fontWeight:700,color:"#2A9D68",marginTop:2}}>{t("Les mots du corps et des règles expliqués","Body and period words explained")}</div>
+          </div>
+          <span style={{width:34,height:34,borderRadius:"50%",background:"#3DBE82",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,flexShrink:0}}>›</span>
+        </button>
       </div>
     </div>
   );
