@@ -19,6 +19,42 @@ const Store = {
 
 const ga = (event, params = {}) => { try { window.gtag?.("event", event, params); } catch(e) {} };
 
+// ── SAUVEGARDE DE LA PROGRESSION ─────────────────────────────────
+// 1) Protection : on demande au navigateur de ne pas effacer les données automatiquement.
+// 2) Sauvegarde locale : fichier ou code à garder, rien ne quitte le téléphone.
+// 3) Sauvegarde en ligne (facultative) : un code court ; seule la progression est envoyée
+//    (jamais le prénom, jamais le journal « Je me célèbre »).
+// Accessibilité : rend un élément cliquable utilisable au clavier (Entrée / Espace)
+const kb=fn=>e=>{if(fn&&(e.key==="Enter"||e.key===" ")){e.preventDefault();fn();}};
+const BK_KEYS=["qd-user","qd-data","hm_quiz_levels","hm_streak","hm_streak_date","hm_defi_last_done","hm_defi_streak","hm_escape_progress","hm_lang","hm_dark"];
+const BK_JOURNAL="hm_celebrate_journal";
+const BK_CLOUD="hm_cloud_code";
+const BK_CLOUD_AT="hm_cloud_last";
+const BK_ALPHA="23456789ABCDEFGHJKMNPQRSTUVWXYZ";
+const BK_CODE_RE=/^QD-[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}$/;
+const bkPersist=async()=>{try{if(navigator.storage&&navigator.storage.persist){const ok=await navigator.storage.persisted();if(!ok)await navigator.storage.persist();}}catch(e){}};
+const bkCollect=({journal=false,online=false}={})=>{
+  const d={};
+  for(const k of BK_KEYS){if(online&&k==="qd-user")continue;try{const v=localStorage.getItem(k);if(v!=null)d[k]=v;}catch(e){}}
+  if(journal&&!online){try{const j=localStorage.getItem(BK_JOURNAL);if(j!=null)d[BK_JOURNAL]=j;}catch(e){}}
+  return{app:"quizdignite",v:1,at:new Date().toISOString(),d};
+};
+const bkEncode=obj=>"QDSAVE1:"+btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+const bkDecode=str=>{
+  let t=String(str||"").trim();
+  if(t.startsWith("{"))return bkCheck(JSON.parse(t));
+  t=t.replace(/\s+/g,"");if(t.startsWith("QDSAVE1:"))t=t.slice(8);
+  return bkCheck(JSON.parse(decodeURIComponent(escape(atob(t)))));
+};
+const bkCheck=o=>{if(!o||o.app!=="quizdignite"||typeof o.d!=="object")throw new Error("bad");return o;};
+const bkApply=o=>{let n=0;for(const[k,v]of Object.entries(o.d||{})){if((BK_KEYS.includes(k)||k===BK_JOURNAL)&&typeof v==="string"){try{localStorage.setItem(k,v);n++;}catch(e){}}}return n;};
+const bkNewCode=()=>{const r=new Uint32Array(12);(window.crypto||{}).getRandomValues?window.crypto.getRandomValues(r):r.forEach((_,i)=>r[i]=Math.floor(Math.random()*1e9));const c=[...r].map(x=>BK_ALPHA[x%BK_ALPHA.length]).join("");return`QD-${c.slice(0,4)}-${c.slice(4,8)}-${c.slice(8,12)}`;};
+const bkNormCode=c=>String(c||"").toUpperCase().replace(/[^0-9A-Z]/g,"").replace(/^QD/,"").slice(0,12).replace(/^(.{4})(.{4})(.{4})$/,"QD-$1-$2-$3");
+const bkCloudSave=async code=>{const r=await fetch("/api/backup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,data:bkCollect({online:true})})});if(!r.ok)throw new Error(String(r.status));try{localStorage.setItem(BK_CLOUD_AT,new Date().toISOString());}catch(e){}return true;};
+const bkCloudLoad=async code=>{const r=await fetch(`/api/backup?code=${encodeURIComponent(code)}`);if(r.status===404)throw new Error("notfound");if(!r.ok)throw new Error(String(r.status));const j=await r.json();return bkCheck(j.data);};
+const bkCloudDelete=async code=>{const r=await fetch(`/api/backup?code=${encodeURIComponent(code)}`,{method:"DELETE"});if(!r.ok&&r.status!==404)throw new Error(String(r.status));return true;};
+
+
 class SndEng {
   constructor() { this.ctx = null; this.on = true; }
   _init() { if (!this.ctx) try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
@@ -163,6 +199,8 @@ const ALPHA = "ABCDEFGHIJKLMNOPRSTUVWYZ";
 const FC = ["#3DBE82","#9B5DE5","#F59E0B","#14B8A6","#4FB3F6","#FF8C69","#C8102E","#FF6B9D"];
 
 const STYLE = `
+button:focus-visible,[role=button]:focus-visible,[role=switch]:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #E8003D;outline-offset:2px;}
+h1,h2,h3{font-family:inherit;}
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
 *,*::before,*::after{box-sizing:border-box;}
 body{margin:0;overflow-x:hidden;font-family:'Nunito',sans-serif;background:#1A0A15;}
@@ -219,21 +257,21 @@ const QUIZ_DB = {
       Q("Combien de jours dure en moyenne un cycle menstruel ?","28 jours","14 jours","7 jours","45 jours",0,"Un cycle dure en moyenne 28 jours, mais peut varier entre 21 et 35 jours."),
       Q("Combien de jours durent les règles en général ?","1 jour","15 jours","3 à 7 jours","1 mois",2,"Les règles durent entre 3 et 7 jours. C'est différent pour chaque fille, et c'est normal !"),
       Q("À quel âge apparaissent généralement les premières règles ?","6-8 ans","Toujours à 12 ans","18-20 ans","10-16 ans",3,"Les premières règles arrivent entre 10 et 16 ans. Un peu avant ou après, c'est tout à fait normal."),
-      Q("Combien de fois par jour faut-il changer sa protection ?","1 fois","Toutes les 4-8 heures","1 fois par semaine","Jamais",1,"Changer toutes les 4 à 8 heures évite les infections et les odeurs."),
+      Q("À quelle fréquence faut-il changer sa protection ?","1 fois par jour","Plusieurs fois par jour, selon le flux","1 fois par semaine","Jamais",1,"Change ta serviette plusieurs fois par jour, selon ton flux et ton confort. Pour un tampon, suis la notice : de 4 à 8 heures, et jamais plus de 8 heures."),
       Q("Peut-on faire du sport pendant ses règles ?","Oui, cela peut soulager les douleurs","Non, c'est dangereux","Seulement marcher","Non, jamais",0,"Le sport libère des endorphines qui réduisent naturellement les crampes !"),
       Q("Qu'est-ce qu'une cup menstruelle ?","Un tampon jetable","Une boisson","Un récipient réutilisable qui recueille le sang","Un médicament",2,"La cup est en silicone, réutilisable pendant des années. Écologique et économique !"),
-      Q("Quel organe produit les ovules ?","Les ovaires","Le vagin","L'utérus","Le col de l'utérus",0,"Les ovaires produisent les ovules. Chaque mois, un ovule est libéré lors de l'ovulation."),
+      Q("Quel organe produit les ovules ?","Les ovaires","Le vagin","L'utérus","Le col de l'utérus",0,"Les ovaires contiennent les ovules. Lors de l'ovulation, un ovaire libère un ovule : en général une fois par cycle, mais pas forcément à chaque cycle, surtout au début de la puberté."),
       Q("La couleur du sang des règles peut-elle varier ?","Non, toujours rouge vif","Elle est toujours noire","Seulement si malade","Oui, du rouge clair au brun",3,"La couleur varie naturellement selon le flux. Tout à fait normal !"),
       Q("Qu'est-ce que la précarité menstruelle ?","Des règles abondantes","L'absence de règles","Ne pas avoir accès aux protections hygiéniques","Des règles douloureuses",2,"La précarité menstruelle prive des milliers de filles d'éducation. ONG Happy Mum's agit !"),
-      Q("Qu'est-ce que l'endométriose ?","Des règles normales","L'absence de règles","Une infection","Une maladie où le tissu utérin pousse hors de l'utérus",3,"L'endométriose touche 1 femme sur 10. Des douleurs très intenses méritent une consultation."),
+      Q("Qu'est-ce que l'endométriose ?","Des règles normales","L'absence de règles","Une infection","Une maladie où un tissu semblable à celui de l'utérus se développe hors de l'utérus",3,"Selon l'OMS, l'endométriose touche environ 1 femme sur 10 en âge d'avoir des enfants. Les symptômes varient d'une personne à l'autre. Des règles très douloureuses méritent toujours une consultation."),
     ],
     vf:[
       VF("Les règles sont une maladie.",false,"Les règles sont un processus naturel et normal du corps féminin. Pas une maladie !"),
       VF("On peut tomber enceinte pendant ses règles.",true,"C'est rare mais possible, surtout avec des cycles courts. Mieux vaut le savoir !"),
       VF("Le sang des règles est sale et contaminé.",false,"Le sang menstruel est du tissu utérin et du sang normal. Il n'est pas dangereux."),
       VF("Il est normal d'avoir des règles irrégulières au début.",true,"Les premiers cycles peuvent être irréguliers pendant 1 à 2 ans. Ton corps apprend !"),
-      VF("Se laver tous les jours pendant les règles est important.",true,"Une bonne hygiène intime est encore plus essentielle pendant les règles."),
-      VF("Les règles durent toujours exactement 28 jours.",false,"Un cycle varie entre 21 et 35 jours selon les femmes. Il n'y a pas de durée unique."),
+      VF("Se laver tous les jours pendant les règles est important.",true,"Vrai. Les règles sont naturelles, pas sales : les gestes d'hygiène habituels suffisent. Lave l'extérieur (la vulve) à l'eau claire ou avec un savon doux, sans rien mettre à l'intérieur du vagin."),
+      VF("Le cycle menstruel dure toujours exactement 28 jours.",false,"Faux. Le cycle se compte du 1er jour des règles au 1er jour des suivantes. Sa durée varie d'une personne à l'autre (souvent entre 21 et 35 jours) et il peut être irrégulier à l'adolescence."),
       VF("Une fille en règles peut aller à l'école normalement.",true,"Les règles ne doivent jamais t'empêcher d'aller à l'école. Tu as ce droit !"),
       VF("Une douleur très intense pendant les règles est toujours normale.",false,"Une douleur intense peut indiquer une endométriose. Consulte un médecin."),
       VF("On peut nager pendant ses règles avec une cup ou un tampon.",true,"Avec les bonnes protections, tu peux tout faire, même nager !"),
@@ -252,7 +290,7 @@ const QUIZ_DB = {
       MR("Les règles durent en moyenne entre 3 et 7 jours.",false,"C'est exact ! La durée normale des règles est de 3 à 7 jours."),
     ],
     violence:[
-      Q("La violence, c'est seulement quand il y a des coups ?","Non — elle peut être physique, verbale, psychologique ou sexuelle","Oui, sans coups ce n'est pas de la violence","Seulement si ça laisse des traces","Ça dépend",0,"La violence prend de nombreuses formes. Les blessures invisibles sont souvent les plus profondes."),
+      Q("La violence, c'est seulement quand il y a des coups ?","Non — elle peut être physique, psychologique, sexuelle ou économique","Oui, sans coups ce n'est pas de la violence","Seulement si ça laisse des traces","Ça dépend",0,"La violence prend de nombreuses formes. Les blessures invisibles sont souvent les plus profondes."),
       VF("Si tu te sens mal à l'aise avec quelqu'un, tu dois ignorer ce ressenti.",false,"Ton ressenti est un signal d'alarme naturel. Si quelqu'un te met mal à l'aise, appelle le 116 — gratuit, 24h/24."),
       Q("Un adulte te touche sur des parties intimes et te dit 'garde ça entre nous'. Tu fais quoi ?","Tu gardes le secret","Tu penses avoir mal compris","Tu en parles immédiatement à un adulte de confiance ou tu appelles le 116","Tu attends",2,"Personne n'a le droit de toucher ton corps sans ton accord. Ce n'est jamais ta faute."),
       MR("Si quelqu'un te fait du mal, c'est forcément un inconnu.",true,"Dans la majorité des cas, la violence vient d'une personne connue. Ce n'est pas de ta faute."),
@@ -267,7 +305,7 @@ const QUIZ_DB = {
 };
 
 const URGENCE_Q = [
-  Q("Que faire en cas de danger immédiat ?","Attendre","Appeler le 110","Se cacher sans rien dire","Ignorer",1,"Le 110 (Police Secours) permet de joindre rapidement les autorités. N'hésite jamais !"),
+  Q("Que faire en cas de danger immédiat ?","Attendre","Appeler le 110","Se cacher sans rien dire","Ignorer",1,"Le 110 (Police Nationale) ou le 111 (Police Secours) permettent de joindre rapidement la police. N'hésite jamais ! Tous les numéros sont dans l'écran SOS & Aide."),
   Q("Quel numéro appeler en cas de violence ou besoin d'aide ?","1308","110","101","15",0,"Le 1308 est gratuit et disponible 24h/24. Tu peux parler à quelqu'un qui peut t'aider."),
   Q("Peut-on appeler un numéro d'urgence sans crédit téléphonique ?","Oui, toujours gratuit","Non, il faut du crédit","Seulement le 15","Seulement en ville",0,"Les numéros d'urgence sont accessibles même sans crédit téléphonique."),
   Q("Si tu as peur ou que quelqu'un te fait du mal, tu dois :","Garder le silence","Demander de l'aide ou appeler le 1308","Attendre que ça passe","En parler sur les réseaux",1,"Parler est une façon de se protéger. Jamais de honte à demander de l'aide !"),
@@ -275,15 +313,15 @@ const URGENCE_Q = [
 ];
 
 const DEFIS_Q = [
-  {q:"Explique le cycle menstruel en 1 minute.",rep:"Chaque mois, le corps prépare l'utérus pour une possible grossesse. Si aucun bébé ne se forme, l'utérus se renouvelle : ce sont les règles. Cela dure 3 à 7 jours et se répète environ tous les 28 jours.",isDefi:true},
-  {q:"Cite 3 bonnes pratiques d'hygiène pendant les règles.",rep:"1. Changer sa protection toutes les 4-8 heures.\n2. Se laver avec eau et savon doux matin et soir.\n3. Bien se sécher après le lavage pour éviter les infections.",isDefi:true},
+  {q:"Explique le cycle menstruel en 1 minute.",rep:"À chaque cycle, le corps prépare l'utérus à une possible grossesse. S'il n'y a pas de grossesse, la muqueuse de l'utérus s'élimine : ce sont les règles. Les règles durent en général quelques jours (souvent 3 à 7). Le cycle, lui, se compte du 1er jour des règles au 1er jour des suivantes : il dure souvent entre 21 et 35 jours.",isDefi:true},
+  {q:"Cite 3 bonnes pratiques d'hygiène pendant les règles.",rep:"1. Changer sa protection régulièrement, selon son flux (un tampon : de 4 à 8 heures, jamais plus de 8 heures).\n2. Laver l'extérieur (la vulve) à l'eau claire ou avec un savon doux, comme les autres jours.\n3. Bien se sécher pour rester à l'aise.",isDefi:true},
   {q:"Comment expliquer les règles à un enfant de 10 ans ?",rep:"Les femmes ont un corps qui se prépare chaque mois à accueillir un bébé. Quand il n'y a pas de bébé, le corps se renouvelle. Ça s'appelle les règles. Ce n'est pas une maladie.",isDefi:true},
   {q:"Que dire à une fille qui a honte de ses règles ?",rep:"Tes règles sont normales et naturelles. Elles ne font pas de toi quelqu'un d'impur. Toutes les femmes les ont. Tu peux en parler, tu n'as rien à cacher.",isDefi:true},
   {q:"Comment réagir si une élève demande une protection en urgence ?",rep:"Avoir une trousse de protections disponibles. Répondre avec discrétion et bienveillance. Orienter vers l'infirmerie si nécessaire. Ne jamais humilier ni exposer l'élève.",isDefi:true},
 ];
 
 const URGENCE_Q_EN=[
-  Q("What should you do in case of immediate danger?","Wait","Call 110","Hide without saying anything","Ignore it",1,"110 (Police Emergency) connects you to the authorities immediately. Never hesitate to call!"),
+  Q("What should you do in case of immediate danger?","Wait","Call 110","Hide without saying anything","Ignore it",1,"110 (National Police) or 111 (Police Emergency) connect you to the police quickly. Never hesitate to call! All numbers are on the SOS & Help screen."),
   Q("Which number should you call in case of violence or if you need help?","1308","110","101","15",0,"1308 is free and available 24/7. You can speak to someone who can help you."),
   Q("Can you call an emergency number without phone credit?","Yes, always free","No, you need credit","Only 15","Only in the city",0,"Emergency numbers are accessible even without phone credit."),
   Q("If you are scared or someone is hurting you, you should:","Stay silent","Ask for help or call 1308","Wait for it to pass","Post about it on social media",1,"Speaking up is a way to protect yourself. Never be ashamed to ask for help!"),
@@ -291,8 +329,8 @@ const URGENCE_Q_EN=[
 ];
 
 const DEFIS_Q_EN=[
-  {q:"Explain the menstrual cycle in 1 minute.",rep:"Every month, the body prepares the uterus for a possible pregnancy. If no baby is formed, the uterus renews itself — this is a period. It lasts 3 to 7 days and repeats approximately every 28 days.",isDefi:true},
-  {q:"Name 3 good hygiene practices during periods.",rep:"1. Change your sanitary product every 4-8 hours.\n2. Wash with water and mild soap morning and evening.\n3. Dry properly after washing to avoid infections.",isDefi:true},
+  {q:"Explain the menstrual cycle in 1 minute.",rep:"In each cycle, the body prepares the uterus for a possible pregnancy. If there is no pregnancy, the lining of the uterus is shed — this is a period. A period usually lasts a few days (often 3 to 7). The cycle is counted from the first day of one period to the first day of the next: it often lasts between 21 and 35 days.",isDefi:true},
+  {q:"Name 3 good hygiene practices during periods.",rep:"1. Change your product regularly, depending on your flow (a tampon: every 4 to 8 hours, never more than 8 hours).\n2. Wash the outside (the vulva) with water or a mild soap, as on other days.\n3. Dry well to stay comfortable.",isDefi:true},
   {q:"How would you explain periods to a 10-year-old?",rep:"Women have a body that prepares itself every month to welcome a baby. When there is no baby, the body renews itself. This is called a period. It is not an illness.",isDefi:true},
   {q:"What would you say to a girl who is ashamed of her periods?",rep:"Your periods are normal and natural. They do not make you impure. All women have them. You can talk about it — you have nothing to hide.",isDefi:true},
   {q:"How should you respond if a pupil urgently needs a sanitary product?",rep:"Keep a kit of sanitary products available. Respond with discretion and kindness. Direct them to the school nurse if necessary. Never humiliate or expose the pupil.",isDefi:true},
@@ -345,10 +383,10 @@ const CHEF_DATA=[
   {foods:FOODS_ALL,timer:10},
 ];
 const PHASES_ALL=[
-  {id:1,e:"🩸",t:"Phase des règles",j:"Jours 1–5",c:P.red,bg:P.redSoft,info:"Ton corps se nettoie. Repose-toi, bois chaud, prends soin de toi. 💗"},
-  {id:2,e:"🌱",t:"Phase folliculaire",j:"Jours 6–13",c:P.green,bg:P.greenSoft,info:"Ton énergie revient ! Tu te sens créative et pleine de vitalité. 🌟"},
-  {id:3,e:"🌺",t:"L'ovulation",j:"Vers le jour 14",c:P.rose,bg:P.roseSoft,info:"Ton corps est au pic de sa vitalité. Tu te sens confiante. Profite ! 🌸"},
-  {id:4,e:"🌙",t:"Phase lutéale",j:"Jours 15–28",c:P.purple,bg:P.purpleSoft,info:"Ton corps se calme. Tu peux te sentir plus introspective. C'est normal. 🫶"},
+  {id:1,e:"🩸",t:"Phase des règles",j:"Début du cycle",c:P.red,bg:P.redSoft,info:"Ton corps se nettoie. Repose-toi, bois chaud, prends soin de toi. 💗"},
+  {id:2,e:"🌱",t:"Phase folliculaire",j:"Après les règles",c:P.green,bg:P.greenSoft,info:"Ton énergie revient ! Tu te sens créative et pleine de vitalité. 🌟"},
+  {id:3,e:"🌺",t:"L'ovulation",j:"Vers le milieu du cycle",c:P.rose,bg:P.roseSoft,info:"Ton corps est au pic de sa vitalité. Tu te sens confiante. Profite ! 🌸"},
+  {id:4,e:"🌙",t:"Phase lutéale",j:"Avant les règles suivantes",c:P.purple,bg:P.purpleSoft,info:"Ton corps se calme. Tu peux te sentir plus introspective. C'est normal. 🫶"},
 ];
 const CYCLE_SYMP=[
   {phaseId:1,symptom:"Crampes et fatigue",e:"😣"},
@@ -505,7 +543,7 @@ const QUIZ_DB_N3={
     violence:[
       Q("Publier une photo embarrassante de quelqu'un sans permission, c'est :","Un jeu entre amis","Drôle","Pas grave","Une violence numérique punie par la loi",3,"La cyberviolence est réelle et punie par la loi en Côte d'Ivoire."),
       Q("Si tu es harcelée en ligne, tu peux :","Répondre agressivement","Supprimer ton téléphone","Garder ça pour toi","Bloquer, signaler et en parler à un adulte",3,"Ne reste jamais seule face au cyberharcèlement."),
-      Q("Menacer quelqu'un de diffuser ses photos, c'est :","Une blague","Normal entre ados","Acceptable","Un chantage et une violation grave des droits",3,"C'est un crime puni par la loi."),
+      Q("Menacer quelqu'un de diffuser ses photos, c'est :","Une blague","Normal entre ados","Acceptable","Un chantage et une violation grave des droits",3,"C'est du chantage, une forme de violence qui peut être punie par la loi. Ne cède pas, garde les preuves (captures d'écran) et parles-en à un adulte de confiance."),
       Q("Une fille victime de violence a le droit :","De se taire","D'accepter la situation","De le mériter","De porter plainte et d'être protégée",3,"Chaque victime a des droits et mérite protection."),
       Q("Le harcèlement scolaire :","Est normal","Est la faute de la victime","Ne peut pas être puni","Est pris au sérieux par la loi",3,"Le harcèlement scolaire est reconnu et sanctionné."),
       Q("Si une amie te dit qu'elle est maltraitée, tu dois :","Garder le secret","Lui dire que c'est normal","L'ignorer","L'écouter et l'aider à parler à un adulte de confiance",3,"Garder le secret peut aggraver la situation."),
@@ -534,7 +572,7 @@ const QUIZ_DB_EN={
       Q("What is the average length of the menstrual cycle?","28 days","7 days exactly","14 days always","60 days",0,"The cycle lasts on average 28 days, but can vary between 21 and 35 days."),
       Q("What is a sanitary towel used for?","Absorbing menstrual blood","Cleaning wounds","Removing make-up","Covering a burn",0,"A sanitary towel absorbs menstrual blood to keep you comfortable and dry."),
       Q("Where does menstrual blood come from?","The uterus","The stomach","The kidneys","The bladder",0,"Menstrual blood comes from the uterine lining that sheds each month."),
-      Q("How often should you change a sanitary pad?","Every 4 to 6 hours","Once a day","Once a week","Only when wet",0,"Changing your pad every 4-6 hours prevents infections and keeps you comfortable."),
+      Q("How often should you change a sanitary pad?","Several times a day, depending on your flow","Once a day","Once a week","Only when wet",0,"Change your pad several times a day, depending on your flow and comfort. For a tampon, follow the leaflet: every 4 to 8 hours, and never more than 8 hours."),
       Q("What is the first period called?","Menarche","Ovulation","Menopause","Puberty",0,"Menarche is the medical term for a girl's very first menstrual period."),
       Q("Which organ produces eggs in the female body?","The ovaries","The uterus","The kidneys","The liver",0,"The ovaries produce eggs and female hormones such as oestrogen."),
       Q("At what age do most girls get their first period?","Between 10 and 16 years","Between 5 and 8 years","After 20 years","At exactly 13 years",0,"Most girls get their first period between the ages of 10 and 16."),
@@ -593,14 +631,14 @@ const QUIZ_DB_QSJ={
       Q("🧠 Je peux écouter, soutenir et respecter une fille qui a ses règles. Qui suis-je ?","Une personne bienveillante","Un professeur sévère","Un inconnu indifférent","Une personne qui juge",0,"Soutenir quelqu'un pendant ses règles est un acte de solidarité et de respect."),
       Q("🧠 Je ne suis ni une maladie ni une honte. Qui suis-je ?","Un processus naturel du corps","Une infection grave","Une blessure","Une punition",0,"Les règles sont un processus naturel — jamais une maladie ni une honte."),
       Q("🧠 Je suis l'étape de la vie où une fille reçoit ses premières règles. Qui suis-je ?","La puberté","L'enfance","La vieillesse","La naissance",0,"La puberté est la période de développement où apparaissent les premières règles."),
-      Q("🧠 Je suis ce qu'il faut faire régulièrement pendant les règles pour éviter les infections. Qui suis-je ?","Changer sa protection","Dormir davantage","Boire du café","Éviter l'eau",0,"Changer sa protection toutes 4-6 heures est essentiel pour l'hygiène et la santé."),
+      Q("🧠 Je suis ce qu'il faut faire régulièrement pendant les règles pour rester propre et à l'aise. Qui suis-je ?","Changer sa protection","Dormir davantage","Boire du café","Éviter l'eau",0,"Change ta protection plusieurs fois par jour, selon ton flux. Pour un tampon : de 4 à 8 heures, jamais plus de 8 heures."),
     ],
   },
   n2:{
     fille:[
       Q("🧠 Je suis le nom donné au premier jour des règles d'une fille. Qui suis-je ?","La ménarche","L'ovulation","La ménopause","La puberté",0,"La ménarche désigne les toutes premières règles d'une fille."),
       Q("🧠 Je libère un ovule environ une fois par mois. Qui suis-je ?","L'ovaire","Le rein","Le foie","L'estomac",0,"Les ovaires produisent et libèrent les ovules lors de l'ovulation."),
-      Q("🧠 Je suis la période du cycle où un ovule est libéré. Qui suis-je ?","L'ovulation","La menstruation","La ménarche","La ménopause",0,"L'ovulation se produit généralement vers le 14e jour du cycle menstruel."),
+      Q("🧠 Je suis la période du cycle où un ovule est libéré. Qui suis-je ?","L'ovulation","La menstruation","La ménarche","La ménopause",0,"L'ovulation a lieu vers le milieu du cycle. Le jour exact varie : le « 14e jour » n'est qu'un repère pour un cycle de 28 jours."),
       Q("🧠 Je dure généralement entre 21 et 35 jours chez beaucoup de personnes. Qui suis-je ?","Le cycle menstruel","La grossesse","La puberté","La ménopause",0,"Le cycle menstruel varie entre 21 et 35 jours selon les personnes."),
       Q("🧠 Je peux être jetable ou réutilisable pour gérer les règles. Qui suis-je ?","La protection hygiénique","Le médicament","Le pansement","La compresse",0,"Il existe des serviettes jetables et des serviettes lavables réutilisables."),
       Q("🧠 Je peux arriver avant les règles avec fatigue, humeur sensible ou boutons. Qui suis-je ?","Le syndrome prémenstruel","La grippe","L'allergie","La fatigue chronique",0,"Le SPM touche beaucoup de personnes dans les jours précédant les règles."),
@@ -614,7 +652,7 @@ const QUIZ_DB_QSJ={
     fille:[
       Q("🧠 Je suis l'ensemble des changements hormonaux qui préparent le corps chaque mois. Qui suis-je ?","Le cycle menstruel","La grossesse","La ménopause","La puberté",0,"Le cycle menstruel est un processus hormonal complexe qui prépare le corps chaque mois."),
       Q("🧠 Je peux empêcher certaines filles d'aller à l'école lorsqu'elles n'ont pas de protection. Qui suis-je ?","La précarité menstruelle","La timidité","Le mauvais temps","La distance",0,"La précarité menstruelle prive des milliers de filles d'éducation chaque mois."),
-      Q("🧠 Je suis une maladie pouvant provoquer de fortes douleurs menstruelles. Qui suis-je ?","L'endométriose","La varicelle","L'appendicite","La migraine",0,"L'endométriose touche 1 femme sur 10 et cause des douleurs intenses."),
+      Q("🧠 Je suis une maladie pouvant provoquer de fortes douleurs menstruelles. Qui suis-je ?","L'endométriose","La varicelle","L'appendicite","La migraine",0,"Selon l'OMS, l'endométriose touche environ 1 femme sur 10 en âge d'avoir des enfants. Elle peut causer de fortes douleurs, mais les symptômes varient."),
       Q("🧠 Je suis une action qui consiste à informer et éduquer sur les règles sans honte. Qui suis-je ?","La sensibilisation menstruelle","La punition","Le silence","Le tabou",0,"La sensibilisation permet de briser les tabous et protéger la santé des filles."),
       Q("🧠 Je suis un espace où des protections hygiéniques peuvent être mises gratuitement à disposition. Qui suis-je ?","Une Box de Dignité","Une salle de classe","Une bibliothèque","Un terrain de sport",0,"Les Box de Dignité d'ONG Happy Mum's fournissent des protections gratuites aux filles."),
       Q("🧠 Je suis un comportement toxique qui consiste à se moquer d'une fille qui a ses règles. Qui suis-je ?","La stigmatisation menstruelle","La solidarité","Le soutien","La bienveillance",0,"Se moquer des règles de quelqu'un est une forme de violence psychologique."),
@@ -629,8 +667,8 @@ const QUIZ_DB_N2_EN={
   fille:{
     qcm:[
       Q("What is premenstrual syndrome (PMS)?","Symptoms before a period like mood changes and fatigue","A serious illness","A hormonal treatment","A medical emergency",0,"PMS affects many people — mood changes, bloating and fatigue are common signs."),
-      Q("What is endometriosis?","A condition causing very painful periods","A dietary disorder","A hormonal supplement","A type of allergy",0,"Endometriosis affects 1 in 10 women and can cause intense pain."),
-      Q("What is ovulation?","The release of an egg from the ovary","The shedding of the uterine lining","The start of menstruation","The end of the cycle",0,"Ovulation occurs approximately mid-cycle, around day 14."),
+      Q("What is endometriosis?","A condition causing very painful periods","A dietary disorder","A hormonal supplement","A type of allergy",0,"According to WHO, endometriosis affects around 1 in 10 women of reproductive age. It can cause severe pain, but symptoms vary."),
+      Q("What is ovulation?","The release of an egg from the ovary","The shedding of the uterine lining","The start of menstruation","The end of the cycle",0,"Ovulation happens around the middle of the cycle. The exact day varies from person to person and from cycle to cycle."),
       Q("How can you track your menstrual cycle?","By recording start and end dates each month","By watching TV","By eating less","By sleeping more",0,"Tracking your cycle helps you understand your body and plan ahead."),
       Q("What does heavy menstrual bleeding suggest?","It may require medical attention","It is always normal","Periods will stop soon","It only happens once",0,"Unusually heavy bleeding should always be discussed with a doctor."),
       Q("What is the best way to manage period pain?","Heat packs, rest and pain relief if needed","Ignoring it completely","Exercising intensely","Eating nothing",0,"Heat, rest and appropriate pain relief can significantly help."),
@@ -644,7 +682,7 @@ const QUIZ_DB_N2_EN={
       VF("Heavy periods are always normal.",false,"Very heavy periods may indicate a medical condition."),
       VF("Endometriosis can affect fertility.",true,"Endometriosis may impact fertility if left untreated."),
       VF("Period pain is always severe.",false,"Pain varies greatly — some girls have little discomfort, others a lot."),
-      VF("You should only change a pad once a day.",false,"Pads should be changed every 4-6 hours to prevent infection."),
+      VF("You should only change a pad once a day.",false,"False. Change your pad several times a day, depending on your flow and comfort."),
       VF("A menstrual cup is a reusable product.",true,"A menstrual cup can be washed and reused."),
       VF("Menstruation stops during pregnancy.",true,"Periods stop when a woman is pregnant."),
       VF("Iron deficiency can result from heavy periods.",true,"Heavy periods can lead to iron deficiency anaemia."),
@@ -695,7 +733,7 @@ const QUIZ_DB_N3_EN={
     vf:[
       VF("Access to sanitary products is a basic human right.",true,"Every girl has the right to manage her period with dignity."),
       VF("Menstrual education only benefits girls.",false,"Menstrual education benefits everyone by reducing stigma."),
-      VF("Endometriosis can cause fertility problems.",true,"Endometriosis affects 1 in 10 women and may impact fertility."),
+      VF("Endometriosis can cause fertility problems.",true,"According to WHO, endometriosis affects around 1 in 10 women of reproductive age and can affect fertility."),
       VF("Menstrual poverty is a global issue.",true,"Millions of girls worldwide lack adequate sanitary products."),
       VF("Hormonal changes only affect the body physically.",false,"Hormonal changes affect mood, energy and emotional wellbeing too."),
       VF("Breaking menstrual taboos requires collective action.",true,"Change happens when communities, schools and families work together."),
@@ -744,14 +782,14 @@ const QUIZ_DB_QSJ_EN={
       Q("🧠 I can listen to, support and respect a girl who has her period. What am I?","A caring and supportive person","A strict teacher","An indifferent stranger","A judgemental person",0,"Supporting someone during their period is an act of solidarity and respect."),
       Q("🧠 I am a natural process of the body — not an illness and not a shame. What am I?","A natural body process","A serious infection","An injury","A punishment",0,"Periods are natural — never an illness and never a shame."),
       Q("🧠 I am the stage of life when a girl gets her first period. What am I?","Puberty","Childhood","Old age","Birth",0,"Puberty is the developmental stage when the first period arrives."),
-      Q("🧠 I am what you should do regularly during periods to avoid infections. What am I?","Changing your sanitary product","Sleeping more","Drinking coffee","Avoiding water",0,"Changing your pad every 4-6 hours is essential for hygiene and health."),
+      Q("🧠 I am what you should do regularly during periods to stay clean and comfortable. What am I?","Changing your sanitary product","Sleeping more","Drinking coffee","Avoiding water",0,"Change your product several times a day, depending on your flow. For a tampon: every 4 to 8 hours, never more than 8 hours."),
     ],
   },
   n2:{
     fille:[
       Q("🧠 I am the name for a girl's very first period. What am I?","Menarche","Ovulation","Menopause","Puberty",0,"Menarche is the medical term for a girl's very first period."),
       Q("🧠 I release an egg approximately once a month. What am I?","The ovary","The kidney","The liver","The stomach",0,"The ovaries produce and release eggs during ovulation."),
-      Q("🧠 I am the stage of the cycle when an egg is released. What am I?","Ovulation","Menstruation","Menarche","Menopause",0,"Ovulation occurs approximately on day 14 of the menstrual cycle."),
+      Q("🧠 I am the stage of the cycle when an egg is released. What am I?","Ovulation","Menstruation","Menarche","Menopause",0,"Ovulation happens around the middle of the cycle. The exact day varies: \"day 14\" is only a rough guide for a 28-day cycle."),
       Q("🧠 I generally last between 21 and 35 days. What am I?","The menstrual cycle","Pregnancy","Puberty","Menopause",0,"The menstrual cycle varies between 21 and 35 days depending on the person."),
       Q("🧠 I can be disposable or reusable for managing periods. What am I?","A sanitary product","A medication","A plaster","A compress",0,"There are disposable pads and reusable washable pads."),
       Q("🧠 I can appear before periods with fatigue, mood changes or spots. What am I?","Premenstrual syndrome","The flu","An allergy","Chronic fatigue",0,"PMS affects many people in the days before their period."),
@@ -765,7 +803,7 @@ const QUIZ_DB_QSJ_EN={
     fille:[
       Q("🧠 I am the complete set of hormonal changes that prepare the body each month. What am I?","The menstrual cycle","Pregnancy","Menopause","Puberty",0,"The menstrual cycle is a complex hormonal process that prepares the body each month."),
       Q("🧠 I can prevent girls from going to school when they lack sanitary products. What am I?","Menstrual poverty","Shyness","Bad weather","Distance",0,"Menstrual poverty prevents thousands of girls from accessing education every month."),
-      Q("🧠 I am a condition that can cause very severe period pain. What am I?","Endometriosis","Chickenpox","Appendicitis","Migraine",0,"Endometriosis affects 1 in 10 women and causes intense pain."),
+      Q("🧠 I am a condition that can cause very severe period pain. What am I?","Endometriosis","Chickenpox","Appendicitis","Migraine",0,"According to WHO, endometriosis affects around 1 in 10 women of reproductive age. It can cause severe pain, but symptoms vary."),
       Q("🧠 I am an action that involves educating about periods without shame. What am I?","Menstrual awareness-raising","Punishment","Silence","Taboo",0,"Awareness-raising breaks taboos and protects girls' health."),
       Q("🧠 I am a space where sanitary products can be provided free of charge. What am I?","A Dignity Box","A classroom","A library","A sports ground",0,"Dignity Boxes by ONG Happy Mum's provide free products for girls."),
       Q("🧠 I am a harmful behaviour — mocking a girl because of her period. What am I?","Menstrual stigmatisation","Solidarity","Support","Kindness",0,"Mocking someone's period is a form of psychological violence."),
@@ -790,7 +828,7 @@ function QuizLevelSelect({profile,category,quizLevels,getCatLabel,lang,onBack,on
     {lv:3,icon:"🥇",label:lang==="en"?"Level 3":"Niveau 3",sub:lang==="en"?"Rights & Advocacy":"Droits & Engagement",col:P.red,unlocked:n2!==null&&n2>=8,score:n3},
   ];
   const catIcons={qcm:"🧠",vf:"✅",mr:"💡",violence:"🛡️",qsj:"🔍"};
-  const lockTxt="#9A86AE";
+  const lockTxt="#6E5A84";
   return(
     <div style={{minHeight:"100dvh",display:"flex",flexDirection:"column",padding:"16px 16px 100px"}}>
       <button onClick={onBack} style={{alignSelf:"flex-start",background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"10px 18px",fontSize:16,color:P.muted,fontWeight:800,marginBottom:14,boxShadow:"0 2px 8px rgba(232,0,61,.08)"}}>{lang==="en"?"← Back":"← Retour"}</button>
@@ -908,7 +946,7 @@ function TRing({secs,onExpire,tkey,lang}){
 function LvlSelect({gDef,onSelect,onBack,unlocked,lang}){
   const[msg,setMsg]=useState(false);
   const lvls=lang==="en"?[{lv:1,e:"🌱",t:"Level 1",sub:"Beginner",col:P.green},{lv:2,e:"🌺",t:"Level 2",sub:"Intermediate",col:P.amber},{lv:3,e:"🌟",t:"Level 3",sub:"Expert",col:P.red}]:[{lv:1,e:"🌱",t:"Niveau 1",sub:"Débutante",col:P.green},{lv:2,e:"🌺",t:"Niveau 2",sub:"Intermédiaire",col:P.amber},{lv:3,e:"🌟",t:"Niveau 3",sub:"Experte",col:P.red}];
-  const lockTxt="#9A86AE";
+  const lockTxt="#6E5A84";
   return(
     <div style={{minHeight:"100dvh",display:"flex",flexDirection:"column",padding:"16px 16px 100px"}}>
       <button onClick={onBack} style={{alignSelf:"flex-start",background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"10px 18px",fontSize:16,color:P.muted,fontWeight:800,marginBottom:14,boxShadow:"0 2px 8px rgba(232,0,61,.08)"}}>← {lang==="en"?"Games":"Jeux"}</button>
@@ -1941,40 +1979,38 @@ function SplashScreen({onDone,isReady}){
 
 function WelcomeScreen({onStart,lang,setLang}){
   const t=(fr,en)=>lang==="en"?en:fr;
+  const cv=(min,vh,max)=>`clamp(${min},${vh}vh,${max})`; // taille qui s'adapte à la hauteur de l'écran
+  const langBtn=on=>({background:on?"#E8003D":"rgba(232,0,61,.15)",color:on?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:800,fontSize:"0.95rem",cursor:"pointer"});
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"60px 24px 24px",position:"relative",overflow:"hidden"}}>
+    <div style={{height:"100dvh",minHeight:"100vh",maxHeight:"100dvh",overflow:"hidden",background:"linear-gradient(160deg,#FFE8EF 0%,#FFF0F5 50%,#FFE0EC 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-evenly",padding:`${cv("44px",6,"60px")} 22px ${cv("10px",2,"20px")}`,boxSizing:"border-box",position:"relative",textAlign:"center"}}>
       {["🌸","🦋","✨","💕","🌸","✨"].map((e,i)=>(
-        <span key={i} style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.3,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`,pointerEvents:"none"}}>{e}</span>
+        <span key={i} aria-hidden="true" style={{position:"absolute",fontSize:i%2===0?18:14,opacity:.3,top:`${10+i*13}%`,left:i%2===0?`${5+i*3}%`:`${75+i*2}%`,pointerEvents:"none"}}>{e}</span>
       ))}
-      {/* Language selector */}
-      <div style={{position:"absolute",top:16,right:16,display:"flex",gap:8,zIndex:10}}>
-        <button onClick={()=>{setLang("fr");localStorage.setItem("hm_lang","fr");}} style={{background:lang==="fr"?"#E8003D":"rgba(232,0,61,.15)",color:lang==="fr"?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:700,fontSize:"0.95rem",cursor:"pointer"}}>🇫🇷 FR</button>
-        <button onClick={()=>{setLang("en");localStorage.setItem("hm_lang","en");}} style={{background:lang==="en"?"#E8003D":"rgba(232,0,61,.15)",color:lang==="en"?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:700,fontSize:"0.95rem",cursor:"pointer"}}>🇬🇧 EN</button>
+      <div style={{position:"absolute",top:12,right:14,display:"flex",gap:8,zIndex:10}}>
+        <button onClick={()=>{setLang("fr");try{localStorage.setItem("hm_lang","fr");}catch(e){}}} style={langBtn(lang==="fr")}>🇫🇷 FR</button>
+        <button onClick={()=>{setLang("en");try{localStorage.setItem("hm_lang","en");}catch(e){}}} style={langBtn(lang==="en")}>🇬🇧 EN</button>
       </div>
-      <div style={{textAlign:"center",width:"100%"}}>
-        <div style={{display:"flex",justifyContent:"center",marginBottom:8}}>
-          <AKissi state="salut" lang={lang} size={140} msg={lang==="en"?"Hi! I'm A-Kissi 🌸":"Salut ! Je suis A-Kissi 🌸"}/>
-        </div>
-        <div className="T" style={{fontSize:"3.4rem",fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,marginBottom:10}}>Quiz Dignité</div>
-        <div style={{fontSize:"0.98rem",fontWeight:800,letterSpacing:"2.5px",textTransform:"uppercase",color:"#9B6B8A",marginBottom:32}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
-        <div style={{background:"rgba(255,255,255,.85)",backdropFilter:"blur(12px)",borderRadius:24,padding:"22px 22px",boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",marginBottom:32}}>
-          <p style={{fontSize:"1.2rem",color:"#4A2040",lineHeight:1.6,margin:"0 0 10px"}}>
-            {t(<><strong>Apprends les règles sans tabou, sans honte, avec confiance.</strong></>,<><strong>Learn about periods — no taboo, no shame, just confidence.</strong></>)}
-          </p>
-          <p style={{fontSize:"1.1rem",color:"#7A4A6A",lineHeight:1.7,margin:0}}>
-            {t("Teste tes connaissances, déconstruis les mythes et apprends à mieux comprendre ton corps, tes droits et tes relations.","Test your knowledge, bust the myths and better understand your body, your rights and your relationships.")}
-          </p>
-        </div>
-        <button onClick={onStart} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"21px 22px",fontWeight:900,fontSize:"1.35rem",cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.35)",letterSpacing:".5px"}}>
-          {t("Commencer 🌸","Start 🌸")}
-        </button>
-        <div style={{display:"flex",gap:8,marginTop:16,flexWrap:"wrap",justifyContent:"center"}}>
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:1,minHeight:0}}>
+        <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,padding:"6px 14px",fontSize:cv("0.85rem",1.9,"1rem"),fontWeight:800,color:P.dark,boxShadow:"0 4px 14px rgba(232,0,61,.1)",marginBottom:6}}>{t("Salut ! Je suis A-Kissi 🌸","Hi! I'm A-Kissi 🌸")}</div>
+        <img src={AKISSI_IMGS.salut} alt="A-Kissi" onError={e=>{e.target.style.display="none";}} style={{height:cv("80px",18,"170px"),width:"auto",objectFit:"contain",filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))",animation:"ak-float 3s ease-in-out infinite"}}/>
+      </div>
+      <div>
+        <h1 className="T" style={{fontSize:cv("2.2rem",6.4,"3.4rem"),fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,margin:0}}>Quiz Dignité</h1>
+        <div style={{fontSize:cv("0.78rem",1.8,"0.98rem"),fontWeight:800,letterSpacing:"2px",textTransform:"uppercase",color:"#9B6B8A",marginTop:cv("4px",1,"10px")}}>{t("Le quiz qui change les règles ✨","The quiz that changes the rules ✨")}</div>
+      </div>
+      <div style={{width:"100%",background:"rgba(255,255,255,.88)",backdropFilter:"blur(12px)",borderRadius:22,padding:`${cv("12px",2,"22px")} 18px`,boxShadow:"0 8px 32px rgba(232,0,61,.10)",border:"1.5px solid rgba(255,255,255,.95)",textAlign:"left",boxSizing:"border-box"}}>
+        <p style={{fontSize:cv("1rem",2.4,"1.2rem"),color:"#4A2040",lineHeight:1.4,margin:"0 0 6px",fontWeight:800}}>{t("Apprends les règles sans tabou, sans honte, avec confiance.","Learn about periods — no taboo, no shame, just confidence.")}</p>
+        <p style={{fontSize:cv("0.92rem",2.1,"1.08rem"),color:"#7A4A6A",lineHeight:1.45,margin:0}}>{t("Teste tes connaissances, déconstruis les mythes et comprends mieux ton corps, tes droits et tes relations.","Test your knowledge, bust the myths and better understand your body, your rights and your relationships.")}</p>
+      </div>
+      <div style={{width:"100%"}}>
+        <button onClick={onStart} style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:`${cv("13px",2.3,"21px")} 22px`,fontWeight:900,fontSize:cv("1.15rem",2.8,"1.35rem"),cursor:"pointer",boxShadow:"0 8px 28px rgba(232,0,61,.35)",letterSpacing:".5px"}}>{t("Commencer 🌸","Start 🌸")}</button>
+        <div style={{display:"flex",gap:6,marginTop:cv("8px",1.6,"14px"),flexWrap:"wrap",justifyContent:"center"}}>
           {[t("🎮 Quiz","🎮 Quiz"),t("🔥 Défi du jour","🔥 Daily challenge"),t("🧠 Mythes","🧠 Myths"),t("🏆 Progrès","🏆 Progress")].map((f,i)=>(
-            <div key={i} style={{background:"rgba(232,0,61,.1)",borderRadius:50,padding:"9px 15px",fontSize:16,color:P.red,fontWeight:800}}>{f}</div>
+            <div key={i} style={{background:"rgba(232,0,61,.1)",borderRadius:50,padding:`${cv("5px",0.8,"8px")} 12px`,fontSize:cv("0.85rem",1.9,"1rem"),color:P.red,fontWeight:800}}>{f}</div>
           ))}
         </div>
       </div>
-      <p style={{fontSize:"0.9rem",color:"#9A7F95",textAlign:"center",marginTop:28}}>© 2026 ONG Happy Mum's – {t("Tous droits réservés","All rights reserved")}</p>
+      <p style={{fontSize:cv("0.78rem",1.5,"0.9rem"),color:"#8A6F85",margin:0}}>© 2026 ONG Happy Mum's – {t("Tous droits réservés","All rights reserved")}</p>
     </div>
   );
 }
@@ -1983,39 +2019,41 @@ function WelcomeScreen({onStart,lang,setLang}){
 function PrivacyPage({onBack,lang}){
   const t=(fr,en)=>lang==="en"?en:fr;
   const sections=lang==="en"?[
-    ['📋 Data Collection','Quiz Dignité only collects information you enter voluntarily (first name and country). This data is stored locally on your device (localStorage) and is never transmitted to external servers.'],
-    ['📊 Progress & Scores','Your progress (points, badges and streak) is stored locally on your device. This data belongs entirely to you and will be deleted if you clear your browser data.'],
-    ['🔍 Google Analytics','We use Google Analytics 4 to measure overall audience activity (visits, countries, general behaviour). All data is anonymised. No personally identifiable information is shared with Google.'],
-    ['👶 Protection of Young People','Quiz Dignité is designed for young people aged 12 and above. We do not collect sensitive personal data. No user account is created.'],
-    ['🍪 Cookies','We do not use advertising or tracking cookies. The localStorage used does not constitute a cookie in the legal sense.'],
-    ['🤝 Data Sharing','ONG Happy Mum\'s does not sell, rent or share any personal data with third parties for commercial purposes.'],
-    ['✏️ Your Rights','You may delete your data at any time by clearing your browser\'s local storage. Contact: onghappymums@gmail.com'],
+    ['📱 What the app keeps on your phone','Quiz Dignité has no account and no password. To work, it saves on your phone, in your browser\'s local storage:\n• your first name and country\n• your progress: points, badges, levels, streak, daily challenges, Escape Game\n• your settings: language, dark mode, sound\n• your "I Celebrate Myself" journal entries (if you write any)\nThis information is not sent to ONG Happy Mum\'s.'],
+    ['📝 Your "I Celebrate Myself" journal','Your journal stays only on this phone: it is never sent online, not even with the online backup. Please note: it is not protected by a password or encrypted. Someone who uses your phone could read it, and it is deleted if you clear the site\'s data.'],
+    ['💾 Backups','Backup on the phone: if you ask for it, the app creates a file or a code containing your progress. It stays with you. If you tick "include my journal", your journal is in it too: keep it somewhere safe.\nOnline backup (optional, only if you turn it on): your points, badges, levels, streak and settings are sent to our server, linked to a secret code. Never your first name, never your journal, no email. The backup is kept for 2 years after the last save, and you can delete it at any time in Settings › Backup.'],
+    ['🔍 Audience measurement (Google Analytics 4)','We use Google Analytics 4 to understand how the app is used: screens visited, quizzes started and finished, themes chosen, shares, device type, language and approximate country. Google Analytics places cookies (for example "_ga") and a random identifier to tell visits apart. We never send your first name, your answers you type, or your journal. This data is processed by Google, possibly outside Côte d\'Ivoire. You can block these cookies in your browser settings.'],
+    ['🍪 Cookies','The only cookies used are those of Google Analytics, for audience measurement. No advertising cookies. The app\'s local storage (progress, settings, journal) is used only to make the app work on your phone.'],
+    ['👧 Protection of girls','Quiz Dignité is designed for girls and young women aged 12 and above. No account, no email, no health information is requested. If something worries you, talk to a trusted adult or use the SOS & Help screen.'],
+    ['🤝 Who handles the data','ONG Happy Mum\'s does not sell or rent any data. Technical providers: Vercel (website hosting), Google (audience measurement) and, only if you turn on online backup, Upstash (backup storage).'],
+    ['✏️ Your rights & deleting your data','• Delete your progress: Settings › Reset my progress\n• Delete your online backup: Settings › Backup › Online\n• Delete everything (journal included): clear this site\'s data in your browser\nYou can ask us to access, correct or delete your data by writing to onghappymums@gmail.com.'],
     ['📞 Contact','ONG Happy Mum\'s — Abidjan, Côte d\'Ivoire\n📱 +225 07 13 51 26 98\n📧 onghappymums@gmail.com\n🌐 quizdignite.org'],
   ]:[
-    ['📋 Collecte des données','Quiz Dignité collecte uniquement les informations saisies volontairement (prénom, pays). Ces données sont stockées localement sur votre appareil (localStorage) et ne sont jamais transmises à des serveurs externes.'],
-    ['📊 Données de progression','Votre progression (points, badges, streak) est stockée localement sur votre appareil. Ces données vous appartiennent et disparaissent si vous effacez les données de votre navigateur.'],
-    ['🔍 Google Analytics','Nous utilisons Google Analytics 4 pour mesurer l\'audience globale (visites, pays, comportement général). Ces données sont anonymisées. Aucune donnée personnelle identifiable n\'est transmise à Google.'],
-    ['👶 Protection des mineures','Quiz Dignité est conçu pour les jeunes filles à partir de 12 ans. Nous ne collectons pas de données sensibles. Aucun compte utilisateur n\'est créé.'],
-    ['🍪 Cookies','Nous n\'utilisons pas de cookies publicitaires ou de traçage. Le localStorage utilisé ne constitue pas un cookie au sens légal.'],
-    ['🤝 Partage de données','ONG Happy Mum\'s ne vend, ne loue et ne partage aucune donnée personnelle avec des tiers à des fins commerciales.'],
-    ['✏️ Vos droits','Vous pouvez à tout moment effacer vos données en vidant le stockage local de votre navigateur. Contact : onghappymums@gmail.com'],
+    ['📱 Ce que l\'app garde sur ton téléphone','Quiz Dignité n\'a ni compte ni mot de passe. Pour fonctionner, elle enregistre sur ton téléphone, dans le stockage local de ton navigateur :\n• ton prénom et ton pays\n• ta progression : points, badges, niveaux, série, défis du jour, Escape Game\n• tes réglages : langue, mode sombre, son\n• ton journal « Je me célèbre » (si tu écris dedans)\nCes informations ne sont pas envoyées à l\'ONG Happy Mum\'s.'],
+    ['📝 Ton journal « Je me célèbre »','Ton journal reste uniquement sur ce téléphone : il n\'est jamais envoyé sur Internet, même avec la sauvegarde en ligne. Attention : il n\'est pas protégé par un mot de passe ni chiffré. Une personne qui utilise ton téléphone pourrait le lire, et il est effacé si tu effaces les données du site.'],
+    ['💾 Sauvegardes','Sauvegarde sur le téléphone : si tu le demandes, l\'app crée un fichier ou un code qui contient ta progression. Il reste chez toi. Si tu coches « inclure mon journal », ton journal est dedans aussi : garde-le en lieu sûr.\nSauvegarde en ligne (facultative, seulement si tu l\'actives) : tes points, badges, niveaux, ta série et tes réglages sont envoyés sur notre serveur, liés à un code secret. Jamais ton prénom, jamais ton journal, pas d\'e-mail. La sauvegarde est conservée 2 ans après la dernière mise à jour, et tu peux la supprimer à tout moment dans Réglages › Sauvegarde.'],
+    ['🔍 Mesure d\'audience (Google Analytics 4)','Nous utilisons Google Analytics 4 pour comprendre comment l\'app est utilisée : écrans visités, quiz commencés et terminés, thèmes choisis, partages, type d\'appareil, langue et pays approximatif. Google Analytics dépose des cookies (par exemple « _ga ») et un identifiant aléatoire pour distinguer les visites. Nous n\'envoyons jamais ton prénom, les textes que tu écris ni ton journal. Ces données sont traitées par Google, éventuellement hors de Côte d\'Ivoire. Tu peux bloquer ces cookies dans les réglages de ton navigateur.'],
+    ['🍪 Cookies','Les seuls cookies utilisés sont ceux de Google Analytics, pour la mesure d\'audience. Aucun cookie publicitaire. Le stockage local de l\'app (progression, réglages, journal) sert uniquement à faire fonctionner l\'app sur ton téléphone.'],
+    ['👧 Protection des filles','Quiz Dignité s\'adresse aux filles et jeunes femmes à partir de 12 ans. Aucun compte, aucun e-mail, aucune information de santé n\'est demandée. Si quelque chose t\'inquiète, parles-en à un adulte de confiance ou utilise l\'écran SOS & Aide.'],
+    ['🤝 Qui traite les données','L\'ONG Happy Mum\'s ne vend ni ne loue aucune donnée. Prestataires techniques : Vercel (hébergement du site), Google (mesure d\'audience) et, seulement si tu actives la sauvegarde en ligne, Upstash (stockage des sauvegardes).'],
+    ['✏️ Tes droits et la suppression de tes données','• Effacer ta progression : Réglages › Réinitialiser ma progression\n• Supprimer ta sauvegarde en ligne : Réglages › Sauvegarde › En ligne\n• Tout effacer (journal compris) : efface les données de ce site dans ton navigateur\nTu peux nous demander d\'accéder à tes données, de les corriger ou de les supprimer en écrivant à onghappymums@gmail.com.'],
     ['📞 Contact','ONG Happy Mum\'s — Abidjan, Côte d\'Ivoire\n📱 +225 07 13 51 26 98\n📧 onghappymums@gmail.com\n🌐 quizdignite.org'],
   ];
   return(
-    <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:16,color:P.muted,fontWeight:700,marginBottom:14}}>{t("← Retour","← Back")}</button>
+    <div style={{padding:"16px 16px 100px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"10px 18px",fontSize:16,color:P.muted,fontWeight:800,marginBottom:14}}>{t("← Retour","← Back")}</button>
       <div style={{textAlign:"center",marginBottom:22}}>
-        <div style={{fontSize:"2rem",marginBottom:6}}>🔐</div>
-        <div className="T" style={{fontSize:"1.2rem",fontWeight:800,color:P.red}}>{t("Politique de confidentialité","Privacy Policy")}</div>
-        <div style={{fontSize:"0.92rem",color:P.muted,marginTop:4}}>ONG Happy Mum's — Quiz Dignité</div>
+        <div style={{fontSize:"2.6rem",marginBottom:6}}>🔐</div>
+        <h1 className="T" style={{fontSize:"1.7rem",fontWeight:900,color:P.red,margin:0}}>{t("Politique de confidentialité","Privacy Policy")}</h1>
+        <div style={{fontSize:"1rem",color:P.muted,marginTop:6,fontWeight:700}}>ONG Happy Mum's — Quiz Dignité</div>
       </div>
       {sections.map(([title,x],i)=>(
-        <div key={i} style={{background:"rgba(255,255,255,.88)",borderRadius:16,padding:16,marginBottom:10,border:"1.5px solid rgba(255,107,157,.12)"}}>
-          <div className="T" style={{fontSize:"1.1rem",fontWeight:800,color:P.red,marginBottom:7}}>{title}</div>
-          <div style={{fontSize:"1.0rem",color:"#6B4E6B",lineHeight:1.7,whiteSpace:"pre-line"}}>{x}</div>
-        </div>
+        <section key={i} style={{background:"white",borderRadius:20,padding:"18px 16px",marginBottom:12,border:"1.5px solid rgba(255,107,157,.18)",boxShadow:"0 4px 14px rgba(232,0,61,.06)"}}>
+          <h2 className="T" style={{fontSize:"1.2rem",fontWeight:900,color:P.red,margin:"0 0 8px"}}>{title}</h2>
+          <div style={{fontSize:"1.05rem",color:P.text,lineHeight:1.6,whiteSpace:"pre-line",fontWeight:500}}>{x}</div>
+        </section>
       ))}
-      <p style={{fontSize:"0.92rem",color:P.muted,textAlign:"center",marginTop:16}}>{t("Dernière mise à jour : mai 2026 · © ONG Happy Mum's","Last updated: May 2026 · © ONG Happy Mum's")}</p>
+      <p style={{fontSize:"0.95rem",color:P.muted,textAlign:"center",marginTop:16}}>{t("Dernière mise à jour : octobre 2026 · © ONG Happy Mum's","Last updated: October 2026 · © ONG Happy Mum's")}</p>
     </div>
   );
 }
@@ -2054,10 +2092,10 @@ const FOODS_ALL_EN=[
   {e:"🍬",l:"Sweets",good:false,why:"Fast sugar = energy spike then crash. Better to eat fruit!"},
 ];
 const PHASES_ALL_EN=[
-  {id:1,e:"🩸",t:"Menstrual phase",j:"Days 1–5",c:P.red,bg:P.redSoft,info:"Your body is renewing itself. Rest, drink warm fluids and take care of yourself. 💗"},
-  {id:2,e:"🌱",t:"Follicular phase",j:"Days 6–13",c:P.green,bg:P.greenSoft,info:"Your energy returns! You feel creative and full of vitality. 🌟"},
-  {id:3,e:"🌺",t:"Ovulation",j:"Around day 14",c:P.rose,bg:P.roseSoft,info:"Your body is at peak vitality. You feel confident — enjoy it! 🌸"},
-  {id:4,e:"🌙",t:"Luteal phase",j:"Days 15–28",c:P.purple,bg:P.purpleSoft,info:"Your body slows down. You may feel more introspective. That is completely normal. 🫶"},
+  {id:1,e:"🩸",t:"Menstrual phase",j:"Start of the cycle",c:P.red,bg:P.redSoft,info:"Your body is renewing itself. Rest, drink warm fluids and take care of yourself. 💗"},
+  {id:2,e:"🌱",t:"Follicular phase",j:"After the period",c:P.green,bg:P.greenSoft,info:"Your energy returns! You feel creative and full of vitality. 🌟"},
+  {id:3,e:"🌺",t:"Ovulation",j:"Around mid-cycle",c:P.rose,bg:P.roseSoft,info:"Your body is at peak vitality. You feel confident — enjoy it! 🌸"},
+  {id:4,e:"🌙",t:"Luteal phase",j:"Before the next period",c:P.purple,bg:P.purpleSoft,info:"Your body slows down. You may feel more introspective. That is completely normal. 🫶"},
 ];
 const CYCLE_SYMP_EN=[
   {phaseId:1,symptom:"Cramps and fatigue",e:"😣"},
@@ -2090,150 +2128,184 @@ const WS_DATA_EN=[
   {size:12,words:["PUBERTY","UTERUS","HYGIENE","TOWEL","HEALTH","BODY","DIGNITY","STRONG","BLOOD","CYCLE","GIRL","PERIOD"],dirs:[[0,1],[1,0],[1,1],[1,-1],[0,-1],[-1,0]],label:"All directions"},
 ];
 const GLOSSAIRE_DATA_EN=[
-  {cat:"🫀 Anatomy",terms:[
-    {w:"Uterus",d:"A pear-shaped organ in the female pelvis. This is where a baby develops during pregnancy and where menstrual blood originates."},
-    {w:"Ovaries",d:"Two small organs that produce eggs (ova) and female hormones, including oestrogen and progesterone."},
-    {w:"Vagina",d:"A muscular canal connecting the uterus to the outside of the body. Menstrual blood passes through here, as do babies during birth."},
-    {w:"Vulva",d:"The collective term for the external female genitalia, including the labia majora, labia minora, clitoris and vaginal opening."},
-    {w:"Cervix",d:"The lower, narrow part of the uterus that connects to the vagina. It dilates during childbirth."},
-    {w:"Fallopian tubes",d:"Two tubes connecting the ovaries to the uterus. Fertilisation typically takes place here."},
-    {w:"Endometrium",d:"The inner lining of the uterus. It thickens each month in preparation for a possible pregnancy and sheds during menstruation."},
-    {w:"Clitoris",d:"A small erectile organ located at the front of the vulva. Its sole purpose is pleasure — and that is a right."},
+  {cat:"🌸 My body and puberty",terms:[
+    {w:"Puberty",d:"The time when a child's body gradually becomes an adult body, often between 8 and 16 for girls: breasts grow, hair appears, then the first period comes. Everyone goes at her own pace."},
+    {w:"Hormones",d:"Chemical messengers made by the body, such as oestrogen and progesterone. They trigger puberty, regulate the menstrual cycle and can also affect mood and energy."},
+    {w:"Uterus",d:"A hollow, pear-shaped organ in the lower belly. Periods come from its inner lining (the endometrium), and it is where a baby grows during pregnancy."},
+    {w:"Ovaries",d:"Two small organs on each side of the uterus. They hold the eggs and make female hormones."},
+    {w:"Vagina",d:"A soft canal connecting the uterus to the outside of the body. Menstrual blood flows out through it."},
+    {w:"Vulva",d:"The visible, external part of the genitals: the outer and inner lips, the clitoris, the vaginal opening and the opening where urine comes out. Wash it with water or a mild soap."},
+    {w:"Clitoris",d:"A small, very sensitive organ at the top of the vulva. It is part of every girl's body and deserves to be known and respected, like the rest of the body."},
+    {w:"Vaginal discharge",d:"A white or clear fluid that comes out of the vagina, often from puberty. It is normal: it protects and cleans the vagina. If the smell or colour changes, or it itches, ask for advice."},
   ]},
-  {cat:"🔄 Cycle & Reproduction",terms:[
-    {w:"Menstrual cycle",d:"A monthly process in which the body prepares for a possible pregnancy. It lasts on average 28 days, though anywhere between 21 and 35 days is normal."},
-    {w:"Ovulation",d:"The release of a mature egg from one of the ovaries, typically around day 14 of the cycle. This is the body's most fertile window."},
-    {w:"Menstruation",d:"Another word for periods. The monthly shedding of the uterine lining as a bloody discharge, usually lasting 3 to 7 days."},
-    {w:"Follicular phase",d:"The first part of the cycle (days 1-13): an egg matures inside a follicle in the ovary. Energy and vitality often increase during this time."},
-    {w:"Luteal phase",d:"The second part of the cycle (days 15-28): the body prepares for a possible pregnancy. PMS symptoms may arise during this phase."},
-    {w:"Egg (ovum)",d:"The female reproductive cell produced by the ovaries. One egg is typically released each month during ovulation."},
-    {w:"Fertilisation",d:"The union of an egg and a sperm cell, usually in the fallopian tube. This is the starting point of a pregnancy."},
-    {w:"Hormones",d:"Chemical messengers — including oestrogen and progesterone — that regulate the menstrual cycle, mood and physical development."},
+  {cat:"🩸 My periods and hygiene",terms:[
+    {w:"Menstrual cycle",d:"The time from the first day of one period to the first day of the next. It often lasts between 21 and 35 days and can be irregular in the first years."},
+    {w:"Period",d:"Bleeding from the vagina when the lining of the uterus is shed. It usually lasts 3 to 7 days. It is natural, not dirty or shameful. Also called menstruation."},
+    {w:"First period",d:"The very first menstrual bleeding, often between ages 9 and 16, also called menarche. It helps to talk about it beforehand with a trusted person and to carry a pad."},
+    {w:"Phases of the cycle",d:"The cycle goes through four stages: the period, the follicular phase (an egg gets ready), ovulation, then the luteal phase (the body waits for a possible pregnancy). Their length varies from person to person."},
+    {w:"Ovulation",d:"When an ovary releases an egg, around the middle of the cycle. The exact day varies. Pregnancy is possible for several days around ovulation, not only on that day."},
+    {w:"Menstrual flow",d:"The amount of blood lost during a period. It can be light, medium or heavy, and often changes from day to day. If you need to change your product every hour, talk to a health professional."},
+    {w:"Sanitary product",d:"What you use to collect period blood: disposable or washable pad, tampon, menstrual cup, period pants. Each girl can choose what suits her."},
+    {w:"Washable pad",d:"A cloth pad you wash and reuse. Washed well and dried properly, ideally in the sun, it is cheap, eco-friendly and as effective as a disposable pad."},
+    {w:"Menstrual cup",d:"A small soft cup placed in the vagina to collect blood. It is emptied, washed and reused for several years. Follow the leaflet carefully."},
+    {w:"Tampon",d:"An absorbent product placed in the vagina. Follow the leaflet: change it every 4 to 8 hours, never keep it in for more than 8 hours, and use the smallest size that suits your flow."},
+    {w:"Menstrual poverty",d:"When a person lacks enough products, water, suitable toilets or information to manage her period with dignity. It makes some girls miss school."},
+    {w:"Dignity Box",d:"A box set up by ONG Happy Mum's in partner schools and centres, where girls can take free sanitary products when they need them."},
   ]},
-  {cat:"🧼 Hygiene & Protection",terms:[
-    {w:"Sanitary product",d:"Any product used to absorb or collect menstrual blood, including sanitary towels, tampons, menstrual cups and period pants."},
-    {w:"Washable pad",d:"A reusable cloth pad that can be washed and used again. Eco-friendly, cost-effective and just as effective as disposable options."},
-    {w:"Menstrual cup",d:"A small, flexible cup made from medical-grade silicone, inserted into the vagina to collect menstrual blood. Reusable for years with proper care."},
-    {w:"Tampon",d:"An internal absorbent product. It should be changed every 4 to 8 hours to reduce the risk of infection."},
-    {w:"Menstrual poverty",d:"The inability to access sanitary products, clean water or reliable menstrual health information. It causes thousands of girls to miss school every month."},
-    {w:"Dignity Box",d:"A free sanitary product distribution point set up by ONG Happy Mum's in partner schools in Abidjan and Bouake."},
+  {cat:"💊 My health and well-being",terms:[
+    {w:"Period cramps",d:"Pain in the lower belly during a period, caused by the uterus contracting. The medical term is dysmenorrhoea. A hot water bottle can help. If the pain stops you going to school or sleeping, see a health professional."},
+    {w:"Premenstrual syndrome (PMS)",d:"Signs that appear a few days before a period: tiredness, bloating, tender breasts, mood swings. They usually go away when the period starts."},
+    {w:"Endometriosis",d:"A condition in which tissue similar to the lining of the uterus grows outside the uterus. It can cause severe pain, but not always. Very painful periods deserve medical advice."},
+    {w:"Amenorrhoea",d:"The absence of periods. It is normal before puberty or during pregnancy, and periods can be irregular at first. If they stop for a long time for no known reason, talk to a health professional."},
+    {w:"STIs",d:"Sexually transmitted infections: they are passed on during sex. Some show no signs. Condoms protect, and a health centre can test you confidentially."},
   ]},
-  {cat:"💊 Health",terms:[
-    {w:"Endometriosis",d:"A condition in which tissue similar to the uterine lining grows outside the uterus, causing intense pain. It affects around 1 in 10 women. Seek medical advice if your pain is severe."},
-    {w:"Premenstrual syndrome (PMS)",d:"A collection of physical and emotional symptoms — including cramps, mood changes, fatigue and bloating — that appear in the days leading up to a period."},
-    {w:"Dysmenorrhoea",d:"The medical term for painful periods. Mild to moderate discomfort is common; severe pain that affects daily life warrants medical attention."},
-    {w:"Amenorrhoea",d:"The absence of periods. This is normal during pregnancy or breastfeeding, but otherwise requires medical investigation."},
-    {w:"Menopause",d:"The natural end of menstruation, usually occurring between the ages of 45 and 55. It marks the end of a person's reproductive years."},
-    {w:"Puberty",d:"A period of significant physical and emotional change, typically beginning between the ages of 10 and 16 in girls, marked by the onset of periods and bodily development."},
+  {cat:"💗 My emotions and self-confidence",terms:[
+    {w:"Self-confidence",d:"Believing in your worth and your abilities, even when things are hard or when others disagree with you."},
+    {w:"Self-esteem",d:"The value you give yourself. With good self-esteem, you know you deserve respect, even when you make mistakes."},
+    {w:"Self-image",d:"How you see yourself, especially your body and appearance. It doesn't always match reality and can be shaped by social media or other people's comments."},
+    {w:"Insecurity",d:"When a part of your appearance or body bothers you so much that you lose confidence. Many girls feel this, especially during puberty."},
+    {w:"Comparison",d:"Measuring yourself against others: their bodies, their grades, their lives on social media. It can motivate you, but it often makes you forget that everyone has her own path."},
+    {w:"Self-respect",d:"Taking care of yourself, listening to your needs and refusing what hurts you, even when it is hard or others insist."},
   ]},
-  {cat:"⚖️ Rights & Society",terms:[
-    {w:"Menstrual dignity",d:"The fundamental right of every person to access sanitary products, accurate menstrual health information and respectful treatment during menstruation."},
-    {w:"Sexual and reproductive health rights",d:"Rights relating to sexual and reproductive health, including the right to information, quality healthcare, consent and contraception."},
-    {w:"Consent",d:"A free, informed and enthusiastic agreement to any form of physical or intimate contact. Consent can be withdrawn at any time. No means no."},
-    {w:"Gender-based violence",d:"Any act that harms a person because of their gender. This includes physical, psychological and sexual violence."},
-    {w:"Child marriage",d:"Marriage before the age of 18. It is illegal in Cote d'Ivoire and deprives girls of their education, freedom and future."},
+  {cat:"🤝 My relationships and boundaries",terms:[
+    {w:"Peer pressure",d:"When friends push you to do something you don't really want to do, out of fear of being rejected or no longer accepted."},
+    {w:"Influence",d:"The power a person, a group or social media has over your choices, ideas or appearance. Influence can be positive or negative."},
+    {w:"Personal boundaries",d:"What you accept or refuse in the way others talk to you, touch you or behave with you. Your boundaries deserve to be respected."},
+    {w:"Saying no",d:"Clearly refusing something that doesn't suit you. You have the right to say no without explaining, even to someone you love or who is older."},
+    {w:"Consent",d:"An agreement given freely, without pressure or threats. You can change your mind at any time. Ivorian law protects children: a sexual act with someone under 15 is rape, even if they said \"yes\"."},
+    {w:"Healthy friendship",d:"A friendship where you feel respected, listened to and free to be yourself. You can disagree without mocking or hurting each other."},
+    {w:"Toxic relationship",d:"A relationship (friendship, love or family) that often hurts you: mockery, jealousy, control, blackmail or threats. It is never your fault, and you can ask for help."},
+    {w:"Trusted person",d:"Someone you feel safe enough with to talk about a problem, ask questions or ask for help: a parent, an aunt, a teacher, a nurse…"},
+  ]},
+  {cat:"⚖️ My rights and safety",terms:[
+    {w:"Menstrual dignity",d:"The right to live your period without shame or exclusion, with products, water, clean toilets and accurate information."},
+    {w:"Menstrual stigma",d:"When someone is mocked, excluded or shamed because of her period. It is a form of violence, and it is never acceptable."},
+    {w:"SRHR",d:"Sexual and reproductive health and rights (DSSR in French): the right to be informed, cared for, to decide about your body and to be protected from violence."},
+    {w:"Gender-based violence (GBV)",d:"Any act that harms a person because of their gender: physical, sexual, psychological or economic violence, forced or early marriage. This list is not complete."},
+    {w:"Harassment",d:"Repeated mockery, insults, rumours or exclusion meant to hurt someone. At school or anywhere else, it is not a game: talk to a trusted person."},
+    {w:"Cyberbullying",d:"Hurtful or threatening messages, posts or photos online or on social media. Keep the evidence (screenshots), block the person and talk to a trusted adult."},
+    {w:"Privacy",d:"What belongs to you and that you don't have to share: your body, your intimacy, your photos, messages and secrets. No one has the right to spread them without your consent."},
+    {w:"Child marriage",d:"Marriage before 18. Ivorian law forbids it. It takes away girls' education, health and freedom to choose."},
+    {w:"Female genital mutilation",d:"Practices that cut or injure the genitals of girls and women. They are forbidden by law in Côte d'Ivoire and are a serious violation of human rights."},
+    {w:"Maputo Protocol",d:"A text adopted in 2003 by the African Union to protect the rights of women and girls: health, education, protection from violence and from forced marriage."},
+    {w:"SDG 5",d:"The 5th United Nations Sustainable Development Goal: achieve equality between women and men and empower all girls by 2030."},
   ]},
 ];
 const GLOSSAIRE_DATA=[
-  {cat:"🫀 Anatomie",terms:[
-    {w:"Utérus",d:"Organe en forme de poire situé dans le bassin féminin. C'est là que se développe le bébé pendant la grossesse et d'où viennent les règles."},
-    {w:"Ovaires",d:"Deux petits organes qui produisent les ovules et les hormones féminines (œstrogène et progestérone)."},
-    {w:"Vagin",d:"Canal musculaire reliant l'utérus à l'extérieur du corps. C'est par là que sortent les règles et que naît le bébé."},
-    {w:"Vulve",d:"Ensemble des organes génitaux externes féminins : grandes et petites lèvres, clitoris, entrée du vagin."},
-    {w:"Col de l'utérus",d:"Partie inférieure de l'utérus qui s'ouvre sur le vagin. Il se dilate lors de l'accouchement."},
-    {w:"Trompes de Fallope",d:"Deux canaux qui relient les ovaires à l'utérus. C'est là que se produit la fécondation."},
-    {w:"Endomètre",d:"Muqueuse intérieure de l'utérus qui s'épaissit chaque mois et se renouvelle lors des règles."},
-    {w:"Clitoris",d:"Organe érectile féminin situé à l'avant de la vulve. Son seul rôle est le plaisir — c'est un droit."},
+  {cat:"🌸 Mon corps et la puberté",terms:[
+    {w:"Puberté",d:"Période où le corps d'enfant devient peu à peu un corps d'adulte, souvent entre 8 et 16 ans chez les filles : les seins poussent, les poils apparaissent, puis viennent les premières règles. Chacune avance à son rythme."},
+    {w:"Hormones",d:"Messagers chimiques fabriqués par le corps, comme l'œstrogène et la progestérone. Elles déclenchent la puberté, règlent le cycle menstruel et peuvent aussi influencer l'humeur et l'énergie."},
+    {w:"Utérus",d:"Organe creux en forme de poire, situé dans le bas du ventre. C'est de sa paroi intérieure (l'endomètre) que viennent les règles, et c'est là qu'un bébé grandit pendant une grossesse."},
+    {w:"Ovaires",d:"Deux petits organes situés de chaque côté de l'utérus. Ils contiennent les ovules et fabriquent les hormones féminines."},
+    {w:"Vagin",d:"Canal souple qui relie l'utérus à l'extérieur du corps. C'est par là que s'écoule le sang des règles."},
+    {w:"Vulve",d:"Partie visible des organes génitaux, à l'extérieur : les grandes et petites lèvres, le clitoris, l'ouverture du vagin et celle d'où sort l'urine. On la lave à l'eau claire ou avec un savon doux."},
+    {w:"Clitoris",d:"Petit organe très sensible situé en haut de la vulve. Il fait partie du corps de chaque fille et mérite d'être connu et respecté, comme le reste du corps."},
+    {w:"Pertes blanches",d:"Liquide blanc ou transparent qui sort du vagin, souvent dès la puberté. C'est normal : il protège et nettoie le vagin. Si l'odeur, la couleur change ou s'il y a des démangeaisons, demande conseil. On les appelle aussi leucorrhées."},
   ]},
-  {cat:"🔄 Cycle & Reproduction",terms:[
-    {w:"Cycle menstruel",d:"Processus mensuel de préparation du corps à une éventuelle grossesse. Dure en moyenne 28 jours, mais peut varier entre 21 et 35 jours."},
-    {w:"Ovulation",d:"Libération d'un ovule par un ovaire, généralement vers le 14e jour du cycle. C'est la période de fertilité."},
-    {w:"Menstruation",d:"Autre mot pour les règles. Écoulement sanguin mensuel correspondant au renouvellement de l'endomètre."},
-    {w:"Phase folliculaire",d:"Première partie du cycle (jours 1-13) : l'ovule mûrit dans l'ovaire. L'énergie et la vitalité augmentent."},
-    {w:"Phase lutéale",d:"Deuxième partie du cycle (jours 15-28) : le corps se prépare à une éventuelle grossesse. Parfois source de SPM."},
-    {w:"Ovule",d:"Cellule reproductive féminine produite par les ovaires. Un ovule est libéré chaque mois lors de l'ovulation."},
-    {w:"Fécondation",d:"Union d'un ovule et d'un spermatozoïde dans les trompes de Fallope. Point de départ d'une grossesse."},
-    {w:"Hormones",d:"Substances chimiques (œstrogène, progestérone) qui régulent le cycle menstruel, l'humeur et le développement du corps."},
+  {cat:"🩸 Mes règles et mon hygiène",terms:[
+    {w:"Cycle menstruel",d:"Période qui va du premier jour des règles au premier jour des règles suivantes. Il dure souvent entre 21 et 35 jours et peut être irrégulier pendant les premières années."},
+    {w:"Règles",d:"Saignement qui sort du vagin quand la paroi de l'utérus s'élimine. Elles durent en général de 3 à 7 jours. C'est naturel, pas sale ni honteux. On dit aussi menstruation."},
+    {w:"Premières règles",d:"Le tout premier saignement des règles, souvent entre 9 et 16 ans. On l'appelle aussi ménarche. Il est utile d'en parler avant avec une personne de confiance et d'avoir une protection sur soi."},
+    {w:"Phases du cycle",d:"Le cycle passe par quatre étapes : les règles, la phase folliculaire (un ovule se prépare), l'ovulation, puis la phase lutéale (le corps attend une éventuelle grossesse). Leur durée varie selon les personnes."},
+    {w:"Ovulation",d:"Moment où un ovaire libère un ovule, vers le milieu du cycle. Le jour exact varie. Une grossesse est possible pendant plusieurs jours autour de l'ovulation, pas seulement le jour même."},
+    {w:"Flux menstruel",d:"Quantité de sang perdue pendant les règles. Il peut être léger, moyen ou abondant, et change souvent d'un jour à l'autre. Si tu dois changer de protection toutes les heures, parles-en à un professionnel de santé."},
+    {w:"Protection hygiénique",d:"Ce qu'on utilise pour recueillir le sang des règles : serviette jetable ou lavable, tampon, cup, culotte menstruelle. Chacune peut choisir celle qui lui convient."},
+    {w:"Serviette lavable",d:"Serviette en tissu que l'on lave et réutilise. Bien lavée et bien séchée, de préférence au soleil, elle est économique, écologique et aussi efficace qu'une serviette jetable."},
+    {w:"Cup menstruelle",d:"Petite coupe souple que l'on place dans le vagin pour recueillir le sang. Elle se vide, se lave et se réutilise pendant plusieurs années. Suis bien la notice."},
+    {w:"Tampon",d:"Protection absorbante que l'on place dans le vagin. Suis la notice : change-le toutes les 4 à 8 heures, ne le garde jamais plus de 8 heures et choisis la plus petite taille adaptée à ton flux."},
+    {w:"Précarité menstruelle",d:"Quand une personne n'a pas assez de protections, d'eau, de toilettes adaptées ou d'informations pour vivre ses règles dignement. Elle pousse certaines filles à manquer l'école."},
+    {w:"Box de Dignité",d:"Boîte installée par l'ONG Happy Mum's dans des établissements partenaires, où les filles peuvent prendre gratuitement des protections hygiéniques en cas de besoin."},
   ]},
-  {cat:"🧼 Hygiène & Protection",terms:[
-    {w:"Protection hygiénique",d:"Dispositif utilisé pour absorber ou recueillir le sang des règles : serviette, tampon, cup, culotte menstruelle."},
-    {w:"Serviette lavable",d:"Protection réutilisable en tissu, à laver après usage. Écologique, économique et tout aussi efficace."},
-    {w:"Cup menstruelle",d:"Coupe souple en silicone médical que l'on insère dans le vagin pour recueillir le sang. Réutilisable pendant des années."},
-    {w:"Tampon",d:"Protection interne en coton absorbant. À changer toutes les 4 à 8 heures pour éviter les infections."},
-    {w:"Précarité menstruelle",d:"Manque d'accès aux protections hygiéniques, à l'eau et à l'information. Prive des milliers de filles d'école chaque mois."},
-    {w:"Box de Dignité",d:"Dispositif installé par ONG Happy Mum's dans des établissements partenaires à Abidjan et Bouaké, offrant des protections gratuites."},
+  {cat:"💊 Ma santé et mon bien-être",terms:[
+    {w:"Crampes menstruelles",d:"Douleurs au bas du ventre pendant les règles, dues aux contractions de l'utérus. Le terme médical est dysménorrhée. Une bouillotte peut soulager. Si la douleur t'empêche d'aller à l'école ou de dormir, consulte."},
+    {w:"Syndrome prémenstruel (SPM)",d:"Ensemble de signes qui apparaissent quelques jours avant les règles : fatigue, ventre gonflé, seins sensibles, sautes d'humeur. Ils disparaissent en général quand les règles commencent."},
+    {w:"Endométriose",d:"Maladie où un tissu semblable à celui qui tapisse l'utérus se développe en dehors de l'utérus. Elle peut causer de fortes douleurs, mais pas toujours. Des règles très douloureuses méritent une consultation."},
+    {w:"Aménorrhée",d:"Absence de règles. C'est normal avant la puberté ou pendant une grossesse, et les règles peuvent être irrégulières au début. Si elles s'arrêtent longtemps sans raison connue, parles-en à un professionnel de santé."},
+    {w:"IST",d:"Infections sexuellement transmissibles : elles se transmettent lors de rapports sexuels. Certaines ne donnent aucun signe. Le préservatif protège, et un centre de santé peut faire un dépistage en toute confidentialité."},
   ]},
-  {cat:"💊 Santé",terms:[
-    {w:"Endométriose",d:"Maladie où le tissu de l'endomètre pousse en dehors de l'utérus, causant des douleurs intenses. Touche 1 femme sur 10. Consulte si tu souffres beaucoup."},
-    {w:"Syndrome prémenstruel",d:"Ensemble de symptômes (douleurs, sautes d'humeur, fatigue, ballonnements) apparaissant dans les jours précédant les règles."},
-    {w:"Dysménorrhée",d:"Terme médical désignant les douleurs menstruelles. Normales si légères à modérées. Intenses, elles méritent consultation."},
-    {w:"Aménorrhée",d:"Absence de règles. Normale pendant la grossesse ou l'allaitement. Anormale autrement — parles-en à un médecin."},
-    {w:"Ménopause",d:"Arrêt définitif des règles, généralement entre 45 et 55 ans. Marque la fin de la fertilité féminine."},
-    {w:"Puberté",d:"Période de transformation du corps (vers 10-16 ans chez la fille) marquée par l'apparition des règles et le développement physique."},
+  {cat:"💗 Mes émotions et ma confiance en moi",terms:[
+    {w:"Confiance en soi",d:"Le fait de croire en sa valeur et en ses capacités, même quand on rencontre des difficultés ou que les autres ne sont pas d'accord avec nous."},
+    {w:"Estime de soi",d:"La valeur qu'on s'accorde à soi-même. Avec une bonne estime de soi, on sait qu'on mérite le respect, même quand on fait des erreurs."},
+    {w:"Image de soi",d:"La façon dont on se voit, surtout son corps et son apparence. Elle ne correspond pas toujours à la réalité et peut être influencée par les réseaux sociaux ou les remarques des autres."},
+    {w:"Complexe",d:"Quand une partie de son apparence ou de son corps nous gêne au point de nous faire perdre confiance. Beaucoup de filles en ont, surtout pendant la puberté."},
+    {w:"Comparaison",d:"Le fait de se mesurer aux autres : leur corps, leurs notes, leur vie sur les réseaux. Elle peut motiver, mais elle fait souvent oublier que chacune a son propre chemin."},
+    {w:"Respect de soi",d:"Prendre soin de soi, écouter ses besoins et refuser ce qui nous fait du mal, même quand c'est difficile ou que les autres insistent."},
   ]},
-  {cat:"⚖️ Droits & Société",terms:[
-    {w:"Dignité menstruelle",d:"Droit fondamental d'accéder aux protections hygiéniques, à l'éducation sur les règles et au respect pendant les menstruations."},
-    {w:"DSSR",d:"Droits en matière de Santé Sexuelle et Reproductive. Incluent le droit à l'information, aux soins, au consentement et à la contraception."},
-    {w:"Consentement",d:"Accord libre, éclairé et enthousiaste donné pour toute relation intime. Il peut être retiré à tout moment. Non = non."},
-    {w:"Violence basée sur le genre",d:"Tout acte nuisant à une personne en raison de son genre. Inclut les violences physiques, psychologiques et sexuelles."},
-    {w:"Mariage précoce",d:"Mariage avant 18 ans. Interdit par la loi en Côte d'Ivoire. Prive les filles d'éducation et de liberté."},
-    {w:"Protocole de Maputo",d:"Traité africain adopté en 2003 par l'Union africaine. Il protège les droits des femmes en matière de santé, d'éducation et de protection contre les violences."},
-    {w:"ODD 5",d:"Objectif de Développement Durable n°5 : atteindre l'égalité des genres et autonomiser toutes les femmes et les filles d'ici 2030."},
-    {w:"Mutilations génitales féminines",d:"Pratiques consistant à modifier ou blesser les organes génitaux féminins. Interdites par la loi dans de nombreux pays africains dont la Côte d'Ivoire. Violation grave des droits humains."},
+  {cat:"🤝 Mes relations et mes limites",terms:[
+    {w:"Pression des copines",d:"Quand des amies nous poussent à faire quelque chose qu'on n'a pas vraiment envie de faire, par peur d'être rejetée ou de ne plus être acceptée."},
+    {w:"Influence",d:"Le pouvoir qu'une personne, un groupe ou les réseaux sociaux ont sur nos choix, nos idées ou notre apparence. Une influence peut être positive ou négative."},
+    {w:"Limites personnelles",d:"Ce que tu acceptes ou refuses dans la façon dont les autres te parlent, te touchent ou se comportent avec toi. Tes limites méritent d'être respectées."},
+    {w:"Dire non",d:"Refuser clairement quelque chose qui ne te convient pas. Tu as le droit de dire non sans te justifier, même à une personne que tu aimes ou qui est plus âgée."},
+    {w:"Consentement",d:"Un accord donné librement, sans pression ni menace. On peut changer d'avis à tout moment. La loi ivoirienne protège les enfants : un acte sexuel sur une personne de moins de 15 ans est un viol, même si elle a dit « oui »."},
+    {w:"Amitié saine",d:"Une amitié où l'on se sent respectée, écoutée et libre d'être soi-même. On peut ne pas être d'accord sans se moquer ni se blesser."},
+    {w:"Relation toxique",d:"Une relation (amitié, amour ou famille) qui fait souvent du mal : moqueries, jalousie, contrôle, chantage ou menaces. Ce n'est jamais ta faute, et tu peux demander de l'aide."},
+    {w:"Personne de confiance",d:"Une personne auprès de qui tu te sens assez en sécurité pour parler d'un problème, poser des questions ou demander de l'aide : un parent, une tante, une enseignante, une infirmière…"},
   ]},
-  {cat:"🔬 Termes médicaux supplémentaires",terms:[
-    {w:"Spotting",d:"Légères pertes de sang entre deux règles. Peuvent être normales (ovulation) ou nécessiter une consultation si fréquentes."},
-    {w:"Flux menstruel",d:"Volume de sang perdu pendant les règles. Varie d'une personne à l'autre. En moyenne 30 à 80 ml par cycle."},
-    {w:"Crampes menstruelles",d:"Douleurs abdominales causées par les contractions de l'utérus pendant les règles. Une chaleur douce et l'ibuprofène peuvent aider."},
-    {w:"IST",d:"Infections Sexuellement Transmissibles. Peuvent être évitées par l'utilisation de préservatifs et le dépistage régulier."},
-    {w:"Pilule contraceptive",d:"Médicament hormonal pris quotidiennement pour éviter une grossesse. Ne protège pas contre les IST. Consulte un médecin avant de commencer."},
-    {w:"Leucorrhée",d:"Pertes vaginales blanches ou transparentes, normales et saines. Elles lubrifient et protègent le vagin. À surveiller si elles changent de couleur ou d'odeur."},
-    {w:"Périnée",d:"Ensemble des muscles qui soutiennent les organes pelviens (utérus, vessie, rectum). Le renforcement du périnée aide à prévenir les fuites urinaires."},
+  {cat:"⚖️ Mes droits et ma sécurité",terms:[
+    {w:"Dignité menstruelle",d:"Le droit de vivre ses règles sans honte ni exclusion, avec des protections, de l'eau, des toilettes propres et des informations justes."},
+    {w:"Stigmatisation menstruelle",d:"Quand on se moque, qu'on exclut ou qu'on fait honte à quelqu'un à cause de ses règles. C'est une forme de violence, et ce n'est jamais acceptable."},
+    {w:"DSSR",d:"Droits en matière de santé sexuelle et reproductive : le droit d'être informée, soignée, de décider pour son corps et d'être protégée des violences."},
+    {w:"Violences basées sur le genre (VBG)",d:"Tout acte qui fait du mal à une personne à cause de son genre : violences physiques, sexuelles, psychologiques ou économiques, mariage forcé ou précoce. Cette liste n'est pas complète."},
+    {w:"Harcèlement",d:"Des moqueries, insultes, rumeurs ou mises à l'écart qui se répètent pour blesser quelqu'un. À l'école comme ailleurs, ce n'est pas un jeu : parles-en à une personne de confiance."},
+    {w:"Cyberharcèlement",d:"Des messages, publications ou photos blessants ou menaçants sur Internet ou les réseaux sociaux. Garde les preuves (captures d'écran), bloque la personne et parles-en à un adulte de confiance."},
+    {w:"Vie privée",d:"Ce qui t'appartient et que tu n'es pas obligée de partager : ton corps, ton intimité, tes photos, tes messages, tes secrets. Personne n'a le droit de les diffuser sans ton accord."},
+    {w:"Mariage précoce",d:"Mariage avant 18 ans. La loi ivoirienne l'interdit. Il prive les filles de leur éducation, de leur santé et de leur liberté de choisir."},
+    {w:"Mutilations génitales féminines",d:"Pratiques qui coupent ou blessent les organes génitaux des filles et des femmes. Elles sont interdites par la loi en Côte d'Ivoire et constituent une grave violation des droits humains."},
+    {w:"Protocole de Maputo",d:"Texte adopté en 2003 par l'Union africaine pour protéger les droits des femmes et des filles : santé, éducation, protection contre les violences et contre le mariage forcé."},
+    {w:"ODD 5",d:"Le 5e Objectif de développement durable des Nations unies : parvenir à l'égalité entre les femmes et les hommes et donner plus de pouvoir à toutes les filles d'ici 2030."},
   ]},
 ];
 
 function Glossaire({onBack,lang}){
   const[search,setSearch]=useState("");const[open,setOpen]=useState(null);
   const data=lang==="en"?GLOSSAIRE_DATA_EN:GLOSSAIRE_DATA;
-  const cats=data.map(c=>({...c,terms:c.terms.filter(t=>t.w.toLowerCase().includes(search.toLowerCase())||t.d.toLowerCase().includes(search.toLowerCase()))})).filter(c=>c.terms.length>0);
+  const total=data.reduce((a,c)=>a+c.terms.length,0);
+  // Recherche sans tenir compte des majuscules ni des accents, dans les mots et les définitions
+  const norm=x=>String(x).toLowerCase().normalize("NFD").replace(/\p{M}/gu,"").replace(/[’']/g," ");
+  const q=norm(search.trim());
+  const cats=data.map(c=>({...c,terms:c.terms.filter(t=>!q||norm(t.w).includes(q)||norm(t.d).includes(q))})).filter(c=>c.terms.length>0);
+  const found=cats.reduce((a,c)=>a+c.terms.length,0);
   return(
-    <div style={{padding:"16px 16px 88px"}}>
-      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:12,padding:"6px 14px",fontSize:16,color:P.muted,fontWeight:700,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
-      <div style={{background:HERO,borderRadius:22,padding:"18px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
-        <div style={{fontSize:36,marginBottom:4}}>📚</div>
-        <div className="T" style={{color:"white",fontSize:"1.2rem",fontWeight:800,margin:"0 0 3px"}}>Glossaire</div>
-        <div style={{color:"rgba(255,255,255,.85)",fontSize:"0.95rem",fontWeight:600}}>{lang==="en"?"30 key terms to understand your body and your rights":"30 mots clés pour comprendre ton corps et tes droits"}</div>
+    <div style={{padding:"16px 16px 110px"}}>
+      <button onClick={onBack} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"10px 18px",fontSize:16,color:P.muted,fontWeight:800,marginBottom:14}}>{lang==="en"?"← Back":"← Retour"}</button>
+      <div style={{background:HERO,borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 8px 28px #C8102E2A"}}>
+        <div style={{fontSize:48,marginBottom:4}}>📚</div>
+        <h1 className="T" style={{color:"white",fontSize:"1.8rem",fontWeight:900,margin:"0 0 6px"}}>{lang==="en"?"Glossary":"Glossaire"}</h1>
+        <div style={{color:"white",fontSize:"1.05rem",fontWeight:700,opacity:.95}}>{lang==="en"?`${total} key terms to understand your body and your rights`:`${total} mots-clés pour comprendre ton corps et tes droits`}</div>
       </div>
-      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={lang==="en"?"🔍 Search for a term...":"🔍 Rechercher un mot..."}
-        style={{width:"100%",background:"rgba(255,255,255,.9)",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:14,padding:"12px 16px",fontSize:"1.1rem",outline:"none",marginBottom:14,boxSizing:"border-box",fontFamily:"'Nunito',sans-serif",color:P.text}}/>
-      {cats.map((c,ci)=>(
-        <div key={ci} style={{marginBottom:14}}>
-          <div className="T" style={{fontSize:"0.95rem",fontWeight:800,color:P.red,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>{c.cat}</div>
-          {c.terms.map((t,ti)=>{
-            const k=`${ci}-${ti}`;const isOpen=open===k;
-            return(<div key={k} onClick={()=>setOpen(isOpen?null:k)}
-              style={{background:"rgba(255,255,255,.88)",borderRadius:16,padding:"13px 16px",marginBottom:8,cursor:"pointer",border:`1.5px solid ${isOpen?"rgba(232,0,61,.25)":"rgba(255,107,157,.12)"}`,boxShadow:isOpen?"0 4px 14px rgba(232,0,61,.08)":"none",transition:"all .2s"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div className="T" style={{fontSize:"1.1rem",fontWeight:700,color:P.text}}>{t.w}</div>
-                <span style={{fontSize:"1.1rem",color:P.red,fontWeight:800,transition:"transform .2s",display:"inline-block",transform:isOpen?"rotate(180deg)":"rotate(0)"}}>{isOpen?"▲":"▼"}</span>
+      <input type="search" value={search} onChange={e=>{setSearch(e.target.value);setOpen(null);}} placeholder={lang==="en"?"🔍 Search for a term...":"🔍 Rechercher un mot..."} aria-label={lang==="en"?"Search the glossary":"Rechercher dans le glossaire"} enterKeyHint="search"
+        style={{width:"100%",background:"white",border:`2px solid rgba(232,0,61,.2)`,borderRadius:16,padding:"15px 16px",fontSize:"1.12rem",outline:"none",marginBottom:q?8:16,boxSizing:"border-box",fontFamily:"'Nunito',sans-serif",color:P.text}}/>
+      {q&&found>0&&<div role="status" style={{fontSize:"0.98rem",color:P.muted,fontWeight:700,margin:"0 4px 14px"}}>{lang==="en"?`${found} result${found>1?"s":""}`:`${found} résultat${found>1?"s":""}`}</div>}
+      {cats.map(c=>(
+        <section key={c.cat} style={{marginBottom:18}}>
+          <h2 className="T" style={{fontSize:"1.15rem",fontWeight:900,color:P.red,margin:"0 0 10px 2px"}}>{c.cat}</h2>
+          {c.terms.map(t=>{
+            const k=t.w;const isOpen=open===k||(!!q&&found===1);
+            return(<div key={k} role="button" tabIndex={0} aria-expanded={isOpen} onKeyDown={kb(()=>setOpen(open===k?null:k))} onClick={()=>setOpen(open===k?null:k)}
+              style={{background:"white",borderRadius:18,padding:"15px 16px",marginBottom:10,cursor:"pointer",border:`2px solid ${isOpen?"rgba(232,0,61,.3)":"rgba(255,107,157,.15)"}`,boxShadow:isOpen?"0 6px 16px rgba(232,0,61,.1)":"0 2px 6px rgba(232,0,61,.04)",transition:"all .2s"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+                <div className="T" style={{fontSize:"1.15rem",fontWeight:800,color:P.text,lineHeight:1.25}}>{t.w}</div>
+                <span aria-hidden="true" style={{flexShrink:0,width:30,height:30,borderRadius:"50%",background:isOpen?P.red:"rgba(232,0,61,.08)",color:isOpen?"white":P.red,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.9rem",fontWeight:900,transition:"transform .2s",transform:isOpen?"rotate(180deg)":"rotate(0)"}}>▼</span>
               </div>
-              {isOpen&&<div style={{fontSize:"1.01rem",color:P.muted,lineHeight:1.7,marginTop:10,paddingTop:10,borderTop:"1px solid rgba(232,0,61,.1)"}}>
-                <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
-                  <span style={{flex:1}}>{t.d}</span>
-                  <SpeechBtn text={`${t.w}. ${t.d}`} lang={lang} style={{marginTop:1}}/>
-                </div>
+              {isOpen&&<div style={{marginTop:12,paddingTop:12,borderTop:"1px solid rgba(232,0,61,.1)",display:"flex",alignItems:"flex-start",gap:8}}>
+                <p style={{flex:1,margin:0,fontSize:"1.08rem",color:P.text,lineHeight:1.55,fontWeight:500}}>{t.d}</p>
+                <SpeechBtn text={`${t.w}. ${t.d}`} lang={lang} style={{marginTop:1,flexShrink:0}}/>
               </div>}
             </div>);
           })}
-        </div>
+        </section>
       ))}
-      {cats.length===0&&<div style={{textAlign:"center",color:P.muted,fontSize:"1.07rem",marginTop:20}}>Aucun résultat pour "{search}"</div>}
+      {cats.length===0&&<div role="status" style={{textAlign:"center",background:"white",borderRadius:18,padding:"22px 16px",color:P.text,fontSize:"1.08rem",fontWeight:600,lineHeight:1.5}}>
+        <div style={{fontSize:36,marginBottom:6}}>🔎</div>
+        {lang==="en"?`No term matches "${search}". Try another word, or ask a trusted person.`:`Aucun mot ne correspond à « ${search} ». Essaie un autre mot, ou pose la question à une personne de confiance.`}
+        <button onClick={()=>setSearch("")} style={{display:"block",margin:"14px auto 0",background:G,color:"white",border:"none",borderRadius:50,padding:"12px 22px",fontSize:"1.05rem",fontWeight:900}}>{lang==="en"?"See all terms":"Voir tous les mots"}</button>
+      </div>}
     </div>
   );
 }
 
 function Onboarding({onSubmit,lang}){
-  const[name,setName]=useState("");const[err,setErr]=useState("");
+  const[name,setName]=useState("");const[err,setErr]=useState("");const[showRestore,setShowRestore]=useState(false);
   const t=(fr,en)=>lang==="en"?en:fr;
   return(
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",background:"linear-gradient(160deg,#FFE8EF,#FFF0F5,#FFE0EC)"}}>
@@ -2258,7 +2330,9 @@ function Onboarding({onSubmit,lang}){
             style={{width:"100%",background:G,color:"white",border:"none",borderRadius:50,padding:"19px 22px",fontWeight:900,fontSize:"1.3rem",cursor:"pointer",boxShadow:"0 6px 22px rgba(232,0,61,.28)"}}>
             {t("C'est parti ! 🌸","Let's go! 🌸")}
           </button>
+          <button onClick={()=>setShowRestore(true)} style={{width:"100%",background:"transparent",color:P.red,border:"none",padding:"14px 10px 2px",fontSize:"1.08rem",fontWeight:800,textDecoration:"underline",cursor:"pointer"}}>💾 {t("J'ai déjà une sauvegarde","I already have a backup")}</button>
         </div>
+        {showRestore&&<BackupPanel lang={lang} startTab="restore" fallbackName={name} onClose={()=>setShowRestore(false)}/>}
         <p style={{fontSize:"0.9rem",color:P.muted,textAlign:"center",marginTop:18,opacity:.75}}>© 2026 ONG Happy Mum's – {t("Tous droits réservés","All rights reserved")}</p>
       </div>
     </div>
@@ -2270,8 +2344,8 @@ function JeMeCelebre({lang,onBack}){
   const STORAGE_KEY="hm_celebrate_journal";
   const PROMPTS_FR=["✨ Cite une chose dont tu es fière aujourd'hui","💗 Comment ton corps t'a-t-il servie aujourd'hui ?","🌟 Qu'est-ce que tu as accompli aujourd'hui ?","💪 Quelle force as-tu montrée aujourd'hui ?","😊 Qu'est-ce qui t'a fait sourire aujourd'hui ?","🌸 Qu'as-tu appris sur toi cette semaine ?","🧘 Comment prends-tu soin de toi aujourd'hui ?"];
   const PROMPTS_EN=["✨ Name one thing you are proud of today","💗 How has your body served you today?","🌟 What did you accomplish today?","💪 What strength did you show today?","😊 What made you smile today?","🌸 What did you learn about yourself this week?","🧘 How are you taking care of yourself today?"];
-  const INTRO_FR=`Un espace rien que pour toi.\n\nChaque jour, une question t'attend. Tu lis. Tu prends 2 minutes. Tu écris une phrase — une seule suffit.\n\nCe n'est pas une liste de choses à faire. C'est un moment pour poser les yeux sur toi avec bienveillance.\n\nAu bout d'une semaine → tu vois tes forces. Au bout d'un mois → tu te connais mieux. Au bout d'un an → tu as un miroir de ta croissance. 🌸`;
-  const INTRO_EN=`A space that belongs entirely to you.\n\nEach day, one question is waiting. You read it. You take 2 minutes. You write one sentence — that is enough.\n\nThis is not a to-do list. It is a moment to look at yourself with kindness.\n\nAfter one week → you see your strengths. After one month → you know yourself better. After one year → you have a mirror of your growth. 🌸`;
+  const INTRO_FR=`Un espace rien que pour toi.\n\nChaque jour, une question t'attend. Tu lis. Tu prends 2 minutes. Tu écris une phrase — une seule suffit.\n\nCe n'est pas une liste de choses à faire. C'est un moment pour poser les yeux sur toi avec bienveillance.\n\nAu bout d'une semaine → tu vois tes forces. Au bout d'un mois → tu te connais mieux. Au bout d'un an → tu as un miroir de ta croissance. 🌸\n\n📱 Ton journal reste sur ce téléphone : il n'est jamais envoyé sur Internet. Il n'a pas de mot de passe, alors garde ton téléphone pour toi si tu veux qu'il reste secret.`;
+  const INTRO_EN=`A space that belongs entirely to you.\n\nEach day, one question is waiting. You read it. You take 2 minutes. You write one sentence — that is enough.\n\nThis is not a to-do list. It is a moment to look at yourself with kindness.\n\nAfter one week → you see your strengths. After one month → you know yourself better. After one year → you have a mirror of your growth. 🌸\n\n📱 Your journal stays on this phone: it is never sent online. It has no password, so keep your phone to yourself if you want it to stay private.`;
 
   const loadJournal=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}catch{return[];}};
   const todayKey=()=>{const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;};
@@ -2337,7 +2411,7 @@ function JeMeCelebre({lang,onBack}){
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",borderRadius:24,padding:"22px 18px",textAlign:"center",marginBottom:20,boxShadow:"0 8px 28px rgba(232,0,61,.25)"}}>
         <div style={{fontSize:42,marginBottom:6}}>🌸</div>
         <div className="T" style={{color:"white",fontSize:"1.4rem",fontWeight:900,marginBottom:4}}>{lang==="en"?"I Celebrate Myself":"Je me célèbre"}</div>
-        <div style={{color:"rgba(255,255,255,.85)",fontSize:"1.0rem",fontWeight:600}}>{lang==="en"?"Your personal journal — for your eyes only 🔒":"Ton journal personnel — rien que pour toi 🔒"}</div>
+        <div style={{color:"rgba(255,255,255,.85)",fontSize:"1.0rem",fontWeight:600}}>{lang==="en"?"Your personal journal — it stays on your phone 🌸":"Ton journal personnel — il reste sur ton téléphone 🌸"}</div>
       </div>
 
       {showIntro?(
@@ -2431,8 +2505,8 @@ const DROITS_MODULES_FR=[
       QD("Le consentement doit être :","Deviné","Supposé","Clair, libre et révocable","Donné une fois pour toutes",2,"Le consentement doit toujours être donné librement, clairement exprimé, et peut être retiré à tout moment — même si on avait dit oui avant."),
       QD2("Le silence signifie toujours le consentement.",false,"Faux. Le silence ne vaut pas consentement. Un consentement doit être exprimé de façon claire et non ambiguë."),
       QD("Peut-on retirer son consentement après l'avoir donné ?","Non, jamais","Oui, seulement avant","Oui, à tout moment","Non, c'est trop tard",2,"Oui. Le consentement peut être retiré à tout moment, sans avoir à se justifier. L'autre personne doit respecter ce retrait immédiatement."),
-      QD("Un consentement donné sous la pression ou la menace est-il valable ?","Oui, il est signé","Non, il est invalide","Oui, si c'était verbal","Ça dépend de la situation",1,"Non. Un consentement obtenu sous pression, menace, manipulation ou chantage est invalide juridiquement et moralement."),
-      QD2("Une personne sous l'emprise d'alcool peut donner un consentement valable.",false,"Faux. Une personne en état d'ivresse ou sous l'effet de substances n'est pas en mesure de donner un consentement éclairé et libre."),
+      QD("Un consentement donné sous la pression ou la menace est-il valable ?","Oui, il est signé","Non, il est invalide","Oui, si c'était verbal","Ça dépend de la situation",1,"Non. Un « oui » obtenu sous la pression, la menace, la manipulation ou le chantage n'est pas un vrai consentement : le consentement doit toujours être libre."),
+      QD2("Une personne sous l'emprise d'alcool peut donner un consentement valable.",false,"Faux. Une personne trop ivre ou droguée pour comprendre ce qui se passe ou pour choisir ne peut pas donner un vrai consentement. Si quelqu'un est en danger, sa sécurité passe avant tout — et une victime n'est jamais responsable d'une agression."),
       QD("Le droit à l'intégrité corporelle signifie :","Manger sainement","Que personne ne peut toucher ton corps sans ton accord","Avoir un corps parfait","Faire du sport",1,"L'intégrité corporelle est un droit fondamental : ton corps t'appartient. Personne ne peut le toucher, modifier ou blesser sans ton consentement."),
       QD("Si quelqu'un te touche sans ta permission, c'est :","Normal entre amis","Une agression, quel que soit le lien","Acceptable en famille","Inévitable",1,"Tout contact physique non consenti est une agression, qu'il vienne d'un inconnu, d'un ami ou d'un membre de la famille."),
       QD2("Le consentement peut être donné pour un acte mais refusé pour un autre.",true,"Vrai. Accepter une chose ne signifie pas accepter tout le reste. Chaque acte nécessite son propre consentement."),
@@ -2484,10 +2558,10 @@ const DROITS_MODULES_FR=[
     badge:{icon:"🛡️",id:"droits_vbg",name:"Sentinelle de la Dignité"},
     questions:[
       QD("VBG signifie :","Valeur Bonne Garantie","Violence Basée sur le Genre","Vie Belle et Grande","Valeurs Bien Gérées",1,"VBG = Violence Basée sur le Genre. Ce terme désigne toute violence infligée à une personne en raison de son genre — principalement les femmes et les filles."),
-      QD("Les VBG incluent :","Seulement les coups physiques","Les violences physiques, psychologiques, sexuelles et économiques","Les disputes normales","Les blagues entre amis",1,"Les VBG couvrent toutes les formes de violence : physiques (coups), sexuelles (agression), psychologiques (humiliation, menace) et économiques (priver d'argent ou de travail)."),
+      QD("Les VBG incluent :","Seulement les coups physiques","Les violences physiques, psychologiques, sexuelles et économiques","Les disputes normales","Les blagues entre amis",1,"Les VBG prennent de nombreuses formes : physiques (coups), sexuelles (agression), psychologiques (humiliation, menace), économiques (priver d'argent ou de travail), mais aussi le mariage forcé ou précoce. Cette liste n'est pas complète."),
       QD2("Les violences psychologiques (insultes, humiliations répétées) sont une forme de VBG.",true,"Vrai. Les violences psychologiques — insultes, dévalorisation, menaces, isolement — sont des formes reconnues de VBG, aussi graves que les violences physiques."),
       QD("Le harcèlement en ligne (cyberharcèlement) est :",
-        "Normal entre jeunes","Une forme de VBG punie par la loi","Acceptable si c'est anonyme","Un jeu sans conséquences",1,"Le cyberharcèlement est une forme de VBG. Il est puni par la loi et peut causer des traumatismes profonds. Signale-le à un adulte de confiance."),
+        "Normal entre jeunes","Une forme de violence qui peut être punie par la loi","Acceptable si c'est anonyme","Un jeu sans conséquences",1,"Le cyberharcèlement est une forme de violence. Il peut être puni par la loi et causer des souffrances profondes. Garde les preuves et signale-le à un adulte de confiance."),
       QD("Si tu es victime ou témoin de VBG en Côte d'Ivoire, tu peux appeler :",
         "Le 118","Le 1308 (SOS Violences)","Le 100","Le 999",1,"Le 1308 est la ligne nationale d'écoute pour les victimes de violences en Côte d'Ivoire. Elle est gratuite et disponible 24h/24."),
       QD2("Les VBG ne touchent que les femmes pauvres ou peu éduquées.",false,"Faux. Les VBG touchent les femmes de tous les milieux sociaux, de tous les niveaux d'éducation et de tous les pays. Aucune femme n'est à l'abri."),
@@ -2551,8 +2625,8 @@ const DROITS_MODULES_EN=[
       QDE("Consent must be:","Guessed","Assumed","Clear, free and revocable","Given once and for all",2,"Consent must always be given freely, clearly expressed, and can be withdrawn at any time — even if you said yes before."),
       QDE2("Silence always means consent.",false,"False. Silence does not mean consent. Consent must be expressed clearly and unambiguously."),
       QDE("Can consent be withdrawn after it has been given?","No, never","Yes, but only before","Yes, at any time","No, it's too late",2,"Yes. Consent can be withdrawn at any time, without having to justify yourself. The other person must respect this withdrawal immediately."),
-      QDE("Is consent given under pressure or threat valid?","Yes, it was signed","No, it is invalid","Yes, if it was verbal","It depends on the situation",1,"No. Consent obtained under pressure, threat, manipulation or blackmail is legally and morally invalid."),
-      QDE2("A person under the influence of alcohol can give valid consent.",false,"False. A person under the influence of alcohol or substances is not able to give informed, free consent."),
+      QDE("Is consent given under pressure or threat valid?","Yes, it was signed","No, it is invalid","Yes, if it was verbal","It depends on the situation",1,"No. A \"yes\" obtained through pressure, threats, manipulation or blackmail is not real consent: consent must always be freely given."),
+      QDE2("A person under the influence of alcohol can give valid consent.",false,"False. Someone too drunk or drugged to understand what is happening or to choose cannot give real consent. If someone is in danger, their safety comes first — and a victim is never responsible for an assault."),
       QDE("The right to bodily integrity means:","Eating healthily","No one can touch your body without your agreement","Having a perfect body","Doing sport",1,"Bodily integrity is a fundamental right: your body belongs to you. No one can touch, modify or harm it without your consent."),
       QDE("If someone touches you without your permission, it is:","Normal between friends","An assault, regardless of the relationship","Acceptable in family","Inevitable",1,"Any non-consensual physical contact is an assault, whether it comes from a stranger, a friend or a family member."),
       QDE2("Consent can be given for one act but refused for another.",true,"True. Agreeing to one thing does not mean agreeing to everything else. Each act requires its own consent."),
@@ -2603,9 +2677,9 @@ const DROITS_MODULES_EN=[
     badge:{icon:"🛡️",id:"droits_vbg",name:"Dignity Sentinel"},
     questions:[
       QDE("GBV stands for:","Good Basic Values","Gender-Based Violence","General Benefit Vision","Great Budget Victory",1,"GBV = Gender-Based Violence. This term refers to any violence inflicted on a person because of their gender — primarily women and girls."),
-      QDE("GBV includes:","Only physical blows","Physical, psychological, sexual and economic violence","Normal arguments","Jokes between friends",1,"GBV covers all forms of violence: physical (hitting), sexual (assault), psychological (humiliation, threats) and economic (depriving of money or work)."),
+      QDE("GBV includes:","Only physical blows","Physical, psychological, sexual and economic violence","Normal arguments","Jokes between friends",1,"GBV takes many forms: physical (hitting), sexual (assault), psychological (humiliation, threats), economic (depriving of money or work), and also forced or early marriage. This list is not complete."),
       QDE2("Psychological violence (repeated insults, humiliation) is a form of GBV.",true,"True. Psychological violence — insults, belittling, threats, isolation — is a recognised form of GBV, just as serious as physical violence."),
-      QDE("Online harassment (cyberbullying) is:","Normal among young people","A form of GBV punishable by law","Acceptable if anonymous","A harmless game",1,"Cyberbullying is a form of GBV. It is punishable by law and can cause deep trauma. Report it to a trusted adult."),
+      QDE("Online harassment (cyberbullying) is:","Normal among young people","A form of violence that can be punished by law","Acceptable if anonymous","A harmless game",1,"Cyberbullying is a form of violence. It can be punished by law and can cause deep suffering. Keep the evidence and report it to a trusted adult."),
       QDE("If you are a victim or witness of GBV in Côte d'Ivoire, you can call:","118","1308 (SOS Violence)","100","999",1,"1308 is the national helpline for victims of violence in Côte d'Ivoire. It is free and available 24 hours a day."),
       QDE2("GBV only affects poor or uneducated women.",false,"False. GBV affects women of all social backgrounds, education levels and countries. No woman is immune."),
       QDE("What should you do if a friend tells you she is suffering violence?","Keep it absolutely secret","Listen to her and help her contact a support organisation","Tell her it's normal","Tell everyone",1,"Listen without judging. Help your friend contact an association, social worker or helpline. Keeping absolute silence can make the situation worse."),
@@ -2772,7 +2846,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
           <img src={AKISSI_IMGS.salut} alt="A-Kissi" onError={e=>{e.target.style.display="none";}} style={{width:112,height:"auto",flexShrink:0,filter:"drop-shadow(0 8px 18px rgba(232,0,61,.35))",animation:"ak-float 3s ease-in-out infinite"}}/>
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:30,lineHeight:1,marginBottom:6}}>⚖️</div>
-            <div className="T" style={{fontSize:29,fontWeight:900,color:"white",lineHeight:1.08,marginBottom:8,textShadow:"0 2px 14px rgba(232,0,61,.4)"}}>{t("Quiz Droits des Femmes","Women's Rights Quiz")}</div>
+            <h1 className="T" style={{margin:0,fontSize:29,fontWeight:900,color:"white",lineHeight:1.08,marginBottom:8,textShadow:"0 2px 14px rgba(232,0,61,.4)"}}>{t("Quiz Droits des Femmes","Women's Rights Quiz")}</h1>
             <div style={{fontSize:17,color:"rgba(255,205,218,.92)",fontWeight:700,lineHeight:1.4}}>{t("Connais tes droits, protège ta dignité 💪","Know your rights, protect your dignity 💪")}</div>
           </div>
         </div>
@@ -2787,7 +2861,7 @@ function DroitsFemmes({lang,onBack,navActive,onNav,onModuleFinish}){
       </div>
       <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12}}>
         {modules.map((m,i)=>(
-          <div key={m.id} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:22,padding:"16px 14px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:`0 6px 18px ${m.color}1f`,border:`2px solid ${m.color}33`,borderLeft:`6px solid ${m.color}`}}>
+          <div key={m.id} role="button" tabIndex={0} onKeyDown={kb(()=>setActiveModule(m))} onClick={()=>setActiveModule(m)} style={{background:"white",borderRadius:22,padding:"16px 14px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:`0 6px 18px ${m.color}1f`,border:`2px solid ${m.color}33`,borderLeft:`6px solid ${m.color}`}}>
             <div style={{width:66,height:66,borderRadius:18,background:`${m.color}1c`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <span style={{fontSize:30,lineHeight:1}}>{m.emoji}</span>
               <span style={{fontSize:15,fontWeight:900,color:m.color,marginTop:3}}>{`M${m.num}`}</span>
@@ -3259,8 +3333,116 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
 }
 
 // ── SETTINGS ────────────────────────────────────────────────────
+// ── PANNEAU DE SAUVEGARDE ───────────────────────────────────────
+function BackupPanel({lang,onClose,fallbackName,startTab="local"}){
+  const t=(fr,en)=>lang==="en"?en:fr;
+  const[tab,setTab]=useState(startTab);
+  const[withJournal,setWithJournal]=useState(false);
+  const[msg,setMsg]=useState(null);
+  const[busy,setBusy]=useState(false);
+  const[cloud,setCloud]=useState(()=>{try{return localStorage.getItem(BK_CLOUD)||"";}catch(e){return"";}});
+  const[cloudAt,setCloudAt]=useState(()=>{try{return localStorage.getItem(BK_CLOUD_AT)||"";}catch(e){return"";}});
+  const[codeIn,setCodeIn]=useState("");const[pasteIn,setPasteIn]=useState("");
+  const say=(ok,text)=>setMsg({ok,text});
+  const fmt=iso=>{try{return new Date(iso).toLocaleString(lang==="en"?"en-GB":"fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});}catch(e){return iso;}};
+  const finishRestore=()=>{
+    try{if(!localStorage.getItem("qd-user"))localStorage.setItem("qd-user",JSON.stringify({name:(fallbackName||"").trim()||t("Moi","Me"),country:"Côte d'Ivoire"}));}catch(e){}
+    say(true,t("✅ Progression restaurée ! L'application redémarre…","✅ Progress restored! The app is restarting…"));
+    setTimeout(()=>window.location.reload(),1300);
+  };
+  const download=()=>{
+    try{const blob=new Blob([JSON.stringify(bkCollect({journal:withJournal}),null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`quiz-dignite-sauvegarde-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);say(true,t("📥 Fichier téléchargé. Garde-le précieusement !","📥 File downloaded. Keep it safe!"));}catch(e){say(false,t("Le téléchargement n'a pas marché sur ce téléphone. Utilise plutôt « Copier mon code ».","Download didn't work on this phone. Use \"Copy my code\" instead."));}
+  };
+  const copyCode=async()=>{
+    const code=bkEncode(bkCollect({journal:withJournal}));
+    try{if(navigator.share){await navigator.share({title:"Quiz Dignité",text:code});say(true,t("📤 Code envoyé. Garde-le (par exemple dans un message à toi-même).","📤 Code sent. Keep it (e.g. in a message to yourself)."));return;}}catch(e){}
+    try{await navigator.clipboard.writeText(code);say(true,t("📋 Code copié ! Colle-le dans tes notes ou envoie-le-toi sur WhatsApp.","📋 Code copied! Paste it in your notes or send it to yourself on WhatsApp."));}catch(e){setPasteIn(code);setTab("restore");say(false,t("Copie impossible : ton code est affiché ci-dessous, sélectionne-le pour le copier.","Couldn't copy: your code is shown below, select it to copy."));}
+  };
+  const activateCloud=async()=>{
+    setBusy(true);setMsg(null);const code=bkNewCode();
+    try{await bkCloudSave(code);localStorage.setItem(BK_CLOUD,code);setCloud(code);setCloudAt(localStorage.getItem(BK_CLOUD_AT)||"");say(true,t("☁️ Sauvegarde en ligne activée ! Note bien ton code.","☁️ Online backup on! Write down your code."));}
+    catch(e){say(false,e.message==="503"?t("La sauvegarde en ligne n'est pas encore disponible. Utilise la sauvegarde sur le téléphone en attendant.","Online backup isn't available yet. Use the phone backup for now."):t("Pas de connexion. Réessaie quand tu as Internet.","No connection. Try again when you're online."));}
+    setBusy(false);
+  };
+  const syncNow=async()=>{setBusy(true);try{await bkCloudSave(cloud);setCloudAt(localStorage.getItem(BK_CLOUD_AT)||"");say(true,t("☁️ Sauvegardé !","☁️ Saved!"));}catch(e){say(false,t("Pas de connexion. Ta progression sera sauvegardée plus tard.","No connection. Your progress will be saved later."));}setBusy(false);};
+  const deleteCloud=async()=>{
+    if(!window.confirm(t("Supprimer ta sauvegarde en ligne ? Ton code ne marchera plus.","Delete your online backup? Your code will stop working.")))return;
+    setBusy(true);try{await bkCloudDelete(cloud);localStorage.removeItem(BK_CLOUD);localStorage.removeItem(BK_CLOUD_AT);setCloud("");setCloudAt("");say(true,t("🗑️ Sauvegarde en ligne supprimée.","🗑️ Online backup deleted."));}catch(e){say(false,t("Pas de connexion. Réessaie plus tard.","No connection. Try again later."));}setBusy(false);
+  };
+  const restoreCloud=async()=>{
+    const code=bkNormCode(codeIn);if(!BK_CODE_RE.test(code)){say(false,t("Ce code n'a pas le bon format. Exemple : QD-7KXM-29PA-HT4C","This code doesn't look right. Example: QD-7KXM-29PA-HT4C"));return;}
+    setBusy(true);try{const o=await bkCloudLoad(code);bkApply(o);localStorage.setItem(BK_CLOUD,code);finishRestore();}catch(e){say(false,e.message==="notfound"?t("Aucune sauvegarde trouvée pour ce code.","No backup found for this code."):t("Pas de connexion ou service indisponible. Réessaie plus tard.","No connection or service unavailable. Try again later."));}setBusy(false);
+  };
+  const restorePaste=()=>{try{const o=bkDecode(pasteIn);bkApply(o);finishRestore();}catch(e){say(false,t("Ce code de sauvegarde n'est pas valide. Vérifie que tu l'as copié en entier.","This backup code isn't valid. Check you copied all of it."));}};
+  const restoreFile=ev=>{const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=bkDecode(r.result);bkApply(o);finishRestore();}catch(e){say(false,t("Ce fichier n'est pas une sauvegarde Quiz Dignité.","This file isn't a Quiz Dignité backup."));}};r.readAsText(f);};
+
+  const btn=(bg,col="white",extra={})=>({width:"100%",background:bg,color:col,border:"none",borderRadius:50,padding:"16px 18px",fontSize:"1.12rem",fontWeight:900,cursor:busy?"wait":"pointer",opacity:busy?.7:1,...extra});
+  const card={background:"white",borderRadius:22,padding:"18px 16px",boxShadow:"0 6px 18px rgba(232,0,61,.08)",border:"1.5px solid rgba(232,0,61,.1)",display:"flex",flexDirection:"column",gap:12};
+  const p={fontSize:"1.05rem",color:P.text,lineHeight:1.5,margin:0,fontWeight:600};
+  const tabs=[["local",t("📱 Sur ce téléphone","📱 On this phone")],["online",t("☁️ En ligne","☁️ Online")],["restore",t("🔄 Restaurer","🔄 Restore")]];
+  return(
+    <div role="dialog" aria-modal="true" aria-labelledby="bk-title" style={{position:"fixed",inset:0,zIndex:500,background:"#FFF4F7",overflowY:"auto"}}>
+      <div style={{maxWidth:480,margin:"0 auto",padding:"16px 16px 120px",minHeight:"100dvh",display:"flex",flexDirection:"column"}}>
+        <button onClick={onClose} style={{alignSelf:"flex-start",background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"10px 18px",fontSize:16,color:P.muted,fontWeight:800,marginBottom:14}}>← {t("Retour","Back")}</button>
+        <div style={{background:HERO,borderRadius:26,padding:"22px 18px",textAlign:"center",color:"white",marginBottom:16,boxShadow:"0 10px 30px #C8102E33"}}>
+          <div style={{fontSize:52}}>💾</div>
+          <h1 id="bk-title" className="T" style={{fontSize:"1.8rem",fontWeight:900,margin:"4px 0 6px"}}>{t("Sauvegarder ma progression","Back up my progress")}</h1>
+          <p style={{margin:0,fontSize:"1.02rem",fontWeight:700,opacity:.95,lineHeight:1.4}}>{t("Pour ne rien perdre si tu effaces les données du navigateur ou changes de téléphone.","So you don't lose anything if you clear your browser data or change phones.")}</p>
+        </div>
+        <div role="tablist" style={{display:"flex",gap:6,background:"white",borderRadius:50,padding:5,marginBottom:14,boxShadow:"0 2px 10px rgba(232,0,61,.08)"}}>
+          {tabs.map(([id,l])=><button key={id} role="tab" aria-selected={tab===id} onClick={()=>{setTab(id);setMsg(null);}} style={{flex:1,border:"none",borderRadius:50,padding:"11px 4px",fontSize:"0.98rem",fontWeight:900,cursor:"pointer",background:tab===id?G:"transparent",color:tab===id?"white":P.muted}}>{l}</button>)}
+        </div>
+        {msg&&<div role="status" style={{background:msg.ok?"#EFFAF4":"#FFF4D6",border:`2px solid ${msg.ok?P.green:P.amber}`,borderRadius:16,padding:"12px 14px",fontSize:"1.05rem",fontWeight:800,color:msg.ok?"#1A7A50":"#9A6200",marginBottom:14,lineHeight:1.4}}>{msg.text}</div>}
+
+        {tab==="local"&&<div style={card}>
+          <p style={p}>{t("Crée une copie de ta progression (points, badges, niveaux, série). Elle reste chez toi : rien n'est envoyé sur Internet.","Make a copy of your progress (points, badges, levels, streak). It stays with you: nothing is sent online.")}</p>
+          <label style={{display:"flex",gap:10,alignItems:"flex-start",fontSize:"1rem",color:P.text,fontWeight:700,background:"#FFF4F7",borderRadius:14,padding:"12px"}}>
+            <input type="checkbox" checked={withJournal} onChange={e=>setWithJournal(e.target.checked)} style={{width:22,height:22,flexShrink:0,marginTop:1,accentColor:P.red}}/>
+            <span>{t("Inclure mon journal « Je me célèbre ». Attention : toute personne qui a le fichier ou le code pourra le lire.","Include my \"I Celebrate Myself\" journal. Careful: anyone with the file or code can read it.")}</span>
+          </label>
+          <button onClick={download} style={btn(G)}>📥 {t("Télécharger mon fichier","Download my file")}</button>
+          <button onClick={copyCode} style={btn("white",P.red,{border:`2.5px solid ${P.red}`})}>📋 {t("Copier / envoyer mon code","Copy / send my code")}</button>
+          <p style={{...p,fontSize:"0.95rem",color:P.muted}}>{t("Pour récupérer ta progression plus tard : onglet « Restaurer ».","To get your progress back later: \"Restore\" tab.")}</p>
+        </div>}
+
+        {tab==="online"&&<div style={card}>
+          {!cloud?(<>
+            <p style={p}>{t("Active la sauvegarde en ligne : tu reçois un code secret, et ta progression est sauvegardée automatiquement. Sur un autre téléphone, tape ton code pour tout retrouver.","Turn on online backup: you get a secret code and your progress is saved automatically. On another phone, type your code to get everything back.")}</p>
+            <div style={{background:"#FFF4F7",borderRadius:14,padding:"12px",fontSize:"0.98rem",color:P.text,fontWeight:600,lineHeight:1.45}}>🔒 {t("Seuls tes points, badges, niveaux et ta série sont envoyés. Jamais ton prénom, jamais ton journal. Pas d'e-mail, pas de mot de passe.","Only your points, badges, levels and streak are sent. Never your name, never your journal. No email, no password.")}</div>
+            <button disabled={busy} onClick={activateCloud} style={btn(G)}>☁️ {busy?t("Un instant…","One moment…"):t("Activer la sauvegarde en ligne","Turn on online backup")}</button>
+          </>):(<>
+            <p style={{...p,textAlign:"center"}}>{t("Ton code secret :","Your secret code:")}</p>
+            <div className="T" style={{textAlign:"center",fontSize:"1.7rem",fontWeight:900,letterSpacing:2,color:P.red,background:"#FFF4F7",borderRadius:16,padding:"14px 8px",border:`2px dashed ${P.red}66`,userSelect:"all"}}>{cloud}</div>
+            <p style={{...p,fontSize:"0.98rem",textAlign:"center"}}>✍️ {t("Écris-le dans un carnet ou prends une photo. Ne le donne à personne.","Write it down or take a photo. Don't share it.")}</p>
+            <button onClick={async()=>{try{await navigator.clipboard.writeText(cloud);say(true,t("📋 Code copié !","📋 Code copied!"));}catch(e){say(false,t("Recopie le code à la main.","Copy the code by hand."));}}} style={btn("white",P.red,{border:`2.5px solid ${P.red}`})}>📋 {t("Copier le code","Copy code")}</button>
+            <div style={{textAlign:"center",fontSize:"0.98rem",color:P.muted,fontWeight:700}}>{cloudAt?`${t("Dernière sauvegarde","Last backup")} : ${fmt(cloudAt)}`:t("Pas encore sauvegardé","Not saved yet")}</div>
+            <button disabled={busy} onClick={syncNow} style={btn(G)}>☁️ {t("Sauvegarder maintenant","Save now")}</button>
+            <button disabled={busy} onClick={deleteCloud} style={btn("transparent","#C0392B",{border:"2px solid #E74C3C55",fontSize:"1rem",padding:"13px"})}>🗑️ {t("Supprimer ma sauvegarde en ligne","Delete my online backup")}</button>
+          </>)}
+        </div>}
+
+        {tab==="restore"&&<div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{background:"#FFF4D6",borderRadius:16,padding:"12px 14px",fontSize:"1rem",fontWeight:700,color:"#9A6200",lineHeight:1.4}}>⚠️ {t("Restaurer remplace la progression actuelle de ce téléphone.","Restoring replaces this phone's current progress.")}</div>
+          <div style={card}>
+            <h2 className="T" style={{fontSize:"1.25rem",fontWeight:900,color:P.red,margin:0}}>☁️ {t("Avec mon code en ligne","With my online code")}</h2>
+            <input value={codeIn} onChange={e=>setCodeIn(e.target.value.toUpperCase())} placeholder="QD-XXXX-XXXX-XXXX" autoCapitalize="characters" autoComplete="off" aria-label={t("Code en ligne","Online code")} style={{width:"100%",boxSizing:"border-box",border:"2px solid rgba(232,0,61,.25)",borderRadius:14,padding:"15px 14px",fontSize:"1.25rem",fontWeight:800,letterSpacing:1.5,textAlign:"center",color:P.text,outline:"none"}}/>
+            <button disabled={busy} onClick={restoreCloud} style={btn(G)}>🔄 {busy?t("Un instant…","One moment…"):t("Récupérer ma progression","Get my progress back")}</button>
+          </div>
+          <div style={card}>
+            <h2 className="T" style={{fontSize:"1.25rem",fontWeight:900,color:P.red,margin:0}}>📱 {t("Avec mon fichier ou mon code copié","With my file or copied code")}</h2>
+            <label style={btn("white",P.red,{border:`2.5px solid ${P.red}`,textAlign:"center",display:"block",boxSizing:"border-box"})}>📂 {t("Choisir mon fichier","Choose my file")}<input type="file" accept=".json,application/json,text/plain" onChange={restoreFile} style={{display:"none"}}/></label>
+            <textarea value={pasteIn} onChange={e=>setPasteIn(e.target.value)} placeholder={t("…ou colle ici ton code de sauvegarde (il commence par QDSAVE1:)","…or paste your backup code here (it starts with QDSAVE1:)")} rows={3} aria-label={t("Code de sauvegarde","Backup code")} style={{width:"100%",boxSizing:"border-box",border:"2px solid rgba(232,0,61,.2)",borderRadius:14,padding:"12px",fontSize:"1rem",color:P.text,resize:"vertical",outline:"none"}}/>
+            <button onClick={restorePaste} disabled={!pasteIn.trim()} style={btn(G,"white",{opacity:pasteIn.trim()?1:.5})}>🔄 {t("Restaurer avec ce code","Restore with this code")}</button>
+          </div>
+        </div>}
+      </div>
+    </div>
+  );
+}
+
 function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,setDarkMode,user,setUser,onResetProgress,onBack,onNav}){
   const[confirmReset,setConfirmReset]=useState(false);
+  const[showBackup,setShowBackup]=useState(false);
   const[editName,setEditName]=useState(false);
   const[nameVal,setNameVal]=useState(user?.name||"");
   const[countryVal,setCountryVal]=useState(user?.country||"");
@@ -3277,82 +3459,103 @@ function Settings({lang,setLang,soundOn,setSoundOn,audioOn,setAudioOn,darkMode,s
     localStorage.setItem("hm_dark",nd?"1":"0");
   };
 
-  const Section=({title,children})=>(
-    <div style={{marginBottom:20}}>
-      <div style={{fontSize:"1rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1.2,marginBottom:10,paddingLeft:4}}>{title}</div>
-      <div style={{background:"white",borderRadius:22,overflow:"hidden",boxShadow:"0 6px 18px rgba(232,0,61,.08)",border:"1.5px solid rgba(232,0,61,.08)"}}>{children}</div>
-    </div>
-  );
+  const en=lang==="en";
+  const card={background:"white",borderRadius:18,boxShadow:"0 4px 14px rgba(232,0,61,.08)",border:"1.5px solid rgba(232,0,61,.08)"};
+  const lbl={fontSize:"0.85rem",fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:1,margin:"0 0 6px 4px"};
+  const setL=l=>{setLang(l);try{localStorage.setItem("hm_lang",l);}catch(e){}};
 
-  const Row=({icon,label,right,onClick,border=true})=>(
-    <div onClick={onClick} style={{display:"flex",alignItems:"center",gap:14,padding:"18px 16px",borderBottom:border?"1px solid rgba(232,0,61,.07)":"none",cursor:onClick?"pointer":"default"}}>
-      <span style={{fontSize:28,width:38,textAlign:"center"}}>{icon}</span>
-      <span style={{flex:1,fontSize:"1.2rem",fontWeight:800,color:P.text}}>{label}</span>
-      {right}
+  const Toggle=({on,onToggle,label})=>(
+    <div onClick={onToggle} role="switch" aria-checked={!!on} aria-label={label} tabIndex={0} onKeyDown={kb(onToggle)} style={{width:50,height:28,borderRadius:14,background:on?P.red:"#D4C0CC",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
+      <div style={{width:22,height:22,borderRadius:"50%",background:"white",position:"absolute",top:3,left:on?25:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
     </div>
   );
-
-  const Toggle=({on,onToggle})=>(
-    <div onClick={onToggle} style={{width:56,height:32,borderRadius:16,background:on?P.red:"#D4C0CC",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
-      <div style={{width:26,height:26,borderRadius:"50%",background:"white",position:"absolute",top:3,left:on?27:3,transition:"left .2s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
+  const Switch=({icon,label,on,onToggle})=>(
+    <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6,padding:"10px 4px",minWidth:0}}>
+      <span style={{fontSize:24}} aria-hidden="true">{icon}</span>
+      <span style={{fontSize:"0.9rem",fontWeight:800,color:P.text,textAlign:"center",lineHeight:1.15}}>{label}</span>
+      <Toggle on={on} onToggle={onToggle} label={label}/>
     </div>
   );
+  const Tile=({icon,label,onClick,color})=>(
+    <button onClick={onClick} style={{...card,display:"flex",alignItems:"center",gap:8,padding:"12px 10px",cursor:"pointer",textAlign:"left",minWidth:0}}>
+      <span style={{fontSize:22,flexShrink:0}} aria-hidden="true">{icon}</span>
+      <span style={{fontSize:"0.93rem",fontWeight:800,color:color||P.text,lineHeight:1.2,minWidth:0,overflowWrap:"anywhere"}}>{label}</span>
+    </button>
+  );
+  const smallBtn=(bg,fg,bd)=>({flex:1,background:bg,color:fg,border:bd||"none",borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:"1rem"});
 
   return(
-    <div style={{padding:"16px 16px 100px"}}>
-      <button onClick={()=>onBack()} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"10px 18px",fontSize:16,color:P.muted,fontWeight:800,marginBottom:16}}>{lang==="en"?"← Back":"← Retour"}</button>
-      <div className="T" style={{fontSize:"2rem",fontWeight:900,color:P.red,marginBottom:22}}>⚙️ {lang==="en"?"Settings":"Réglages"}</div>
+    <div style={{padding:"12px 14px 96px",display:"flex",flexDirection:"column",gap:12}}>
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <button onClick={()=>onBack()} style={{background:"white",border:`1.5px solid ${P.rose}33`,borderRadius:14,padding:"8px 14px",fontSize:15,color:P.muted,fontWeight:800}}>{en?"← Back":"← Retour"}</button>
+        <h1 className="T" style={{margin:0,fontSize:"1.7rem",fontWeight:900,color:P.red}}>⚙️ {en?"Settings":"Réglages"}</h1>
+      </div>
 
-      <Section title={lang==="en"?"Appearance":"Apparence"}>
-        <Row icon={darkMode?"🌙":"☀️"} label={lang==="en"?"Dark mode":"Mode sombre"} right={<Toggle on={darkMode} onToggle={toggleDark}/>} border={false}/>
-      </Section>
+      <div>
+        <div style={lbl}>{en?"Language":"Langue"}</div>
+        <div role="radiogroup" aria-label={en?"Language":"Langue"} style={{...card,display:"flex",padding:5,gap:5}}>
+          {[["fr","🇫🇷 Français"],["en","🇬🇧 English"]].map(([k,t])=>(
+            <button key={k} role="radio" aria-checked={lang===k} onClick={()=>setL(k)} style={{flex:1,border:"none",borderRadius:14,padding:"10px 6px",fontSize:"1rem",fontWeight:900,cursor:"pointer",background:lang===k?G:"transparent",color:lang===k?"white":P.text}}>{t}</button>
+          ))}
+        </div>
+      </div>
 
-      <Section title={lang==="en"?"Language":"Langue"}>
-        <Row icon="🇫🇷" label="Français" right={lang==="fr"?<span style={{color:P.red,fontWeight:900,fontSize:18}}>✓</span>:null} onClick={()=>{setLang("fr");localStorage.setItem("hm_lang","fr");}} border/>
-        <Row icon="🇬🇧" label="English" right={lang==="en"?<span style={{color:P.red,fontWeight:900,fontSize:18}}>✓</span>:null} onClick={()=>{setLang("en");localStorage.setItem("hm_lang","en");}} border={false}/>
-      </Section>
+      <div>
+        <div style={lbl}>{en?"Display & sound":"Affichage & son"}</div>
+        <div style={{...card,display:"flex"}}>
+          <Switch icon={darkMode?"🌙":"☀️"} label={en?"Dark mode":"Mode sombre"} on={darkMode} onToggle={toggleDark}/>
+          <div style={{width:1,background:"rgba(232,0,61,.08)"}}/>
+          <Switch icon={soundOn?"🔊":"🔇"} label={en?"Game sounds":"Sons du jeu"} on={soundOn} onToggle={()=>setSoundOn(p=>!p)}/>
+          <div style={{width:1,background:"rgba(232,0,61,.08)"}}/>
+          <Switch icon="🎤" label={en?"Voice reading":"Lecture vocale"} on={audioOn} onToggle={()=>setAudioOn(p=>!p)}/>
+        </div>
+      </div>
 
-      <Section title={lang==="en"?"Sound & Audio":"Son & Audio"}>
-        <Row icon={soundOn?"🔊":"🔇"} label={lang==="en"?"Game sounds":"Sons du jeu"} right={<Toggle on={soundOn} onToggle={()=>setSoundOn(p=>!p)}/>} border/>
-        <Row icon="🎤" label={lang==="en"?"Voice reading":"Lecture vocale"} right={<Toggle on={audioOn} onToggle={()=>setAudioOn(p=>!p)}/>} border={false}/>
-      </Section>
-
-      <Section title={lang==="en"?"Profile":"Profil"}>
+      <div>
+        <div style={lbl}>{en?"My account":"Mon compte"}</div>
         {!editName?(
-          <Row icon="✏️" label={`${user?.name||""}${user?.country?" · "+user.country:""}`} right={<span style={{color:P.red,fontSize:16,fontWeight:700}}>{lang==="en"?"Edit":"Modifier"}</span>} onClick={()=>setEditName(true)} border={false}/>
+          <div onClick={()=>setEditName(true)} role="button" tabIndex={0} onKeyDown={kb(()=>setEditName(true))} style={{...card,display:"flex",alignItems:"center",gap:10,padding:"12px 14px",cursor:"pointer",marginBottom:8}}>
+            <span style={{fontSize:22}} aria-hidden="true">✏️</span>
+            <span style={{flex:1,fontSize:"1.05rem",fontWeight:800,color:P.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{`${user?.name||""}${user?.country?" · "+user.country:""}`}</span>
+            <span style={{color:P.red,fontSize:15,fontWeight:800}}>{en?"Edit":"Modifier"}</span>
+          </div>
         ):(
-          <div style={{padding:"14px 16px"}}>
-            <input value={nameVal} onChange={e=>setNameVal(e.target.value)} placeholder={lang==="en"?"First name":"Prénom"} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:10,padding:"8px 12px",fontSize:"1.07rem",marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
-            <input value={countryVal} onChange={e=>setCountryVal(e.target.value)} placeholder={lang==="en"?"Country":"Pays"} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:10,padding:"8px 12px",fontSize:"1.07rem",marginBottom:10,boxSizing:"border-box",outline:"none"}}/>
+          <div style={{...card,padding:"12px 14px",marginBottom:8}}>
+            <input value={nameVal} onChange={e=>setNameVal(e.target.value)} placeholder={en?"First name":"Prénom"} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:10,padding:"8px 12px",fontSize:"1.05rem",marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
+            <input value={countryVal} onChange={e=>setCountryVal(e.target.value)} placeholder={en?"Country":"Pays"} style={{width:"100%",border:`1.5px solid rgba(232,0,61,.25)`,borderRadius:10,padding:"8px 12px",fontSize:"1.05rem",marginBottom:10,boxSizing:"border-box",outline:"none"}}/>
             <div style={{display:"flex",gap:8}}>
-              <button onClick={saveName} style={{flex:1,background:P.red,color:"white",border:"none",borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:"1.04rem"}}>{lang==="en"?"Save":"Sauvegarder"}</button>
-              <button onClick={()=>setEditName(false)} style={{flex:1,background:"transparent",color:P.muted,border:`1px solid rgba(200,150,160,.4)`,borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:"1.04rem"}}>{lang==="en"?"Cancel":"Annuler"}</button>
+              <button onClick={saveName} style={smallBtn(P.red,"white")}>{en?"Save":"Sauvegarder"}</button>
+              <button onClick={()=>setEditName(false)} style={smallBtn("transparent",P.muted,"1px solid rgba(200,150,160,.4)")}>{en?"Cancel":"Annuler"}</button>
             </div>
           </div>
         )}
-      </Section>
-
-      <Section title={lang==="en"?"Data":"Données"}>
         {!confirmReset?(
-          <Row icon="🗑️" label={lang==="en"?"Reset progress":"Réinitialiser ma progression"} right={<span style={{color:"#E74C3C",fontSize:16,fontWeight:700}}>{lang==="en"?"Reset":"Effacer"}</span>} onClick={()=>setConfirmReset(true)} border={false}/>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <Tile icon="💾" label={en?"Back up / restore":"Sauvegarder / restaurer"} onClick={()=>setShowBackup(true)}/>
+            <Tile icon="🗑️" label={en?"Reset progress":"Effacer ma progression"} color="#C0392B" onClick={()=>setConfirmReset(true)}/>
+          </div>
         ):(
-          <div style={{padding:"14px 16px"}}>
-            <p style={{fontSize:"1.0rem",color:P.text,margin:"0 0 12px",lineHeight:1.5}}>{lang==="en"?"Are you sure? All your progress will be lost.":"Êtes-vous sûre ? Toute ta progression sera effacée."}</p>
+          <div style={{...card,padding:"12px 14px"}}>
+            <p style={{fontSize:"1rem",color:P.text,margin:"0 0 10px",lineHeight:1.45}}>{en?"Are you sure? All your progress will be lost.":"Tu es sûre ? Toute ta progression sera effacée."}</p>
             <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>{onResetProgress();setConfirmReset(false);}} style={{flex:1,background:"#E74C3C",color:"white",border:"none",borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:"1.04rem"}}>{lang==="en"?"Yes, reset":"Oui, effacer"}</button>
-              <button onClick={()=>setConfirmReset(false)} style={{flex:1,background:"transparent",color:P.muted,border:`1px solid rgba(200,150,160,.4)`,borderRadius:50,padding:"9px",fontWeight:700,cursor:"pointer",fontSize:"1.04rem"}}>{lang==="en"?"Cancel":"Annuler"}</button>
+              <button onClick={()=>{onResetProgress();setConfirmReset(false);}} style={smallBtn("#E74C3C","white")}>{en?"Yes, reset":"Oui, effacer"}</button>
+              <button onClick={()=>setConfirmReset(false)} style={smallBtn("transparent",P.muted,"1px solid rgba(200,150,160,.4)")}>{en?"Cancel":"Annuler"}</button>
             </div>
           </div>
         )}
-      </Section>
+      </div>
+      {showBackup&&<BackupPanel lang={lang} onClose={()=>setShowBackup(false)} fallbackName={user?.name}/>}
 
-      <Section title={lang==="en"?"App":"Application"}>
-        <Row icon="📲" label={lang==="en"?"Download Android app":"Télécharger l'app Android"} right={<span style={{color:P.red,fontSize:18}}>↗</span>} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")} border/>
-        <Row icon="📚" label={lang==="en"?"Sources & References":"Sources & Références"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("sources")} border/>
-        <Row icon="ℹ️" label={lang==="en"?"About Quiz Dignité":"À propos de Quiz Dignité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("about")} border/>
-        <Row icon="🔐" label={lang==="en"?"Privacy policy":"Politique de confidentialité"} right={<span style={{color:P.red,fontSize:18}}>›</span>} onClick={()=>onBack("privacy")} border/>
-        <Row icon="📋" label={`Quiz Dignité v2.0 · ONG Happy Mum's`} right={null} border={false}/>
-      </Section>
+      <div>
+        <div style={lbl}>{en?"App":"Application"}</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          <Tile icon="📲" label={en?"Android app ↗":"App Android ↗"} onClick={()=>window.open("https://quizdignite.org/Quiz%20Dignit%C3%A9.apk","_blank")}/>
+          <Tile icon="📚" label={en?"Sources":"Sources"} onClick={()=>onBack("sources")}/>
+          <Tile icon="ℹ️" label={en?"About":"À propos"} onClick={()=>onBack("about")}/>
+          <Tile icon="🔐" label={en?"Privacy":"Confidentialité"} onClick={()=>onBack("privacy")}/>
+        </div>
+      </div>
+      <p style={{fontSize:"0.85rem",color:P.muted,textAlign:"center",margin:0,fontWeight:700}}>Quiz Dignité v2.0 · ONG Happy Mum's</p>
     </div>
   );
 }
@@ -3370,14 +3573,14 @@ const EG_LEVELS_FR=[
     {tag:"Énigme 6 · Mariage des enfants",q:"Le mariage des enfants peut avoir des conséquences sur :",opts:["La santé et l'éducation","La couleur des yeux","La météo"],ok:0,l:"I",fb:"Le mariage des enfants compromet la santé, l'éducation et l'avenir des filles."},
     {tag:"Énigme 7 · ODD 5",q:"L'égalité filles-garçons est portée par quel ODD ?",opts:["ODD 5","ODD 12","ODD 8"],ok:0,l:"N",fb:"L'ODD 5 vise à parvenir à l'égalité des sexes et à autonomiser toutes les femmes et les filles."}
   ]},
-  {id:"cycle",name:"Le Code du Cycle",emoji:"🩸",desc:"Phases du cycle, mythes, hygiène",targetWord:"CYCLE",display:"CYCLE",hint:"Ce que vit chaque personne menstruée, tous les ~28 jours.",badge:"Experte du Cycle",
-   fiche:"• Le cycle a <b>4 phases</b> : menstruelle, folliculaire, ovulatoire, lutéale.<br>• Durée moyenne : <b>28 jours</b>.<br>• Se baigner pendant les règles est <b>sans danger</b>.<br>• La <b>coupe menstruelle</b> est réutilisable et écologique.<br>• L'<b>ovulation</b> a lieu au milieu du cycle.",
+  {id:"cycle",name:"Le Code du Cycle",emoji:"🩸",desc:"Phases du cycle, mythes, hygiène",targetWord:"CYCLE",display:"CYCLE",hint:"Ce que vit chaque personne menstruée, à peu près chaque mois.",badge:"Experte du Cycle",
+   fiche:"• Le cycle a <b>4 phases</b> : menstruelle, folliculaire, ovulatoire, lutéale.<br>• Durée : souvent <b>entre 21 et 35 jours</b>, variable d'une personne à l'autre.<br>• Se baigner pendant les règles est <b>sans danger</b>.<br>• La <b>coupe menstruelle</b> est réutilisable et écologique.<br>• L'<b>ovulation</b> a lieu au milieu du cycle.",
    riddles:[
     {tag:"Énigme 1 · Phases du cycle",q:"Combien de phases principales composent le cycle menstruel ?",opts:["3","4","5"],ok:1,l:"L",fb:"4 phases : menstruelle, folliculaire, ovulatoire et lutéale."},
     {tag:"Énigme 2 · Durée du cycle",q:"Combien de jours dure un cycle menstruel en moyenne ?",opts:["14 jours","21 jours","28 jours"],ok:2,l:"C",fb:"Un cycle dure en moyenne 28 jours, mais peut varier de 21 à 35 jours."},
     {tag:"Énigme 3 · Mythe ou réalité",q:"Peut-on se baigner pendant ses règles ?",opts:["Oui","Non"],ok:0,l:"E",fb:"Oui, c'est tout à fait possible et sans danger, avec une protection adaptée."},
     {tag:"Énigme 4 · Hygiène",q:"Quel produit menstruel est réutilisable et plus écologique ?",opts:["La coupe menstruelle","La serviette jetable","Le tampon jetable"],ok:0,l:"C",fb:"La coupe menstruelle est réutilisable pendant plusieurs années."},
-    {tag:"Énigme 5 · Ovulation",q:"L'ovulation a généralement lieu :",opts:["Au milieu du cycle","Juste avant les règles","Le premier jour"],ok:0,l:"Y",fb:"L'ovulation survient vers le 14e jour d'un cycle de 28 jours."}
+    {tag:"Énigme 5 · Ovulation",q:"L'ovulation a généralement lieu :",opts:["Au milieu du cycle","Juste avant les règles","Le premier jour"],ok:0,l:"Y",fb:"L'ovulation a lieu vers le milieu du cycle. Le jour exact varie d'une personne et d'un cycle à l'autre."}
   ]},
   {id:"egalite",name:"Le Code de l'Égalité",emoji:"⚖️",desc:"VBG, signalement, éducation des filles",targetWord:"EGALITE",display:"ÉGALITÉ",hint:"Ce que réclame l'ODD 5 pour toutes et tous.",badge:"Ambassadeur·rice de l'Égalité",
    fiche:"• <b>VBG</b> = Violences Basées sur le Genre.<br>• La <b>Charte africaine des droits de l'enfant</b> protège les enfants du continent.<br>• L'<b>éducation des filles</b> réduit la pauvreté et les inégalités.<br>• Des <b>mécanismes de signalement</b> existent pour les victimes de VBG.<br>• La <b>Convention des droits de l'enfant</b> (ONU, 1989).",
@@ -3414,14 +3617,14 @@ const EG_LEVELS_EN=[
     {tag:"Riddle 5 · African Union",q:"Which organisation adopted the Maputo Protocol?",opts:["The African Union","The UN only","The European Union"],ok:0,l:"T",fb:"The Maputo Protocol was adopted by the African Union in 2003."},
     {tag:"Riddle 6 · Child marriage",q:"Child marriage can have consequences on:",opts:["Health and education","Eye colour","The weather"],ok:0,l:"Y",fb:"Child marriage seriously compromises the health, education and future of girls affected."}
    ]},
-  {id:"cycle",name:"The Cycle Code",emoji:"🩸",desc:"Cycle phases, myths, menstrual hygiene",targetWord:"CYCLE",display:"CYCLE",hint:"What every menstruating person experiences, roughly every 28 days.",badge:"Cycle Expert",
-   fiche:"• The cycle has <b>4 phases</b>: menstrual, follicular, ovulatory, luteal.<br>• Average length: <b>28 days</b>.<br>• Swimming during periods is <b>safe</b>.<br>• A <b>menstrual cup</b> is reusable and eco-friendly.<br>• <b>Ovulation</b> occurs mid-cycle.",
+  {id:"cycle",name:"The Cycle Code",emoji:"🩸",desc:"Cycle phases, myths, menstrual hygiene",targetWord:"CYCLE",display:"CYCLE",hint:"What every menstruating person experiences, roughly every month.",badge:"Cycle Expert",
+   fiche:"• The cycle has <b>4 phases</b>: menstrual, follicular, ovulatory, luteal.<br>• Length: often <b>between 21 and 35 days</b>, varying from person to person.<br>• Swimming during periods is <b>safe</b>.<br>• A <b>menstrual cup</b> is reusable and eco-friendly.<br>• <b>Ovulation</b> occurs mid-cycle.",
    riddles:[
     {tag:"Riddle 1 · Cycle phases",q:"How many main phases does the menstrual cycle have?",opts:["3","4","5"],ok:1,l:"L",fb:"4 phases: menstrual, follicular, ovulatory and luteal."},
     {tag:"Riddle 2 · Cycle length",q:"How many days does a menstrual cycle last on average?",opts:["14 days","21 days","28 days"],ok:2,l:"C",fb:"A cycle lasts an average of 28 days, but can vary from 21 to 35 days."},
     {tag:"Riddle 3 · Myth or reality",q:"Can you swim during your period?",opts:["Yes","No"],ok:0,l:"E",fb:"Yes, swimming during your period is perfectly safe with appropriate protection."},
     {tag:"Riddle 4 · Hygiene",q:"Which menstrual product is reusable and more eco-friendly?",opts:["The menstrual cup","Disposable pads","Disposable tampons"],ok:0,l:"C",fb:"The menstrual cup can be reused for several years, making it both economical and eco-friendly."},
-    {tag:"Riddle 5 · Ovulation",q:"Ovulation generally occurs:",opts:["In the middle of the cycle","Just before your period","On the first day of your period"],ok:0,l:"Y",fb:"Ovulation occurs around day 14 of a 28-day cycle, i.e. mid-cycle."}
+    {tag:"Riddle 5 · Ovulation",q:"Ovulation generally occurs:",opts:["In the middle of the cycle","Just before your period","On the first day of your period"],ok:0,l:"Y",fb:"Ovulation happens around the middle of the cycle. The exact day varies from person to person and from cycle to cycle."}
    ]},
   {id:"egalite",name:"The Equality Code",emoji:"⚖️",desc:"GBV, reporting, girls' education",targetWord:"EQUALIT",display:"EQUALITY",hint:"What SDG 5 calls for — for everyone.",badge:"Equality Ambassador",
    fiche:"• <b>GBV</b> = Gender-Based Violence.<br>• The <b>African Charter on the Rights of the Child</b> protects children on the continent.<br>• <b>Girls' education</b> reduces poverty and inequality.<br>• <b>Reporting mechanisms</b> exist for GBV victims.<br>• The <b>UN Convention on the Rights of the Child</b> (1989).",
@@ -3518,7 +3721,8 @@ function EscapeGame({lang,onBack}){
       <div style={{background:"linear-gradient(135deg,#1A0A15,#4A0418)",borderRadius:26,padding:"24px 18px",textAlign:"center",marginBottom:16,boxShadow:"0 10px 30px rgba(232,0,61,.35)",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",width:180,height:180,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,0,61,.35),transparent 70%)",top:-70,right:-50,pointerEvents:"none"}}/>
         <div style={{fontSize:60,marginBottom:6,position:"relative"}}>🔐</div>
-        <div className="T" style={{color:"white",fontSize:"1.9rem",fontWeight:900,marginBottom:6,position:"relative"}}>{lang==="en"?"DSSR Escape Game":"Escape Game DSSR"}</div>
+        <div className="T" style={{color:"white",fontSize:"1.9rem",fontWeight:900,marginBottom:6,position:"relative"}}>{lang==="en"?"SRHR Escape Game":"Escape Game DSSR"}</div>
+        <div style={{color:"rgba(255,225,232,.9)",fontSize:"0.95rem",fontWeight:700,marginBottom:6,position:"relative"}}>{lang==="en"?"Sexual and reproductive health and rights":"Droits en santé sexuelle et reproductive"}</div>
         <div style={{color:"rgba(255,205,215,.95)",fontSize:"1.1rem",fontWeight:700,position:"relative"}}>{lang==="en"?"Solve the riddles, find the code!":"Résous les énigmes, trouve le code !"}</div>
         <div style={{color:"#B7FFD8",fontSize:"1rem",fontWeight:800,background:"rgba(46,204,113,.2)",display:"inline-block",borderRadius:50,padding:"7px 14px",marginTop:12,position:"relative"}}>🏅 {prog.completed.length}/{levels.length} {lang==="en"?"completed":"complétés"}</div>
       </div>
@@ -3526,11 +3730,11 @@ function EscapeGame({lang,onBack}){
       {levels.map((l,i)=>{
         const unlocked=isUnlocked(l.id),done=isDone(l.id);
         return(
-          <div key={l.id} onClick={unlocked?()=>startLevel(i):null} style={{flex:1,minHeight:100,display:"flex",alignItems:"center",gap:14,background:done?"#EFFAF4":unlocked?"white":"#F6F1F9",border:`2px solid ${done?"rgba(61,190,130,.5)":unlocked?"rgba(232,0,61,.25)":"#DCD0EC"}`,borderLeft:`7px solid ${done?P.green:unlocked?P.red:"#CDBFE0"}`,borderRadius:22,padding:"16px 16px",cursor:unlocked?"pointer":"default",boxShadow:unlocked?"0 8px 20px rgba(232,0,61,.14)":"none"}}>
+          <div key={l.id} role="button" tabIndex={unlocked?0:-1} aria-disabled={!unlocked} onKeyDown={kb(unlocked?()=>startLevel(i):null)} onClick={unlocked?()=>startLevel(i):null} style={{flex:1,minHeight:100,display:"flex",alignItems:"center",gap:14,background:done?"#EFFAF4":unlocked?"white":"#F6F1F9",border:`2px solid ${done?"rgba(61,190,130,.5)":unlocked?"rgba(232,0,61,.25)":"#DCD0EC"}`,borderLeft:`7px solid ${done?P.green:unlocked?P.red:"#CDBFE0"}`,borderRadius:22,padding:"16px 16px",cursor:unlocked?"pointer":"default",boxShadow:unlocked?"0 8px 20px rgba(232,0,61,.14)":"none"}}>
             <div style={{width:66,height:66,borderRadius:18,background:unlocked?"linear-gradient(135deg,#E8003D,#FF6B9D)":"#ECE3F4",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,flexShrink:0}}>{l.emoji}</div>
             <div style={{flex:1,minWidth:0}}>
-              <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:done?"#1A7A50":unlocked?P.text:"#9A86AE",lineHeight:1.2}}>{l.name}</div>
-              <div style={{fontSize:"0.98rem",color:unlocked?P.muted:"#9A86AE",marginTop:4,fontWeight:600,lineHeight:1.35}}>{l.desc}</div>
+              <div className="T" style={{fontSize:"1.3rem",fontWeight:900,color:done?"#1A7A50":unlocked?P.text:"#6E5A84",lineHeight:1.2}}>{l.name}</div>
+              <div style={{fontSize:"0.98rem",color:unlocked?P.muted:"#6E5A84",marginTop:4,fontWeight:600,lineHeight:1.35}}>{l.desc}</div>
             </div>
             <span style={{fontSize:26,flexShrink:0}}>{done?"🏅":unlocked?"▶️":"🔒"}</span>
           </div>
@@ -3657,22 +3861,21 @@ function Explorer({lang,onTheme,onNav,navActive}){
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#E8003D,#FF6B9D)",padding:"46px 20px 22px"}}>
         <button onClick={()=>onNav("home")} style={{background:"rgba(255,255,255,.2)",border:"1.5px solid rgba(255,255,255,.35)",borderRadius:14,padding:"10px 18px",color:"white",fontWeight:800,fontSize:16,cursor:"pointer",marginBottom:14}}>← {t("Retour","Back")}</button>
-        <div className="T" style={{fontSize:26,fontWeight:900,color:"white",marginBottom:5}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</div>
-        <p style={{fontSize:16,color:"rgba(255,255,255,.8)",fontWeight:600}}>{t("Choisis un thème pour commencer","Choose a theme to start")}</p>
+        <h1 className="T" style={{fontSize:28,fontWeight:900,color:"white",margin:"0 0 6px",lineHeight:1.15}}>{t("Qu'as-tu envie de découvrir ?","What do you want to discover?")}</h1>
+        <p style={{fontSize:17,color:"rgba(255,255,255,.9)",fontWeight:700,margin:0}}>{t("Choisis un thème pour commencer","Choose a theme to start")}</p>
       </div>
       {/* Themes */}
-      <div style={{flex:1,padding:"14px 14px 0",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
+      <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12}}>
         {themes.map(th=>(
-          <div key={th.id} onClick={()=>onTheme(th)} style={{background:"white",borderRadius:20,padding:"15px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 12px rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.08)"}}>
-            <div style={{width:52,height:52,borderRadius:16,background:th.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{th.emoji}</div>
-            <div style={{flex:1}}>
-              <div className="T" style={{fontSize:17,fontWeight:800,color:P.dark,marginBottom:3}}>{th.name}</div>
-              <div style={{fontSize:15,color:P.muted,fontWeight:600,lineHeight:1.4}}>{th.desc}</div>
-            </div>
-            <div style={{fontSize:20,color:th.color,fontWeight:900,flexShrink:0}}>›</div>
-          </div>
+          <button key={th.id} onClick={()=>onTheme(th)} style={{flex:1,minHeight:96,width:"100%",textAlign:"left",font:"inherit",background:"white",borderRadius:22,padding:"16px 14px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:`0 6px 18px ${th.color}22`,border:`2px solid ${th.color}33`,borderLeft:`6px solid ${th.color}`}}>
+            <span aria-hidden="true" style={{width:62,height:62,borderRadius:18,background:th.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,flexShrink:0}}>{th.emoji}</span>
+            <span style={{flex:1,minWidth:0,display:"block"}}>
+              <span className="T" style={{display:"block",fontSize:20,fontWeight:900,color:P.dark,marginBottom:4}}>{th.name}</span>
+              <span style={{display:"block",fontSize:15,color:P.muted,fontWeight:600,lineHeight:1.4}}>{th.desc}</span>
+            </span>
+            <span aria-hidden="true" style={{width:36,height:36,borderRadius:"50%",background:th.color,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0}}>›</span>
+          </button>
         ))}
-        <div style={{height:16}}/>
       </div>
     </div>
   );
@@ -3736,7 +3939,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
             <span style={{fontSize:14,fontWeight:800,color:"#E8426A"}}>pts</span>
           </div>
         </div>
-        <div className="T" style={{position:"relative",fontSize:29,fontWeight:900,color:"white",lineHeight:1.15,textShadow:"0 2px 12px rgba(150,0,40,.25)"}}>{t(`Bonjour ${user.name} ! 👋`,`Hello ${user.name}! 👋`)}</div>
+        <h1 className="T" style={{margin:0,position:"relative",fontSize:29,fontWeight:900,color:"white",lineHeight:1.15,textShadow:"0 2px 12px rgba(150,0,40,.25)"}}>{t(`Bonjour ${user.name} ! 👋`,`Hello ${user.name}! 👋`)}</h1>
         <div style={{position:"relative",display:"flex",gap:7,alignItems:"center",marginTop:12,flexWrap:"wrap"}}>
           {user.country&&<span style={{background:"rgba(255,255,255,.2)",borderRadius:50,padding:"5px 11px",fontSize:15,color:"white",fontWeight:700}}>📍 {user.country}</span>}
           <span style={{background:"rgba(255,255,255,.2)",borderRadius:50,padding:"5px 11px",fontSize:15,color:"white",fontWeight:700}}>{lvl.icon} {lvl.label}</span>
@@ -3773,7 +3976,7 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
           <p style={{fontSize:17,color:P.dark,fontWeight:800,lineHeight:1.45,margin:0,background:"rgba(232,0,61,.06)",borderRadius:14,padding:"12px 14px"}}>{defiText}</p>
         </div>}
         {/* Profil Dignité — featured */}
-        <div onClick={onProfil} style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:20,padding:"16px 18px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,boxShadow:"0 6px 22px rgba(0,0,0,.2)",border:"1px solid rgba(232,0,61,.3)"}}>
+        <div onClick={onProfil} role="button" tabIndex={0} onKeyDown={kb(onProfil)} style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:20,padding:"16px 18px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,boxShadow:"0 6px 22px rgba(0,0,0,.2)",border:"1px solid rgba(232,0,61,.3)"}}>
           <div style={{width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>✨</div>
           <div style={{flex:1}}>
             <div className="T" style={{fontSize:16,fontWeight:900,color:"white",marginBottom:3}}>{t("Quel est ton Profil Dignité ?","What's your Dignity Profile?")}</div>
@@ -3801,14 +4004,6 @@ function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onD
             <div style={{fontSize:16,fontWeight:700,color:"rgba(255,255,255,.92)",marginTop:3,lineHeight:1.35}}>{t("Appeler, parler à quelqu'un, trouver de l'aide","Call, talk to someone, find help")}</div>
           </div>
           <span style={{width:36,height:36,borderRadius:"50%",background:"white",color:"#C0392B",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,position:"relative"}}>›</span>
-        </button>
-        <button onClick={()=>onNav("glossaire")} style={{width:"100%",background:"white",border:"2px solid #3DBE8240",borderLeft:"6px solid #3DBE82",borderRadius:20,padding:"14px 16px",marginTop:6,display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",boxShadow:"0 6px 16px #3DBE8222"}}>
-          <div style={{width:52,height:52,borderRadius:16,background:"#3DBE821f",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>📖</div>
-          <div style={{flex:1}}>
-            <div className="T" style={{fontSize:18,fontWeight:900,color:P.dark}}>{t("Glossaire","Glossary")}</div>
-            <div style={{fontSize:16,fontWeight:700,color:"#2A9D68",marginTop:2}}>{t("Les mots du corps et des règles expliqués","Body and period words explained")}</div>
-          </div>
-          <span style={{width:34,height:34,borderRadius:"50%",background:"#3DBE82",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,flexShrink:0}}>›</span>
         </button>
       </div>
     </div>
@@ -3838,7 +4033,7 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
           <div style={{fontSize:16,color:P.muted,marginTop:3,fontWeight:600,lineHeight:1.35}}>{g.d}</div>
           {main?(
             <div style={{display:"flex",alignItems:"center",gap:6,marginTop:8}}>
-              {[1,2,3].map(n=><div key={n} style={{minWidth:30,height:26,padding:"0 7px",borderRadius:13,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,background:lv>=n?g.col:"#EEE6F4",color:lv>=n?"white":"#9A86AE"}}>{lv>=n?`N${n}`:"🔒"}</div>)}
+              {[1,2,3].map(n=><div key={n} style={{minWidth:30,height:26,padding:"0 7px",borderRadius:13,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,background:lv>=n?g.col:"#EEE6F4",color:lv>=n?"white":"#6E5A84"}}>{lv>=n?`N${n}`:"🔒"}</div>)}
             </div>
           ):(!g.noLevels&&<div style={{fontSize:16,fontWeight:800,color:g.col,marginTop:6}}>N1 → N2 → N3</div>)}
         </div>
@@ -3878,6 +4073,10 @@ function GamesHub({soundOn,toggleSound,unlocked,lang,onGame,onBack}){
 // ── MAIN APP ───────────────────────────────────────────────────
 export default function App(){
   const[screen,setScreen]=useState("boot");
+  // Bouton Retour du téléphone : chaque écran est ajouté à l'historique du navigateur,
+  // pour que « Retour » ramène à l'écran précédent au lieu de quitter l'app.
+  const screenRef=useRef("boot");const navPopRef=useRef(false);
+  const NAV_TRANSIENT=["boot","quiz_game","game_play","profil_test"];
   const[showSplash,setShowSplash]=useState(true);
 
   // Masque le pré-splash CSS dès que React monte
@@ -3923,6 +4122,36 @@ export default function App(){
   AUDIO_ON=audioOn;
 
   useEffect(()=>{
+    screenRef.current=screen;
+    if(screen==="boot")return;
+    if(navPopRef.current){navPopRef.current=false;return;}
+    const st={qd:screen,t:NAV_TRANSIENT.includes(screen)};
+    try{if(!window.history.state||!window.history.state.qd)window.history.replaceState(st,"");else window.history.pushState(st,"");}catch(e){}
+  },[screen]);
+  useEffect(()=>{
+    const navOf={hub:"home",explore:"explore",glossaire:"glossaire",progress:"progress",settings:"settings"};
+    const onPop=e=>{
+      const st=e.state;if(!st||!st.qd)return;
+      let hasUser=false;try{hasUser=!!JSON.parse(localStorage.getItem("qd-user")||"{}").name;}catch(err){}
+      if(st.t||((st.qd==="welcome"||st.qd==="onboarding")&&hasUser)){window.history.back();return;}
+      if(st.qd===screenRef.current)return;
+      navPopRef.current=true;setScreen(st.qd);if(navOf[st.qd])setNavActive(navOf[st.qd]);
+    };
+    window.addEventListener("popstate",onPop);return()=>window.removeEventListener("popstate",onPop);
+  },[]);
+
+  // Sauvegarde : protection du stockage + sauvegarde en ligne automatique (si activée)
+  useEffect(()=>{bkPersist();},[]);
+  const cloudTimer=useRef(null);
+  const cloudSync=()=>{let code="";try{code=localStorage.getItem(BK_CLOUD)||"";}catch(e){}if(!code||!BK_CODE_RE.test(code))return;bkCloudSave(code).catch(()=>{});};
+  useEffect(()=>{
+    if(!user?.name)return;
+    clearTimeout(cloudTimer.current);cloudTimer.current=setTimeout(cloudSync,4000);
+    return()=>clearTimeout(cloudTimer.current);
+  },[totalPts,badges,sessions,unlocked,streak,user]);
+  useEffect(()=>{const h=()=>{if(document.visibilityState==="hidden")cloudSync();};document.addEventListener("visibilitychange",h);return()=>document.removeEventListener("visibilitychange",h);},[]);
+
+  useEffect(()=>{
     const s=document.getElementById("hm-dark")||(()=>{const el=document.createElement("style");el.id="hm-dark";document.head.appendChild(el);return el;})();
     s.textContent=darkMode?`body,#root{background:#1A0A15!important;}.app-root{background:linear-gradient(160deg,#2A0A20,#1A0A15)!important;}`:"";
   },[darkMode]);
@@ -3956,7 +4185,7 @@ export default function App(){
   function submitOnboarding(name,country){
     const u={name:name.trim(),country:country.trim()};
     setUser(u);Store.save("qd-user",u);persist(0,[],0,{});
-    ga("onboarding",{name:u.name,country:u.country});SND.play("start");
+    ga("onboarding",{});SND.play("start");
     scheduleDefiNotif();setScreen("hub");
   }
 
@@ -4256,7 +4485,7 @@ export default function App(){
             <div style={{background:"linear-gradient(135deg,#1A0A15,#4A0418)",padding:"70px 20px 26px",textAlign:"center",position:"relative",borderRadius:"0 0 30px 30px",boxShadow:"0 12px 30px rgba(58,3,19,.3)"}}>
               <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{position:"absolute",top:16,left:16,background:"rgba(255,255,255,.15)",border:"1.5px solid rgba(255,255,255,.3)",borderRadius:14,padding:"10px 18px",color:"white",fontWeight:800,fontSize:16,cursor:"pointer"}}>← {lang==="en"?"Back":"Retour"}</button>
               <AKissi state={streak>=7?"celebration":streak>=3?"joie":"encouragement"} lang={lang} size={110} style={{marginBottom:8}}/>
-              <div className="T" style={{fontSize:30,fontWeight:900,color:"white",marginBottom:6}}>{lvl.icon} {lvl.label}</div>
+              <h1 className="T" style={{margin:0,fontSize:30,fontWeight:900,color:"white",marginBottom:6}}>{lvl.icon} {lvl.label}</h1>
               <div style={{fontSize:18,color:"rgba(255,205,218,.92)",fontWeight:700}}>{totalPts} pts · {sessions} {lang==="en"?`session${sessions>1?"s":""}`:`session${sessions>1?"s":""}`}</div>
               {/* Barre de progression */}
               <div style={{height:12,background:"rgba(255,255,255,.15)",borderRadius:12,overflow:"hidden",margin:"16px 0 8px"}}>
@@ -4360,7 +4589,7 @@ export default function App(){
         {screen==="sos"&&(
           <div style={{padding:"16px 16px 88px"}}>
             <button onClick={()=>{setScreen("hub");setNavActive("home");}} style={{background:"white",border:`1.5px solid rgba(232,0,61,.2)`,borderRadius:12,padding:"7px 14px",fontSize:16,color:P.red,fontWeight:800,marginBottom:16}}>← {lang==="en"?"Back":"Retour"}</button>
-            <div className="T" style={{fontSize:"1.3rem",fontWeight:800,color:P.red,marginBottom:6}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</div>
+            <h1 className="T" style={{margin:0,fontSize:"1.8rem",fontWeight:900,color:P.red,marginBottom:8}}>{lang==="en"?"🚨 Emergency & Help":"🚨 Urgence & Aide"}</h1>
 
             {/* Disclaimer */}
             <div style={{background:"rgba(232,0,61,.07)",border:"1.5px solid rgba(232,0,61,.2)",borderRadius:16,padding:"12px 14px",marginBottom:18}}>
@@ -4414,8 +4643,8 @@ export default function App(){
             <div style={{background:"rgba(245,166,35,.08)",border:"1px solid rgba(245,166,35,.3)",borderRadius:12,padding:"10px 14px",marginBottom:12}}>
               <p style={{fontSize:14,color:"#996600",margin:0,lineHeight:1.6,fontWeight:600}}>
                 {lang==="en"
-                  ?"📍 Numbers verified for Côte d'Ivoire. If you are in another country, call your local emergency services."
-                  :"📍 Numéros vérifiés pour la Côte d'Ivoire. Si tu es dans un autre pays, contacte les services d'urgence locaux."}
+                  ?"📍 Numbers for Côte d'Ivoire. Source for 1308: Ministry of Women, Family and Children (famille.gouv.ci). List updated October 2026. If you are in another country, call your local emergency services."
+                  :"📍 Numéros pour la Côte d'Ivoire. Source pour le 1308 : Ministère de la Femme, de la Famille et de l'Enfant (famille.gouv.ci). Liste mise à jour en octobre 2026. Si tu es dans un autre pays, contacte les services d'urgence locaux."}
               </p>
             </div>
 
