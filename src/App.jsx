@@ -172,19 +172,28 @@ const AK_MSGS_EN = {
   defi:         ["Your daily challenge is waiting! 🔥", "Ready for the challenge? 💪", "One challenge a day — your moment! 🌸"],
 };
 
-function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
+function AKissi({state="neutre",lang="fr",msg=null,size=110,style={},video=true}){
   const msgs=lang==="en"?AK_MSGS_EN:AK_MSGS_FR;
   const message=msg||(msgs[state]?msgs[state][Math.floor(Date.now()/1000)%msgs[state].length]:"");
   const src=AKISSI_IMGS[state]||AKISSI_IMGS.confiance;
   const anim=AK_ANIM[state]||AK_ANIM.neutre;
+  const[vidFail,setVidFail]=useState(false);
+  const vid=video&&!vidFail&&AKISSI_VIDS[state]&&!reduceMotion()?AKISSI_VIDS[state]:null;
   return(
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"ak-in .4s ease-out",...style}}>
+      {vid?(
+        <video src={vid} poster={src} autoPlay muted loop playsInline preload="auto" onError={()=>setVidFail(true)}
+          aria-label={message||"A-Kissi fête ta réussite"}
+          style={{width:size*1.15,height:size*1.15*1.5,objectFit:"cover",display:"block",borderRadius:"50% 50% 46% 46% / 40% 40% 34% 34%",
+            WebkitMaskImage:"radial-gradient(ellipse 62% 64% at 50% 50%,#000 62%,transparent 100%)",maskImage:"radial-gradient(ellipse 62% 64% at 50% 50%,#000 62%,transparent 100%)"}}/>
+      ):(
       <img src={src} alt={`A-Kissi — ${state}`}
         style={{width:size,height:"auto",objectFit:"contain",objectPosition:"top",animation:anim,filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}
         onError={e=>{e.target.style.display="none";}}
         role="img"
         aria-label={message||`A-Kissi mascotte Quiz Dignité`}
       />
+      )}
       {message&&(
         <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,borderBottomLeftRadius:4,padding:"10px 15px",maxWidth:230,textAlign:"center",fontSize:15,fontWeight:700,color:P.dark,lineHeight:1.4,boxShadow:"0 4px 14px rgba(232,0,61,.1)",animation:"ak-bubble .3s ease-out",marginTop:6}}>
           {message}
@@ -194,6 +203,9 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={}}){
   );
 }
 
+// Animations vidéo d'A-Kissi (fichiers dans public/). Les autres états arriveront.
+const AKISSI_VIDS = { celebration:"/akissi-celebration.mp4" };
+const reduceMotion=()=>{try{return window.matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){return false;}};
 const HERO = "linear-gradient(155deg,#C8102E 0%,#E8426A 28%,#FF6B9D 62%,#FFD4E8 100%)";
 const ALPHA = "ABCDEFGHIJKLMNOPRSTUVWYZ";
 const FC = ["#3DBE82","#9B5DE5","#F59E0B","#14B8A6","#4FB3F6","#FF8C69","#C8102E","#FF6B9D"];
@@ -902,7 +914,7 @@ function GWin({title,score,max,badge,msg,lang,onHome,onNext,hasNext}){
     :(pct>=.8?{col:P.green,t:"🌟 Tu es une actrice de dignité !",b:"Tes choix montrent que tu respectes et soutiens les femmes. Ce type d'attitude change des vies. 💛"}:pct>=.5?{col:P.amber,t:"🌺 Tu es sur le bon chemin !",b:"Tu as déjà les bons réflexes. Avec un peu plus d'engagement, tu peux avoir un vrai impact."}:{col:P.coral,t:"💪 Tu peux faire la différence !",b:"Maintenant que tu sais, tu peux agir autrement. Chaque geste compte."});
   return(
     <div style={{minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"center",padding:"28px 18px 36px",textAlign:"center"}}>
-      <div style={{fontSize:84,marginBottom:4}} className="pop">🎉</div>
+      {pct>=.8?<AKissi state="celebration" lang={lang} size={120} msg={null} style={{marginBottom:2}}/>:<div style={{fontSize:84,marginBottom:4}} className="pop">🎉</div>}
       <h2 className="T" style={{color:P.text,fontSize:28,margin:"4px 0 14px",fontWeight:900,lineHeight:1.15}}>{title}</h2>
       <div style={{background:G,borderRadius:26,padding:"22px 22px",color:"white",marginBottom:16,boxShadow:"0 10px 30px #C8102E40"}}>
         <div style={{fontSize:15,opacity:.9,fontWeight:800}}>Score</div>
@@ -3286,7 +3298,7 @@ function ProfilResult({profilKey,profil,lang,onRetry,onExplore,onBack,onBadge}){
 
         {/* A-Kissi en overlay bas droite */}
         <div style={{position:"absolute",bottom:-30,right:10,zIndex:5,filter:"drop-shadow(0 8px 20px rgba(0,0,0,.3))"}}>
-          <AKissi state="celebration" lang={lang} size={130} msg={null} style={{}}/>
+          <AKissi state="celebration" lang={lang} size={130} msg={null} style={{}} video={false}/>
         </div>
       </div>
 
@@ -3904,107 +3916,115 @@ function NavBar({active,onNav,lang,fixed}){
 function Hub({user,totalPts,lvl,badges,soundOn,lang,streak,onExplore,onGames,onDroits,onProfil,onCelebrate,onEscape,onNav,navActive,defiText}){
   const t=(fr,en)=>lang==="en"?en:fr;
   const playItems=[
-    {icon:"🕹️",label:t("Jeux Éducatifs","Educational Games"),sub:t("Apprends en t'amusant","Learn while playing"),color:"#4FB3F6",action:onGames},
+    {icon:"🕹️",label:t("Jeux éducatifs","Learning games"),sub:t("En t'amusant","Have fun learning"),color:"#4FB3F6",action:onGames},
     {icon:"🔐",label:t("Escape Game","Escape Game"),sub:t("Résous les énigmes","Solve the puzzles"),color:"#9B6BEA",action:onEscape},
   ];
   const meItems=[
-    {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),sub:t("6 modules à découvrir","6 modules to explore"),color:"#E8003D",action:onDroits},
+    {icon:"⚖️",label:t("Droits des Femmes","Women's Rights"),sub:t("6 modules","6 modules"),color:"#E8003D",action:onDroits},
     {icon:"🌸",label:t("Je me célèbre","I Celebrate Myself"),sub:t("Prends soin de toi","Take care of yourself"),color:"#FF6B9D",action:onCelebrate},
   ];
-  const Sec=({icon,label,color})=>(
-    <div style={{display:"flex",alignItems:"center",gap:10,margin:"10px 2px 0"}}>
-      <span style={{width:34,height:34,borderRadius:11,background:`${color}1f`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{icon}</span>
-      <span className="T" style={{fontSize:19,fontWeight:900,color:P.dark,letterSpacing:.2}}>{label}</span>
-      <span style={{flex:1,height:2,borderRadius:2,background:`linear-gradient(90deg,${color}55,transparent)`}}/>
-    </div>
-  );
+  const cv=(min,vh,max)=>`clamp(${min}px,${vh}vh,${max}px)`;
+  const compact=typeof window!=="undefined"&&window.innerHeight<800; // petits écrans : Profil et SOS côte à côte
+  const pct=Math.round(Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100));
+  const chip={background:"rgba(255,255,255,.2)",borderRadius:50,padding:"4px 10px",fontSize:14,color:"white",fontWeight:800};
+  const ico=(bg,size=40,fs=21)=>({width:size,height:size,borderRadius:13,background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:fs,flexShrink:0});
+  const goBtn=(bg,fg)=>({width:34,height:34,borderRadius:"50%",background:bg,color:fg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,flexShrink:0,position:"relative"});
   const Tile=({it})=>(
-    <button onClick={it.action} style={{background:"white",border:`2px solid ${it.color}40`,borderBottom:`5px solid ${it.color}`,borderRadius:22,padding:"18px 10px 16px",minHeight:160,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,cursor:"pointer",textAlign:"center",boxShadow:`0 6px 18px ${it.color}26`}}>
-      <div style={{width:66,height:66,borderRadius:20,background:`${it.color}1f`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36}}>{it.icon}</div>
-      <div className="T" style={{fontSize:17,fontWeight:900,color:P.dark,lineHeight:1.2}}>{it.label}</div>
-      <div style={{fontSize:16,fontWeight:700,color:it.color,lineHeight:1.25}}>{it.sub}</div>
+    <button onClick={it.action} style={{background:"white",border:`1.5px solid ${it.color}30`,borderBottom:`4px solid ${it.color}`,borderRadius:18,padding:`${cv(8,1.4,13)} 9px`,display:"flex",flexDirection:compact?"row":"column",alignItems:"center",justifyContent:"center",gap:compact?8:6,cursor:"pointer",textAlign:compact?"left":"center",boxShadow:`0 4px 14px ${it.color}1f`,minWidth:0}}>
+      <div style={ico(`${it.color}1f`,compact?36:44,compact?19:24)} aria-hidden="true">{it.icon}</div>
+      <div style={{minWidth:0}}>
+        <div className="T" style={{fontSize:"clamp(14.5px,4.1vw,16px)",fontWeight:900,color:P.dark,lineHeight:1.15}}>{it.label}</div>
+        <div style={{fontSize:14,fontWeight:800,color:it.color,lineHeight:1.2,marginTop:2}}>{it.sub}</div>
+      </div>
     </button>
   );
   return(
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
-      {/* Header */}
-      <div style={{background:HERO,padding:"46px 20px 24px",borderRadius:"0 0 34px 34px",boxShadow:"0 12px 36px rgba(232,0,61,.25)",position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",width:220,height:220,borderRadius:"50%",background:"rgba(255,255,255,.10)",top:-90,right:-70,pointerEvents:"none"}}/>
-        <div style={{position:"absolute",width:130,height:130,borderRadius:"50%",background:"rgba(255,255,255,.08)",bottom:-50,left:-40,pointerEvents:"none"}}/>
-        <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.18)",border:"1px solid rgba(255,255,255,.3)",borderRadius:50,padding:"6px 12px",fontSize:15.5,color:"white",fontWeight:800,letterSpacing:.3}}>🌸 Quiz Dignité</div>
-          <div style={{display:"inline-flex",alignItems:"baseline",gap:5,background:"white",borderRadius:50,padding:"7px 14px",boxShadow:"0 6px 16px rgba(160,0,40,.22)"}}>
-            <span style={{fontSize:17}}>⭐</span>
-            <span className="T" style={{fontSize:19,fontWeight:900,color:P.red,lineHeight:1}}>{totalPts}</span>
+    <div style={{display:"flex",flexDirection:"column",height:"100dvh",minHeight:"100vh",maxHeight:"100dvh",overflow:"hidden",background:"#FFF4F7",position:"relative"}}><FloatingBg/>
+      {/* En-tête */}
+      <div style={{background:"linear-gradient(155deg,#D81B4A 0%,#EC5A85 50%,#F58AAA 100%)",padding:`${cv(10,2,20)} 16px ${cv(12,2.2,22)}`,borderRadius:"0 0 26px 26px",boxShadow:"0 8px 24px rgba(232,0,61,.15)",position:"relative",overflow:"hidden",flexShrink:0}}>
+        <div style={{position:"absolute",width:190,height:190,borderRadius:"50%",background:"rgba(255,255,255,.10)",top:-80,right:-60,pointerEvents:"none"}}/>
+        <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.18)",border:"1px solid rgba(255,255,255,.3)",borderRadius:50,padding:"5px 11px",fontSize:14.5,color:"white",fontWeight:800}}>🌸 Quiz Dignité</div>
+          <div style={{display:"inline-flex",alignItems:"baseline",gap:5,background:"white",borderRadius:50,padding:"6px 13px",boxShadow:"0 6px 16px rgba(160,0,40,.22)"}}>
+            <span style={{fontSize:16}}>⭐</span>
+            <span className="T" style={{fontSize:18,fontWeight:900,color:P.red,lineHeight:1}}>{totalPts}</span>
             <span style={{fontSize:14,fontWeight:800,color:"#E8426A"}}>pts</span>
           </div>
         </div>
-        <h1 className="T" style={{margin:0,position:"relative",fontSize:29,fontWeight:900,color:"white",lineHeight:1.15,textShadow:"0 2px 12px rgba(150,0,40,.25)"}}>{t(`Bonjour ${user.name} ! 👋`,`Hello ${user.name}! 👋`)}</h1>
-        <div style={{position:"relative",display:"flex",gap:7,alignItems:"center",marginTop:12,flexWrap:"wrap"}}>
-          {user.country&&<span style={{background:"rgba(255,255,255,.2)",borderRadius:50,padding:"5px 11px",fontSize:15,color:"white",fontWeight:700}}>📍 {user.country}</span>}
-          <span style={{background:"rgba(255,255,255,.2)",borderRadius:50,padding:"5px 11px",fontSize:15,color:"white",fontWeight:700}}>{lvl.icon} {lvl.label}</span>
-          {streak>0&&<span style={{background:"linear-gradient(135deg,#FF8A00,#FFB347)",borderRadius:50,padding:"5px 11px",fontSize:15,fontWeight:900,color:"white",boxShadow:"0 3px 10px rgba(255,120,0,.35)"}}>🔥 {streak}{t("j","d")}</span>}
+        <h1 className="T" style={{margin:`${cv(6,1.4,14)} 0 ${cv(4,0.8,8)}`,position:"relative",fontSize:cv(22,3.4,29),fontWeight:900,color:"white",lineHeight:1.15,textShadow:"0 2px 12px rgba(150,0,40,.25)"}}>{t(`Bonjour ${user.name} ! 👋`,`Hello ${user.name}! 👋`)}</h1>
+        <div style={{position:"relative",display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+          {user.country&&<span style={chip}>📍 {user.country}</span>}
+          <span style={chip}>{lvl.icon} {lvl.label}</span>
+          {streak>0&&<span style={{...chip,background:"linear-gradient(135deg,#FF8A00,#FFB347)",fontWeight:900}}>🔥 {streak}{t("j","d")}</span>}
+          {badges.length>0&&<span style={chip}>🏅 {badges.length}</span>}
         </div>
-        {/* Progress */}
-        <div style={{position:"relative",marginTop:16,background:"rgba(255,255,255,.16)",border:"1px solid rgba(255,255,255,.25)",borderRadius:18,padding:"12px 14px"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-            <span style={{fontSize:15,color:"white",fontWeight:800}}>{t("Ma progression","My progress")}</span>
-            {badges.length>0&&<span style={{fontSize:15,color:"white",fontWeight:800}}>🏅 {badges.length} {t(`badge${badges.length>1?"s":""}`,`badge${badges.length>1?"s":""}`)}</span>}
+        <div style={{position:"relative",display:"flex",alignItems:"center",gap:10,marginTop:cv(7,1.4,14)}}>
+          <span style={{fontSize:14,color:"white",fontWeight:800,flexShrink:0}}>{t("Ma progression","My progress")}</span>
+          <div role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={t("Ma progression","My progress")} style={{flex:1,height:9,background:"rgba(255,255,255,.28)",borderRadius:10,overflow:"hidden"}}>
+            <div style={{height:"100%",background:"linear-gradient(90deg,#FFFFFF,#FFE3A3)",borderRadius:10,boxShadow:"0 0 10px rgba(255,255,255,.7)",width:`${pct}%`,transition:"width .6s"}}/>
           </div>
-          <div style={{height:10,background:"rgba(255,255,255,.25)",borderRadius:10,overflow:"hidden"}}>
-            <div style={{height:"100%",background:"linear-gradient(90deg,#FFFFFF,#FFE3A3)",borderRadius:10,boxShadow:"0 0 10px rgba(255,255,255,.7)",width:`${Math.min(100,totalPts<150?totalPts/1.5:totalPts<400?(totalPts-150)/2.5:totalPts<800?(totalPts-400)/4:100)}%`,transition:"width .6s"}}/>
-          </div>
+          <span style={{fontSize:14,color:"white",fontWeight:900,flexShrink:0}}>{pct} %</span>
         </div>
       </div>
-      <div style={{flex:1,padding:"16px 14px 100px",display:"flex",flexDirection:"column",gap:12,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
-        {/* ── APPRENDRE ── */}
-        <Sec icon="📚" label={t("Apprendre","Learn")} color="#E8003D"/>
-        {/* Explorer CTA */}
-        <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:"20px 18px",textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:14,cursor:"pointer",position:"relative",overflow:"hidden"}}>
+      <div style={{flex:1,minHeight:0,padding:`${cv(9,1.6,16)} 14px 84px`,display:"flex",flexDirection:"column",gap:cv(8,1.3,14),overflowY:"auto",WebkitOverflowScrolling:"touch",position:"relative"}}>
+        {/* Explorer */}
+        <button onClick={onExplore} style={{width:"100%",background:"linear-gradient(135deg,#E8003D,#FF6B9D)",border:"none",borderRadius:22,padding:`${cv(10,1.8,18)} 16px`,textAlign:"left",boxShadow:"0 8px 24px rgba(232,0,61,.3)",display:"flex",alignItems:"center",gap:12,cursor:"pointer",position:"relative",overflow:"hidden",flexShrink:0}}>
           <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,.1)",top:-60,right:-30,pointerEvents:"none"}}/>
-          <div style={{width:54,height:54,borderRadius:16,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🎮</div>
-          <div style={{flex:1}}>
+          <div style={ico("rgba(255,255,255,.22)",46,24)} aria-hidden="true">🎮</div>
+          <div style={{flex:1,minWidth:0}}>
             <div className="T" style={{fontSize:18,fontWeight:900,color:"white"}}>{t("Explorer les quiz","Explore quizzes")}</div>
-            <div style={{fontSize:16,color:"rgba(255,255,255,.8)",marginTop:3,fontWeight:600}}>{t("5 thèmes · 3 niveaux · bilingue","5 themes · 3 levels · bilingual")}</div>
+            <div style={{fontSize:14,color:"rgba(255,255,255,.92)",marginTop:2,fontWeight:700}}>{t("5 thèmes · 3 niveaux · bilingue","5 themes · 3 levels · bilingual")}</div>
           </div>
-          <span style={{width:36,height:36,borderRadius:"50%",background:"white",color:P.red,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,position:"relative",boxShadow:"0 4px 12px rgba(160,0,40,.25)"}}>›</span>
+          <span style={goBtn("white",P.red)}>›</span>
         </button>
         {/* Défi du jour */}
-        {defiText&&<div style={{background:"white",borderRadius:18,padding:"16px 18px 18px",border:"1.5px solid rgba(232,0,61,.12)",boxShadow:"0 2px 10px rgba(232,0,61,.06)",textAlign:"center"}}>
-          <div style={{fontSize:15,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>🔥 {t("Défi du jour","Daily challenge")}</div>
-          <img src={AKISSI_IMGS.encouragement||AKISSI_IMGS.confiance} alt="A-Kissi" onError={e=>{e.target.style.display="none";}} style={{width:84,height:"auto",display:"block",margin:"0 auto 10px",filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))"}}/>
-          <p style={{fontSize:17,color:P.dark,fontWeight:800,lineHeight:1.45,margin:0,background:"rgba(232,0,61,.06)",borderRadius:14,padding:"12px 14px"}}>{defiText}</p>
+        {defiText&&<div style={{background:"white",borderRadius:18,padding:`${cv(8,1.4,14)} 14px`,border:"1.5px solid rgba(232,0,61,.1)",boxShadow:"0 4px 14px rgba(232,0,61,.06)",display:"flex",alignItems:"center",gap:12,flexShrink:0}}>
+          <div style={ico("#FFF0E8",42,22)} aria-hidden="true">🔥</div>
+          <div style={{minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:900,color:P.red,textTransform:"uppercase",letterSpacing:.8}}>{t("Défi du jour","Daily challenge")}</div>
+            <p style={{fontSize:15,color:P.dark,fontWeight:800,lineHeight:1.3,margin:"2px 0 0"}}>{defiText}</p>
+          </div>
         </div>}
-        {/* Profil Dignité — featured */}
-        <div onClick={onProfil} role="button" tabIndex={0} onKeyDown={kb(onProfil)} style={{background:"linear-gradient(135deg,#1A0A15,#3A0313)",borderRadius:20,padding:"16px 18px",cursor:"pointer",display:"flex",alignItems:"center",gap:14,boxShadow:"0 6px 22px rgba(0,0,0,.2)",border:"1px solid rgba(232,0,61,.3)"}}>
-          <div style={{width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,#E8003D,#FF6B9D)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>✨</div>
-          <div style={{flex:1}}>
-            <div className="T" style={{fontSize:16,fontWeight:900,color:"white",marginBottom:3}}>{t("Quel est ton Profil Dignité ?","What's your Dignity Profile?")}</div>
-            <div style={{fontSize:15,color:"rgba(255,180,200,.7)",fontWeight:600}}>{t("🌱 Découvreuse · ✊ Battante · 🌟 Leader...","🌱 Explorer · ✊ Fighter · 🌟 Leader...")}</div>
+        {/* Jouer + Moi & mes droits */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gridAutoRows:"1fr",gap:10,flex:1,minHeight:"auto",maxHeight:300}}>
+          {[...playItems,...meItems].map((it,i)=><Tile key={i} it={it}/>)}
+        </div>
+        {compact?(
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,flexShrink:0}}>
+            <button onClick={onProfil} style={{background:"white",border:"1.5px solid rgba(155,93,229,.3)",borderRadius:18,padding:"9px 10px",display:"flex",alignItems:"center",gap:9,cursor:"pointer",textAlign:"left",minWidth:0,boxShadow:"0 4px 14px rgba(155,93,229,.12)"}}>
+              <div style={ico("linear-gradient(135deg,#E8003D,#FF6B9D)",36,19)} aria-hidden="true">✨</div>
+              <div style={{minWidth:0}}>
+                <div className="T" style={{fontSize:15,fontWeight:900,color:P.dark,lineHeight:1.15}}>{t("Profil Dignité","Dignity Profile")}</div>
+                <div style={{fontSize:14,color:"#7B3FC4",fontWeight:800}}>{t("Fais le test","Take the test")}</div>
+              </div>
+            </button>
+            <button onClick={()=>onNav("sos")} style={{background:"white",border:"1.5px solid rgba(192,57,43,.45)",borderRadius:18,padding:"9px 10px",display:"flex",alignItems:"center",gap:9,cursor:"pointer",textAlign:"left",minWidth:0,boxShadow:"0 4px 14px rgba(192,57,43,.12)"}}>
+              <div style={ico("#FDECEA",36,19)} aria-hidden="true">🚨</div>
+              <div style={{minWidth:0}}>
+                <div className="T" style={{fontSize:15,fontWeight:900,color:"#B03A2E",lineHeight:1.15}}>{t("SOS & Aide","SOS & Help")}</div>
+                <div style={{fontSize:14,color:P.dark,fontWeight:700}}>{t("Trouver de l'aide","Get help")}</div>
+              </div>
+            </button>
           </div>
-          <span style={{fontSize:20,color:"#FF6B9D",fontWeight:900}}>›</span>
-        </div>
-        {/* ── JOUER ── */}
-        <Sec icon="🎮" label={t("Jouer","Play")} color="#4FB3F6"/>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          {playItems.map((it,i)=><Tile key={i} it={it}/>)}
-        </div>
-        {/* ── MOI & MES DROITS ── */}
-        <Sec icon="💗" label={t("Moi & mes droits","Me & my rights")} color="#FF6B9D"/>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          {meItems.map((it,i)=><Tile key={i} it={it}/>)}
-        </div>
-        {/* ── BESOIN D'AIDE ── */}
-        <Sec icon="🆘" label={t("Besoin d'aide ?","Need help?")} color="#E74C3C"/>
-        <button onClick={()=>onNav("sos")} style={{width:"100%",background:"linear-gradient(135deg,#E74C3C,#C0392B)",border:"none",borderRadius:22,padding:"18px 16px",display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",boxShadow:"0 10px 26px rgba(192,57,43,.35)",position:"relative",overflow:"hidden"}}>
-          <div style={{position:"absolute",width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,.1)",top:-60,right:-30,pointerEvents:"none"}}/>
-          <div style={{width:60,height:60,borderRadius:18,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,flexShrink:0}}>🚨</div>
-          <div style={{flex:1,position:"relative"}}>
-            <div className="T" style={{fontSize:20,fontWeight:900,color:"white"}}>{t("SOS & Aide","SOS & Help")}</div>
-            <div style={{fontSize:16,fontWeight:700,color:"rgba(255,255,255,.92)",marginTop:3,lineHeight:1.35}}>{t("Appeler, parler à quelqu'un, trouver de l'aide","Call, talk to someone, find help")}</div>
+        ):(<>
+        <div onClick={onProfil} role="button" tabIndex={0} onKeyDown={kb(onProfil)} style={{background:"white",borderRadius:18,padding:`${cv(8,1.4,13)} 14px`,cursor:"pointer",display:"flex",alignItems:"center",gap:12,boxShadow:"0 4px 14px rgba(155,93,229,.12)",border:"1.5px solid rgba(155,93,229,.3)",flexShrink:0}}>
+          <div style={ico("linear-gradient(135deg,#E8003D,#FF6B9D)",40,20)} aria-hidden="true">✨</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div className="T" style={{fontSize:16,fontWeight:900,color:P.dark}}>{t("Ton Profil Dignité","Your Dignity Profile")}</div>
+            <div style={{fontSize:14,color:"#7B3FC4",fontWeight:800}}>{t("Découvreuse, Battante ou Leader ?","Explorer, Fighter or Leader?")}</div>
           </div>
-          <span style={{width:36,height:36,borderRadius:"50%",background:"white",color:"#C0392B",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0,position:"relative"}}>›</span>
+          <span style={goBtn("#F0E8FF","#7B3FC4")}>›</span>
+        </div>
+        {/* SOS */}
+        <button onClick={()=>onNav("sos")} style={{width:"100%",background:"white",border:"1.5px solid rgba(192,57,43,.45)",borderRadius:18,padding:`${cv(8,1.4,13)} 14px`,display:"flex",alignItems:"center",gap:12,textAlign:"left",cursor:"pointer",boxShadow:"0 4px 14px rgba(192,57,43,.12)",position:"relative",overflow:"hidden",flexShrink:0}}>
+          <div style={ico("#FDECEA",40,20)} aria-hidden="true">🚨</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div className="T" style={{fontSize:17,fontWeight:900,color:"#B03A2E"}}>{t("SOS & Aide","SOS & Help")}</div>
+            <div style={{fontSize:14,fontWeight:700,color:P.dark}}>{t("Appeler, parler à quelqu'un","Call, talk to someone")}</div>
+          </div>
+          <span style={goBtn("#C0392B","white")}>›</span>
         </button>
+        </>)}
       </div>
     </div>
   );
