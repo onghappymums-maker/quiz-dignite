@@ -183,8 +183,8 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={},video=true}
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"ak-in .4s ease-out",...style}}>
       {vid?(
         <video src={vid} poster={src} autoPlay muted loop playsInline preload="auto" onError={()=>setVidFail(true)}
-          aria-label={message||"A-Kissi fête ta réussite"}
-          style={{width:size*1.15,height:size*1.15*1.5,objectFit:"cover",display:"block",borderRadius:"50% 50% 46% 46% / 40% 40% 34% 34%",
+          aria-label={message||(state==="salut"?"A-Kissi te fait coucou":"A-Kissi fête ta réussite")}
+          style={state==="salut"?{width:size*1.4,height:size*1.4*1.5,objectFit:"cover",display:"block",margin:`${-size*0.2}px 0`,WebkitMaskImage:"radial-gradient(ellipse 50% 50% at 50% 50%,#000 74%,transparent 100%)",maskImage:"radial-gradient(ellipse 50% 50% at 50% 50%,#000 74%,transparent 100%)"}:{width:size*1.15,height:size*1.15*1.5,objectFit:"cover",display:"block",borderRadius:"50% 50% 46% 46% / 40% 40% 34% 34%",
             WebkitMaskImage:"radial-gradient(ellipse 62% 64% at 50% 50%,#000 62%,transparent 100%)",maskImage:"radial-gradient(ellipse 62% 64% at 50% 50%,#000 62%,transparent 100%)"}}/>
       ):(
       <img src={src} alt={`A-Kissi — ${state}`}
@@ -204,7 +204,7 @@ function AKissi({state="neutre",lang="fr",msg=null,size=110,style={},video=true}
 }
 
 // Animations vidéo d'A-Kissi (fichiers dans public/). Les autres états arriveront.
-const AKISSI_VIDS = { celebration:"/akissi-celebration.mp4" };
+const AKISSI_VIDS = { salut:"/akissi-salut.mp4", celebration:"/akissi-celebration.mp4" };
 const reduceMotion=()=>{try{return window.matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){return false;}};
 const HERO = "linear-gradient(155deg,#C8102E 0%,#E8426A 28%,#FF6B9D 62%,#FFD4E8 100%)";
 const ALPHA = "ABCDEFGHIJKLMNOPRSTUVWYZ";
@@ -1991,6 +1991,7 @@ function SplashScreen({onDone,isReady}){
 
 function WelcomeScreen({onStart,lang,setLang}){
   const t=(fr,en)=>lang==="en"?en:fr;
+  const[wvFail,setWvFail]=useState(false);
   const cv=(min,vh,max)=>`clamp(${min},${vh}vh,${max})`; // taille qui s'adapte à la hauteur de l'écran
   const langBtn=on=>({background:on?"#E8003D":"rgba(232,0,61,.15)",color:on?"white":"#E8003D",border:"none",borderRadius:20,padding:"6px 14px",fontWeight:800,fontSize:"0.95rem",cursor:"pointer"});
   return(
@@ -2004,7 +2005,12 @@ function WelcomeScreen({onStart,lang,setLang}){
       </div>
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:1,minHeight:0}}>
         <div style={{background:"white",border:"2px solid rgba(232,0,61,.2)",borderRadius:16,padding:"6px 14px",fontSize:cv("0.85rem",1.9,"1rem"),fontWeight:800,color:P.dark,boxShadow:"0 4px 14px rgba(232,0,61,.1)",marginBottom:6}}>{t("Salut ! Je suis A-Kissi 🌸","Hi! I'm A-Kissi 🌸")}</div>
+        {AKISSI_VIDS.salut&&!wvFail&&!reduceMotion()?(
+          <video src={AKISSI_VIDS.salut} poster={AKISSI_IMGS.salut} autoPlay muted loop playsInline preload="auto" onError={()=>setWvFail(true)} aria-label={t("A-Kissi te fait coucou","A-Kissi waves hello")}
+            style={{height:cv("120px",26,"250px"),width:`calc(${cv("120px",26,"250px")} / 1.5)`,objectFit:"cover",display:"block",margin:`calc(${cv("120px",26,"250px")} * -0.1) 0`,WebkitMaskImage:"radial-gradient(ellipse 50% 50% at 50% 50%,#000 74%,transparent 100%)",maskImage:"radial-gradient(ellipse 50% 50% at 50% 50%,#000 74%,transparent 100%)"}}/>
+        ):(
         <img src={AKISSI_IMGS.salut} alt="A-Kissi" onError={e=>{e.target.style.display="none";}} style={{height:cv("80px",18,"170px"),width:"auto",objectFit:"contain",filter:"drop-shadow(0 6px 16px rgba(232,0,61,.2))",animation:"ak-float 3s ease-in-out infinite"}}/>
+        )}
       </div>
       <div>
         <h1 className="T" style={{fontSize:cv("2.2rem",6.4,"3.4rem"),fontWeight:900,background:G,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.05,margin:0}}>Quiz Dignité</h1>
