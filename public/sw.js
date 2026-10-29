@@ -1,4 +1,4 @@
-const CACHE = "quiz-dignite-v11";
+const CACHE = "quiz-dignite-v12";
 
 // Fichiers essentiels à mettre en cache pour le hors ligne
 const ASSETS = [
@@ -37,6 +37,9 @@ self.addEventListener("fetch", e => {
   // Ignore les requêtes non-GET et les extensions externes
   if (e.request.method !== "GET") return;
   if (!url.origin.includes("quizdignite.org") && !url.origin.includes("localhost")) return;
+  // Vidéos : le navigateur les charge lui-même (par morceaux). Le service worker ne s'en mêle pas,
+  // sinon certains téléphones (iPhone surtout) refusent de les lire.
+  if (e.request.headers.has("range") || /\.(mp4|webm|mov)$/i.test(url.pathname)) return;
 
   e.respondWith(
     caches.match(e.request).then(cached => {
